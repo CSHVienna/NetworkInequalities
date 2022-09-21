@@ -2,9 +2,12 @@
 # Dependencies
 ################################################################
 import os
+import numpy as np
 
 from libs.handlers import utils
 from libs.generators.model import MODEL_NAMES
+
+NAN = ['',' ',None,np.nan]
 
 ################################################################
 # Functions

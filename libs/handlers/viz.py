@@ -2,10 +2,13 @@
 # Dependencies
 ################################################################
 import os
+import networkx as nx
 import seaborn as sns
 import matplotlib.pyplot as plt
+from mycolorpy import colorlist as mcp
 
 from libs.handlers import utils
+from libs.handlers import io
 from libs.handlers import validations as val
 
 ################################################################
@@ -13,23 +16,30 @@ from libs.handlers import validations as val
 ################################################################
 DPI = 300
 EXT = 'pdf'
+INACTIVE_COLOR = 'lightgrey'
 
 ################################################################
 # Functions
 ################################################################
-
-def plot_distributions_across_models(data, kind='kde', d=0.1, fm=0.1, h_MM=0.0, h_mm=0.0, tc=0.1, plo_M=0.2, plo_m=0.2, output=None):
-  val.validate_displot_kind(kind)
-  val.validate_not_none(d=d, fm=fm, h_MM=h_MM, h_mm=h_mm, tc=tc, plo_M=plo_M, plo_m=plo_m)
-  MODEL_ACTIVITY_DENSITY = ['DPA','DH','DPAH']
-  data = data.query("fm==@fm and ((h_MM==@h_MM and h_mm==@h_mm and name!='DPA') or name=='DPA') and ((tc==@tc and name=='PATCH') or name!='PATCH') and ((plo_M==@plo_M and plo_m==@plo_m and name in @MODEL_ACTIVITY_DENSITY) or name not in @MODEL_ACTIVITY_DENSITY) and ((d==@d and name in @MODEL_ACTIVITY_DENSITY) or name not in @MODEL_ACTIVITY_DENSITY)").copy()
   
+def plot_distributions_across_models(data, kind='kde', output=None, **kws):
+  val.validate_displot_kind(kind)
+  df = utils.dataframe_sample(data, **kws)
+  fm,m,d,h_MM,h_mm,tc,plo_M,plo_m = utils.get_main_params(**kws)
+  
+  def _check_empty(data, **kws):
+    ax = plt.gca()
+    if data['value'].isnull().values.any():
+      set_inactive_ax(ax)
+      return
+    
   # plot
   fg = sns.displot(
-      data=data, x="value", hue="label", col="name", row="metric",
+      data=df, x="value", hue="label", col="name", row="metric",
       kind=kind, height=2, aspect=1.,
       facet_kws=dict(margin_titles=True, sharex=False, sharey=kind=='ecdf'),
   )
+  fg.map_dataframe(_check_empty)
   
   [plt.setp(ax.texts, text="") for ax in fg.axes.flat]
   fg.set_titles(col_template = '{col_name}', row_template = '{row_name}') 
@@ -45,44 +55,150 @@ def plot_distributions_across_models(data, kind='kde', d=0.1, fm=0.1, h_MM=0.0, 
   plt.show()
   plt.close()
   
+def set_inactive_ax(ax):
+  ax.tick_params(axis='x', colors=INACTIVE_COLOR)
+  # ax.tick_params(axis='y', colors=INACTIVE_COLOR)
+  ax.spines['top'].set_color(INACTIVE_COLOR)
+  ax.spines['left'].set_color(INACTIVE_COLOR)
+  ax.spines['right'].set_color(INACTIVE_COLOR)
+  ax.spines['bottom'].set_color(INACTIVE_COLOR)
   
-# def plot_degree_distribution_multiple_graphs(df_distributions, kind='kde', subset_gen=None, subset_hs=None, subset_fm=None, output=None):
-#   # kind: kde, ecdf, hist
+def plot_inequality_across_models(data, output=None, **kws):
+  df = utils.dataframe_sample(data, **kws)
+  fm,m,d,h_MM,h_mm,tc,plo_M,plo_m = utils.get_main_params(**kws)
   
-#   # only a subste of homophily values
-#   if subset_gen is not None:
-#     q = " or ".join([f"name=='{name}'"for name in subset_gen])
-#     data = df_distributions.query(q).copy()
-#   else:
-#     data = df_distributions.copy()
+  def _inequality(data, **kws):
+    ax = plt.gca()
+    if data['value'].isnull().values.any():
+      set_inactive_ax(ax)
+      return
+    x = utils.get_rank_range()
+    y = [utils.gini(data.query("rank<=@i").value.values) for i in x]
+    ax.plot(x,y)
+                 
+  # plot
+  fg = sns.FacetGrid(
+      data=df, col="name", row="metric",
+      height=2, aspect=1.,
+      margin_titles=True,
+  )
+  fg.map_dataframe(_inequality, x='rank')
+  
+  [plt.setp(ax.texts, text="") for ax in fg.axes.flat]
+  fg.set_titles(col_template = '{col_name}', row_template = '{row_name}') 
+  title = f"Rank Inequality (d{d} | fm{fm} | hMM{h_MM} | hmm{h_mm} | tc{tc} | ploM{plo_M} | plom{plo_m})"
+  title = title.replace("fm","f$_m$").replace("hMM","h$_{MM}$").replace("hmm","h$_{mm}$").replace("ploM","plo$_{M}$").replace("plom","plo$_{m}$")
+  plt.suptitle(title, y=1.03)
+  fg.set_ylabels("Gini")
+  fg.set_xlabels("Top-k% rank")
+  
+  if output is not None:
+    fn = os.path.join(output, f'inequality_across_generators_d{d}_fm{fm}_hMM{h_MM}_hmm{h_mm}_tc{tc}_ploM{plo_M}_plom{plo_m}.{EXT}')
+    fg.savefig(fn, dpi=DPI, bbox_inches='tight')
+    utils.info(f"{fn} saved!")
     
-#   # only a subste of homophily values
-#   if subset_hs is not None:
-#     q = " or ".join([f"(h_MM=={h_MM} and h_mm=={h_mm})"for (h_MM,h_mm) in subset_hs])
-#     data = data.query(q).copy()
-#   else:
-#     data = data.copy()
+  plt.show()
+  plt.close()
+  
+def plot_inequity_across_models(data, output=None, **kws):
+  df = utils.dataframe_sample(data, **kws)
+  fm,m,d,h_MM,h_mm,tc,plo_M,plo_m = utils.get_main_params(**kws)
+  
+  def _inequity(data, **kws):
+    ax = plt.gca()
+    if data['value'].isnull().values.any():
+      set_inactive_ax(ax)
+      return
+    colors = mcp.gen_color(cmap="tab10",n=10)
+    x = utils.get_rank_range()
+    y = [utils.percent_minorities(data.query("rank<=@i")) for i in x]
+    ax.plot(x,y,c=colors[1])
+    me, interpretation = utils.get_inequity_mean_error(y,fm)
+    ax.text(s=f"ME={me:.2f}\n({interpretation})", x=0.5, y=0.5, va='center', ha='center', transform=ax.transAxes)
+                 
+  # plot
+  fg = sns.FacetGrid(
+      data=df, col="name", row="metric",
+      height=2, aspect=1.,
+      margin_titles=True,
+  )
+  fg.map_dataframe(_inequity, x='rank')
+  fg.refline(y=fm, lw=1)
+  
+  # [plt.setp(ax.texts, text="") for ax in fg.axes.flat]
+  fg.set_titles(col_template = '{col_name}', row_template = '{row_name}') 
+  title = f"Rank Inequity (d{d} | fm{fm} | hMM{h_MM} | hmm{h_mm} | tc{tc} | ploM{plo_M} | plom{plo_m})"
+  title = title.replace("fm","f$_m$").replace("hMM","h$_{MM}$").replace("hmm","h$_{mm}$").replace("ploM","plo$_{M}$").replace("plom","plo$_{m}$")
+  plt.suptitle(title, y=0.99)
+  fg.set_ylabels("Minority size (%)")
+  fg.set_xlabels("Top-k% rank")
+  plt.tight_layout()
+  
+  if output is not None:
+    fn = os.path.join(output, f'inequity_across_generators_d{d}_fm{fm}_hMM{h_MM}_hmm{h_mm}_tc{tc}_ploM{plo_M}_plom{plo_m}.{EXT}')
+    fg.savefig(fn, dpi=DPI, bbox_inches='tight')
+    utils.info(f"{fn} saved!")
     
-#   # only a subste of fm values
-#   if subset_fm is not None:
-#     q = " or ".join([f"fm=={fm}"for fm in subset_fm])
-#     data = data.query(q).copy()
-#   else:
-#     data = data.copy()
+  plt.show()
+  plt.close()
+  
+  
+def plot_network_across_models(data, output=None, **kws):
+  import glob
+  import os
+  
+  fm,m,d,h_MM,h_mm,tc,plo_M,plo_m = utils.get_main_params(**kws)
+  files = set()
+  
+  # PAH
+  files |= set(glob.glob(os.path.join(data,'*',f'*_m{m}_fm{fm}_hMM{h_MM}_hmm{h_mm}_seed*.gpickle')))
+  
+  # PATCH
+  files |= set(glob.glob(os.path.join(data,'*',f'*_m{m}_fm{fm}_hMM{h_MM}_hmm{h_mm}_tc{tc}_seed*.gpickle')))
+  
+  # DPAH
+  files |= set(glob.glob(os.path.join(data,'*',f'*fm{fm}_d{d}_hMM{h_MM}_hmm{h_mm}_ploM{plo_M}_plom{plo_m}_seed*.gpickle')))
+  
+  # DPA
+  files |= set(glob.glob(os.path.join(data,'*',f'*fm{fm}_d{d}_ploM{plo_M}_plom{plo_m}_seed*.gpickle')))
+  
+  # DH
+  files |= set(glob.glob(os.path.join(data,'*',f'*fm{fm}_d{d}_hMM{h_MM}_hmm{h_mm}_ploM{plo_M}_plom{plo_m}_seed*.gpickle')))
+  
+  def _get_edge_color(colors, s, t, graph_metadata):
+    if G.nodes[s][G.graph['label']]==0 and G.nodes[s][G.graph['label']]==G.nodes[t][G.graph['label']]:
+      return colors[0]
+    if G.nodes[s][G.graph['label']]==1 and G.nodes[s][G.graph['label']]==G.nodes[t][G.graph['label']]:
+      return colors[1]
+    return 'grey'
+  
+  files = sorted(files)
+  
+  nc = 5
+  nr = 1
+  size = 3
+  fig, axes = plt.subplots(nr, nc, figsize=(nc*size, nr*size), sharex=False, sharey=False)
+  
+  colors = mcp.gen_color(cmap="tab10",n=10)
+  for c, fn in enumerate(files):
+    G = io.read_gpickle(fn)
+    ax = axes[c]
+    pos = nx.spring_layout(G)
     
-#   # homophily column
-#   data.loc[:,'h'] = data.apply(lambda row:f"hMM:{row.h_MM} | hmm:{row.h_mm}", axis=1)
-  
-#   # plot
-#   fg = sns.displot(
-#       data=data, x="degree", hue="label", col="h", row="fm",
-#       kind=kind, height=2, aspect=1.,
-#       facet_kws={"margin_titles": True},
-#   )
-  
-#   [plt.setp(ax.texts, text="") for ax in fg.axes.flat]
-#   fg.set_titles(col_template = '{col_name}') #row_template = '{row_name}', 
-#   plt.subplots_adjust(wspace=0.1, hspace=0.1)
-  
-#   plt.show()
-#   plt.close()
+    # nodes
+    nodes_data = G.nodes(data=True)
+    nodes = [n for n,data in nodes_data]
+    node_colors = [colors[data[G.graph['label']]] for n,data in nodes_data]
+    nx.draw_networkx_nodes(G, pos, nodelist=nodes, node_size=1, node_color=node_colors, node_shape='o', ax=ax)
+
+    # edges
+    edges = G.edges()
+    edge_colors = [_get_edge_color(colors, s, t, G.graph) for s,t in edges]
+    nx.draw_networkx_edges(G, pos, ax=ax, edgelist=edges, width=0.02, edge_color=edge_colors, style='solid',
+                           arrows=True, arrowstyle='-|>', arrowsize=2)
+    
+    # final touch
+    ax.set_axis_off()
+    ax.set_title(G.graph['name'])
+    
+  return

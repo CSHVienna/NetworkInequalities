@@ -12,7 +12,9 @@ from libs.generators import PATCH as mPATCH
 from libs.generators import MAH
 
 MODEL_NAMES = ['PAH', 'PATCH', 'DPAH', 'DPA', 'DH']
-
+MODEL_ACTIVITY_DENSITY = ['DPA','DH','DPAH']
+MODEL_BA = ['PAH','PATCH']
+  
 ################################################################
 # Generators' contructors
 ################################################################
