@@ -1,11 +1,15 @@
-################################################################
+############################################################################################################
 # Dependencies
-################################################################
+############################################################################################################
+import os
+import glob
 import numpy as np
 import pandas as pd
 import networkx as nx
 from fast_pagerank import pagerank_power
+# import dask.dataframe as dd
 
+from libs.handlers import io
 from libs.handlers import validations as val
 
 ############################################################################################################
@@ -24,6 +28,19 @@ def warn(txt):
 def error(txt):
   _print('ERROR', txt)
   
+def print_args(args):
+  obj = {}
+  print("==================================")
+  for arg in vars(args):
+    v = getattr(args, arg)
+    print(f"{arg}: {v}")
+    obj[arg] = v
+  print("==================================")
+  return obj
+  
+def get_random_seed():
+  return np.random.randint(0,2**32 - 1)
+
 ############################################################################################################
 # Ranges
 ############################################################################################################
@@ -50,11 +67,18 @@ def dataframe_is_empty(df):
   return df.shape[0] == 0
 
 def get_empty_dataframe(columns=[]):
-  return pd.DataFrame(columns=columns)
+  df = pd.DataFrame(columns=columns)
+  # if scalable:
+  #   df = dd.from_pandas(df, npartitions=2)
+  return df
 
 def concat_dataframe(df1, df2, ignore_index=True):
-  return pd.concat([df1, df2], ignore_index=ignore_index)
-
+  try:
+    return pd.concat([df1, df2], ignore_index=ignore_index)
+  except:
+    # return dd.concat([df1, df2])
+    return None
+  
 def get_node_distributions_as_dataframe(G, network_id=None):
   N = G.number_of_nodes()
   nodes = G.nodes()
@@ -89,3 +113,15 @@ def flatten_dataframe_by_metric(df):
       tmp2.loc[:,'value'] = tmp2.value.astype(np.float32)
       data = concat_dataframe(data, tmp2)
   return data
+
+def load_distributions(root, subfolder):
+  df = get_empty_dataframe()
+  fn_pattern = os.path.join(root, subfolder, f"{subfolder}_*.csv")
+  files = [fn for fn in glob.glob(fn_pattern)]
+  for network_id, fn in enumerate(files):
+    tmp = io.read_csv(fn)
+    # tmp = tmp.assign(network_id=lambda x: network_id+1) 
+    tmp.loc[:,'network_id'] = network_id+1
+    df = concat_dataframe(df, tmp)
+  
+  return df

@@ -135,19 +135,3 @@ def _pick_target(source, N, labels, indegrees, outdegrees, homophily):
     probs = np.array([ homophily[labels[source],labels[n]] for n in targets])
     probs /= probs.sum()
     return np.random.choice(a=targets,size=1,replace=True,p=probs)[0]
-
-################################################################
-# Main
-################################################################
-
-if __name__ == "__main__":
-    
-    G = DH(N=1000, 
-           fm=0.5, 
-           d=0.01, 
-           plo_M=2.5, 
-           plo_m=2.5, 
-           h_MM=0.5, 
-           h_mm=0.5, 
-           verbose=True)
-    

@@ -36,6 +36,7 @@ def create(
         h_MM: float,
         h_mm: float,
         triadic_closure: float,
+        seed: float = None,
         _on_edge_added: Union[None, Callable[[nx.Graph, int, int], None]] = None,
         _on_tc_edge_added: Union[None, Callable[[nx.Graph, int, int], None]] = None) -> nx.Graph:
     """Return random graph using BA preferential attachment model
@@ -99,6 +100,7 @@ def create(
        random networks", Science 286, pp 509-512, 1999.
     """
 
+    np.random.seed(seed)
     G = nx.Graph()
 
     # 1. Init nodes
@@ -111,16 +113,6 @@ def create(
     h_MM = EPSILON if h_MM == 0 else 1-EPSILON if h_MM == 1 else h_MM
     homophily = np.array([[h_MM, 1-h_MM],[1-h_mm, h_mm]])
     
-#     # Number of minority nodes
-#     minority = int(minority_fraction * N)
-
-#     # Actual minority node ids
-#     minority_nodes = set(random.sample(range(N),minority))
-
-#     # Create graph and add color based on minority membership
-#     G.add_nodes_from([(node, {"color": "red" if node in minority_nodes else "blue"})\
-#         for node in range(N)])
-
     # Node to be added, init to m to start with m pre-existing, unconnected nodes
     source = m
 

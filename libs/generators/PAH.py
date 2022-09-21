@@ -28,7 +28,7 @@ EPSILON = 0.00001
 ################################################################
 # Main
 ################################################################
-def create(N, m , fm, h_MM, h_mm):
+def create(N, m , fm, h_MM, h_mm, seed=None):
     """Return homophilic random graph using BA preferential attachment model.
 
     A graph of n nodes is grown by attaching new nodes each with m
@@ -66,7 +66,8 @@ def create(N, m , fm, h_MM, h_mm):
     .. [1] A. L. Barabasi and R. Albert "Emergence of scaling in
        random networks", Science 286, pp 509-512, 1999.
     """
-
+    
+    np.random.seed(seed)
     G = nx.Graph()
     
     # 1. Init nodes
@@ -79,11 +80,6 @@ def create(N, m , fm, h_MM, h_mm):
     h_MM = EPSILON if h_MM == 0 else 1-EPSILON if h_MM == 1 else h_MM
     homophily = np.array([[h_MM, 1-h_MM],[1-h_mm, h_mm]])
     
-    # minority = int(minority_fraction * N)
-    # minority_nodes = set(random.sample(range(N),minority))
-    # minority_mask = [node in minority_nodes for node in range(N)]
-    # G.add_nodes_from([(node, {'color': "red" if node in minority_nodes else "blue"}) for node in range(N)])
-
     target_list=list(range(m))
     source = m #start with m nodes
 
@@ -139,7 +135,3 @@ def _pick_targets(G,source,target_list,labels,homophily,m):
                 target_list_copy.remove(k)
                 break
     return targets
-
-
-if __name__ == '__main__':
-    graph = homophilic_ba_graph(N = 100, m = 2 , fm = 0.1, h= 1)
