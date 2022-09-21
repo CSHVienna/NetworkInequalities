@@ -26,4 +26,7 @@ node_modules/
 *.ipynb_checkpoints
 
 # python
-__pycache__/
+__pycache__
+
+*.gpickle
+results/distributions.csv
