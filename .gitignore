@@ -21,3 +21,9 @@ node_modules/
 *.log
 *.sql
 *.sqlite
+
+# .ipynb_checkpoints
+*.ipynb_checkpoints
+
+# python
+__pycache__/
