@@ -93,9 +93,10 @@ def plot_inequality_across_models(data, output=None, **kws):
   fg.set_xlabels("Top-k% rank")
   
   if output is not None:
-    fn = os.path.join(output, f'inequality_across_generators_d{d}_fm{fm}_hMM{h_MM}_hmm{h_mm}_tc{tc}_ploM{plo_M}_plom{plo_m}.{EXT}')
-    fg.savefig(fn, dpi=DPI, bbox_inches='tight')
-    utils.info(f"{fn} saved!")
+    for ext in [EXT,'png']:
+      fn = os.path.join(output, f'inequality_across_generators_d{d}_fm{fm}_hMM{h_MM}_hmm{h_mm}_tc{tc}_ploM{plo_M}_plom{plo_m}.{ext}')
+      fg.savefig(fn, dpi=DPI, bbox_inches='tight')
+      utils.info(f"{fn} saved!")
     
   plt.show()
   plt.close()
@@ -135,9 +136,10 @@ def plot_inequity_across_models(data, output=None, **kws):
   plt.tight_layout()
   
   if output is not None:
-    fn = os.path.join(output, f'inequity_across_generators_d{d}_fm{fm}_hMM{h_MM}_hmm{h_mm}_tc{tc}_ploM{plo_M}_plom{plo_m}.{EXT}')
-    fg.savefig(fn, dpi=DPI, bbox_inches='tight')
-    utils.info(f"{fn} saved!")
+    for ext in [EXT, 'png']:
+      fn = os.path.join(output, f'inequity_across_generators_d{d}_fm{fm}_hMM{h_MM}_hmm{h_mm}_tc{tc}_ploM{plo_M}_plom{plo_m}.{ext}')
+      fg.savefig(fn, dpi=DPI, bbox_inches='tight')
+      utils.info(f"{fn} saved!")
     
   plt.show()
   plt.close()
@@ -200,5 +202,12 @@ def plot_network_across_models(data, output=None, **kws):
     # final touch
     ax.set_axis_off()
     ax.set_title(G.graph['name'])
+   
+  if output is not None:
+    for ext in [EXT,'png']:
+      fn = os.path.join(output, f'networks_across_generators_d{d}_fm{fm}_hMM{h_MM}_hmm{h_mm}_tc{tc}_ploM{plo_M}_plom{plo_m}.{ext}')
+      fig.savefig(fn, dpi=DPI, bbox_inches='tight')
+      utils.info(f"{fn} saved!")
     
-  return
+  plt.show()
+  plt.close()
