@@ -1,5 +1,5 @@
-# ScaleFreeNetworks
-Random scale-free graph generators proposed by members of the CSH
+# Network Inequalities
+We propose random scale-free graph generators to study network inequalities both in data and in algorithms
 
 1. **PAH**: Undirected Network with **P**referential **A**ttachment and **H**omophily 
 1. **PATCH**: Undirected Network with **P**referential **A**ttachment, **T**riadic **C**losure, and **H**omophily 
