@@ -12,14 +12,14 @@ from libs.generators import model
 ############################################################################################################
 # Functions
 ############################################################################################################
-def create(obj):
-  if val.validate_arguments(obj):
+def create(args):
+  if val.validate_create_arguments(args):
     
     seed = utils.get_random_seed()
-    G = model.create(obj, seed=seed)
+    G = model.create(args, seed=seed)
     df = utils.get_node_distributions_as_dataframe(G)
     
-    fn = os.path.join(obj['output'],obj['name'],model.get_filename(G))
+    fn = os.path.join(args['output'],args['name'],model.get_filename(G))
     val.validate_path(fn)
     io.to_gpickle(G, f"{fn}.gpickle")
     io.to_csv(df, f"{fn}.csv")

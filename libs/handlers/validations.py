@@ -5,6 +5,7 @@ import os
 import numpy as np
 
 from libs.handlers import utils
+from libs.handlers.empirical import NETWORK_NAMES
 from libs.generators.model import MODEL_NAMES
 
 NAN = ['',' ',None,np.nan]
@@ -52,12 +53,25 @@ def validate_activity_range(beta_min, beta_max):
     return True
   raise ValueError("[ERROR] validations.py | validate_activity_range | Wrong values for beta_min and beta_max")
   
+################################################################
+# Plots
+################################################################
+
 def validate_displot_kind(kind):
   if kind in ['hist','kde','ecdf']:
     return True
   raise ValueError("[ERROR] validations.py | validate_displot_kind | Wrong values for kind")
   
-def validate_arguments(obj):
+def validate_empirical_vs_fit_kind(kind):
+  if kind in ['distributions','inequality','inequity','disparity']:
+    return True
+  raise ValueError("[ERROR] validations.py | validate_empirical_vs_fit_kind | Wrong values for kind")
+
+################################################################
+# Arguments (command line)
+################################################################
+
+def validate_create_arguments(obj):
   if 'name' not in obj:
     raise Exception("Generator name is missing")
   if 'output' not in obj:
@@ -83,3 +97,16 @@ def validate_arguments(obj):
       return validate_not_none(**{k:v for k,v in obj.items() if k in ['N','fm','d','hMM','hmm','ploM','plom']})
     
   return False
+
+def validate_fit_arguments(obj):
+  if 'name' not in obj:
+    raise Exception("Generator name is missing")
+  if 'fn' not in obj:
+    raise Exception("Root folder is missing")
+  if 'output' not in obj:
+    raise Exception("Output folder is missing")
+  
+  if obj['name'] not in MODEL_NAMES:
+    raise ValueError("Generator name is not valid")
+    
+  return True

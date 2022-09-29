@@ -30,3 +30,5 @@ __pycache__
 
 *.gpickle
 results/distributions.csv
+_
+scripts/batch_update_metadata.py*

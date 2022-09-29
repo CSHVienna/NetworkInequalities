@@ -101,13 +101,14 @@ def create(
     """
 
     np.random.seed(seed)
-    G = nx.Graph()
-
-    # 1. Init nodes
-    nodes, labels, NM, Nm = _init_nodes(N,fm)
+    m = max(1, m)
     
-    G.graph = {'name':MODEL_NAME, 'label':CLASS, 'groups': GROUPS}
-    G.add_nodes_from([(n, {CLASS:l}) for n,l in zip(*[nodes,labels])])
+    # 1. Init nodes
+    G = nx.Graph()
+    G.graph = {'name':MODEL_NAME, 'class':CLASS, 'groups': GROUPS, 'labels':LABELS}
+    nodes, labels, majority, minority = _init_nodes(N, fm)
+    G.add_nodes_from(nodes)
+    nx.set_node_attributes(G, labels, CLASS)
   
     h_mm = EPSILON if h_mm == 0 else 1-EPSILON if h_mm == 1 else h_mm
     h_MM = EPSILON if h_MM == 0 else 1-EPSILON if h_MM == 1 else h_MM
@@ -128,14 +129,18 @@ def create(
             if tc_prob < triadic_closure and len(targets_tc) > 0:
                 # TODO: Find a better way as the conversion takes O(N)
                 # Sample TC target based on its occurrence frequency
-                target = random.choices(
-                    list(targets_tc.keys()), # Nodes themselves
-                    weights=list(targets_tc.values()), # Weight by frequency
-                    k=1)[0] # Select k=1 target
+                # target = random.choices(
+                #     list(targets_tc.keys()), # Nodes themselves
+                #     weights=list(targets_tc.values()), # Weight by frequency
+                #     k=1)[0] # Select k=1 target
+                
+                target_list, probs = zip(*[(t,w) for t,w in targets_tc.items()])
+                probs = np.array(probs)
+                target = np.random.choice(a=target_list,size=1,replace=False,p=probs/probs.sum())[0]
                 tc_edge = True
             else:
                 target = _pick_pa_h_target(G, source, targets_pah, labels, homophily)
-
+                
             # [Perf.] No need to update target dicts if we are adding the last edge
             if idx_m < m-1:
                 # Remove target target candidates of source
@@ -166,16 +171,17 @@ def create(
     return G
 
 def _init_nodes(N, fm):
-    '''
-    Generates random nodes, and assigns them a binary label.
-    param N: number of nodes
-    param fm: fraction of minorities
-    '''
-    nodes = np.arange(N)
-    np.random.shuffle(nodes)
-    majority = int(round(N*(1-fm)))
-    labels = [LABELS[i >= majority] for i,n in enumerate(nodes)]
-    return nodes, labels, majority, N-majority
+  '''
+  Generates random nodes, and assigns them a binary label.
+  param N: number of nodes
+  param fm: fraction of minorities
+  '''
+  nodes = np.arange(N)
+  majority = int(round(N*(1-fm)))
+  minority = N-majority
+  minorities = np.random.choice(nodes,minority,replace=False)
+  labels = {n:int(n in minorities) for n in nodes}
+  return nodes, labels, majority, minority
   
 def _pick_pa_h_target(
         G: nx.Graph,
@@ -197,81 +203,8 @@ def _pick_pa_h_target(
         int or None: Target node that an edge should be added to
     """
     # Collect probabilities to connect to each node in target_list
-    target_prob = {}
-    prob_sum = 0.
-    for target in target_set:
-        # Effect of preferential attachment
-        target_prob[target] = G.degree(target) + EPSILON
-        target_prob[target] *= homophily[labels[source],labels[target]]
-        
-        # # Homophily effect
-        # if (source in minority_nodes) ^ (target in minority_nodes):
-        #     target_prob[target] *= 1 - homophily # Separate groups
-        # else:
-        #     target_prob[target] *= homophily # Same groups
-        
-        # Track sum on the fly
-        prob_sum += target_prob[target]
+    target_list = [t for t in target_set if t!=source and t not in nx.neighbors(G,source)]
+    probs = np.array([ homophily[labels[source],labels[target]] * (G.degree(target)+EPSILON) for target in target_list])
+    probs /= probs.sum()
+    return np.random.choice(a=target_list,size=1,replace=False,p=probs)[0]
 
-    # Find final target by roulette wheel selection
-    cum_sum = 0.
-    chance = random.random()
-    # Increase cumsum by node probabilities
-    # High probabilities take more space
-    # Respective nodes are thus more likely to be hit by the random number
-    # Cumsum exceeds the selected random number if a hit occurs
-    # A node with 3/5 of the total prob., will be hit in 3/5 of the cases
-    for target in target_set:
-        cum_sum += target_prob[target] / prob_sum
-        if cum_sum > chance:
-            return target
-    return None
-
-def _pick_targets(G,source,target_list,minority_mask,homophily,m):
-    # Probability to connect to a target (node_id: int -> prob: float)
-    target_prob_dict = {}
-    for target in target_list:
-        # Homophily if both nodes are from the same group, else 1 - homophily
-        target_prob = homophily if minority_mask[source] == minority_mask[target] else 1 - homophily
-        # Preferential attachment dynamic, i.e. likely to connect to high degree nodes
-        target_prob *= (G.degree(target)+0.00001)
-        target_prob_dict[target] = target_prob
-
-    # Compute sum for normalization
-    prob_sum = sum(target_prob_dict.values())
-    # Return empty set if there are no targets
-    if prob_sum == 0:
-        return set()
-
-    # Remember which targets were connected to
-    mask_target_used = [False for _ in range(len(target_list))]
-    # Counter for added edges
-    count_looking = 0
-
-    # Set of final targets
-    targets = set()
-
-    while len(targets) < m:
-        count_looking += 1
-        # Break if node fails to find target
-        if count_looking > len(G):
-            break
-
-        # Pick target using roulette wheel selection
-        rand_num = random.random()
-        cumsum = 0.0
-        # Increase cumsum by node probabilities
-        # High probabilities take more space
-        # Respective nodes are thus more likely to be hit by the random number
-        # If a hit occurs, cumsum exceeds the selected random number
-        # A node with 3/5 of the total prob., will be hit in 3/5 of the cases
-        for j, node in enumerate(target_list):
-            if mask_target_used[j]:
-                continue
-            cumsum += float(target_prob_dict[node]) / prob_sum
-            # In case of hit, add node as target and remove for next edges
-            if rand_num < cumsum:
-                targets.add(node)
-                mask_target_used[j] = True
-                break
-    return targets
