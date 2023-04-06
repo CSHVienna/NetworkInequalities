@@ -2,15 +2,9 @@
 # Dependencies
 ################################################################
 
-import networkx as nx
 import numpy as np
 
-from libs.generators import PAH as mPAH
-from libs.generators import DH as mDH
-from libs.generators import DPA as mDPA
-from libs.generators import DPAH as mDPAH
-from libs.generators import PATCH as mPATCH
-from libs.generators import MAH
+from tmp.libs.generators import PAH as mPAH, DPAH as mDPAH, DPA as mDPA, DH as mDH, PATCH as mPATCH
 
 ################################################################
 # Constants
@@ -99,8 +93,8 @@ def normalized_homophily_triadic_closure(h_MM, h_mm, tr=None):
   return h_MM, h_mm, tc
   
 def get_empirical_homophily(name, fm, e_MM, e_Mm, e_mM, e_mm, pl_M=None, pl_m=None, pli_M=None, pli_m=None, plo_M=None, plo_m=None, tr=None, verbose=True):
-  from libs.handlers import utils
-  
+  from tmp.libs.handlers import utils
+
   if name == 'PAH':
     if verbose:
       utils.warn("Double check.")

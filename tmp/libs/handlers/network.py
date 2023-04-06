@@ -6,8 +6,8 @@ import powerlaw
 from collections import Counter
 import numpy as np
 
-from libs.generators import model
-from libs.handlers import utils
+from tmp.libs.generators import model
+from tmp.libs.handlers import utils
 
 ################################################################
 # Constants

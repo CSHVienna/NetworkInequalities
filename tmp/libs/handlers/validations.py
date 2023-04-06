@@ -4,9 +4,8 @@
 import os
 import numpy as np
 
-from libs.handlers import utils
-from libs.handlers.empirical import NETWORK_NAMES
-from libs.generators.model import MODEL_NAMES
+from tmp.libs.handlers import utils
+from tmp.libs.generators.model import MODEL_NAMES
 
 NAN = ['',' ',None,np.nan]
 

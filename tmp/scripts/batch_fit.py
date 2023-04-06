@@ -1,14 +1,13 @@
 ############################################################################################################
 # Dependencies
 ############################################################################################################
-import os
 import argparse
 
-from libs.handlers import utils
-from libs.handlers import validations as val
-from libs.handlers import io
-from libs.handlers import empirical
-from libs.generators import model
+from tmp.libs.handlers import validations as val
+from tmp.libs.handlers import io, utils
+from tmp.libs.handlers import empirical
+from tmp.libs.generators import model
+
 
 ############################################################################################################
 # Functions
@@ -40,7 +39,7 @@ def fit(args):
 ############################################################################################################
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
-  parser.add_argument("-name",   help="Network generator name", type=str, choices=model.MODEL_NAMES, required=True)
+  parser.add_argument("-name", help="Network generator name", type=str, choices=model.MODEL_NAMES, required=True)
   parser.add_argument("-fn",     help="Path to .gpickle file of empirical network", type=str, required=True)
   parser.add_argument("-output", help="Folder where to store the generated network", type=str, default='../data/fit/', required=True)
   

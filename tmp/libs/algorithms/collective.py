@@ -8,7 +8,7 @@ from collections import Counter
 from sklearn import linear_model
 from sklearn.preprocessing import normalize
 
-from libs.handlers import utils
+from tmp.libs.handlers import utils
 
 ########################################################
 # Constants

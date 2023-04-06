@@ -8,8 +8,8 @@ import pandas as pd
 import networkx as nx
 from fast_pagerank import pagerank_power
 
-from libs.handlers import io
-from libs.handlers import network as nw
+from tmp.libs.handlers import io
+from tmp.libs.handlers import network as nw
 
 ############################################################################################################
 # Constants
@@ -115,8 +115,8 @@ def get_node_distributions_as_dataframe(G, network_id=None):
   return df
 
 def dataframe_sample(data, **kws):
-  from libs.generators import model
-  from libs.handlers import validations as val
+  from tmp.libs.generators import model
+  from tmp.libs.handlers import validations as val
   val.validate_not_none(**kws)
   modelba = model.MODEL_BA
   modelad = model.MODEL_ACTIVITY_DENSITY
@@ -137,7 +137,7 @@ def flatten_dataframe_by_metric(df):
   return data
 
 def load_distributions(root, generator_name=None):
-  from libs.generators import model
+  from tmp.libs.generators import model
   if generator_name is not None:
     df = get_empty_dataframe()
     fn_pattern = os.path.join(root, generator_name, f"{generator_name}_*.csv")
@@ -190,7 +190,7 @@ from joblib import Parallel, delayed
 from multiprocessing import cpu_count
 
 def _run_classification(G, Gf, sample_size, sample_method, local_name, relational_name, inference_name):
-  from libs.algorithms.collective import CollectiveClassitication
+  from tmp.libs.algorithms.collective import CollectiveClassitication
   
   df_results = get_empty_dataframe()
   # Empirical    
@@ -214,7 +214,7 @@ def run_classification_multiple_sample_sizes(G, Gf, sample_method, local_name, r
     return df_results
 
 def run_classification_by_sample_size(G, Gf, sample_size, sample_method, local_name, relational_name, inference_name):
-  from libs.algorithms.collective import CollectiveClassitication
+  from tmp.libs.algorithms.collective import CollectiveClassitication
   print('ORIGINAL:')
   cc = CollectiveClassitication(G)
   cc.train_and_test(sample_size=sample_size, sample_method=sample_method, local_name=local_name, relational_name=relational_name, inference_name=inference_name)

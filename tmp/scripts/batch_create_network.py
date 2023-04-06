@@ -4,10 +4,10 @@
 import os
 import argparse
 
-from libs.handlers import utils
-from libs.handlers import validations as val
-from libs.handlers import io
-from libs.generators import model
+from tmp.libs.handlers import validations as val
+from tmp.libs.handlers import io, utils
+from tmp.libs.generators import model
+
 
 ############################################################################################################
 # Functions
@@ -19,7 +19,7 @@ def create(args):
     G = model.create(args, seed=seed)
     df = utils.get_node_distributions_as_dataframe(G)
     
-    fn = os.path.join(args['output'],args['name'],model.get_filename(G))
+    fn = os.path.join(args['output'], args['name'], model.get_filename(G))
     val.validate_path(fn)
     io.to_gpickle(G, f"{fn}.gpickle")
     io.to_csv(df, f"{fn}.csv")
@@ -32,7 +32,7 @@ def create(args):
 ############################################################################################################
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
-  parser.add_argument("-name",   help="Network generator name", type=str, choices=model.MODEL_NAMES, required=True)
+  parser.add_argument("-name", help="Network generator name", type=str, choices=model.MODEL_NAMES, required=True)
   parser.add_argument("-N",      help="Number of nodes", type=int, required=True)
   parser.add_argument("-m",      help="Minimun degree of node (Barabasi-Albert)", type=int, required=False)
   parser.add_argument("-fm",     help="Fraction of minorities", type=float, required=True)

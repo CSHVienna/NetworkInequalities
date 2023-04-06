@@ -7,15 +7,12 @@ import pandas as pd
 import networkx as nx
 import seaborn as sns
 import matplotlib.pyplot as plt
-from mycolorpy import colorlist as mcp
 
-from libs.handlers import utils
-from libs.handlers import io
-from libs.handlers import rank
-from libs.handlers import empirical
-from libs.handlers import network as nw
-from libs.handlers import validations as val
-from libs.generators import model
+from tmp.libs.handlers import io, utils
+from tmp.libs.handlers import rank
+from tmp.libs.handlers import network as nw
+from tmp.libs.handlers import validations as val
+from tmp.libs.generators import model
 
 ################################################################
 # Constants
@@ -134,7 +131,7 @@ def _plot_inequity(data, **kws):
   else:
     # general plot
     fm = data.fm.unique()[0]
-    me, interpretation = rank.get_inequity_mean_error(y,fm)
+    me, interpretation = rank.get_inequity_mean_error(y, fm)
     ax.text(s=f"ME={me:.2f}\n({interpretation})", x=0.5, y=0.5, va='center', ha='center', transform=ax.transAxes)
     
 def plot_inequity_across_models(data, output=None, **kws):
@@ -240,7 +237,7 @@ def plot_network_across_models(data, output=None, **kws):
 def plot_empirical_vs_fit(empirical_path, fit_path, kind='distributions', metric='pagerank', output=None, verbose=False):
   import glob
   import os
-  from libs.generators.model import MODEL_NAMES
+  from tmp.libs.generators.model import MODEL_NAMES
   
   NNODES = 1000
   MODEL_NAMES = MODEL_NAMES
@@ -300,7 +297,7 @@ def plot_empirical_vs_fit(empirical_path, fit_path, kind='distributions', metric
        
       Ne = Ge.graph['N']
       Ge.graph['N'] = NNODES
-      fn = model.get_filename(Ge,'gpickle').replace(Ge.graph['name'],f"{Ge.graph['name']}_{generator_name}")
+      fn = model.get_filename(Ge, 'gpickle').replace(Ge.graph['name'], f"{Ge.graph['name']}_{generator_name}")
       fn_f = os.path.join(fit_path, Ge.graph['name'], fn)
       val.validate_path(fn_f)
       fn_fd = fn_f.replace('gpickle','csv')
