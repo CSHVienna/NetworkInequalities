@@ -1,4 +1,4 @@
-from netin import Graph
+from netin import PA
 
 
 def run():
@@ -6,7 +6,7 @@ def run():
     k = 2
     f_m = 0.1
     seed = 1234
-    g = Graph(n=n, k=k, f_m=f_m, seed=seed)
+    g = PA(n=n, k=k, f_m=f_m, seed=seed)
     g.generate()
     g.info()
 

@@ -1,4 +1,4 @@
-from netin import Graph
+from netin import PAH
 
 
 def run():
@@ -8,7 +8,7 @@ def run():
     h_MM = 0.1
     h_mm = 0.9
     seed = 1234
-    g = Graph(n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
+    g = PAH(n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
     g.generate()
     g.info()
 
