@@ -32,7 +32,7 @@ def get_minority_class_from_node_counts(G):
   return counts.most_common()[-1][0]
   
 def get_sorted_label_classes_Mm(G):
-  # c = CLASS if CLASS in G.graph else 'label'
+  # c = CLASS if CLASS in G.undigraph else 'label'
   counts = Counter([d[G.graph[CLASS]] for n,d in G.nodes(data=True)])
   print(counts)
   return [counts.most_common()[0][0],counts.most_common()[-1][0]] # M,m

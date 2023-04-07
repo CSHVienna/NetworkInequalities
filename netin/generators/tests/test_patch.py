@@ -1,6 +1,8 @@
 import pytest
+
 from netin import PATCH
 from netin.utils import constants as const
+
 
 class TestPATCH(object):
 
@@ -18,7 +20,7 @@ class TestPATCH(object):
         c2 = g.calculate_minimum_degree() == k
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect graph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect undigraph parameters."
 
     def test_patch_case_2(self):
         n = 200
@@ -34,7 +36,7 @@ class TestPATCH(object):
         c2 = g.calculate_minimum_degree() == k
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect graph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect undigraph parameters."
 
     def test_patch_case_3(self):
         n = 200
@@ -50,7 +52,7 @@ class TestPATCH(object):
         c2 = g.calculate_minimum_degree() == k
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect graph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect undigraph parameters."
 
     def test_patch_case_4(self):
         n = 200
@@ -66,7 +68,7 @@ class TestPATCH(object):
         c2 = g.calculate_minimum_degree() == k
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect graph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect undigraph parameters."
 
     def test_patch_case_5(self):
         n = 200

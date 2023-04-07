@@ -5,10 +5,10 @@ import numpy as np
 
 from netin.utils import constants as const
 from netin.utils import validator as val
-from .graph import Graph
+from .undigraph import UnDiGraph
 
 
-class PATC(Graph):
+class PATC(UnDiGraph):
 
     ############################################################
     # Constructor
@@ -32,11 +32,11 @@ class PATC(Graph):
             probability of a new edge to close a triad (minimum=0, maximum=1.)
 
         attr: dict
-            attributes to add to graph as key=value pairs
+            attributes to add to undigraph as key=value pairs
 
         Notes
         -----
-        The initialization is a graph with n nodes and no edges.
+        The initialization is a undigraph with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree), and homophily (h_**)
 
@@ -44,7 +44,7 @@ class PATC(Graph):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        Graph.__init__(self, n, k, f_m, seed, **attr)
+        UnDiGraph.__init__(self, n=n, k=k, f_m=f_m, seed=seed, **attr)
         self.tc = tc
 
     ############################################################
@@ -59,7 +59,7 @@ class PATC(Graph):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the graph.
+        Validates the parameters of the undigraph.
         """
         super()._validate_parameters()
         val.validate_float(self.tc, minimum=0., maximum=1., allow_none=True)
@@ -107,50 +107,24 @@ class PATC(Graph):
         """
         return defaultdict(int)
 
-    def get_target_by_triadic_closure(self, source: Union[None, int], targets: Union[None, Set[int]],
-                                      special_targets: Union[None, object, iter]) -> int:
-        # Pick a target node based on triadic closure
-        target_list, probs = zip(*[(t, w) for t, w in special_targets.items()])
-        probs = np.array(probs)
-        target = np.random.choice(
-            a=target_list,  # Nodes themselves
-            p=probs / probs.sum(),  # Weight by frequency
-            size=1,
-            replace=False,
-        )[0]  # Select k=1 target
-        return target
+    def get_target_probabilities_regular(self, source: Union[None, int], target_set: Union[None, Set[int]],
+                                         special_targets: Union[None, object, iter] = None) -> tuple[
+        np.array, set[int]]:
+        return UnDiGraph.get_target_probabilities(self, source, target_set, special_targets)
 
-    def get_target_regular(self, source: int, targets: Set[int], special_targets=None) -> int:
-        return self.get_target_by_preferential_attachment(source, targets, special_targets)
-
-    def get_target(self, source: Union[None, int], targets: Union[None, Set[int]],
-                   special_targets: Union[None, object, iter]) -> int:
-        """
-        Picks a random target node based on the homophily/preferential attachment dynamic.
-
-        Parameters
-        ----------
-        special_targets: dict
-            Dictionary of target candidates (of a given source node)
-
-        source: None
-
-        targets: None
-
-        Returns
-        -------
-            int: Target node that an edge should be added to
-        """
-        # TODO: Find a better way as the conversion takes O(N)
+    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
         tc_prob = np.random.random()
 
         if tc_prob < self.tc and len(special_targets) > 0:
-            target = self.get_target_by_triadic_closure(source, targets, special_targets)
-        else:
-            # Pick a target node based on preferential attachment
-            target = self.get_target_regular(source, targets, special_targets)
+            target_set, probs = zip(*[(t, w) for t, w in special_targets.items()])
+            probs = np.array(probs).astype(np.float32)
+            probs /= probs.sum()
+            target_set = set(target_set)
+            return probs, target_set
 
-        return target
+        # Pick a target node based on preferential attachment
+        return self.get_target_probabilities_regular(source, target_set, special_targets)
 
     def update_special_targets(self, idx_target: int, source: int, target: int, targets: Set[int],
                                special_targets: object):

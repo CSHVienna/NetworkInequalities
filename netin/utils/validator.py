@@ -1,18 +1,17 @@
-"""
+from typing import Union
 
-"""
 from netin.utils import constants as const
 
 
-def validate_int(value: int, minimum: int, maximum: int = None) -> bool:
+def validate_int(value: int, minimum: int, maximum: int = None):
     if minimum in const.EMPTY and maximum in const.EMPTY:
         raise ValueError('At least one of minimum or maximum must be specified')
     if type(value) is not int:
         raise TypeError('value must be a int')
-    return value >= minimum if maximum is None else minimum <= value <= maximum
+    if value < minimum or (maximum is not None and value > maximum):
+        raise ValueError(f'Value is out of range.')
 
-
-def validate_float(value: float, minimum: float, maximum: float, allow_none: bool=False) -> bool:
+def validate_float(value: float, minimum: float, maximum: Union[None, float] = None, allow_none: bool = False):
     if value in const.EMPTY and allow_none:
         return True
     if value in const.EMPTY and not allow_none:
@@ -21,8 +20,9 @@ def validate_float(value: float, minimum: float, maximum: float, allow_none: boo
         raise TypeError('value must be a float')
     if minimum in const.EMPTY and maximum in const.EMPTY:
         raise ValueError('At least one of minimum or maximum must be specified')
-    return value >= minimum if maximum is None else minimum <= value <= maximum
+    if value < minimum or (maximum is not None and value > maximum):
+        raise ValueError(f'Value is out of range.')
 
 
-def validate_homophily(h: float) -> bool:
+def calibrate_homophily(h: float) -> float:
     return const.EPSILON if h == 0 else 1 - const.EPSILON if h == 1 else h

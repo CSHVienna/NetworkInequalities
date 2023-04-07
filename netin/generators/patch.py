@@ -1,5 +1,6 @@
-from typing import Set
 from typing import Union, Set
+
+import numpy as np
 
 from netin.utils import constants as const
 from .pah import PAH
@@ -37,11 +38,11 @@ class PATCH(PATC, PAH):
             probability of a new edge to close a triad (minimum=0, maximum=1.)
 
         attr: dict
-            attributes to add to graph as key=value pairs
+            attributes to add to undigraph as key=value pairs
 
         Notes
         -----
-        The initialization is a graph with n nodes and no edges.
+        The initialization is a undigraph with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree), and homophily (h_**)
 
@@ -64,7 +65,7 @@ class PATCH(PATC, PAH):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the graph.
+        Validates the parameters of the undigraph.
         """
         PATC._validate_parameters(self)
         PAH._validate_parameters(self)
@@ -79,12 +80,10 @@ class PATCH(PATC, PAH):
     # Generation
     ############################################################
 
-    def get_target(self, source: Union[None, int], targets: Union[None, Set[int]],
-                   special_targets: Union[None, object, iter]) -> int:
-        return PATC.get_target(self, source, targets, special_targets)
-
-    def get_target_regular(self, source: int, targets: Set[int], special_targets=None) -> int:
-        return PAH.get_target(self, source, targets, special_targets)
+    def get_target_probabilities_regular(self, source: Union[None, int], target_set: Union[None, Set[int]],
+                                         special_targets: Union[None, object, iter] = None) -> tuple[
+        np.ndarray, set[int]]:
+        return PAH.get_target_probabilities(self, source, target_set, special_targets)
 
     ############################################################
     # Calculations

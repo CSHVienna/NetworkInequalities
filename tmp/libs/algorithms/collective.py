@@ -216,7 +216,7 @@ class CollectiveClassitication(object):
   inference = None
     
   def __init__(self, G):
-    self.G = G # networkx graph
+    self.G = G # networkx undigraph
     self.M = None # adjacency matrix
     self.A = None # node class labels vector
     self.nodes = None # list of node ids (matching ids in M and A)

@@ -39,10 +39,10 @@ def create(
         seed: float = None,
         _on_edge_added: Union[None, Callable[[nx.Graph, int, int], None]] = None,
         _on_tc_edge_added: Union[None, Callable[[nx.Graph, int, int], None]] = None) -> nx.Graph:
-    """Return random graph using BA preferential attachment model
+    """Return random undigraph using BA preferential attachment model
     accounting for specified homophily and triadic closure.
 
-    A graph of n nodes is grown by attaching new nodes each with m edges.
+    A undigraph of n nodes is grown by attaching new nodes each with m edges.
     Each edge is either drawn by the triadic closure or a homophily induced
     preferential attachment procedure. For the former a candidate is chosen
     uniformly at random from all triad-closing edges (of the new node).
@@ -78,12 +78,12 @@ def create(
 
     _on_edge_added: Union[None, Callable[[nx.Graph, int, int], None] (default=None)
         Can be used to inject a function that is called after an edge is added.
-        The function is expected to take the graph and two ints as input.
+        The function is expected to take the undigraph and two ints as input.
         The latter describe the source and the target node of the newly created edge.
 
     _on_tc_edge_added: Union[None, Callable[[nx.Graph, int, int], None] (default=None)
         Can be used to inject a function that is called after a triadic closure edge is added.
-        The function is expected to take the graph and two ints as input.
+        The function is expected to take the undigraph and two ints as input.
         The latter describe the source and the target node of the newly created edge.
 
     Returns
@@ -92,7 +92,7 @@ def create(
 
     Notes
     -----
-    The initialization is a graph with with m nodes and no edges.
+    The initialization is a undigraph with with m nodes and no edges.
 
     References
     ----------
@@ -156,7 +156,7 @@ def create(
                     if neighbor not in G[source]:
                         targets_tc[neighbor] += 1
 
-            # Finally add edge to graph
+            # Finally add edge to undigraph
             G.add_edge(source, target)
 
             # Call event handlers if present
@@ -192,9 +192,9 @@ def _pick_pa_h_target(
     """Picks a random target node based on the homophily/preferential attachment dynamic.
 
     Args:
-        G (nx.Graph): Current graph instance
+        G (nx.Graph): Current undigraph instance
         source (int): Newly added node
-        target_set (Set[int]): Potential target nodes in the graph
+        target_set (Set[int]): Potential target nodes in the undigraph
         minority_nodes (Set[bool]): Set of minority nodes
         homophily (float): Effect of homophily.
             If high, nodes with same group membership are more likely to connect to one another.

@@ -28,7 +28,7 @@ keywords = [
     "Graph Theory",
     "Mathematics",
     "network",
-    "graph",
+    "undigraph",
     "discrete mathematics",
     "math",
 ]
@@ -70,7 +70,7 @@ for d in [
     "algorithms",
     "basic",
     "drawing",
-    "graph",
+    "undigraph",
     "subclass",
 ]:
     dd = os.path.join(docdirbase, "examples", d)

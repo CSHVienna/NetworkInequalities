@@ -1,5 +1,6 @@
+import time
 from collections import Counter
-from typing import Callable, Union, Set
+from typing import Union, Set
 
 import networkx as nx
 import numpy as np
@@ -14,7 +15,7 @@ class Graph(nx.Graph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, seed: object = None, **attr: object):
+    def __init__(self, n: int, f_m: float, seed: object = None, **attr: object):
         """
 
         Parameters
@@ -22,18 +23,18 @@ class Graph(nx.Graph):
         n: int
             number of nodes (minimum=2)
 
-        k: int
-            minimum degree of nodes (minimum=1)
-
         f_m: float
             fraction of minorities (minimum=1/n, maximum=(n-1)/n)
 
+        seed: object
+            seed for random number generator
+
         attr: dict
-            attributes to add to graph as key=value pairs
+            attributes to add to undigraph as key=value pairs
 
         Notes
         -----
-        The initialization is a graph with n nodes and no edges.
+        The initialization is a undigraph with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree), homophily (h_**),
         and/or triadic closure (tc).
@@ -44,7 +45,6 @@ class Graph(nx.Graph):
         """
         super().__init__(**attr)
         self.n = n
-        self.k = k
         self.f_m = f_m
         self.seed = seed
         self.n_m = 0
@@ -55,6 +55,8 @@ class Graph(nx.Graph):
         self.class_labels = None
         self.node_list = None
         self.labels = None
+        self._gen_start_time = None
+        self._gen_duration = None
 
     ############################################################
     # Init
@@ -65,10 +67,9 @@ class Graph(nx.Graph):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the graph.
+        Validates the parameters of the undigraph.
         """
         val.validate_int(self.n, minimum=2)
-        val.validate_int(self.k, minimum=1)
         val.validate_float(self.f_m, minimum=1 / self.n, maximum=(self.n - 1) / self.n)
         self.seed = self.seed if self.seed is not None else np.random.randint(0, 2 ** 32)
 
@@ -83,14 +84,13 @@ class Graph(nx.Graph):
 
     def get_metadata_as_dict(self) -> dict:
         """
-        Returns metadata for a graph.
+        Returns metadata for a undigraph.
         """
         obj = {'name': self.get_model_name(),
                'class_attribute': self.get_class_attribute(),
                'class_values': self.get_class_values(),
                'class_labels': self.get_class_labels(),
                'n': self.n,
-               'k': self.k,
                'f_m': self.f_m,
                'seed': self.seed}
         return obj
@@ -129,7 +129,7 @@ class Graph(nx.Graph):
 
     def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
-        Initializes the random seed and the graph metadata.
+        Initializes the random seed and the undigraph metadata.
         """
         np.random.seed(self.seed)
         self._validate_parameters()
@@ -138,7 +138,7 @@ class Graph(nx.Graph):
 
     def _init_graph(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
-        Sets the name of the model, class information, and the graph metadata.
+        Sets the name of the model, class information, and the undigraph metadata.
 
         Parameters
         ----------
@@ -165,28 +165,6 @@ class Graph(nx.Graph):
         minorities = np.random.choice(self.node_list, self.n_m, replace=False)
         self.labels = {n: int(n in minorities) for n in self.node_list}
 
-    def get_target_by_preferential_attachment(self, source: int, targets: Set[int], special_targets=None) -> int:
-        """
-        Picks a random target node based on preferential attachment.
-
-        Parameters
-        ----------
-        source: int
-            Newly added node
-
-        targets: Set[int]
-            Potential target nodes in the graph based on preferential attachment
-
-        Returns
-        -------
-            int: Target node that an edge should be added to
-        """
-        # Collect probabilities to connect to each node in target_list
-        target_list = [t for t in targets if t != source and t not in nx.neighbors(self, source)]
-        probs = np.array([(self.degree(target) + const.EPSILON) for target in target_list])
-        probs /= probs.sum()
-        return np.random.choice(a=target_list, size=1, replace=False, p=probs)[0]
-
     def get_special_targets(self, source: int) -> object:
         pass
 
@@ -202,51 +180,10 @@ class Graph(nx.Graph):
         pass
 
     def generate(self):
-        """
-        A graph of n nodes is grown by attaching new nodes each with k edges.
-        Each edge is either drawn by preferential attachment, homophily, and/or triadic closure.
+        self._gen_start_time = time.time()
 
-        For triadic closure, a candidate is chosen uniformly at random from all triad-closing edges (of the new node).
-        Otherwise, or if there are no triads to close, edges are connected via preferential attachment and/or homophily.
-
-        Homophily varies ranges from 0 (heterophilic) to 1 (homophilic), where 0.5 is neutral.
-        Similarly, triadic closure varies from 0 (no triadic closure) to 1 (full triadic closure).
-
-        . PA: A graph with h_mm = h_MM in [0.5, None] and tc = 0 is a BA preferential attachment model.
-        . PAH: A graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc = 0 is a PA model with homophily.
-        . PATC: A graph with h_mm = h_MM in [0.5, None] and tc > 0 is a PA model with triadic closure.
-        . PATCH: A graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc > 0 is a PA model
-                 with homophily and triadic closure.
-
-        Parameters
-        ----------
-        _on_edge_added: Union[None, Callable[[nx.Graph, int, int], None] (default=None)
-            callback function to be called when an edge is added
-            The function is expected to take the graph and two ints (source and target node) as input.
-        """
-
-        # 1. Init graph and nodes (assign class labels)
-        self._initialize()
-        self.add_nodes_from(self.node_list)
-        nx.set_node_attributes(self, self.labels, self.class_attribute)
-
-        # 3. Iterate until n nodes are added (starts with k pre-existing, unconnected nodes)
-        for source in self.node_list[self.k:]:
-            targets = set(range(source))  # targets via preferential attachment
-            special_targets = self.get_special_targets(source)
-
-            for idx_target in range(self.k):
-                # Choose next target
-                target = self.get_target(source, targets, special_targets)
-
-                special_targets = self.update_special_targets(idx_target, source, target, targets, special_targets)
-
-                # Finally add edge to graph
-                self.add_edge(source, target)
-
-                # Call event handlers if present
-                self.on_edge_added(source, target)
-
+    def _terminate(self):
+        self._gen_duration = time.time() - self._gen_start_time
 
     ############################################################
     # Calculations
@@ -258,33 +195,46 @@ class Graph(nx.Graph):
     def info_computed(self):
         pass
 
-    def info(self,
-             _info_params_fnc: Union[None, Callable] = None,
-             _info_computed_fnc: Union[None, Callable] = None, **kwargs):
+    def info(self, **kwargs):
+        """
+
+        Returns
+        -------
+        object
+        """
         print("=== Params ===")
         print('n: {}'.format(self.n))
-        print('k: {}'.format(self.k))
         print('f_m: {}'.format(self.f_m))
         self.info_params()
         print('seed: {}'.format(self.seed))
 
-        print("=== Inferred ===")
+        print("=== Model ===")
         print('Model: {}'.format(self.get_model_name()))
         print('Class attribute: {}'.format(self.get_class_attribute()))
         print('Class values: {}'.format(self.get_class_values()))
         print('Class labels: {}'.format(self.get_class_labels()))
+        print('Generation time: {} (secs)'.format(self._gen_duration))
 
         print("=== Computed ===")
+        print(f'- is directed: {self.is_directed()}')
         print(f'- number of nodes: {self.number_of_nodes()}')
         print(f'- number of edges: {self.number_of_edges()}')
         print(f'- minimum degree: {self.calculate_minimum_degree()}')
         print(f'- fraction of minority: {self.calculate_fraction_of_minority()}')
         print(f'- edge-type counts: {self.count_edges_types()}')
         print(f"- density: {nx.density(self)}")
-        print(f"- diameter: {nx.diameter(self)}")
-        print(f"- average shortest path length: {nx.average_shortest_path_length(self)}")
+        try:
+            print(f"- diameter: {nx.diameter(self)}")
+        except Exception as ex:
+            print(f"- diameter: <{ex}>")
+        try:
+            print(f"- average shortest path length: {nx.average_shortest_path_length(self)}")
+        except Exception as ex:
+            print(f"- average shortest path length: <{ex}>")
         print(f"- average degree: {sum([d for n, d in self.degree]) / self.number_of_nodes()}")
         print(f"- degree assortativity: {nx.degree_assortativity_coefficient(self)}")
+        print(f"- attribute assortativity ({self.class_attribute}): "
+              f"{nx.attribute_assortativity_coefficient(self, self.class_attribute)}")
         print(f"- transitivity: {nx.transitivity(self)}")
         print(f"- average clustering: {nx.average_clustering(self)}")
         self.info_computed()
@@ -297,6 +247,6 @@ class Graph(nx.Graph):
             self.class_labels.index(const.MINORITY_LABEL)]]) / self.number_of_nodes()
 
     def count_edges_types(self):
-        return Counter([
-                           f"{self.class_labels[self.nodes[e[0]][self.class_attribute]]}{self.class_labels[self.nodes[e[1]][self.class_attribute]]}"
-                           for e in self.edges])
+        return Counter([f"{self.class_labels[self.nodes[e[0]][self.class_attribute]]}"
+                        f"{self.class_labels[self.nodes[e[1]][self.class_attribute]]}"
+                        for e in self.edges])
