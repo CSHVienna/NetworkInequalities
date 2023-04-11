@@ -8,7 +8,7 @@ class PA(UnDiGraph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, seed: object = None, **attr: object):
+    def __init__(self, n: int, k: int, f_m: float, seed: object = None):
         """
 
         Parameters
@@ -22,9 +22,6 @@ class PA(UnDiGraph):
         f_m: float
             fraction of minorities (minimum=1/n, maximum=(n-1)/n)
 
-        attr: dict
-            attributes to add to undigraph as key=value pairs
-
         Notes
         -----
         The initialization is a undigraph with n nodes and no edges.
@@ -35,7 +32,7 @@ class PA(UnDiGraph):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        super().__init__(n, k, f_m, seed, **attr)
+        super().__init__(n, k, f_m, seed)
 
     ############################################################
     # Init

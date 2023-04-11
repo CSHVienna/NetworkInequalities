@@ -14,7 +14,7 @@ class PATC(UnDiGraph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, tc: float, seed: object = None, **attr: object):
+    def __init__(self, n: int, k: int, f_m: float, tc: float, seed: object = None):
         """
 
         Parameters
@@ -44,7 +44,7 @@ class PATC(UnDiGraph):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        UnDiGraph.__init__(self, n=n, k=k, f_m=f_m, seed=seed, **attr)
+        UnDiGraph.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
         self.tc = tc
 
     ############################################################

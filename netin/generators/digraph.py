@@ -16,7 +16,7 @@ class DiGraph(nx.DiGraph, Graph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, f_m: float, d: float, plo_M: float, plo_m: float, seed: object = None, **attr: object):
+    def __init__(self, n: int, f_m: float, d: float, plo_M: float, plo_m: float, seed: object = None):
         """
 
         Parameters
@@ -42,9 +42,6 @@ class DiGraph(nx.DiGraph, Graph):
         seed: object
             seed for random number generator
 
-        attr: dict
-            attributes to add to undigraph as key=value pairs
-
         Notes
         -----
         The initialization is a digraph with n nodes and no edges.
@@ -56,8 +53,8 @@ class DiGraph(nx.DiGraph, Graph):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        nx.DiGraph.__init__(self, **attr)
-        Graph.__init__(self, n, f_m, seed, **attr)
+        nx.DiGraph.__init__(self)
+        Graph.__init__(self, n, f_m, seed)
         self.d = d
         self.plo_M = plo_M
         self.plo_m = plo_m
@@ -152,11 +149,8 @@ class DiGraph(nx.DiGraph, Graph):
         """
         # 1. Init digraph and nodes (assign class labels)
         Graph.generate(self)
-        self._initialize()
-        self.add_nodes_from(self.node_list)
-        nx.set_node_attributes(self, self.labels, self.class_attribute)
 
-        # 3. Iterate until reaching desired number of edges (edge density)
+        # 2. Iterate until reaching desired number of edges (edge density)
         tries = 0
         edge_list = defaultdict(list)
         while self.number_of_edges() < self.expected_number_of_edges:

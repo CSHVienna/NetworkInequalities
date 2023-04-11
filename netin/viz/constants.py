@@ -1,0 +1,8 @@
+MAX_PLOTS_PER_ROW = 5
+COLOR_MAJORITY = 'tab:blue'
+COLOR_MINORITY = 'tab:orange'
+COLOR_MIXED = 'tab:green'
+INACTIVE_COLOR = 'lightgrey'
+DPI = 300
+DEFAULT_CELL_SIZE = 3
+DEFAULT_FIGSIZE = (10, 5)

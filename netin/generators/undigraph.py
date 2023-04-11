@@ -15,7 +15,7 @@ class UnDiGraph(Graph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, seed: object = None, **attr: object):
+    def __init__(self, n: int, k: int, f_m: float, seed: object = None):
         """
 
         Parameters
@@ -32,12 +32,9 @@ class UnDiGraph(Graph):
         seed: object
             seed for random number generator
 
-        attr: dict
-            attributes to add to undigraph as key=value pairs
-
         Notes
         -----
-        The initialization is a undigraph with n nodes and no edges.
+        The initialization is an undirected graph with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree), homophily (h_**),
         and/or triadic closure (tc).
@@ -46,7 +43,7 @@ class UnDiGraph(Graph):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        Graph.__init__(self, n=n, f_m=f_m, seed=seed, **attr)
+        Graph.__init__(self, n=n, f_m=f_m, seed=seed)
         self.k = k
 
     ############################################################
@@ -116,20 +113,18 @@ class UnDiGraph(Graph):
         Homophily varies ranges from 0 (heterophilic) to 1 (homophilic), where 0.5 is neutral.
         Similarly, triadic closure varies from 0 (no triadic closure) to 1 (full triadic closure).
 
-        . PA: A undigraph with h_mm = h_MM in [0.5, None] and tc = 0 is a BA preferential attachment model.
-        . PAH: A undigraph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc = 0 is a PA model with homophily.
-        . PATC: A undigraph with h_mm = h_MM in [0.5, None] and tc > 0 is a PA model with triadic closure.
-        . PATCH: A undigraph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc > 0 is a PA model
+        . PA:    An undirected graph with h_mm = h_MM in [0.5, None] and tc = 0 is a BA preferential attachment model.
+        . PAH:   An undirected graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc = 0 is a PA model
+                 with homophily.
+        . PATC:  An undirected graph with h_mm = h_MM in [0.5, None] and tc > 0 is a PA model with triadic closure.
+        . PATCH: An undirected graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc > 0 is a PA model
                  with homophily and triadic closure.
 
         """
-        # 1. Init undigraph and nodes (assign class labels)
+        # 1. Init an undirected graph and nodes (assign class labels)
         super().generate()
-        self._initialize()
-        self.add_nodes_from(self.node_list)
-        nx.set_node_attributes(self, self.labels, self.class_attribute)
 
-        # 3. Iterate until n nodes are added (starts with k pre-existing, unconnected nodes)
+        # 2. Iterate until n nodes are added (starts with k pre-existing, unconnected nodes)
         for source in self.node_list[self.k:]:
             targets = set(range(source))  # targets via preferential attachment
             special_targets = self.get_special_targets(source)

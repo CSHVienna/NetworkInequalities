@@ -13,7 +13,7 @@ class PAH(UnDiGraph, Homophily):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, seed: object = None, **attr: object):
+    def __init__(self, n: int, k: int, f_m: float, h_MM: float, h_mm: float, seed: object = None):
         """
 
         Parameters
@@ -33,9 +33,6 @@ class PAH(UnDiGraph, Homophily):
         h_mm: float
             homophily (similarity) between minority nodes (minimum=0, maximum=1.)
 
-        attr: dict
-            attributes to add to undigraph as key=value pairs
-
         Notes
         -----
         The initialization is a undigraph with n nodes and no edges.
@@ -46,8 +43,8 @@ class PAH(UnDiGraph, Homophily):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        UnDiGraph.__init__(self, n=n, k=k, f_m=f_m, seed=seed, **attr)
-        Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, **attr)
+        UnDiGraph.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
+        Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm)
 
     ############################################################
     # Init

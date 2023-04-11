@@ -8,7 +8,7 @@ class DPA(DiGraph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, d: float, f_m: float, plo_M: float, plo_m: float, seed: object = None, **attr: object):
+    def __init__(self, n: int, d: float, f_m: float, plo_M: float, plo_m: float, seed: object = None):
         """
 
         Parameters
@@ -34,9 +34,6 @@ class DPA(DiGraph):
         seed: object
             seed for random number generator
 
-        attr: dict
-            attributes to add to digraph as key=value pairs
-
         Notes
         -----
         The initialization is a digraph with n nodes and no edges.
@@ -47,7 +44,7 @@ class DPA(DiGraph):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        super().__init__(n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed, **attr)
+        super().__init__(n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed)
 
     ############################################################
     # Init

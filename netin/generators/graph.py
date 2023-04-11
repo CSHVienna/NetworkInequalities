@@ -4,6 +4,8 @@ from typing import Union, Set
 
 import networkx as nx
 import numpy as np
+import pandas as pd
+from pqdm.threads import pqdm
 
 from netin.utils import constants as const
 from netin.utils import validator as val
@@ -15,8 +17,9 @@ class Graph(nx.Graph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, f_m: float, seed: object = None, **attr: object):
+    def __init__(self, n: int, f_m: float, seed: object = None):
         """
+        Bi-populated network
 
         Parameters
         ----------
@@ -30,20 +33,22 @@ class Graph(nx.Graph):
             seed for random number generator
 
         attr: dict
-            attributes to add to undigraph as key=value pairs
+            attributes to add to graph as key=value pairs
 
         Notes
         -----
-        The initialization is a undigraph with n nodes and no edges.
-        Then, everytime a node is selected as source, it gets connected to k target nodes.
-        Target nodes are selected via preferential attachment (in-degree), homophily (h_**),
-        and/or triadic closure (tc).
+        The initialization is a graph with n nodes: f_m are minorities and (1-f_m) are majority.
+        Source nodes are selected one-by-one (if undirected) and based on their activity (if directed).
+        Target nodes are selected via preferential attachment (in-degree) [1].
+        Other target mechanisms:
+        - homophily (h_**),
+        - triadic closure (tc).
 
         References
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        super().__init__(**attr)
+        super().__init__()
         self.n = n
         self.f_m = f_m
         self.seed = seed
@@ -67,7 +72,7 @@ class Graph(nx.Graph):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the undigraph.
+        Validates the parameters of the graph.
         """
         val.validate_int(self.n, minimum=2)
         val.validate_float(self.f_m, minimum=1 / self.n, maximum=(self.n - 1) / self.n)
@@ -84,7 +89,7 @@ class Graph(nx.Graph):
 
     def get_metadata_as_dict(self) -> dict:
         """
-        Returns metadata for a undigraph.
+        Returns metadata for a graph.
         """
         obj = {'name': self.get_model_name(),
                'class_attribute': self.get_class_attribute(),
@@ -123,13 +128,20 @@ class Graph(nx.Graph):
     def get_class_labels(self):
         return self.class_labels
 
+    def get_class_value(self, node):
+        return self.nodes[node][self.class_attribute]
+
+    def get_class_label(self, node):
+        idx = self.class_values.index(self.nodes[node][self.class_attribute])
+        return self.class_labels[idx]
+
     ############################################################
     # Generation
     ############################################################
 
     def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
-        Initializes the random seed and the undigraph metadata.
+        Initializes the random seed and the graph metadata.
         """
         np.random.seed(self.seed)
         self._validate_parameters()
@@ -138,7 +150,7 @@ class Graph(nx.Graph):
 
     def _init_graph(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
-        Sets the name of the model, class information, and the undigraph metadata.
+        Sets the name of the model, class information, and the graph metadata.
 
         Parameters
         ----------
@@ -181,6 +193,9 @@ class Graph(nx.Graph):
 
     def generate(self):
         self._gen_start_time = time.time()
+        self._initialize()
+        self.add_nodes_from(self.node_list)
+        nx.set_node_attributes(self, self.labels, self.class_attribute)
 
     def _terminate(self):
         self._gen_duration = time.time() - self._gen_start_time
@@ -250,3 +265,44 @@ class Graph(nx.Graph):
         return Counter([f"{self.class_labels[self.nodes[e[0]][self.class_attribute]]}"
                         f"{self.class_labels[self.nodes[e[1]][self.class_attribute]]}"
                         for e in self.edges])
+
+    ############################################################
+    # Metadata
+    ############################################################
+
+    def compute_node_stats(self, metric, **kwargs):
+        values = None
+
+        # list of tuples (node, value)
+        if metric == 'degree':
+            values = self.degree(self.node_list, **kwargs)
+        if metric == 'in_degree':
+            values = self.in_degree(self.node_list, **kwargs) if self.is_directed() else None
+        if metric == 'out_degree':
+            values = self.out_degree(self.node_list, **kwargs) if self.is_directed() else None
+        if metric == 'eigenvector':
+            values = nx.eigenvector_centrality(self, **kwargs)
+
+        # dict of node -> value
+        if metric == 'clustering':
+            values = nx.clustering(self, self.node_list, **kwargs)
+        if metric == 'betweenness':
+            values = nx.betweenness_centrality(self, **kwargs)
+        if metric == 'closeness':
+            values = nx.closeness_centrality(self, **kwargs)
+        if metric == 'pagerank':
+            values = nx.pagerank(self, **kwargs)
+
+        return [values[n] for n in self.node_list]
+
+    def get_node_metadata_as_dataframe(self, n_jobs=1):
+        cols = ['node', 'class_label', 'degree', 'in_degree', 'out_degree', 'clustering', 'betweenness', 'closeness',
+                'eigenvector', 'pagerank']
+
+        column_values = pqdm(cols[2:], self.compute_node_stats, n_jobs=n_jobs)
+        obj = {'node': self.node_list,
+               'class_label': [self.get_class_label(n) for n in self.node_list]}
+        obj.update({col: values for col, values in zip(cols[2:], column_values)})
+        df = pd.DataFrame(obj, columns=cols, index=self.node_list)
+        df.name = self.get_model_name()
+        return df

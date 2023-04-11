@@ -7,11 +7,10 @@ in social networks.
 __version__ = '1.0.0'
 
 from netin import algorithms
-from netin.algorithms import *
-
 from netin import generators
-from netin.generators import *
-
 from netin import utils
+from netin import viz
+from netin.algorithms import *
+from netin.generators import *
 from netin.utils import *
-
+from netin.viz import *

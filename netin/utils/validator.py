@@ -11,6 +11,7 @@ def validate_int(value: int, minimum: int, maximum: int = None):
     if value < minimum or (maximum is not None and value > maximum):
         raise ValueError(f'Value is out of range.')
 
+
 def validate_float(value: float, minimum: float, maximum: Union[None, float] = None, allow_none: bool = False):
     if value in const.EMPTY and allow_none:
         return True

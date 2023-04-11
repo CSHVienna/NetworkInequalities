@@ -13,8 +13,7 @@ class PATCH(PATC, PAH):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, seed: object = None,
-                 **attr: object):
+    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, seed: object = None):
         """
 
         Parameters
@@ -37,9 +36,6 @@ class PATCH(PATC, PAH):
         tc: float
             probability of a new edge to close a triad (minimum=0, maximum=1.)
 
-        attr: dict
-            attributes to add to undigraph as key=value pairs
-
         Notes
         -----
         The initialization is a undigraph with n nodes and no edges.
@@ -50,8 +46,8 @@ class PATCH(PATC, PAH):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        PATC.__init__(self, n, k, f_m, tc, seed, **attr)
-        PAH.__init__(self, n, k, f_m, h_MM, h_mm, seed, **attr)
+        PATC.__init__(self, n, k, f_m, tc, seed)
+        PAH.__init__(self, n, k, f_m, h_MM, h_mm, seed)
 
     ############################################################
     # Init

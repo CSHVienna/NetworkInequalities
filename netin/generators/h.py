@@ -15,7 +15,7 @@ class Homophily(Graph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, f_m: float, h_MM: float, h_mm: float, seed: object = None, **attr: object):
+    def __init__(self, n: int, f_m: float, h_MM: float, h_mm: float, seed: object = None):
         """
 
         Parameters
@@ -45,7 +45,7 @@ class Homophily(Graph):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        Graph.__init__(self, n=n, f_m=f_m, seed=seed, **attr)
+        Graph.__init__(self, n=n, f_m=f_m, seed=seed)
         self.h_MM = h_MM
         self.h_mm = h_mm
         self.mixing_matrix = None

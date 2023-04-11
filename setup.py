@@ -1,7 +1,8 @@
-from setuptools import setup
+import os
 import sys
 from glob import glob
-import os
+
+from setuptools import setup
 
 if sys.version_info[:2] < (3, 8):
     error = (f"NetIn 1.0.0 requires Python 3.9 or later ({sys.version_info[:2]} detected). \n")
@@ -86,12 +87,12 @@ dd = os.path.join(docdirbase, "examples", "javascript/force")
 pp = os.path.join("examples", "javascript/force")
 data.append((dd, glob(os.path.join(pp, "*"))))
 
-
 # add the tests subpackage(s)
 package_data = {
     "netin": ["tests/*.py"],
     "netin.generators": ["tests/*.py"],
 }
+
 
 def parse_requirements_file(filename):
     with open(filename) as fid:
@@ -102,12 +103,11 @@ def parse_requirements_file(filename):
 install_requires = []
 extras_require = {
     dep: parse_requirements_file("requirements/" + dep + ".txt")
-    for dep in ["default"] #, "developer", "doc", "extra", "test"]
+    for dep in ["default"]  # , "developer", "doc", "extra", "test"]
 }
 
 with open("README.rst") as fh:
     long_description = fh.read()
-
 
 if __name__ == "__main__":
     setup(
