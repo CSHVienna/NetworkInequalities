@@ -3,11 +3,11 @@ from typing import Union, Set
 import numpy as np
 
 from netin.utils import constants as const
-from .digraph import DiGraph
+from .dpa import DPA
 from .h import Homophily
 
 
-class DPAH(DiGraph, Homophily):
+class DPAH(DPA, Homophily):
 
     ############################################################
     # Constructor
@@ -56,7 +56,7 @@ class DPAH(DiGraph, Homophily):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        DiGraph.__init__(self, n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed)
+        DPA.__init__(self, n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed)
         Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
 
     ############################################################
@@ -74,12 +74,20 @@ class DPAH(DiGraph, Homophily):
     ############################################################
 
     def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
-        DiGraph._initialize(self, class_attribute, class_values, class_labels)
+        DPA._initialize(self, class_attribute, class_values, class_labels)
         Homophily._initialize(self, class_attribute, class_values, class_labels)
 
     def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
                                  special_targets: Union[None, object, iter] = None) -> np.array:
         probs = np.array([self.get_homophily_between_source_and_target(source, target) *
-                          (self.in_degree(target) + const.EPSILON) for target in target_set])
+                          (self.get_in_degree(target) + const.EPSILON) for target in target_set])
         probs /= probs.sum()
         return probs
+
+    ############################################################
+    # Calculations
+    ############################################################
+    
+    def info_params(self):
+        DPA.info_params(self)
+        Homophily.info_params(self)

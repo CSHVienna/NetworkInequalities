@@ -1,7 +1,6 @@
 from collections import Counter
 from typing import Union, Set
 
-import networkx as nx
 import numpy as np
 
 from netin.utils import constants as const
@@ -117,7 +116,7 @@ class Homophily(Graph):
         return self.h_mm
 
     def get_homophily_between_source_and_target(self, source, target):
-        return self.mixing_matrix[self.labels[source], self.labels[target]]
+        return self.mixing_matrix[self.node_labels[source], self.node_labels[target]]
 
     ############################################################
     # Generation
@@ -125,8 +124,8 @@ class Homophily(Graph):
 
     def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         Graph._initialize(self, class_attribute, class_values, class_labels)
-        self.h_MM = val.calibrate_homophily(self.h_MM)
-        self.h_mm = val.calibrate_homophily(self.h_mm)
+        self.h_MM = val.calibrate_null_probabilities(self.h_MM)
+        self.h_mm = val.calibrate_null_probabilities(self.h_mm)
         self.mixing_matrix = np.array([[self.h_MM, 1 - self.h_MM], [1 - self.h_mm, self.h_mm]])
 
     def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int], np.array],
@@ -153,7 +152,7 @@ class Homophily(Graph):
             int: Target node that an edge should be added to
         """
         # Collect probabilities to connect to each node in target_list
-        target_set = set([t for t in targets if t != source and t not in nx.neighbors(self, source)])
+        target_set = self.get_potential_nodes_to_connect(source, targets)
         probs = self.get_target_probabilities(source, target_set, special_targets)
         return np.random.choice(a=target_set, size=1, replace=False, p=probs)[0]
 
@@ -164,7 +163,7 @@ class Homophily(Graph):
     def info_params(self):
         print('h_MM: {}'.format(self.h_MM))
         print('h_mm: {}'.format(self.h_mm))
-        print('mixing matrix: {}'.format(self.mixing_matrix))
+        print('mixing matrix: \n{}'.format(self.mixing_matrix))
 
     def info_computed(self):
         inferred_h_MM, inferred_h_mm = self.infer_homophily_values()

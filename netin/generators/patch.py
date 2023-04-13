@@ -4,10 +4,10 @@ import numpy as np
 
 from netin.utils import constants as const
 from .pah import PAH
-from .patc import PATC
+from .tc import TC
 
 
-class PATCH(PATC, PAH):
+class PATCH(PAH, TC):
 
     ############################################################
     # Constructor
@@ -46,8 +46,8 @@ class PATCH(PATC, PAH):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        PATC.__init__(self, n, k, f_m, tc, seed)
-        PAH.__init__(self, n, k, f_m, h_MM, h_mm, seed)
+        PAH.__init__(self, n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
+        TC.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
 
     ############################################################
     # Init
@@ -63,12 +63,12 @@ class PATCH(PATC, PAH):
         """
         Validates the parameters of the undigraph.
         """
-        PATC._validate_parameters(self)
         PAH._validate_parameters(self)
+        TC._validate_parameters(self)
 
     def get_metadata_as_dict(self) -> dict:
-        obj1 = PATC.get_metadata_as_dict(self)
-        obj2 = PAH.get_metadata_as_dict(self)
+        obj1 = PAH.get_metadata_as_dict(self)
+        obj2 = TC.get_metadata_as_dict(self)
         obj1.update(obj2)
         return obj1
 
@@ -76,19 +76,33 @@ class PATCH(PATC, PAH):
     # Generation
     ############################################################
 
+    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+        return TC.get_target_probabilities(self, source, target_set, special_targets)
+
     def get_target_probabilities_regular(self, source: Union[None, int], target_set: Union[None, Set[int]],
                                          special_targets: Union[None, object, iter] = None) -> tuple[
         np.ndarray, set[int]]:
         return PAH.get_target_probabilities(self, source, target_set, special_targets)
+
+    def get_special_targets(self, source: int) -> object:
+        """
+        Return an empty dictionary (source node ids)
+        Parameters
+        ----------
+        source: int
+            Newly added node
+        """
+        return TC.get_special_targets(self, source)
 
     ############################################################
     # Calculations
     ############################################################
 
     def info_params(self):
-        PATC.info_params(self)
         PAH.info_params(self)
+        TC.info_params(self)
 
     def info_computed(self):
-        PATC.info_computed(self)
         PAH.info_computed(self)
+        TC.info_computed(self)

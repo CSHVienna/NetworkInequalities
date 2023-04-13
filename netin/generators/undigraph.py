@@ -4,7 +4,6 @@ from typing import Union
 import networkx as nx
 import numpy as np
 
-from netin.utils import constants as const
 from netin.utils import validator as val
 from .graph import Graph
 
@@ -71,12 +70,6 @@ class UnDiGraph(Graph):
     # Generation
     ############################################################
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
-        probs = np.array([(self.degree(target) + const.EPSILON) for target in target_set])
-        probs /= probs.sum()
-        return probs, target_set
-
     def get_target(self, source: Union[None, int], targets: Union[None, Set[int]],
                    special_targets: Union[None, object, iter]) -> int:
         """
@@ -142,6 +135,17 @@ class UnDiGraph(Graph):
                 self.on_edge_added(source, target)
 
         self._terminate()
+
+    ############################################################
+    # Getters and Setters
+    ############################################################
+
+    def get_expected_number_of_edges(self) -> int:
+        return (self.get_expected_number_of_nodes() * self.get_expected_minimum_degree()) - \
+            (self.get_expected_minimum_degree() ** self.get_expected_minimum_degree())
+
+    def get_expected_minimum_degree(self) -> int:
+        return self.k
 
     ############################################################
     # Calculations

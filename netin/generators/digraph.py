@@ -54,14 +54,14 @@ class DiGraph(nx.DiGraph, Graph):
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
         nx.DiGraph.__init__(self)
-        Graph.__init__(self, n, f_m, seed)
+        Graph.__init__(self, n=n, f_m=f_m, seed=seed)
         self.d = d
         self.plo_M = plo_M
         self.plo_m = plo_m
-        self.e = None
         self.in_degrees = None
         self.out_degrees = None
         self.activity = None
+        self.expected_number_of_edges = None
 
     ############################################################
     # Init
@@ -116,9 +116,7 @@ class DiGraph(nx.DiGraph, Graph):
 
     def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int], np.array],
                                  special_targets: Union[None, object, iter] = None) -> np.array:
-        probs = np.array([self.in_degrees[n] + const.EPSILON for n in target_set])
-        probs /= probs.sum()
-        return probs
+        pass
 
     def get_target(self, source: int, edge_list: dict, **kwargs) -> Union[None, int]:
         one_percent = self.n * 1 / 100.
@@ -193,3 +191,22 @@ class DiGraph(nx.DiGraph, Graph):
                                discrete=True)
             print(f"- {self.class_labels[c]}: alpha={fit.power_law.alpha}, sigma={fit.power_law.sigma}, "
                   f"min={fit.power_law.xmin}, max={fit.power_law.xmax}")
+
+    ############################################################
+    # Getters and setters
+    ############################################################
+
+    def get_expected_number_of_edges(self) -> int:
+        return self.expected_number_of_edges
+
+    def get_expected_density(self) -> float:
+        return self.d
+
+    def get_expected_powerlaw_out_degree_majority(self):
+        return self.plo_M
+
+    def get_expected_powerlaw_out_degree_minority(self):
+        return self.plo_m
+
+    def get_activity_distribution(self):
+        return self.activity

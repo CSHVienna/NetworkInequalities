@@ -25,5 +25,5 @@ def validate_float(value: float, minimum: float, maximum: Union[None, float] = N
         raise ValueError(f'Value is out of range.')
 
 
-def calibrate_homophily(h: float) -> float:
-    return const.EPSILON if h == 0 else 1 - const.EPSILON if h == 1 else h
+def calibrate_null_probabilities(p: float) -> float:
+    return const.EPSILON if p == 0 else 1 - const.EPSILON if p == 1 else p

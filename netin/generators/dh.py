@@ -14,7 +14,7 @@ class DH(DiGraph, Homophily):
     ############################################################
 
     def __init__(self, n: int, d: float, f_m: float, plo_M: float, plo_m: float, h_MM: float, h_mm: float,
-                 seed: object = None, **attr: object):
+                 seed: object = None):
         """
 
         Parameters
@@ -46,9 +46,6 @@ class DH(DiGraph, Homophily):
         seed: object
             seed for random number generator
 
-        attr: dict
-            attributes to add to digraph as key=value pairs
-
         Notes
         -----
         The initialization is a digraph with n nodes and no edges.
@@ -59,8 +56,8 @@ class DH(DiGraph, Homophily):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        DiGraph.__init__(self, n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed, **attr)
-        Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed, **attr)
+        DiGraph.__init__(self, n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed)
+        Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
 
     ############################################################
     # Init
@@ -84,3 +81,11 @@ class DH(DiGraph, Homophily):
                                  special_targets: Union[None, object, iter] = None) -> np.array:
         probs, ts = Homophily.get_target_probabilities(self, source, target_set, special_targets)
         return probs
+
+    ############################################################
+    # Calculations
+    ############################################################
+
+    def info_params(self):
+        DiGraph.info_params(self)
+        Homophily.info_params(self)

@@ -4,10 +4,10 @@ import numpy as np
 
 from netin.utils import constants as const
 from .h import Homophily
-from .undigraph import UnDiGraph
+from .pa import PA
 
 
-class PAH(UnDiGraph, Homophily):
+class PAH(PA, Homophily):
 
     ############################################################
     # Constructor
@@ -43,8 +43,8 @@ class PAH(UnDiGraph, Homophily):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        UnDiGraph.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
-        Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm)
+        PA.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
+        Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
 
     ############################################################
     # Init
@@ -60,11 +60,11 @@ class PAH(UnDiGraph, Homophily):
         """
         Validates the parameters of the undigraph.
         """
-        UnDiGraph._validate_parameters(self)
+        PA._validate_parameters(self)
         Homophily._validate_parameters(self)
 
     def get_metadata_as_dict(self) -> dict:
-        obj = UnDiGraph.get_metadata_as_dict(self)
+        obj = PA.get_metadata_as_dict(self)
         obj.update(Homophily.get_metadata_as_dict(self))
         return obj
 
@@ -73,7 +73,7 @@ class PAH(UnDiGraph, Homophily):
     ############################################################
 
     def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
-        UnDiGraph._initialize(self, class_attribute, class_values, class_labels)
+        PA._initialize(self, class_attribute, class_values, class_labels)
         Homophily._initialize(self, class_attribute, class_values, class_labels)
 
     def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
@@ -86,6 +86,10 @@ class PAH(UnDiGraph, Homophily):
     ############################################################
     # Calculations
     ############################################################
+
+    def info_params(self):
+        PA.info_params(self)
+        Homophily.info_params(self)
 
     def infer_homophily_values(self) -> (float, float):
         # @TODO: To be implemented

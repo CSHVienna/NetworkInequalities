@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import pandas as pd
-import seaborn as sns
 
 from netin import Graph
+from netin import stats
 from netin.utils import constants as const
 from netin.viz.constants import *
 
@@ -20,6 +20,17 @@ def _get_edge_color(s: int, t: int, g: Graph):
         else:
             return COLOR_MAJORITY
     return COLOR_MIXED
+
+
+def _get_class_label_color(class_label: str) -> str:
+    """
+
+    Returns
+    -------
+    object
+    
+    """
+    return COLOR_MINORITY if class_label == const.MINORITY_LABEL else COLOR_MAJORITY
 
 
 def _save_plot(fig, fn=None, **kwargs):
@@ -46,7 +57,7 @@ def _add_class_legend(fig, **kwargs):
     fig.legend(handles=[maj_patch, min_patch], bbox_to_anchor=bbox, loc=loc)
 
 
-def plot_graphs(iter_graph: Set[Graph], fn=None, **kwargs):
+def plot_graphs(iter_graph: Set[Graph], share_pos=False, fn=None, **kwargs):
     nc, nr = _get_grid_info(len(iter_graph))
     cell_size = kwargs.get('cell_size', DEFAULT_CELL_SIZE)
 
@@ -59,9 +70,11 @@ def plot_graphs(iter_graph: Set[Graph], fn=None, **kwargs):
     arrow_style = kwargs.get('arrow_style', '-|>')
     arrow_size = kwargs.get('arrow_size', 2)
 
+    pos = None
+    same_n = len(set([g.number_of_nodes() for g in iter_graph])) == 1
     for c, g in enumerate(iter_graph):
         ax = axes[c]
-        pos = nx.spring_layout(g)
+        pos = nx.spring_layout(g) if pos is None or not share_pos or not same_n else pos
 
         # nodes
         maj = g.graph['class_values'][g.graph['class_labels'].index("M")]
@@ -86,17 +99,57 @@ def plot_graphs(iter_graph: Set[Graph], fn=None, **kwargs):
     _save_plot(fig, fn, **kwargs)
 
 
-def plot_distributions(iter_data: Set[pd.DataFrame], fn=None, **kwargs):
+def plot_pdf_distribution(iter_data: Set[pd.DataFrame], x: str, fn=None, **kwargs):
+    kwargs.update({'ylabel': 'PDF'})
+    _plot(iter_data, x, stats.get_pdf, fn, **kwargs)
+
+
+def plot_cdf_distribution(iter_data: Set[pd.DataFrame], x: str, fn=None, **kwargs):
+    kwargs.update({'ylabel': 'CDF'})
+    _plot(iter_data, x, stats.get_cdf, fn, **kwargs)
+
+
+def plot_ccdf_distribution(iter_data: Set[pd.DataFrame], x: str, fn=None, **kwargs):
+    kwargs.update({'ylabel': 'CCDF'})
+    _plot(iter_data, x, stats.get_ccdf, fn, **kwargs)
+
+
+def _plot(iter_data: Set[pd.DataFrame], x: str, get_x_y_from_df_fnc: callable, fn=None, **kwargs):
     nc, nr = _get_grid_info(len(iter_data))
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
+
+    hue = kwargs.pop('hue', None)
     sharex = kwargs.pop('sharex', False)
     sharey = kwargs.pop('sharey', False)
+    log_scale = kwargs.pop('log_scale', (False, False))
+    common_norm = kwargs.pop('common_norm', False)
+    ylabel = kwargs.pop('ylabel', None)
 
     fig, axes = plt.subplots(nr, nc, figsize=(nc * cell_size, nr * cell_size), sharex=sharex, sharey=sharey)
 
-    for c, df in enumerate(iter_data):
-        ax = axes[c]
-        sns.kdeplot(data=df, ax=ax, **kwargs)
+    for cell, df in enumerate(iter_data):
+        row = cell // nc
+        col = cell % nc
+
+        ax = axes if nr == nc == 1 else axes[cell] if nr == 1 else axes[row, col]
+
+        class_label: str
+        for class_label, data in df.groupby(hue):
+            total = df[x].sum() if common_norm else data[x].sum()
+            xs, ys = get_x_y_from_df_fnc(data, x, total)
+            ax.plot(xs, ys, label=class_label, color=_get_class_label_color(class_label), **kwargs)
+
+        if log_scale[0]:
+            ax.set_xscale('log')
+        if log_scale[1]:
+            ax.set_yscale('log')
+
+        if (sharey and col == 0) or (not sharey):
+            ax.set_ylabel(ylabel)
+
+        ax.set_xlabel(x)
         ax.set_title(df.name)
 
+    # legend
+    _add_class_legend(fig, **kwargs)
     _save_plot(fig, fn, **kwargs)

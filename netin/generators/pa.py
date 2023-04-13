@@ -1,3 +1,8 @@
+from typing import Set
+from typing import Union
+
+import numpy as np
+
 from netin.utils import constants as const
 from .undigraph import UnDiGraph
 
@@ -43,3 +48,13 @@ class PA(UnDiGraph):
         Infers the name of the model.
         """
         return self.set_model_name(const.PA_MODEL_NAME)
+
+    ############################################################
+    # Generation
+    ############################################################
+
+    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+        probs = np.array([(self.degree(target) + const.EPSILON) for target in target_set])
+        probs /= probs.sum()
+        return probs, target_set

@@ -7,26 +7,42 @@ The package is currently under development and will be updated regularly.
 .. image:: https://github.com/CSHVienna/NetworkInequalities/netin/workflows/test/badge.svg?branch=main
   :target: https://github.com/CSHVienna/NetworkInequalities/netin/actions?query=workflow%3A%22test%22
 
+.. image:: https://img.shields.io/badge/python-3.9-blue.svg
+  :target: https://www.python.org/downloads/release/python-3916/
+
+.. image:: https://img.shields.io/badge/NetworkX-3.1-blue.svg
+    :target: https://networkx.org/
+
+.. image:: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
+    : target https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+
 - **Website (including documentation):** https://www.networkinequality.com
 - **Source:** https://github.com/CSHVienna/NetworkInequalities
 - **Bug reports:** https://github.com/CSHVienna/NetworkInequalities/issues
 - **GitHub Discussions:** https://github.com/CSHVienna/NetworkInequalities/discussions
 
-Simple example
+Undirected graph example
 --------------
 
-Find the shortest path between two nodes in an undirected graph:
+Create an undirected network with preferential attachment and homophily.
 
 .. code:: pycon
 
-    >>> import networkx as nx
-    >>> G = nx.Graph()
-    >>> G.add_edge("A", "B", weight=4)
-    >>> G.add_edge("B", "D", weight=2)
-    >>> G.add_edge("A", "C", weight=3)
-    >>> G.add_edge("C", "D", weight=4)
-    >>> nx.shortest_path(G, "A", "D", weight="weight")
-    ['A', 'B', 'D']
+    >>> from netin as PAH
+    >>> G = PAH(n=200, k=2, f_m=0.2, h_MM=0.1, h_mm=0.9, seed=42)
+    >>> G.generate()
+
+Directed graph example
+--------------
+
+Create a directed network with preferential attachment and homophily.
+
+.. code:: pycon
+
+    >>> from netin import DPAH
+    >>> G = DPAH(n=200, f_m=0.2, d=0.1, h_MM=0.1, h_mm=0.6, plo_M=2.0, plo_m=2.0, seed=42)
+    >>> G.generate()
 
 Install
 -------
@@ -39,7 +55,12 @@ Install with all optional dependencies::
 
     $ pip install netin[all]
 
-For additional details, please see `INSTALL.rst`.
+Install from source::
+
+        $ git clone
+        $ cd NetworkInequalities
+        $ pip install -e .
+
 
 Bugs
 ----
@@ -47,13 +68,12 @@ Bugs
 Please report any bugs that you find `here <https://github.com/CSHVienna/NetworkInequalities/issues>`_.
 Or, even better, fork the repository on `GitHub <https://github.com/CSHVienna/NetworkInequalities>`_
 and create a pull request (PR). We welcome all changes, big or small, and we
-will help you make the PR if you are new to `git` (just ask on the issue and/or
-see `CONTRIBUTING.rst`).
+will help you make the PR if you are new to `git`.
 
 License
 -------
 
-Released under Creative Commons by-nc-sa (see `LICENSE`)::
+Released under Creative Commons by-nc-sa 4.0 (see `LICENSE`)::
 
    Copyright (C) 2023-2024 NetIn Developers
    Fariba Karimi <karimi@csh.ac.at>

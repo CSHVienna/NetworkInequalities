@@ -1,14 +1,13 @@
-from collections import defaultdict
 from typing import Union, Set
 
 import numpy as np
 
 from netin.utils import constants as const
-from netin.utils import validator as val
-from .undigraph import UnDiGraph
+from .pa import PA
+from .tc import TC
 
 
-class PATC(UnDiGraph):
+class PATC(PA, TC):
 
     ############################################################
     # Constructor
@@ -44,8 +43,8 @@ class PATC(UnDiGraph):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        UnDiGraph.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
-        self.tc = tc
+        PA.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
+        TC.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
 
     ############################################################
     # Init
@@ -61,41 +60,22 @@ class PATC(UnDiGraph):
         """
         Validates the parameters of the undigraph.
         """
-        super()._validate_parameters()
-        val.validate_float(self.tc, minimum=0., maximum=1., allow_none=True)
+        PA._validate_parameters(self)
+        TC._validate_parameters(self)
 
     def get_metadata_as_dict(self) -> dict:
-        obj = super().get_metadata_as_dict()
-        obj.update({
-            'tc': self.tc
-        })
-        return obj
-
-    ############################################################
-    # Getters & Setters
-    ############################################################
-
-    def set_triadic_closure_prob(self, tc):
-        """
-        Parameters
-        ----------
-        tc: float
-            probability of a new edge to close a triad (minimum=0, maximum=1.)
-        """
-        self.tc = tc
-
-    def get_triadic_closure_prob(self):
-        """
-        Returns
-        -------
-        tc: float
-            probability of a new edge to close a triad (minimum=0, maximum=1.)
-        """
-        return self.tc
+        obj1 = PA.get_metadata_as_dict(self)
+        obj2 = TC.get_metadata_as_dict(self)
+        obj1.update(obj2)
+        return obj1
 
     ############################################################
     # Generation
     ############################################################
+
+    def info_params(self):
+        PA.info_params(self)
+        TC.info_params(self)
 
     def get_special_targets(self, source: int) -> object:
         """
@@ -105,55 +85,17 @@ class PATC(UnDiGraph):
         source: int
             Newly added node
         """
-        return defaultdict(int)
+        return TC.get_special_targets(self, source)
+
+    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+        return TC.get_target_probabilities(self, source, target_set, special_targets)
 
     def get_target_probabilities_regular(self, source: Union[None, int], target_set: Union[None, Set[int]],
                                          special_targets: Union[None, object, iter] = None) -> tuple[
         np.array, set[int]]:
-        return UnDiGraph.get_target_probabilities(self, source, target_set, special_targets)
-
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
-        tc_prob = np.random.random()
-
-        if tc_prob < self.tc and len(special_targets) > 0:
-            target_set, probs = zip(*[(t, w) for t, w in special_targets.items()])
-            probs = np.array(probs).astype(np.float32)
-            probs /= probs.sum()
-            target_set = set(target_set)
-            return probs, target_set
-
-        # Pick a target node based on preferential attachment
-        return self.get_target_probabilities_regular(source, target_set, special_targets)
+        return PA.get_target_probabilities(self, source, target_set, special_targets)
 
     def update_special_targets(self, idx_target: int, source: int, target: int, targets: Set[int],
-                               special_targets: object):
-        if idx_target < self.k - 1:
-            # Remove target candidates of source
-            targets.discard(target)
-            if target in special_targets:
-                del special_targets[target]  # Remove target from TC candidates
-
-            # Incr. occurrence counter for friends of new friend
-            for neighbor in self.neighbors(target):
-                # G[source] gives direct access (O(1)) to source's neighbors
-                # G.neighbors(source) returns an iterator which would
-                # need to be searched iteratively
-                if neighbor not in self[source]:
-                    special_targets[neighbor] += 1
-        return special_targets
-
-    ############################################################
-    # Calculations
-    ############################################################
-
-    def info_params(self):
-        print('tc: {}'.format(self.tc))
-
-    def info_computed(self):
-        inferred_tc = self.infer_triadic_closure()
-        print("- Empirical triadic closure: {}".format(inferred_tc))
-
-    def infer_triadic_closure(self) -> float:
-        # @TODO: To be implemented
-        return None
+                               special_targets: object) -> object:
+        return TC.update_special_targets(self, idx_target, source, target, targets, special_targets)

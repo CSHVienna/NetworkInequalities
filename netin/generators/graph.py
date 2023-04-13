@@ -48,7 +48,7 @@ class Graph(nx.Graph):
         ----------
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
-        super().__init__()
+        nx.Graph.__init__(self)
         self.n = n
         self.f_m = f_m
         self.seed = seed
@@ -59,7 +59,7 @@ class Graph(nx.Graph):
         self.class_values = None
         self.class_labels = None
         self.node_list = None
-        self.labels = None
+        self.node_labels = None
         self._gen_start_time = None
         self._gen_duration = None
 
@@ -103,6 +103,27 @@ class Graph(nx.Graph):
     ############################################################
     # Getters & Setters
     ############################################################
+
+    def set_expected_number_of_nodes(self, n):
+        self.n = n
+
+    def get_expected_number_of_nodes(self):
+        return self.n
+
+    def get_expected_number_of_edges(self):
+        pass
+
+    def set_expected_fraction_of_minorities(self, f_m):
+        self.f_m = f_m
+
+    def get_expected_fraction_of_minorities(self):
+        return self.f_m
+
+    def set_seed(self, seed):
+        self.seed = seed
+
+    def get_seed(self):
+        return self.seed
 
     def set_model_name(self, model_name):
         self.model_name = model_name
@@ -175,10 +196,20 @@ class Graph(nx.Graph):
         self.n_M = int(round(self.n * (1 - self.f_m)))
         self.n_m = self.n - self.n_M
         minorities = np.random.choice(self.node_list, self.n_m, replace=False)
-        self.labels = {n: int(n in minorities) for n in self.node_list}
+        self.node_labels = {n: int(n in minorities) for n in self.node_list}
 
     def get_special_targets(self, source: int) -> object:
         pass
+
+    def get_potential_nodes_to_connect(self, source: int, targets: Set[int]) -> Set[int]:
+        return set([t for t in targets if t != source and t not in nx.neighbors(self, source)])
+
+    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+        # Random (erdos renyi)
+        probs = np.ones(len(target_set))
+        probs /= probs.sum()
+        return probs, target_set
 
     def get_target(self, source: Union[None, int], targets: Union[None, Set[int]],
                    special_targets: Union[None, object, iter]) -> int:
@@ -193,9 +224,14 @@ class Graph(nx.Graph):
 
     def generate(self):
         self._gen_start_time = time.time()
+
+        # init graph and nodes
         self._initialize()
         self.add_nodes_from(self.node_list)
-        nx.set_node_attributes(self, self.labels, self.class_attribute)
+        nx.set_node_attributes(self, self.node_labels, self.class_attribute)
+
+        # iterate
+        # for each source_node, get target (based on specific mechanisms), then add edge, update special targets
 
     def _terminate(self):
         self._gen_duration = time.time() - self._gen_start_time
@@ -275,13 +311,13 @@ class Graph(nx.Graph):
 
         # list of tuples (node, value)
         if metric == 'degree':
-            values = self.degree(self.node_list, **kwargs)
+            values = self.degree(self.node_list, **kwargs) if not self.is_directed() else None
         if metric == 'in_degree':
             values = self.in_degree(self.node_list, **kwargs) if self.is_directed() else None
         if metric == 'out_degree':
             values = self.out_degree(self.node_list, **kwargs) if self.is_directed() else None
         if metric == 'eigenvector':
-            values = nx.eigenvector_centrality(self, **kwargs)
+            values = nx.eigenvector_centrality_numpy(self, **kwargs)
 
         # dict of node -> value
         if metric == 'clustering':
@@ -289,11 +325,14 @@ class Graph(nx.Graph):
         if metric == 'betweenness':
             values = nx.betweenness_centrality(self, **kwargs)
         if metric == 'closeness':
-            values = nx.closeness_centrality(self, **kwargs)
+            if isinstance(self, nx.DiGraph):
+                values = nx.closeness_centrality(nx.DiGraph(self), **kwargs)
+            else:
+                values = nx.closeness_centrality(self, **kwargs)
         if metric == 'pagerank':
             values = nx.pagerank(self, **kwargs)
 
-        return [values[n] for n in self.node_list]
+        return [values[n] for n in self.node_list] if values is not None else np.nan
 
     def get_node_metadata_as_dataframe(self, n_jobs=1):
         cols = ['node', 'class_label', 'degree', 'in_degree', 'out_degree', 'clustering', 'betweenness', 'closeness',

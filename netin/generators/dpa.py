@@ -1,3 +1,7 @@
+from typing import Union, Set
+
+import numpy as np
+
 from netin.utils import constants as const
 from .digraph import DiGraph
 
@@ -55,3 +59,16 @@ class DPA(DiGraph):
         Infers the name of the model.
         """
         return self.set_model_name(const.DPA_MODEL_NAME)
+
+    ############################################################
+    # Generation
+    ############################################################
+
+    def get_in_degree(self, n: int) -> int:
+        return self.in_degrees[n]
+
+    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int], np.array],
+                                 special_targets: Union[None, object, iter] = None) -> np.array:
+        probs = np.array([self.get_in_degree(n) + const.EPSILON for n in target_set])
+        probs /= probs.sum()
+        return probs
