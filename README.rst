@@ -33,6 +33,7 @@ Create an undirected network with preferential attachment and homophily.
     >>> G = PAH(n=200, k=2, f_m=0.2, h_MM=0.1, h_mm=0.9, seed=42)
     >>> G.generate()
 
+
 Create a directed network with preferential attachment and homophily.
 
 .. code:: pycon
