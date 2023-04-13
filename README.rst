@@ -4,8 +4,8 @@ NetIn is a python package for network inference.
 It is based on the NetworkX package and provides a set of methods to study network inequalities.
 The package is currently under development and will be updated regularly.
 
-.. image:: https://github.com/CSHVienna/NetworkInequalities/netin/workflows/test/badge.svg?branch=main
-  :target: https://github.com/CSHVienna/NetworkInequalities/netin/actions?query=workflow%3A%22test%22
+.. image:: https://github.com/CSHVienna/NetworkInequalities/actions/workflows/python-app.yml/badge.svg
+  :target: https://github.com/CSHVienna/NetworkInequalities/actions?query=workflow
 
 .. image:: https://img.shields.io/badge/python-3.9-blue.svg
   :target: https://www.python.org/downloads/release/python-3916/
@@ -14,10 +14,10 @@ The package is currently under development and will be updated regularly.
     :target: https://networkx.org/
 
 .. image:: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
-    : target https://creativecommons.org/licenses/by-nc-sa/4.0/
+    :target: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
 
-- **Website (including documentation):** https://www.networkinequality.com
+- **Website:** https://www.networkinequality.com
 - **Source:** https://github.com/CSHVienna/NetworkInequalities
 - **Bug reports:** https://github.com/CSHVienna/NetworkInequalities/issues
 - **GitHub Discussions:** https://github.com/CSHVienna/NetworkInequalities/discussions
