@@ -22,7 +22,7 @@ The package is currently under development and will be updated regularly.
 - **Bug reports:** https://github.com/CSHVienna/NetworkInequalities/issues
 - **GitHub Discussions:** https://github.com/CSHVienna/NetworkInequalities/discussions
 
-Undirected graph example
+Simple examples
 --------------
 
 Create an undirected network with preferential attachment and homophily.
@@ -32,9 +32,6 @@ Create an undirected network with preferential attachment and homophily.
     >>> from netin as PAH
     >>> G = PAH(n=200, k=2, f_m=0.2, h_MM=0.1, h_mm=0.9, seed=42)
     >>> G.generate()
-
-Directed graph example
---------------
 
 Create a directed network with preferential attachment and homophily.
 
