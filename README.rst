@@ -5,7 +5,7 @@ It is based on the NetworkX package and provides a set of methods to study netwo
 The package is currently under development and will be updated regularly.
 
 .. image:: https://github.com/CSHVienna/NetworkInequalities/actions/workflows/python-app.yml/badge.svg
-  :target: https://github.com/CSHVienna/NetworkInequalities/actions?query=workflow
+  :target: https://github.com/CSHVienna/NetworkInequalities/actions/workflows/python-app.yml
 
 .. image:: https://img.shields.io/badge/python-3.9-blue.svg
   :target: https://www.python.org/downloads/release/python-3916/
@@ -15,6 +15,7 @@ The package is currently under development and will be updated regularly.
 
 .. image:: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
     :target: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
 
 
 - **Website:** https://www.networkinequality.com
@@ -77,3 +78,4 @@ Released under Creative Commons by-nc-sa 4.0 (see `LICENSE`)::
    Fariba Karimi <karimi@csh.ac.at>
    Lisette Espin-Noboa <espin@csh.ac.at>
    Jan Bachmann <bachmann@csh.ac.at>
+

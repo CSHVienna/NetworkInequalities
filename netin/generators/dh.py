@@ -2,9 +2,9 @@ from typing import Union, Set
 
 import numpy as np
 
+from netin.generators.directed import DiGraph
+from netin.generators.h import Homophily
 from netin.utils import constants as const
-from .digraph import DiGraph
-from .h import Homophily
 
 
 class DH(DiGraph, Homophily):
@@ -48,7 +48,7 @@ class DH(DiGraph, Homophily):
 
         Notes
         -----
-        The initialization is a digraph with n nodes and no edges.
+        The initialization is a directed with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree)
 

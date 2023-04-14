@@ -5,9 +5,9 @@ import networkx as nx
 import numpy as np
 import powerlaw
 
+from netin.generators.graph import Graph
 from netin.utils import constants as const
 from netin.utils import validator as val
-from .graph import Graph
 
 
 class DiGraph(nx.DiGraph, Graph):
@@ -44,7 +44,7 @@ class DiGraph(nx.DiGraph, Graph):
 
         Notes
         -----
-        The initialization is a digraph with n nodes and no edges.
+        The initialization is a directed with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree), homophily (h_**),
         and/or triadic closure (tc).
@@ -69,7 +69,7 @@ class DiGraph(nx.DiGraph, Graph):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the digraph.
+        Validates the parameters of the directed.
         """
         Graph._validate_parameters(self)
         val.validate_float(self.d, minimum=1. / (self.n * (self.n - 1)), maximum=1.)
@@ -78,7 +78,7 @@ class DiGraph(nx.DiGraph, Graph):
 
     def get_metadata_as_dict(self) -> dict:
         """
-        Returns metadata for a digraph.
+        Returns metadata for a directed.
         """
         obj = super().get_metadata_as_dict()
         obj.update({
@@ -145,7 +145,7 @@ class DiGraph(nx.DiGraph, Graph):
         . DPAH: A graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] is a DPA model with homophily.
 
         """
-        # 1. Init digraph and nodes (assign class labels)
+        # 1. Init directed and nodes (assign class labels)
         Graph.generate(self)
 
         # 2. Iterate until reaching desired number of edges (edge density)

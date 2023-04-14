@@ -4,8 +4,8 @@ from typing import Union
 import networkx as nx
 import numpy as np
 
+from netin.generators.graph import Graph
 from netin.utils import validator as val
-from .graph import Graph
 
 
 class UnDiGraph(Graph):
@@ -51,14 +51,14 @@ class UnDiGraph(Graph):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the undigraph.
+        Validates the parameters of the undirected.
         """
         super()._validate_parameters()
         val.validate_int(self.k, minimum=1)
 
     def get_metadata_as_dict(self) -> dict:
         """
-        Returns metadata for a undigraph.
+        Returns metadata for a undirected.
         """
         obj = super().get_metadata_as_dict()
         obj.update({
@@ -84,7 +84,7 @@ class UnDiGraph(Graph):
             Newly added node
 
         targets: Set[int]
-            Potential target nodes in the undigraph based on preferential attachment
+            Potential target nodes in the undirected based on preferential attachment
 
         Returns
         -------
@@ -97,7 +97,7 @@ class UnDiGraph(Graph):
 
     def generate(self):
         """
-        An undigraph of n nodes is grown by attaching new nodes each with k edges.
+        An undirected of n nodes is grown by attaching new nodes each with k edges.
         Each edge is either drawn by preferential attachment, homophily, and/or triadic closure.
 
         For triadic closure, a candidate is chosen uniformly at random from all triad-closing edges (of the new node).
@@ -128,7 +128,7 @@ class UnDiGraph(Graph):
 
                 special_targets = self.update_special_targets(idx_target, source, target, targets, special_targets)
 
-                # Finally add edge to undigraph
+                # Finally add edge to undirected
                 self.add_edge(source, target)
 
                 # Call event handlers if present

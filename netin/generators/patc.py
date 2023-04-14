@@ -2,12 +2,12 @@ from typing import Union, Set
 
 import numpy as np
 
+from netin.generators.triadicclosure import TriadicClosure
 from netin.utils import constants as const
 from .pa import PA
-from .tc import TC
 
 
-class PATC(PA, TC):
+class PATC(PA, TriadicClosure):
 
     ############################################################
     # Constructor
@@ -31,11 +31,11 @@ class PATC(PA, TC):
             probability of a new edge to close a triad (minimum=0, maximum=1.)
 
         attr: dict
-            attributes to add to undigraph as key=value pairs
+            attributes to add to undirected as key=value pairs
 
         Notes
         -----
-        The initialization is a undigraph with n nodes and no edges.
+        The initialization is a undirected with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree), and homophily (h_**)
 
@@ -44,7 +44,7 @@ class PATC(PA, TC):
         - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
         """
         PA.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
-        TC.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
+        TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
 
     ############################################################
     # Init
@@ -58,14 +58,14 @@ class PATC(PA, TC):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the undigraph.
+        Validates the parameters of the undirected.
         """
         PA._validate_parameters(self)
-        TC._validate_parameters(self)
+        TriadicClosure._validate_parameters(self)
 
     def get_metadata_as_dict(self) -> dict:
         obj1 = PA.get_metadata_as_dict(self)
-        obj2 = TC.get_metadata_as_dict(self)
+        obj2 = TriadicClosure.get_metadata_as_dict(self)
         obj1.update(obj2)
         return obj1
 
@@ -75,7 +75,7 @@ class PATC(PA, TC):
 
     def info_params(self):
         PA.info_params(self)
-        TC.info_params(self)
+        TriadicClosure.info_params(self)
 
     def get_special_targets(self, source: int) -> object:
         """
@@ -85,11 +85,11 @@ class PATC(PA, TC):
         source: int
             Newly added node
         """
-        return TC.get_special_targets(self, source)
+        return TriadicClosure.get_special_targets(self, source)
 
     def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
                                  special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
-        return TC.get_target_probabilities(self, source, target_set, special_targets)
+        return TriadicClosure.get_target_probabilities(self, source, target_set, special_targets)
 
     def get_target_probabilities_regular(self, source: Union[None, int], target_set: Union[None, Set[int]],
                                          special_targets: Union[None, object, iter] = None) -> tuple[
@@ -98,4 +98,4 @@ class PATC(PA, TC):
 
     def update_special_targets(self, idx_target: int, source: int, target: int, targets: Set[int],
                                special_targets: object) -> object:
-        return TC.update_special_targets(self, idx_target, source, target, targets, special_targets)
+        return TriadicClosure.update_special_targets(self, idx_target, source, target, targets, special_targets)

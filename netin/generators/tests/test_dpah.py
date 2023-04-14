@@ -22,7 +22,7 @@ class TestDPAH(object):
         c2 = nx.density(g) == d
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.DPAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect digraph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect directed parameters."
 
     def test_dpah_case_2(self):
         n = 200
@@ -39,7 +39,7 @@ class TestDPAH(object):
         c2 = nx.density(g) == d
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.DPAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect digraph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect directed parameters."
 
     def test_dpah_case_3(self):
         n = 200
@@ -56,7 +56,7 @@ class TestDPAH(object):
         c2 = nx.density(g) == d
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.DPAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect digraph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect directed parameters."
 
     def test_dpah_case_4(self):
         n = 200

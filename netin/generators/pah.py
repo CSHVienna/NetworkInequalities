@@ -2,8 +2,8 @@ from typing import Union, Set
 
 import numpy as np
 
+from netin.generators.h import Homophily
 from netin.utils import constants as const
-from .h import Homophily
 from .pa import PA
 
 
@@ -35,7 +35,7 @@ class PAH(PA, Homophily):
 
         Notes
         -----
-        The initialization is a undigraph with n nodes and no edges.
+        The initialization is a undirected with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree), and homophily (h_**)
 
@@ -58,7 +58,7 @@ class PAH(PA, Homophily):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the undigraph.
+        Validates the parameters of the undirected.
         """
         PA._validate_parameters(self)
         Homophily._validate_parameters(self)

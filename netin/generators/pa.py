@@ -3,8 +3,8 @@ from typing import Union
 
 import numpy as np
 
+from netin.generators.undirected import UnDiGraph
 from netin.utils import constants as const
-from .undigraph import UnDiGraph
 
 
 class PA(UnDiGraph):
@@ -29,7 +29,7 @@ class PA(UnDiGraph):
 
         Notes
         -----
-        The initialization is a undigraph with n nodes and no edges.
+        The initialization is a undirected with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree)
 

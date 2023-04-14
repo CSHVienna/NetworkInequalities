@@ -18,7 +18,7 @@ class TestUnDiGraph(object):
         c2 = g.calculate_minimum_degree() == k
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.PA_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect undigraph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect undirected parameters."
 
     def test_patch_case_pah(self):
         n = 200
@@ -33,7 +33,7 @@ class TestUnDiGraph(object):
         c2 = g.calculate_minimum_degree() == k
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.PAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect undigraph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect undirected parameters."
 
     def test_patch_case_patc(self):
         n = 200
@@ -47,7 +47,7 @@ class TestUnDiGraph(object):
         c2 = g.calculate_minimum_degree() == k
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.PATC_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect undigraph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect undirected parameters."
 
     def test_patch_case_patch(self):
         n = 200
@@ -63,7 +63,7 @@ class TestUnDiGraph(object):
         c2 = g.calculate_minimum_degree() == k
         c3 = g.calculate_fraction_of_minority() == f_m
         c4 = g.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect undigraph parameters."
+        assert c1 and c2 and c3 and c4, "Incorrect undirected parameters."
 
     def test_patch_case_all(self):
         n = 200
@@ -91,4 +91,4 @@ class TestUnDiGraph(object):
         c6 = g_pah.get_model_name() == const.PAH_MODEL_NAME
         c7 = g_patc.get_model_name() == const.PATC_MODEL_NAME
         c8 = g_patch.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5 and c6 and c7 and c8, "Incorrect undigraph parameters."
+        assert c1 and c2 and c3 and c4 and c5 and c6 and c7 and c8, "Incorrect undirected parameters."

@@ -3,9 +3,9 @@ from typing import Union, Set
 
 import numpy as np
 
+from netin.generators.graph import Graph
 from netin.utils import constants as const
 from netin.utils import validator as val
-from .graph import Graph
 
 
 class Homophily(Graph):
@@ -61,7 +61,7 @@ class Homophily(Graph):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the undigraph.
+        Validates the parameters of the undirected.
         """
         Graph._validate_parameters(self)
         val.validate_float(self.h_MM, minimum=0., maximum=1.)

@@ -3,12 +3,12 @@ from typing import Union, Set
 
 import numpy as np
 
+from netin.generators.graph import Graph
 from netin.utils import constants as const
 from netin.utils import validator as val
-from .graph import Graph
 
 
-class TC(Graph):
+class TriadicClosure(Graph):
 
     ############################################################
     # Constructor
@@ -56,7 +56,7 @@ class TC(Graph):
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the undigraph.
+        Validates the parameters of the undirected.
         """
         Graph._validate_parameters(self)
         val.validate_float(self.tc, minimum=0., maximum=1.)

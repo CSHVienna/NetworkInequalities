@@ -1,5 +1,5 @@
-from netin import DPA
 from netin import DH
+from netin import DPA
 from netin import DPAH
 from netin.utils import constants as const
 
@@ -20,7 +20,7 @@ class TestDiGraph(object):
         c3 = g.number_of_edges() == g.get_expected_number_of_edges()
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.get_model_name() == const.DPA_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect digraph parameters."
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
     def test_patch_case_dh(self):
         n = 200
@@ -38,7 +38,7 @@ class TestDiGraph(object):
         c3 = g.number_of_edges() == g.get_expected_number_of_edges()
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.get_model_name() == const.DH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect digraph parameters."
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
     def test_patch_case_dpah(self):
         n = 200
@@ -56,7 +56,7 @@ class TestDiGraph(object):
         c3 = g.number_of_edges() == g.get_expected_number_of_edges()
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.get_model_name() == const.DPAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect digraph parameters."
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
     def test_patch_case_all(self):
         n = 200
@@ -82,4 +82,4 @@ class TestDiGraph(object):
         c4 = g_dpa.get_model_name() == const.DPA_MODEL_NAME
         c5 = g_dh.get_model_name() == const.DH_MODEL_NAME
         c6 = g_dpah.get_model_name() == const.DPAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect digraph parameters."
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect directed parameters."

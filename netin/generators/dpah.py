@@ -2,9 +2,9 @@ from typing import Union, Set
 
 import numpy as np
 
+from netin.generators.h import Homophily
 from netin.utils import constants as const
 from .dpa import DPA
-from .h import Homophily
 
 
 class DPAH(DPA, Homophily):
@@ -48,7 +48,7 @@ class DPAH(DPA, Homophily):
 
         Notes
         -----
-        The initialization is a digraph with n nodes and no edges.
+        The initialization is a directed with n nodes and no edges.
         Then, everytime a node is selected as source, it gets connected to k target nodes.
         Target nodes are selected via preferential attachment (in-degree)
 
@@ -87,7 +87,7 @@ class DPAH(DPA, Homophily):
     ############################################################
     # Calculations
     ############################################################
-    
+
     def info_params(self):
         DPA.info_params(self)
         Homophily.info_params(self)
