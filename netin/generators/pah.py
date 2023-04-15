@@ -2,8 +2,8 @@ from typing import Union, Set
 
 import numpy as np
 
-from netin.generators.h import Homophily
 from netin.utils import constants as const
+from netin.generators.h import Homophily
 from .pa import PA
 
 
@@ -91,6 +91,37 @@ class PAH(PA, Homophily):
         PA.info_params(self)
         Homophily.info_params(self)
 
+    def info_computed(self):
+        Homophily.info_computed(self)
+
     def infer_homophily_values(self) -> (float, float):
-        # @TODO: To be implemented
-        return None, None
+        from sympy import symbols
+        from sympy import Eq
+        from sympy import solve
+
+        f_m = self.calculate_fraction_of_minority()
+        f_M = 1 - f_m
+
+        e = self.count_edges_types()
+        e_MM = e['MM']
+        e_mm = e['mm']
+        M = e['MM'] + e['mm'] + e['Mm'] + e['mM']
+
+        p_MM = e_MM / M
+        p_mm = e_mm / M
+
+        pl_M, pl_m = self.calculate_degree_powerlaw_exponents()
+        b_M = -1 / (pl_M + 1)
+        b_m = -1 / (pl_m + 1)
+
+        # equations
+        hmm, hMM, hmM, hMm = symbols('hmm hMM hmM hMm')
+        eq1 = Eq((f_m * f_m * hmm * (1 - b_M)) / ((f_m * hmm * (1 - b_M)) + (f_M * hmM * (1 - b_m))), p_mm)
+        eq2 = Eq(hmm + hmM, 1)
+
+        eq3 = Eq((f_M * f_M * hMM * (1 - b_m)) / ((f_M * hMM * (1 - b_m)) + (f_m * hMm * (1 - b_M))), p_MM)
+        eq4 = Eq(hMM + hMm, 1)
+
+        solution = solve((eq1, eq2, eq3, eq4), (hmm, hmM, hMM, hMm))
+        h_MM, h_mm = solution[hMM], solution[hmm]
+        return h_MM, h_mm

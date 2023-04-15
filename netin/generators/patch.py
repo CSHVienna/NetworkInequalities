@@ -2,8 +2,8 @@ from typing import Union, Set
 
 import numpy as np
 
-from netin.generators.triadicclosure import TriadicClosure
 from netin.utils import constants as const
+from netin.generators.tc import TriadicClosure
 from .pah import PAH
 
 

@@ -18,11 +18,12 @@ class TestDPAH(object):
         seed = 1234
         g = DPAH(n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
         g.generate()
-        c1 = g.number_of_nodes() == n
-        c2 = nx.density(g) == d
-        c3 = g.calculate_fraction_of_minority() == f_m
-        c4 = g.get_model_name() == const.DPAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect directed parameters."
+        c1 = g.is_directed()
+        c2 = g.number_of_nodes() == n
+        c3 = nx.density(g) == d
+        c4 = g.calculate_fraction_of_minority() == f_m
+        c5 = g.get_model_name() == const.DPAH_MODEL_NAME
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
     def test_dpah_case_2(self):
         n = 200
@@ -35,11 +36,12 @@ class TestDPAH(object):
         seed = 1234
         g = DPAH(n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
         g.generate()
-        c1 = g.number_of_nodes() == n
-        c2 = nx.density(g) == d
-        c3 = g.calculate_fraction_of_minority() == f_m
-        c4 = g.get_model_name() == const.DPAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect directed parameters."
+        c1 = g.is_directed()
+        c2 = g.number_of_nodes() == n
+        c3 = nx.density(g) == d
+        c4 = g.calculate_fraction_of_minority() == f_m
+        c5 = g.get_model_name() == const.DPAH_MODEL_NAME
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
     def test_dpah_case_3(self):
         n = 200
@@ -52,11 +54,12 @@ class TestDPAH(object):
         seed = 1234
         g = DPAH(n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
         g.generate()
-        c1 = g.number_of_nodes() == n
-        c2 = nx.density(g) == d
-        c3 = g.calculate_fraction_of_minority() == f_m
-        c4 = g.get_model_name() == const.DPAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect directed parameters."
+        c1 = g.is_directed()
+        c2 = g.number_of_nodes() == n
+        c3 = nx.density(g) == d
+        c4 = g.calculate_fraction_of_minority() == f_m
+        c5 = g.get_model_name() == const.DPAH_MODEL_NAME
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
     def test_dpah_case_4(self):
         n = 200

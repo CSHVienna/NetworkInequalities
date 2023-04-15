@@ -4,6 +4,7 @@
 # from .directed import DiGraph
 # from .undirected import UnDiGraph
 
+from .graph import Graph
 from .dh import DH
 from .dpa import DPA
 from .dpah import DPAH

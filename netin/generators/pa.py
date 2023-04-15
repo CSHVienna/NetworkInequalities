@@ -3,8 +3,8 @@ from typing import Union
 
 import numpy as np
 
-from netin.generators.undirected import UnDiGraph
 from netin.utils import constants as const
+from netin.generators.undirected import UnDiGraph
 
 
 class PA(UnDiGraph):

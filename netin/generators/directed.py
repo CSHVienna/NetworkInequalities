@@ -5,9 +5,9 @@ import networkx as nx
 import numpy as np
 import powerlaw
 
-from netin.generators.graph import Graph
 from netin.utils import constants as const
 from netin.utils import validator as val
+from .graph import Graph
 
 
 class DiGraph(nx.DiGraph, Graph):
@@ -192,6 +192,30 @@ class DiGraph(nx.DiGraph, Graph):
             print(f"- {self.class_labels[c]}: alpha={fit.power_law.alpha}, sigma={fit.power_law.sigma}, "
                   f"min={fit.power_law.xmin}, max={fit.power_law.xmax}")
 
+    def calculate_in_degree_powerlaw_exponents(self) -> (float, float):
+        vM = self.get_majority_value()
+        dM = [d for n, d in self.in_degree() if self.nodes[n][self.class_attribute] == vM]
+        dm = [d for n, d in self.in_degree() if self.nodes[n][self.class_attribute] != vM]
+
+        fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM))
+        fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm))
+
+        pl_M = fit_M.power_law.alpha
+        pl_m = fit_m.power_law.alpha
+        return pl_M, pl_m
+
+    def calculate_out_degree_powerlaw_exponents(self) -> (float, float):
+        vM = self.get_majority_value()
+        dM = [d for n, d in self.out_degree() if self.nodes[n][self.class_attribute] == vM]
+        dm = [d for n, d in self.out_degree() if self.nodes[n][self.class_attribute] != vM]
+
+        fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM))
+        fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm))
+
+        pl_M = fit_M.power_law.alpha
+        pl_m = fit_m.power_law.alpha
+        return pl_M, pl_m
+
     ############################################################
     # Getters and setters
     ############################################################
@@ -210,3 +234,4 @@ class DiGraph(nx.DiGraph, Graph):
 
     def get_activity_distribution(self):
         return self.activity
+

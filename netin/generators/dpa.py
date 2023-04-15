@@ -2,8 +2,8 @@ from typing import Union, Set
 
 import numpy as np
 
-from netin.generators.directed import DiGraph
 from netin.utils import constants as const
+from netin.generators.directed import DiGraph
 
 
 class DPA(DiGraph):

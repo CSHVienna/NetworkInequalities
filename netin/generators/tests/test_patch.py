@@ -16,11 +16,12 @@ class TestPATCH(object):
         seed = 1234
         g = PATCH(n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, tc=tc, seed=seed)
         g.generate()
-        c1 = g.number_of_nodes() == n
-        c2 = g.calculate_minimum_degree() == k
-        c3 = g.calculate_fraction_of_minority() == f_m
-        c4 = g.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect undirected parameters."
+        c1 = not g.is_directed()
+        c2 = g.number_of_nodes() == n
+        c3 = g.calculate_minimum_degree() == k
+        c4 = g.calculate_fraction_of_minority() == f_m
+        c5 = g.get_model_name() == const.PATCH_MODEL_NAME
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
 
     def test_patch_case_2(self):
         n = 200
@@ -32,11 +33,12 @@ class TestPATCH(object):
         seed = 1234
         g = PATCH(n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, tc=tc, seed=seed)
         g.generate()
-        c1 = g.number_of_nodes() == n
-        c2 = g.calculate_minimum_degree() == k
-        c3 = g.calculate_fraction_of_minority() == f_m
-        c4 = g.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect undirected parameters."
+        c1 = not g.is_directed()
+        c2 = g.number_of_nodes() == n
+        c3 = g.calculate_minimum_degree() == k
+        c4 = g.calculate_fraction_of_minority() == f_m
+        c5 = g.get_model_name() == const.PATCH_MODEL_NAME
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
 
     def test_patch_case_3(self):
         n = 200
@@ -48,11 +50,12 @@ class TestPATCH(object):
         seed = 1234
         g = PATCH(n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, tc=tc, seed=seed)
         g.generate()
-        c1 = g.number_of_nodes() == n
-        c2 = g.calculate_minimum_degree() == k
-        c3 = g.calculate_fraction_of_minority() == f_m
-        c4 = g.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect undirected parameters."
+        c1 = not g.is_directed()
+        c2 = g.number_of_nodes() == n
+        c3 = g.calculate_minimum_degree() == k
+        c4 = g.calculate_fraction_of_minority() == f_m
+        c5 = g.get_model_name() == const.PATCH_MODEL_NAME
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
 
     def test_patch_case_4(self):
         n = 200
@@ -64,11 +67,12 @@ class TestPATCH(object):
         seed = 1234
         g = PATCH(n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, tc=tc, seed=seed)
         g.generate()
-        c1 = g.number_of_nodes() == n
-        c2 = g.calculate_minimum_degree() == k
-        c3 = g.calculate_fraction_of_minority() == f_m
-        c4 = g.get_model_name() == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4, "Incorrect undirected parameters."
+        c1 = not g.is_directed()
+        c2 = g.number_of_nodes() == n
+        c3 = g.calculate_minimum_degree() == k
+        c4 = g.calculate_fraction_of_minority() == f_m
+        c5 = g.get_model_name() == const.PATCH_MODEL_NAME
+        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
 
     def test_patch_case_5(self):
         n = 200

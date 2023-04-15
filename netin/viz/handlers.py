@@ -7,11 +7,10 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 
-from netin import Graph
-from netin import stats
 from netin.utils import constants as const
 from netin.viz.constants import *
-
+from netin.generators.graph import Graph
+from netin.stats.distributions import fit_power_law
 
 def _get_edge_color(s: int, t: int, g: Graph):
     if g.get_class_value(s) == g.get_class_value(t):
@@ -23,14 +22,9 @@ def _get_edge_color(s: int, t: int, g: Graph):
 
 
 def _get_class_label_color(class_label: str) -> str:
-    """
-
-    Returns
-    -------
-    object
-    
-    """
-    return COLOR_MINORITY if class_label == const.MINORITY_LABEL else COLOR_MAJORITY
+    return COLOR_MINORITY if class_label == const.MINORITY_LABEL \
+        else COLOR_MAJORITY if class_label == const.MAJORITY_LABEL \
+        else COLOR_MIXED
 
 
 def _save_plot(fig, fn=None, **kwargs):
@@ -78,8 +72,9 @@ def plot_graphs(iter_graph: Set[Graph], share_pos=False, fn=None, **kwargs):
 
         # nodes
         maj = g.graph['class_values'][g.graph['class_labels'].index("M")]
-        nodes, node_colors = zip(*[(node, COLOR_MAJORITY if data[g.graph['class_attribute']] == maj else COLOR_MINORITY)
-                                   for node, data in g.nodes(data=True)])
+        nodes, node_colors = zip(
+            *[(node, COLOR_MAJORITY if data[g.graph['class_attribute']] == maj else COLOR_MINORITY)
+              for node, data in g.nodes(data=True)])
         nx.draw_networkx_nodes(g, pos, nodelist=nodes, node_size=node_size, node_color=node_colors,
                                node_shape=node_shape, ax=ax)
 
@@ -99,22 +94,7 @@ def plot_graphs(iter_graph: Set[Graph], share_pos=False, fn=None, **kwargs):
     _save_plot(fig, fn, **kwargs)
 
 
-def plot_pdf_distribution(iter_data: Set[pd.DataFrame], x: str, fn=None, **kwargs):
-    kwargs.update({'ylabel': 'PDF'})
-    _plot(iter_data, x, stats.get_pdf, fn, **kwargs)
-
-
-def plot_cdf_distribution(iter_data: Set[pd.DataFrame], x: str, fn=None, **kwargs):
-    kwargs.update({'ylabel': 'CDF'})
-    _plot(iter_data, x, stats.get_cdf, fn, **kwargs)
-
-
-def plot_ccdf_distribution(iter_data: Set[pd.DataFrame], x: str, fn=None, **kwargs):
-    kwargs.update({'ylabel': 'CCDF'})
-    _plot(iter_data, x, stats.get_ccdf, fn, **kwargs)
-
-
-def _plot(iter_data: Set[pd.DataFrame], x: str, get_x_y_from_df_fnc: callable, fn=None, **kwargs):
+def plot_distribution(iter_data: Set[pd.DataFrame], x: str, get_x_y_from_df_fnc: callable, fn=None, **kwargs):
     nc, nr = _get_grid_info(len(iter_data))
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
 
@@ -123,7 +103,8 @@ def _plot(iter_data: Set[pd.DataFrame], x: str, get_x_y_from_df_fnc: callable, f
     sharey = kwargs.pop('sharey', False)
     log_scale = kwargs.pop('log_scale', (False, False))
     common_norm = kwargs.pop('common_norm', False)
-    ylabel = kwargs.pop('ylabel', None)
+    ylabel = get_x_y_from_df_fnc.__name__.replace("get_",'').upper()
+    ylabel = kwargs.pop('ylabel', ylabel)
 
     fig, axes = plt.subplots(nr, nc, figsize=(nc * cell_size, nr * cell_size), sharex=sharex, sharey=sharey)
 
@@ -151,5 +132,61 @@ def _plot(iter_data: Set[pd.DataFrame], x: str, get_x_y_from_df_fnc: callable, f
         ax.set_title(df.name)
 
     # legend
+    _add_class_legend(fig, **kwargs)
+    _save_plot(fig, fn, **kwargs)
+
+def plot_powerlaw_fit(iter_data: Set[pd.DataFrame], x: str, kind: str, fn=None, **kwargs):
+    nc, nr = _get_grid_info(len(iter_data))
+    cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
+
+    hue = kwargs.pop('hue', None)
+    sharex = kwargs.pop('sharex', False)
+    sharey = kwargs.pop('sharey', False)
+    log_scale = kwargs.pop('log_scale', (False, False))
+    ylabel = kwargs.pop('ylabel', "p(X≥x)" if kind == "ccdf" else "p(X<x)" if kind == 'cdf' else "p(X=x)")
+    verbose = kwargs.pop('verbose', False)
+    bbox = kwargs.pop('bbox', (1.0, 0.9))
+
+    fig, axes = plt.subplots(nr, nc, figsize=(nc * cell_size, nr * cell_size), sharex=sharex, sharey=sharey)
+
+    for cell, df in enumerate(iter_data):
+        row = cell // nc
+        col = cell % nc
+
+        ax = axes if nr == nc == 1 else axes[cell] if nr == 1 else axes[row, col]
+
+        class_label: str
+        for class_label, data in df.groupby(hue):
+            data = data.query(f"{x}>0")
+            discrete = data[x].dtype == np.int64
+            fit = fit_power_law(data.loc[:,x].values, discrete=discrete, verbose=verbose)
+
+            color = _get_class_label_color(class_label)
+
+            efnc = fit.plot_ccdf if kind == "ccdf" else fit.plot_cdf if kind == 'cdf' else fit.plot_pdf
+            fnc = fit.power_law.plot_ccdf if kind == "ccdf" else fit.power_law.plot_cdf if kind == 'cdf' \
+                else fit.power_law.plot_pdf
+
+            ax = efnc(label=r"Empirical", ax=ax, color=color, **kwargs)
+            ax = fnc(label=f'Powerlaw $\gamma={fit.alpha:.2f}$', linestyle='--', ax=ax, color=color, **kwargs)
+
+            handles, labels = ax.get_legend_handles_labels()
+            leg = ax.legend(handles, labels, loc=3)
+            leg.draw_frame(False)
+
+        if log_scale[0]:
+            ax.set_xscale('log')
+        if log_scale[1]:
+            ax.set_yscale('log')
+
+        if (sharey and col == 0) or (not sharey):
+
+            ax.set_ylabel(ylabel)
+
+        ax.set_xlabel(x)
+        ax.set_title(df.name)
+
+    # legend
+    kwargs['bbox'] = bbox
     _add_class_legend(fig, **kwargs)
     _save_plot(fig, fn, **kwargs)

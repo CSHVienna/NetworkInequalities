@@ -3,9 +3,9 @@ from typing import Union, Set
 
 import numpy as np
 
-from netin.generators.graph import Graph
 from netin.utils import constants as const
 from netin.utils import validator as val
+from .graph import Graph
 
 
 class Homophily(Graph):
@@ -171,15 +171,14 @@ class Homophily(Graph):
         print("- Empirical homophily within minority: {}".format(inferred_h_mm))
 
     def infer_homophily_values(self) -> (float, float):
-        hs = Counter([
-            f"{self.class_labels[self.nodes[u][self.class_attribute]]}{self.class_labels[self.nodes[v][self.class_attribute]]}"
-            for u, v in self.edges()])
+        print('H',  self.is_directed())
+        e = self.count_edges_types()
 
         if self.is_directed():
-            h_MM = hs['MM'] / (hs['MM'] + hs['Mm'])
-            h_mm = hs['mm'] / (hs['mm'] + hs['mM'])
+            h_MM = e['MM'] / (e['MM'] + e['mM'])
+            h_mm = e['mm'] / (e['mm'] + e['Mm'])
         else:
-            h_MM = hs['MM'] / (hs['MM'] + hs['Mm'] + hs['mM'])
-            h_mm = hs['mm'] / (hs['mm'] + hs['mM'] + hs['Mm'])
+            h_MM = e['MM'] / (e['MM'] + e['Mm'] + e['mM'])
+            h_mm = e['mm'] / (e['mm'] + e['mM'] + e['Mm'])
 
         return h_MM, h_mm

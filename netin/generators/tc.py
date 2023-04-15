@@ -3,9 +3,9 @@ from typing import Union, Set
 
 import numpy as np
 
-from netin.generators.graph import Graph
 from netin.utils import constants as const
 from netin.utils import validator as val
+from .graph import Graph
 
 
 class TriadicClosure(Graph):
@@ -124,7 +124,7 @@ class TriadicClosure(Graph):
             target_set = set(target_set)
             return probs, target_set
 
-        # Pick a target node based on preferential attachment
+        # Pick a target
         return self.get_target_probabilities_regular(source, target_set, special_targets)
 
     def get_target(self, source: Union[None, int], targets: Union[None, Set[int]],

@@ -2,8 +2,8 @@ from typing import Union, Set
 
 import numpy as np
 
-from netin.generators.h import Homophily
 from netin.utils import constants as const
+from netin.generators.h import Homophily
 from .dpa import DPA
 
 
@@ -91,3 +91,10 @@ class DPAH(DPA, Homophily):
     def info_params(self):
         DPA.info_params(self)
         Homophily.info_params(self)
+
+    def info_computed(self):
+        Homophily.info_computed(self)
+
+    def infer_homophily_values(self) -> (float, float):
+        h_MM, h_mm = None, None
+        return h_MM, h_mm

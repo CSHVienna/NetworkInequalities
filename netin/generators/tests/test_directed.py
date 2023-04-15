@@ -6,7 +6,7 @@ from netin.utils import constants as const
 
 class TestDiGraph(object):
 
-    def test_patch_case_dpa(self):
+    def test_case_dpa(self):
         n = 200
         d = 0.01
         f_m = 0.1
@@ -22,7 +22,7 @@ class TestDiGraph(object):
         c5 = g.get_model_name() == const.DPA_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
-    def test_patch_case_dh(self):
+    def test_case_dh(self):
         n = 200
         d = 0.01
         f_m = 0.1
@@ -40,7 +40,7 @@ class TestDiGraph(object):
         c5 = g.get_model_name() == const.DH_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
-    def test_patch_case_dpah(self):
+    def test_case_dpah(self):
         n = 200
         d = 0.01
         f_m = 0.1
@@ -58,7 +58,7 @@ class TestDiGraph(object):
         c5 = g.get_model_name() == const.DPAH_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
-    def test_patch_case_all(self):
+    def test_case_all(self):
         n = 200
         d = 0.01
         f_m = 0.1

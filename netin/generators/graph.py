@@ -156,6 +156,12 @@ class Graph(nx.Graph):
         idx = self.class_values.index(self.nodes[node][self.class_attribute])
         return self.class_labels[idx]
 
+    def get_majority_value(self) -> int:
+        return const.MAJORITY_VALUE
+
+    def get_minority_value(self) -> int:
+        return const.MINORITY_VALUE
+
     ############################################################
     # Generation
     ############################################################

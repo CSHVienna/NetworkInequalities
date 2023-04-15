@@ -89,3 +89,35 @@ class DH(DiGraph, Homophily):
     def info_params(self):
         DiGraph.info_params(self)
         Homophily.info_params(self)
+
+    def info_computed(self):
+        Homophily.info_computed(self)
+
+    def infer_homophily_values(self) -> (float, float):
+        from sympy import symbols
+        from sympy import Eq
+        from sympy import solve
+
+        f_m = self.calculate_fraction_of_minority()
+        f_M = 1 - f_m
+
+        e = self.count_edges_types()
+        e_MM = e['MM']
+        e_mm = e['mm']
+        e_Mm = e['Mm']
+        e_mM = e['mM']
+
+        p_MM = e_MM / (e_MM + e_Mm)
+        p_mm = e_mm / (e_mm + e_mM)
+
+        # equations
+        hmm, hMM, hmM, hMm = symbols('hmm hMM hmM hMm')
+        eq1 = Eq((f_m * hmm) / ((f_m * hmm) + (f_M * hmM)), p_mm)
+        eq2 = Eq(hmm + hmM, 1)
+
+        eq3 = Eq((f_M * hMM) / ((f_M * hMM) + (f_m * hMm)), p_MM)
+        eq4 = Eq(hMM + hMm, 1)
+
+        solution = solve((eq1, eq2, eq3, eq4), (hmm, hmM, hMM, hMm))
+        h_MM, h_mm = solution[hMM], solution[hmm]
+        return h_MM, h_mm
