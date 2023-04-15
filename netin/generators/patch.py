@@ -106,3 +106,12 @@ class PATCH(PAH, TriadicClosure):
     def info_computed(self):
         PAH.info_computed(self)
         TriadicClosure.info_computed(self)
+
+    def infer_homophily_values(self) -> (float, float):
+        h_MM = None
+        h_mm = None
+        return h_MM, h_mm
+
+    def infer_triadic_closure(self) -> float:
+        tc = None
+        return tc

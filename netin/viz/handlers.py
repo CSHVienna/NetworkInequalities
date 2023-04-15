@@ -52,8 +52,11 @@ def _get_class_label_color(class_label: str, ylabel: str = None) -> str:
 
 
 def _save_plot(fig, fn=None, **kwargs):
-    dpi = kwargs.get('dpi', DPI)
+    dpi = kwargs.pop('dpi', DPI)
+    wspace = kwargs.pop('wspace', None)
+    hspace = kwargs.pop('hspace', None)
     fig.tight_layout()
+    fig.subplots_adjust(wspace=wspace, hspace=hspace)
     if fn is not None and fig is not None:
         fig.savefig(fn, dpi=dpi, bbox_inches='tight')
         logging.info("%s saved" % fn)
@@ -135,16 +138,20 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[st
     ylabel = xy_fnc_name.replace("get_", '').upper()
     ylabel = kwargs.pop('ylabel', ylabel)
     xlabel = kwargs.pop('xlabel', None)
+    xlim = kwargs.pop('xlim', None)
     ylim = kwargs.pop('ylim', None)
     common_norm = kwargs.pop('common_norm', False)
     log_scale = kwargs.pop('log_scale', (False, False))
     class_label_legend = kwargs.pop('class_label_legend', True)
     hline_fnc = kwargs.pop('hline_fnc', None)
+    vline_fnc = kwargs.pop('vline_fnc', None)
     suptitle = kwargs.pop('suptitle', None)
     cuts = kwargs.pop('cuts', None)
     gini_fnc = kwargs.pop('gini_fnc', None)
     me_fnc = kwargs.pop('me_fnc', None)
     beta = kwargs.pop('beta', None)
+    wspace = kwargs.pop('wspace', None)
+    hspace = kwargs.pop('hspace', None)
 
     w, h = cell_size if type(cell_size) == tuple else (cell_size, cell_size)
     fig, axes = plt.subplots(nr, nc, figsize=(nc * w, nr * h), sharex=sharex, sharey=sharey)
@@ -166,7 +173,9 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[st
             plot(xs, ys, label=class_label, color=_get_class_label_color(class_label, xy_fnc_name), **kwargs)
 
             if hline_fnc:
-                hline_fnc(ax, data)
+                hline_fnc(ax.axhline, data)
+            if vline_fnc:
+                vline_fnc(ax.axvline, data)
             if me_fnc:
                 me_fnc(ax, f_m, ys, beta)
             if gini_fnc:
@@ -176,6 +185,8 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[st
             ax.set_xscale('log')
         if log_scale[1]:
             ax.set_yscale('log')
+        if xlim:
+            ax.set_xlim(xlim)
         if ylim:
             ax.set_ylim(ylim)
 
@@ -196,15 +207,29 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[st
         _add_class_legend(fig, **kwargs)
 
     # save figure
-    _save_plot(fig, fn, **kwargs)
+    _save_plot(fig, fn, wspace=wspace, hspace=hspace, **kwargs)
+
+
+def _show_cuts(axline, data):
+    for c in const.INEQUALITY_CUTS:
+        axline(c, ls='--', color='grey', alpha=0.5)
+
+
+def _show_beta(axline, data):
+    axline(const.INEQUITY_BETA, ls='--', color='grey', alpha=0.5)
+    axline(-const.INEQUITY_BETA, ls='--', color='grey', alpha=0.5)
 
 
 def plot_disparity(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[str, List], fn=None, **kwargs):
+    gap = 0.04
     kwargs['class_label_legend'] = False
     kwargs['xlabel'] = INEQUITY_AXIS_LABEL
     kwargs['ylabel'] = INEQUALITY_AXIS_LABEL
-    kwargs['ylim'] = (-0.01, 1.01)
+    kwargs['ylim'] = (0.0 - gap, 1.0 + gap)
+    kwargs['xlim'] = (-1.0 - gap, 1.0 + gap)
     kwargs['scatter'] = True
+    kwargs['hline_fnc'] = _show_cuts
+    kwargs['vline_fnc'] = _show_beta
 
     plot_distribution(iter_data,
                       x=x,
@@ -239,15 +264,11 @@ def plot_gini_coefficient(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x:
 
     cuts = kwargs.pop('cuts', const.INEQUALITY_CUTS)
 
-    def show_cuts(ax, data=None):
-        for c in cuts:
-            ax.axhline(c, ls='--', color='grey', alpha=0.5)
-
     kwargs['class_label_legend'] = False
-    kwargs['hline_fnc'] = show_cuts
+    kwargs['hline_fnc'] = _show_cuts
     kwargs['gini_fnc'] = show_gini
     kwargs['xlabel'] = RANKING_LABEL
-    kwargs['ylabel'] = INEQUALITY_AXIS_LABEL
+    kwargs['ylabel'] = GINI_TOPK_AXIS_LABEL
     kwargs['ylim'] = (-0.01, 1.01)
 
     plot_distribution(iter_data,
@@ -258,6 +279,8 @@ def plot_gini_coefficient(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x:
 
 def plot_fraction_of_minority(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[str, List],
                               fn=None, **kwargs):
+    gap = 0.02
+
     def show_me(ax, f_m, ys, beta):
         me, x, y, va, ha, color = get_me_label(f_m, ys, beta)
         ax.text(s=me,
@@ -269,35 +292,43 @@ def plot_fraction_of_minority(iter_data: Union[pd.DataFrame, List[pd.DataFrame]]
     def get_me_label(f_m, ys, beta=None) -> (str, float, str):
         from netin.stats import ranking
         # value
-        me = ranking.get_ranking_me(f_m, ys)
+        me = ranking.get_ranking_inequity(f_m, ys)
         # label
         ineq = ranking.get_ranking_inequity_class(me, beta)
         # position
         right = False
         bottom = np.any(np.array(ys[:5]) > 0.8)
-        y = 0.01 if bottom else 0.97
-        x = 0.02
+        y = 0 + (gap * 2) if bottom else 1 - (gap * 2)
+        x = 0 + (gap * 2)
 
         if f_m <= 0.2 and bottom:
             right = True
             bottom = False
-            y = 0.01 if bottom else 0.97
-            x = 0.97
+            y = 0 + (gap * 2) if bottom else 1 - (gap * 2)
+            x = 0 + (gap * 2)
+
+            if np.any(np.array(ys[5:]) > 0.8):
+                # above minority
+                right = False
+                bottom = True
+                y = f_m + (gap * 2)
+                x = 0 + (gap * 2)
 
         va = 'bottom' if bottom else 'top'
         ha = 'right' if right else 'left'
         c = 'grey'
         return f"ME={me:.3f}\n{ineq}", x, y, va, ha, c
 
+    def show_minority(axline, data):
+        axline(data.query("class_label==@const.MINORITY_LABEL").shape[0] / data.shape[0], color="black", linestyle='--')
+
     beta = kwargs.pop('beta', const.INEQUITY_BETA)
     kwargs['class_label_legend'] = False
-    kwargs['hline_fnc'] = lambda ax, data: ax.axhline(
-        data.query("class_label==@const.MINORITY_LABEL").shape[0] / data.shape[0],
-        color="black", linestyle='--')
+    kwargs['hline_fnc'] = show_minority
     kwargs['me_fnc'] = show_me
     kwargs['xlabel'] = RANKING_LABEL
-    kwargs['ylabel'] = INEQUITY_AXIS_LABEL
-    kwargs['ylim'] = (-0.01, 1.01)
+    kwargs['ylabel'] = FM_TOPK_AXIS_LABEL
+    kwargs['ylim'] = (0. - gap, 1. + gap)
 
     plot_distribution(iter_data,
                       x=x,
@@ -317,8 +348,12 @@ def plot_powerlaw_fit(iter_data: Set[pd.DataFrame], x: str, kind: str, fn=None, 
     ylabel = kwargs.pop('ylabel', "p(X≥x)" if kind == "ccdf" else "p(X<x)" if kind == 'cdf' else "p(X=x)")
     verbose = kwargs.pop('verbose', False)
     bbox = kwargs.pop('bbox', (1.0, 0.9))
+    fontsize = kwargs.pop('fontsize', None)
+    wspace = kwargs.pop('wspace', None)
+    hspace = kwargs.pop('hspace', None)
 
-    fig, axes = plt.subplots(nr, nc, figsize=(nc * cell_size, nr * cell_size), sharex=sharex, sharey=sharey)
+    w, h = cell_size if type(cell_size) == tuple else (cell_size, cell_size)
+    fig, axes = plt.subplots(nr, nc, figsize=(nc * w, nr * h), sharex=sharex, sharey=sharey)
 
     for cell, df in enumerate(iter_data):
         row = cell // nc
@@ -342,7 +377,7 @@ def plot_powerlaw_fit(iter_data: Set[pd.DataFrame], x: str, kind: str, fn=None, 
             ax = fnc(label=f'Powerlaw $\gamma={fit.alpha:.2f}$', linestyle='--', ax=ax, color=color, **kwargs)
 
             handles, labels = ax.get_legend_handles_labels()
-            leg = ax.legend(handles, labels, loc=3)
+            leg = ax.legend(handles, labels, loc=4 if kind == 'cdf' else 3, fontsize=fontsize)
             leg.draw_frame(False)
 
         if log_scale[0]:
@@ -359,4 +394,4 @@ def plot_powerlaw_fit(iter_data: Set[pd.DataFrame], x: str, kind: str, fn=None, 
     # legend
     kwargs['bbox'] = bbox
     _add_class_legend(fig, **kwargs)
-    _save_plot(fig, fn, **kwargs)
+    _save_plot(fig, fn, wspace=wspace, hspace=hspace, **kwargs)

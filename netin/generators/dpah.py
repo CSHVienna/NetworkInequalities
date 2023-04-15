@@ -93,6 +93,7 @@ class DPAH(DPA, Homophily):
         Homophily.info_params(self)
 
     def info_computed(self):
+        DPA.info_computed(self)
         Homophily.info_computed(self)
 
     def infer_homophily_values(self) -> (float, float):

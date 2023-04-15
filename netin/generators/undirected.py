@@ -155,14 +155,27 @@ class UnDiGraph(Graph):
     def info_params(self):
         print('k: {}'.format(self.k))
 
-    def calculate_degree_powerlaw_exponents(self) -> (float, float):
+    def info_computed(self):
+        fit_M, fit_m = self.fit_degree_powerlaw()
+        print(f"- Powerlaw fit (degree):")
+        print(f"- {self.get_majority_label()}: alpha={fit_M.power_law.alpha}, "
+              f"sigma={fit_M.power_law.sigma}, "
+              f"min={fit_M.power_law.xmin}, max={fit_M.power_law.xmax}")
+        print(f"- {self.get_minority_label()}: alpha={fit_m.power_law.alpha}, "
+              f"sigma={fit_m.power_law.sigma}, "
+              f"min={fit_m.power_law.xmin}, max={fit_m.power_law.xmax}")
+
+    def fit_degree_powerlaw(self) -> powerlaw.Fit:
         vM = self.get_majority_value()
         dM = [d for n, d in self.degree() if self.nodes[n][self.class_attribute] == vM]
         dm = [d for n, d in self.degree() if self.nodes[n][self.class_attribute] != vM]
 
         fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM))
         fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm))
+        return fit_M, fit_m
 
+    def calculate_degree_powerlaw_exponents(self) -> (float, float):
+        fit_M, fit_m = self.fit_degree_powerlaw()
         pl_M = fit_M.power_law.alpha
         pl_m = fit_m.power_law.alpha
         return pl_M, pl_m

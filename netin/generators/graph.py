@@ -162,6 +162,12 @@ class Graph(nx.Graph):
     def get_minority_value(self) -> int:
         return const.MINORITY_VALUE
 
+    def get_majority_label(self) -> int:
+        return const.MAJORITY_LABEL
+
+    def get_minority_label(self) -> int:
+        return const.MINORITY_LABEL
+
     ############################################################
     # Generation
     ############################################################
@@ -364,6 +370,6 @@ class Graph(nx.Graph):
         # add ranking values
         for metric in const.VALID_METRICS:
             ncol = f'{metric}_rank'
-            df.loc[:, ncol] = df.loc[:, metric].rank(pct=True, ascending=False)
+            df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
 
         return df

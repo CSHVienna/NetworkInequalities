@@ -186,32 +186,32 @@ class DiGraph(nx.DiGraph, Graph):
         print(f'plo_m: {self.plo_m}')
 
     def info_computed(self):
-        for c in self.class_values:
-            fit = powerlaw.Fit(data=[d for n, d in self.out_degree() if self.nodes[n][self.class_attribute] == c],
-                               discrete=True)
-            print(f"- {self.class_labels[c]}: alpha={fit.power_law.alpha}, sigma={fit.power_law.sigma}, "
-                  f"min={fit.power_law.xmin}, max={fit.power_law.xmax}")
+        for metric in ['in_degree', 'out_degree']:
+            fit_M, fit_m = self.fit_powerlaw(metric)
+            print(f"- Powerlaw fit ({metric}):")
+            print(f"- {self.get_majority_label()}: alpha={fit_M.power_law.alpha}, sigma={fit_M.power_law.sigma}, "
+                  f"min={fit_M.power_law.xmin}, max={fit_M.power_law.xmax}")
+            print(f"- {self.get_minority_label()}: alpha={fit_m.power_law.alpha}, sigma={fit_m.power_law.sigma}, "
+                  f"min={fit_m.power_law.xmin}, max={fit_m.power_law.xmax}")
+
+    def fit_powerlaw(self, metric: str) -> powerlaw.Fit:
+        vM = self.get_majority_value()
+        dist_fnc = self.in_degree if metric == 'in_degree' else self.out_degree
+        dM = [d for n, d in dist_fnc if self.nodes[n][self.class_attribute] == vM]
+        dm = [d for n, d in dist_fnc if self.nodes[n][self.class_attribute] != vM]
+
+        fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM), verbose=False)
+        fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm), verbose=False)
+        return fit_M, fit_m
 
     def calculate_in_degree_powerlaw_exponents(self) -> (float, float):
-        vM = self.get_majority_value()
-        dM = [d for n, d in self.in_degree() if self.nodes[n][self.class_attribute] == vM]
-        dm = [d for n, d in self.in_degree() if self.nodes[n][self.class_attribute] != vM]
-
-        fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM))
-        fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm))
-
+        fit_M, fit_m = self.fit_powerlaw(metric='in_degree')
         pl_M = fit_M.power_law.alpha
         pl_m = fit_m.power_law.alpha
         return pl_M, pl_m
 
     def calculate_out_degree_powerlaw_exponents(self) -> (float, float):
-        vM = self.get_majority_value()
-        dM = [d for n, d in self.out_degree() if self.nodes[n][self.class_attribute] == vM]
-        dm = [d for n, d in self.out_degree() if self.nodes[n][self.class_attribute] != vM]
-
-        fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM))
-        fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm))
-
+        fit_M, fit_m = self.fit_powerlaw(metric='out_degree')
         pl_M = fit_M.power_law.alpha
         pl_m = fit_m.power_law.alpha
         return pl_M, pl_m
