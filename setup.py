@@ -60,6 +60,7 @@ packages = [
     "netin.utils",
     "netin.stats",
     "netin.viz",
+    "netin.generators.tests",
 ]
 
 docdirbase = "share/doc/netin-%s" % version
