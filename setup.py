@@ -57,8 +57,9 @@ packages = [
     "netin",
     "netin.algorithms",
     "netin.generators",
-    "netin.generators.tests",
     "netin.utils",
+    "netin.stats",
+    "netin.viz",
 ]
 
 docdirbase = "share/doc/netin-%s" % version
@@ -103,7 +104,7 @@ def parse_requirements_file(filename):
 install_requires = []
 extras_require = {
     dep: parse_requirements_file("requirements/" + dep + ".txt")
-    for dep in ["default"]  # , "developer", "doc", "extra", "test"]
+    for dep in ["default", "test"]  # , "developer", "doc", "extra"]
 }
 
 with open("README.rst") as fh:
@@ -128,6 +129,6 @@ if __name__ == "__main__":
         package_data=package_data,
         install_requires=install_requires,
         extras_require=extras_require,
-        python_requires=">=3.8",
+        python_requires=">=3.9",
         zip_safe=False,
     )

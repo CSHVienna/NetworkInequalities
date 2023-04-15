@@ -175,8 +175,8 @@ class Homophily(Graph):
         e = self.count_edges_types()
 
         if self.is_directed():
-            h_MM = e['MM'] / (e['MM'] + e['mM'])
-            h_mm = e['mm'] / (e['mm'] + e['Mm'])
+            h_MM = e['MM'] / (e['MM'] + e['Mm'])
+            h_mm = e['mm'] / (e['mm'] + e['mM'])
         else:
             h_MM = e['MM'] / (e['MM'] + e['Mm'] + e['mM'])
             h_mm = e['mm'] / (e['mm'] + e['mM'] + e['Mm'])

@@ -12,6 +12,7 @@ from netin.viz.constants import *
 from netin.generators.graph import Graph
 from netin.stats.distributions import fit_power_law
 
+
 def _get_edge_color(s: int, t: int, g: Graph):
     if g.get_class_value(s) == g.get_class_value(t):
         if g.get_class_value(s) == const.MINORITY_VALUE:
@@ -103,7 +104,7 @@ def plot_distribution(iter_data: Set[pd.DataFrame], x: str, get_x_y_from_df_fnc:
     sharey = kwargs.pop('sharey', False)
     log_scale = kwargs.pop('log_scale', (False, False))
     common_norm = kwargs.pop('common_norm', False)
-    ylabel = get_x_y_from_df_fnc.__name__.replace("get_",'').upper()
+    ylabel = get_x_y_from_df_fnc.__name__.replace("get_", '').upper()
     ylabel = kwargs.pop('ylabel', ylabel)
 
     fig, axes = plt.subplots(nr, nc, figsize=(nc * cell_size, nr * cell_size), sharex=sharex, sharey=sharey)
@@ -135,6 +136,7 @@ def plot_distribution(iter_data: Set[pd.DataFrame], x: str, get_x_y_from_df_fnc:
     _add_class_legend(fig, **kwargs)
     _save_plot(fig, fn, **kwargs)
 
+
 def plot_powerlaw_fit(iter_data: Set[pd.DataFrame], x: str, kind: str, fn=None, **kwargs):
     nc, nr = _get_grid_info(len(iter_data))
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
@@ -159,7 +161,7 @@ def plot_powerlaw_fit(iter_data: Set[pd.DataFrame], x: str, kind: str, fn=None, 
         for class_label, data in df.groupby(hue):
             data = data.query(f"{x}>0")
             discrete = data[x].dtype == np.int64
-            fit = fit_power_law(data.loc[:,x].values, discrete=discrete, verbose=verbose)
+            fit = fit_power_law(data.loc[:, x].values, discrete=discrete, verbose=verbose)
 
             color = _get_class_label_color(class_label)
 
@@ -180,7 +182,6 @@ def plot_powerlaw_fit(iter_data: Set[pd.DataFrame], x: str, kind: str, fn=None, 
             ax.set_yscale('log')
 
         if (sharey and col == 0) or (not sharey):
-
             ax.set_ylabel(ylabel)
 
         ax.set_xlabel(x)
