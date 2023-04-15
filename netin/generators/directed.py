@@ -234,4 +234,3 @@ class DiGraph(nx.DiGraph, Graph):
 
     def get_activity_distribution(self):
         return self.activity
-

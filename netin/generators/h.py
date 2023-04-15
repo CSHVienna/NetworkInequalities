@@ -171,7 +171,7 @@ class Homophily(Graph):
         print("- Empirical homophily within minority: {}".format(inferred_h_mm))
 
     def infer_homophily_values(self) -> (float, float):
-        print('H',  self.is_directed())
+        print('H', self.is_directed())
         e = self.count_edges_types()
 
         if self.is_directed():

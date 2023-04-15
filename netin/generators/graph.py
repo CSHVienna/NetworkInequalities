@@ -91,7 +91,7 @@ class Graph(nx.Graph):
         """
         Returns metadata for a graph.
         """
-        obj = {'name': self.get_model_name(),
+        obj = {'model': self.get_model_name(),
                'class_attribute': self.get_class_attribute(),
                'class_values': self.get_class_values(),
                'class_labels': self.get_class_labels(),
@@ -340,14 +340,30 @@ class Graph(nx.Graph):
 
         return [values[n] for n in self.node_list] if values is not None else np.nan
 
-    def get_node_metadata_as_dataframe(self, n_jobs=1):
-        cols = ['node', 'class_label', 'degree', 'in_degree', 'out_degree', 'clustering', 'betweenness', 'closeness',
-                'eigenvector', 'pagerank']
-
-        column_values = pqdm(cols[2:], self.compute_node_stats, n_jobs=n_jobs)
+    def get_node_metadata_as_dataframe(self, include_graph_metadata=False, n_jobs=1):
+        cols = ['node', 'class_label']
         obj = {'node': self.node_list,
                'class_label': [self.get_class_label(n) for n in self.node_list]}
-        obj.update({col: values for col, values in zip(cols[2:], column_values)})
+
+        # include graph metadata
+        if include_graph_metadata:
+            n = self.number_of_nodes()
+            newcols = [c for c in self.graph.keys() if c not in ['class_attribute', 'class_values', 'class_labels']]
+            obj.update({c: self.graph[c] for c in newcols})
+            cols.extend(newcols)
+
+        # include metrics
+        column_values = pqdm(const.VALID_METRICS, self.compute_node_stats, n_jobs=n_jobs)
+        obj.update({col: values for col, values in zip(const.VALID_METRICS, column_values)})
+        cols.extend(const.VALID_METRICS)
+
+        # create dataframe
         df = pd.DataFrame(obj, columns=cols, index=self.node_list)
         df.name = self.get_model_name()
+
+        # add ranking values
+        for metric in const.VALID_METRICS:
+            ncol = f'{metric}_rank'
+            df.loc[:, ncol] = df.loc[:, metric].rank(pct=True, ascending=False)
+
         return df
