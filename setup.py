@@ -27,7 +27,7 @@ authors = {
     "Bachmann": ("Jan Bachmann", "bachmann@csh.ac.at"),
 }
 maintainer = "NetIn Developers"
-maintainer_email = "netin@googlegroups.com"
+maintainer_email = "netin-dev@googlegroups.com"
 url = "https://github.com/CSHVienna/NetworkInequalities"
 platforms = ["Linux", "Mac OSX", "Windows", "Unix"]
 keywords = [

@@ -22,6 +22,7 @@ The package is currently under development and will be updated regularly.
 - **Source:** https://github.com/CSHVienna/NetworkInequalities
 - **Bug reports:** https://github.com/CSHVienna/NetworkInequalities/issues
 - **GitHub Discussions:** https://github.com/CSHVienna/NetworkInequalities/discussions
+- **Mailing list: https://groups.google.com/forum/#!forum/netin-dev
 
 Simple examples
 ---------------
