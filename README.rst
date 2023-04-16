@@ -16,13 +16,11 @@ The package is currently under development and will be updated regularly.
 .. image:: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
     :target: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
-
-
 - **Website:** https://www.networkinequality.com
 - **Source:** https://github.com/CSHVienna/NetworkInequalities
 - **Bug reports:** https://github.com/CSHVienna/NetworkInequalities/issues
 - **GitHub Discussions:** https://github.com/CSHVienna/NetworkInequalities/discussions
-- **Mailing list: https://groups.google.com/forum/#!forum/netin-dev
+- **Mailing list:** https://groups.google.com/forum/#!forum/netin-dev
 
 Simple examples
 ---------------
