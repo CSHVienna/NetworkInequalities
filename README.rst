@@ -40,7 +40,7 @@ Create a directed network with preferential attachment and homophily.
 .. code:: pycon
 
     >>> from netin import DPAH
-    >>> G = DPAH(n=200, f_m=0.2, d=0.1, h_MM=0.1, h_mm=0.6, plo_M=2.0, plo_m=2.0, seed=42)
+    >>> G = DPAH(n=200, f_m=0.2, d=0.02, h_MM=0.1, h_mm=0.6, plo_M=2.0, plo_m=2.0, seed=42)
     >>> G.generate()
 
 Install
@@ -50,9 +50,6 @@ Install the latest version of NetIn::
 
     $ pip install netin
 
-Install with all optional dependencies::
-
-    $ pip install netin[all]
 
 Install from source::
 
