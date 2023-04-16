@@ -88,7 +88,7 @@ We will work to ensure that everyone in our community feels safe and comfortable
 Reporting Guidelines
 --------------------
 If you experience or witness any behavior that violates this code of conduct,
-please report it to the project maintainers at netin-conduct@gmail.com.
+please report it to the project maintainers at netin.conduct@gmail.com.
 All reports will be taken seriously and investigated promptly.
 
 Thank you for your contributions and your commitment to creating a positive and inclusive community for all.
