@@ -24,7 +24,7 @@ The package is currently under development and will be updated regularly.
 - **GitHub Discussions:** https://github.com/CSHVienna/NetworkInequalities/discussions
 
 Simple examples
---------------
+---------------
 
 Create an undirected network with preferential attachment and homophily.
 

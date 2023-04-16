@@ -1,11 +1,21 @@
+# Copyright (c) 2023 NetInCSH.  All rights reserved.
+# This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+# License.  (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+
 import os
 import sys
 from glob import glob
 
 from setuptools import setup
 
+with open("netin/__init__.py") as fid:
+    for line in fid:
+        if line.startswith("__version__"):
+            version = line.strip().split()[-1][1:-1]
+            break
+
 if sys.version_info[:2] < (3, 8):
-    error = (f"NetIn 1.0.0 requires Python 3.9 or later ({sys.version_info[:2]} detected). \n")
+    error = (f"NetIn {version} requires Python 3.9 or later ({sys.version_info[:2]} detected). \n")
     sys.stderr.write(error + "\n")
     sys.exit(1)
 
@@ -34,24 +44,19 @@ keywords = [
     "math",
 ]
 classifiers = [
-    "Development Status :: 0 - Alpha",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
     "Intended Audience :: Science/Research",
-    "License :: by-nc-sa/4.0",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.9",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Scientific/Engineering :: Network-Science",
+    "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Scientific/Engineering :: Physics",
 ]
-
-with open("netin/__init__.py") as fid:
-    for line in fid:
-        if line.startswith("__version__"):
-            version = line.strip().split()[-1][1:-1]
-            break
 
 packages = [
     "netin",
@@ -102,7 +107,8 @@ def parse_requirements_file(filename):
     return requires
 
 
-install_requires = []
+install_requires = parse_requirements_file("requirements/default.txt")
+
 extras_require = {
     dep: parse_requirements_file("requirements/" + dep + ".txt")
     for dep in ["default", "test"]  # , "developer", "doc", "extra"]
@@ -122,6 +128,7 @@ if __name__ == "__main__":
         description=description,
         keywords=keywords,
         long_description=long_description,
+        long_description_content_type="text/x-rst",
         platforms=platforms,
         url=url,
         classifiers=classifiers,

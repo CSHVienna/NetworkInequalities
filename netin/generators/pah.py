@@ -1,6 +1,9 @@
 from typing import Union, Set
 
 import numpy as np
+from sympy import symbols
+from sympy import Eq
+from sympy import solve
 
 from netin.utils import constants as const
 from netin.generators.h import Homophily
@@ -96,10 +99,6 @@ class PAH(PA, Homophily):
         Homophily.info_computed(self)
 
     def infer_homophily_values(self) -> (float, float):
-        from sympy import symbols
-        from sympy import Eq
-        from sympy import solve
-
         f_m = self.calculate_fraction_of_minority()
         f_M = 1 - f_m
 
