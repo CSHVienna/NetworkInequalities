@@ -30,9 +30,10 @@ Create an undirected network with preferential attachment and homophily.
 
 .. code:: pycon
 
-    >>> from netin as PAH
+    >>> from netin import PAH
     >>> G = PAH(n=200, k=2, f_m=0.2, h_MM=0.1, h_mm=0.9, seed=42)
     >>> G.generate()
+    >>> G.info()
 
 
 Create a directed network with preferential attachment and homophily.
@@ -42,6 +43,7 @@ Create a directed network with preferential attachment and homophily.
     >>> from netin import DPAH
     >>> G = DPAH(n=200, f_m=0.2, d=0.02, h_MM=0.1, h_mm=0.6, plo_M=2.0, plo_m=2.0, seed=42)
     >>> G.generate()
+    >>> G.info()
 
 Install
 -------
