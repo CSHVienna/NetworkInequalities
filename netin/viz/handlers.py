@@ -120,7 +120,7 @@ def plot_graph(data: Union[Graph, Set[Graph]], share_pos=False, fn=None, **kwarg
 
         # final touch
         ax.set_axis_off()
-        ax.set_title(g.graph['model'])
+        ax.set_title(g.get_model_name())
 
     # legend
     _add_class_legend(fig, **kwargs)

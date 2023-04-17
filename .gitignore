@@ -1,7 +1,7 @@
 
 
 # ignore log files and databases
-*.logåååå
+*.log
 *.sql
 *.sqlite
 *.ipynb_checkpoints
