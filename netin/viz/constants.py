@@ -13,3 +13,4 @@ DPI = 300
 DEFAULT_CELL_SIZE = 3
 DEFAULT_FIGSIZE = (10, 5)
 MINORITY_CURVE = ['get_fraction_of_minority']
+TYPE_OF_DISTRIBUTION = ['pdf', 'cdf', 'ccdf']

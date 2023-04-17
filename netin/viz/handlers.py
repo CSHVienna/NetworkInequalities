@@ -122,13 +122,13 @@ def plot_graphs(iter_graph: Set[Graph], share_pos=False, fn=None, **kwargs):
     _save_plot(fig, fn, **kwargs)
 
 
-def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[str, List],
+def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List],
                       get_x_y_from_df_fnc: callable, fn=None, **kwargs):
     iter_data = [data] if type(data) == pd.DataFrame else data
     nc = kwargs.pop('nc', None)
     nc, nr = _get_grid_info(len(iter_data), nc=nc)
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
-    iter_column = [x] * (nc * nr) if type(x) == str else x
+    iter_column = [col_name] * (nc * nr) if type(col_name) == str else col_name
 
     scatter = kwargs.pop('scatter', False)
     hue = kwargs.pop('hue', None)
@@ -159,23 +159,23 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[st
     for cell, df in enumerate(iter_data):
         row = cell // nc
         col = cell % nc
-        x = iter_column[cell]
+        _col_name = iter_column[cell]
 
         ax = axes if nr == nc == 1 else axes[cell] if nr == 1 else axes[row, col]
 
         class_label: str
-        iter_groups = df.group(hue) if hue is not None else [(None, df)]
+        iter_groups = df.groupby(hue) if hue is not None else [(None, df)]
         f_m = df.query("class_label == @const.MINORITY_LABEL").shape[0] / df.shape[0]
-        for class_label, data in iter_groups:
-            total = df[x].sum() if common_norm else data[x].sum()
-            xs, ys = get_x_y_from_df_fnc(data, x, total)
+        for class_label, group in iter_groups:
+            total = df[_col_name].sum() if common_norm else group[_col_name].sum()
+            xs, ys = get_x_y_from_df_fnc(group, _col_name, total)
             plot = ax.scatter if scatter else ax.plot
             plot(xs, ys, label=class_label, color=_get_class_label_color(class_label, xy_fnc_name), **kwargs)
 
             if hline_fnc:
-                hline_fnc(ax.axhline, data)
+                hline_fnc(ax.axhline, group)
             if vline_fnc:
-                vline_fnc(ax.axvline, data)
+                vline_fnc(ax.axvline, group)
             if me_fnc:
                 me_fnc(ax, f_m, ys, beta)
             if gini_fnc:
@@ -189,11 +189,11 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[st
             ax.set_xlim(xlim)
         if ylim:
             ax.set_ylim(ylim)
-
-        if (sharey and col == 0) or (not sharey):
+        if ylabel and ((sharey and col == 0) or (not sharey)):
             ax.set_ylabel(ylabel)
-
-        if (sharex and row == nr - 1) or (not sharex):
+        if xlabel is None:
+            ax.set_xlabel(_col_name)
+        elif (sharex and row == nr - 1) or (not sharex):
             ax.set_xlabel(xlabel)
 
         ax.set_title(df.name)
@@ -203,7 +203,7 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[st
         fig.suptitle(suptitle)
 
     # legend
-    if class_label_legend:
+    if hue is not None and class_label_legend:
         _add_class_legend(fig, **kwargs)
 
     # save figure
@@ -232,7 +232,7 @@ def plot_disparity(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[
     kwargs['vline_fnc'] = _show_beta
 
     plot_distribution(iter_data,
-                      x=x,
+                      col_name=x,
                       get_x_y_from_df_fnc=get_disparity,
                       fn=fn, **kwargs)
 
@@ -272,7 +272,7 @@ def plot_gini_coefficient(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x:
     kwargs['ylim'] = (-0.01, 1.01)
 
     plot_distribution(iter_data,
-                      x=x,
+                      col_name=x,
                       get_x_y_from_df_fnc=get_gini_coefficient,
                       fn=fn, **kwargs)
 
@@ -331,41 +331,58 @@ def plot_fraction_of_minority(iter_data: Union[pd.DataFrame, List[pd.DataFrame]]
     kwargs['ylim'] = (0. - gap, 1. + gap)
 
     plot_distribution(iter_data,
-                      x=x,
+                      col_name=x,
                       get_x_y_from_df_fnc=get_fraction_of_minority,
                       fn=fn, **kwargs)
 
 
-def plot_powerlaw_fit(iter_data: Set[pd.DataFrame], x: str, kind: str, fn=None, **kwargs):
+def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List], kind: str,
+                      fn=None, **kwargs):
+
+    if kind not in TYPE_OF_DISTRIBUTION:
+        raise ValueError(f"kind must be one of {TYPE_OF_DISTRIBUTION}")
+
+    iter_data = [data] if type(data) == pd.DataFrame else data
     nc = kwargs.pop('nc', None)
     nc, nr = _get_grid_info(len(iter_data), nc=nc)
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
+    iter_column = [col_name] * (nc * nr) if type(col_name) == str else col_name
 
-    hue = kwargs.pop('hue', None)
+    # whole plot
     sharex = kwargs.pop('sharex', False)
     sharey = kwargs.pop('sharey', False)
     log_scale = kwargs.pop('log_scale', (False, False))
-    ylabel = kwargs.pop('ylabel', "p(X≥x)" if kind == "ccdf" else "p(X<x)" if kind == 'cdf' else "p(X=x)")
+    xlabel = kwargs.pop('xlabel', None)
+    ylabel = kwargs.pop('ylabel', "p(X≥x)" if kind == "ccdf" else "p(X<x)" if kind == 'cdf' else "p(X=x)" if kind == 'pdf' else None)
     verbose = kwargs.pop('verbose', False)
-    bbox = kwargs.pop('bbox', (1.0, 0.9))
-    fontsize = kwargs.pop('fontsize', None)
     wspace = kwargs.pop('wspace', None)
     hspace = kwargs.pop('hspace', None)
 
+    # outer legend
+    hue = kwargs.pop('hue', None)
+    bbox = kwargs.pop('bbox', (1.0, 0.9))
+
+    # inner legend
+    fontsize = kwargs.pop('fontsize', None)
+    loc = kwargs.pop('loc', None)
+
+    # plot
     w, h = cell_size if type(cell_size) == tuple else (cell_size, cell_size)
     fig, axes = plt.subplots(nr, nc, figsize=(nc * w, nr * h), sharex=sharex, sharey=sharey)
 
     for cell, df in enumerate(iter_data):
         row = cell // nc
         col = cell % nc
+        _col_name = iter_column[cell]
 
         ax = axes if nr == nc == 1 else axes[cell] if nr == 1 else axes[row, col]
 
         class_label: str
-        for class_label, data in df.groupby(hue):
-            data = data.query(f"{x}>0")
-            discrete = data[x].dtype == np.int64
-            fit = fit_power_law(data.loc[:, x].values, discrete=discrete, verbose=verbose)
+        iter_groups = df.groupby(hue) if hue is not None else [(None, df)]
+        for class_label, group in iter_groups:
+            group_nonzero = group.query(f"{_col_name}>0")
+            discrete = group_nonzero[_col_name].dtype == np.int64
+            fit = fit_power_law(group_nonzero.loc[:, _col_name].values, discrete=discrete, verbose=verbose)
 
             color = _get_class_label_color(class_label)
 
@@ -376,22 +393,27 @@ def plot_powerlaw_fit(iter_data: Set[pd.DataFrame], x: str, kind: str, fn=None, 
             ax = efnc(label=r"Empirical", ax=ax, color=color, **kwargs)
             ax = fnc(label=f'Powerlaw $\gamma={fit.alpha:.2f}$', linestyle='--', ax=ax, color=color, **kwargs)
 
+            # legend inside: empirical vs powerlaw
             handles, labels = ax.get_legend_handles_labels()
-            leg = ax.legend(handles, labels, loc=4 if kind == 'cdf' else 3, fontsize=fontsize)
+            loc = loc if loc is not None else 4 if kind == 'cdf' else 1
+            leg = ax.legend(handles, labels, loc=loc, fontsize=fontsize)
             leg.draw_frame(False)
 
         if log_scale[0]:
             ax.set_xscale('log')
         if log_scale[1]:
             ax.set_yscale('log')
-
-        if (sharey and col == 0) or (not sharey):
+        if ylabel is not None and ((sharey and col == 0) or (not sharey)):
             ax.set_ylabel(ylabel)
+        if xlabel is None:
+            ax.set_xlabel(_col_name)
+        elif (sharex and row == nr - 1) or (not sharex):
+            ax.set_xlabel(xlabel)
 
-        ax.set_xlabel(x)
         ax.set_title(df.name)
 
     # legend
-    kwargs['bbox'] = bbox
-    _add_class_legend(fig, **kwargs)
+    if hue:
+        kwargs['bbox'] = bbox
+        _add_class_legend(fig, **kwargs)
     _save_plot(fig, fn, wspace=wspace, hspace=hspace, **kwargs)

@@ -16,6 +16,7 @@ __pycache__
 # temporals
 tmp
 _tmp
+deleteme*
 
 # pip install
 build
