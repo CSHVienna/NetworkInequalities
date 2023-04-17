@@ -4,7 +4,7 @@ It is based on the NetworkX package and provides a set of functions to study ine
 in social networks.
 """
 
-__version__ = '1.0.5.1'
+__version__ = '1.0.5.2'
 
 from netin import utils
 from netin.utils import *
