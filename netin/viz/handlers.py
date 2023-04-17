@@ -78,7 +78,8 @@ def _add_class_legend(fig, **kwargs):
     fig.legend(handles=[maj_patch, min_patch], bbox_to_anchor=bbox, loc=loc)
 
 
-def plot_graphs(iter_graph: Set[Graph], share_pos=False, fn=None, **kwargs):
+def plot_graph(data: Union[Graph, Set[Graph]], share_pos=False, fn=None, **kwargs):
+    iter_graph = [data] if isinstance(data, Graph) else data
     nc = kwargs.pop('nc', None)
     nc, nr = _get_grid_info(len(iter_graph), nc=nc)
     cell_size = kwargs.get('cell_size', DEFAULT_CELL_SIZE)
@@ -94,8 +95,12 @@ def plot_graphs(iter_graph: Set[Graph], share_pos=False, fn=None, **kwargs):
 
     pos = None
     same_n = len(set([g.number_of_nodes() for g in iter_graph])) == 1
-    for c, g in enumerate(iter_graph):
-        ax = axes[c]
+    for cell, g in enumerate(iter_graph):
+        row = cell // nc
+        col = cell % nc
+
+        ax = axes if nr == nc == 1 else axes[cell] if nr == 1 else axes[row, col]
+
         pos = nx.spring_layout(g) if pos is None or not share_pos or not same_n else pos
 
         # nodes
@@ -130,8 +135,8 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
     iter_column = [col_name] * (nc * nr) if type(col_name) == str else col_name
 
+    # whole plot
     scatter = kwargs.pop('scatter', False)
-    hue = kwargs.pop('hue', None)
     sharex = kwargs.pop('sharex', False)
     sharey = kwargs.pop('sharey', False)
     xy_fnc_name = get_x_y_from_df_fnc.__name__
@@ -142,16 +147,21 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
     ylim = kwargs.pop('ylim', None)
     common_norm = kwargs.pop('common_norm', False)
     log_scale = kwargs.pop('log_scale', (False, False))
-    class_label_legend = kwargs.pop('class_label_legend', True)
     hline_fnc = kwargs.pop('hline_fnc', None)
     vline_fnc = kwargs.pop('vline_fnc', None)
+    wspace = kwargs.pop('wspace', None)
+    hspace = kwargs.pop('hspace', None)
     suptitle = kwargs.pop('suptitle', None)
+
+    # subplots
     cuts = kwargs.pop('cuts', None)
     gini_fnc = kwargs.pop('gini_fnc', None)
     me_fnc = kwargs.pop('me_fnc', None)
     beta = kwargs.pop('beta', None)
-    wspace = kwargs.pop('wspace', None)
-    hspace = kwargs.pop('hspace', None)
+
+    # outter legend
+    hue = kwargs.pop('hue', None)
+    class_label_legend = kwargs.pop('class_label_legend', True)
 
     w, h = cell_size if type(cell_size) == tuple else (cell_size, cell_size)
     fig, axes = plt.subplots(nr, nc, figsize=(nc * w, nr * h), sharex=sharex, sharey=sharey)
@@ -357,6 +367,7 @@ def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
     verbose = kwargs.pop('verbose', False)
     wspace = kwargs.pop('wspace', None)
     hspace = kwargs.pop('hspace', None)
+    suptitle = kwargs.pop('suptitle', None)
 
     # outer legend
     hue = kwargs.pop('hue', None)
@@ -412,8 +423,14 @@ def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
 
         ax.set_title(df.name)
 
-    # legend
-    if hue:
+    # suptitle
+    if suptitle is not None:
+        fig.suptitle(suptitle)
+
+    # legend (min, maj)
+    if hue and bbox:
         kwargs['bbox'] = bbox
         _add_class_legend(fig, **kwargs)
+
+    # save plot
     _save_plot(fig, fn, wspace=wspace, hspace=hspace, **kwargs)
