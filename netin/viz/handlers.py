@@ -3,6 +3,7 @@ from typing import Set
 from typing import List
 from typing import Union
 
+import matplotlib
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from matplotlib import rc
@@ -21,10 +22,31 @@ from netin.stats.distributions import get_disparity
 
 
 def reset_style():
+    """
+    Resets the style of the plots to the default style.
+    Returns
+    -------
+
+    """
+
     sns.reset_orig()
 
 
-def set_paper_style(font_scale=1.0):
+def set_paper_style(font_scale: float = 1.0):
+    """
+    Sets the style of the plots to the paper style.
+    Font family serif, and allows to adjust the font scale.
+
+    Parameters
+    ----------
+    font_scale: float
+        A scale factor for the font size.
+
+    Returns
+    -------
+
+    """
+
     sns.set_context("paper", font_scale=font_scale)
     rc('font', family='serif')
     rc('lines', linewidth=1.0)
@@ -33,7 +55,26 @@ def set_paper_style(font_scale=1.0):
     rc('ytick.major', width=0.5)
 
 
-def _get_edge_color(s: int, t: int, g: Graph):
+def _get_edge_color(s: int, t: int, g: Graph) -> str:
+    """
+    Returns the color of the edge between s and t in the graph g.
+    If the edge is homophilic (same attribute value for s and t), the color is the color of the attribute class.
+    Otherwise, the color is mixed.
+
+    Parameters
+    ----------
+    s: int
+        source node
+    t: int
+        target node
+    g:
+        graph netin.Graph
+
+    Returns
+    -------
+    color: str
+        color of the edge
+    """
     if g.get_class_value(s) == g.get_class_value(t):
         if g.get_class_value(s) == const.MINORITY_VALUE:
             return COLOR_MINORITY
@@ -43,6 +84,23 @@ def _get_edge_color(s: int, t: int, g: Graph):
 
 
 def _get_class_label_color(class_label: str, ylabel: str = None) -> str:
+    """
+    Returns the color for the class label.
+
+    Parameters
+    ----------
+    class_label: str
+        class label e.g., M or m for majority and minority
+    ylabel: str
+        label of the y-axis.
+        If it is a curve for the minority class, the color is the color of the minority class.
+        Otherwise, the color for the class label.
+
+    Returns
+    -------
+    color: str
+        color for the class label
+    """
     if ylabel in MINORITY_CURVE and class_label is None:
         return COLOR_MINORITY
 
@@ -51,38 +109,152 @@ def _get_class_label_color(class_label: str, ylabel: str = None) -> str:
         else COLOR_BLACK
 
 
-def _save_plot(fig, fn=None, **kwargs):
+def _save_plot(fig: matplotlib.figure.Figure, fn=None, **kwargs):
+    """
+    Saves the figure to a file, shows it and closes the figure.
+
+    Parameters
+    ----------
+    fig: matplotlib.figure.Figure
+        figure to save
+    fn: str
+        filename to save the figure
+    kwargs: dict
+        additional arguments for the `subplots_adjust` function of the figure.
+        - left: float
+            left margin
+        - right: float
+            right margin
+        - bottom: float
+            bottom margin
+        - top: float
+            top margin
+        - wspace: float
+            width space between subplots
+        - hspace: float
+            height space between subplots
+
+        Additional arguments for the `savefig` function of the figure.
+        - dpi: int
+            dpi of the figure
+        - bbox_inches: str
+            bounding box of the figure
+
+    Returns
+    -------
+
+    """
     dpi = kwargs.pop('dpi', DPI)
+    bbox_inches = kwargs.pop('bbox_inches', 'tight')
     wspace = kwargs.pop('wspace', None)
     hspace = kwargs.pop('hspace', None)
+    left = kwargs.pop('left', None)
+    right = kwargs.pop('right', None)
+    bottom = kwargs.pop('bottom', None)
+    top = kwargs.pop('top', None)
+
     fig.tight_layout()
-    fig.subplots_adjust(wspace=wspace, hspace=hspace)
+    fig.subplots_adjust(left=left, right=right, bottom=bottom, top=top, wspace=wspace, hspace=hspace)
     if fn is not None and fig is not None:
-        fig.savefig(fn, dpi=dpi, bbox_inches='tight')
+        fig.savefig(fn, dpi=dpi, bbox_inches=bbox_inches, **kwargs)
         logging.info("%s saved" % fn)
     plt.show()
     plt.close()
 
 
 def _get_grid_info(total_subplots: int, nc: int = None) -> (int, int):
+    """
+    Returns the number of columns and rows to be plotted
+    based on the total number of subplots and the number of columns.
+
+    Parameters
+    ----------
+    total_subplots: int
+        total number of subplots
+    nc: int
+        number of columns
+
+    Returns
+    -------
+    nc: int
+        number of columns
+    nr: int
+        number of rows
+    """
     nc = total_subplots if nc is None else nc  # min(MAX_PLOTS_PER_ROW, total_subplots) if nc is None else nc
     nr = int(np.ceil(total_subplots / nc))  # int(np.ceil(nc / MAX_PLOTS_PER_ROW))
     return nc, nr
 
 
-def _add_class_legend(fig, **kwargs):
+def _add_class_legend(fig: matplotlib.figure.Figure, **kwargs):
+    """
+    Shows the legend of the figure using the "class_label" values of the nodes/graph.
+
+    Parameters
+    ----------
+    fig: matplotlib.figure.Figure
+        figure to add the legend
+    kwargs: dict
+        additional arguments for the `legend` function of the figure.
+            - bbox: tuple
+                bounding box of the legend
+            - loc: str
+                location of the legend
+
+    Returns
+    -------
+
+    """
     maj_patch = mpatches.Patch(color=COLOR_MAJORITY, label='majority')
     min_patch = mpatches.Patch(color=COLOR_MINORITY, label='minority')
-    bbox = kwargs.get('bbox', (1.04, 1))
-    loc = kwargs.get('loc', "upper left")
-    fig.legend(handles=[maj_patch, min_patch], bbox_to_anchor=bbox, loc=loc)
+    bbox = kwargs.pop('bbox', (1.04, 1))
+    loc = kwargs.pop('loc', "upper left")
+    fig.legend(handles=[maj_patch, min_patch], bbox_to_anchor=bbox, loc=loc, **kwargs)
 
 
-def plot_graph(data: Union[Graph, Set[Graph]], share_pos=False, fn=None, **kwargs):
+def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = False, fn : str = None, **kwargs):
+    """
+    Plots one or multiple (netin.Graph) graphs as matplotlib figures.
+
+    Parameters
+    ----------
+    data: Union[netin.Graph, Set[netin.Graph]]
+        graph or set of graphs to plot
+    share_pos: bool
+        if True, the positions of the nodes are shared between the graphs
+    fn: str
+        filename to save the figure
+    kwargs: dict
+        additional arguments for the `subplots` function of the figure.
+            - cell_size: float
+                size of the cell in inches
+            - nc: int
+                number of columns
+            - node_size: int
+                size of the nodes
+            - node_shape: str
+                shape of the nodes e.g, 'o' for circle, 's' for square
+            - edge_width: float
+                width of the edges
+            - edge_style: str
+                style of the edges e.g., 'solid', 'dashed'
+            - edge_arrows: bool
+                if True, the edges are plotted with arrows
+            - arrow_style: str
+                style of the arrows e.g., '-|>' for filled arrow
+            - arrow_size: int
+                size of the arrows
+
+        additional arguments for the `subplots_adjust` and `savefig` functions of the figure.
+
+    Returns
+    -------
+
+    """
     iter_graph = [data] if isinstance(data, Graph) else data
     nc = kwargs.pop('nc', None)
     nc, nr = _get_grid_info(len(iter_graph), nc=nc)
-    cell_size = kwargs.get('cell_size', DEFAULT_CELL_SIZE)
+    cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
 
     fig, axes = plt.subplots(nr, nc, figsize=(nc * cell_size, nr * cell_size), sharex=False, sharey=False)
     node_size = kwargs.get('node_size', 1)
@@ -129,6 +301,69 @@ def plot_graph(data: Union[Graph, Set[Graph]], share_pos=False, fn=None, **kwarg
 
 def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List],
                       get_x_y_from_df_fnc: callable, fn=None, **kwargs):
+    """
+    Plots a distribution of the values of a column of a dataframe.
+
+    Parameters
+    ----------
+    data: Union[pandas.DataFrame, List[pandas.DataFrame]]
+        dataframe or list of dataframes to plot including.
+        A column of this dataframe is used to plot the distribution.
+    col_name: str
+        name of the column to plot
+    get_x_y_from_df_fnc: callable
+        function to get the x and y values from the dataframe
+    fn: str
+        filename to save the figure
+    kwargs: dict
+        additional arguments
+        - nc: int
+            number of columns to show in the grid
+        - cell_size: float or tuple(float, float)
+            size of the cell in inches.
+            If a tuple is given, the first value is the width and the second value is the height.
+        - scatter: bool
+            if True, the distribution is plotted as a scatter plot
+        - sharex: bool
+            if True, the x-axis is shared between the subplots
+        - sharey: bool
+            if True, the y-axis is shared between the subplots
+        - ylabel: str
+            label of the y-axis if not set, the name of the function get_x_y_from_df_fnc is used
+        - xlabel: str
+            label of the x-axis.
+        - xlim, ylim: tuple
+            limits of the x and y-axis
+        - hue: str
+            name of the column to use for grouping the data
+        - common_norm: bool
+            if True, the y-axis is normalized to the same value (sum of all values).
+            Otherwise, the y-axis is normalized per class (hue)
+        - log_scale: tuple(bool, bool)
+            if True, the x and y-axis are plotted in log scale
+        - hline_fnc: callable
+            function to plot a horizontal line
+        - vline_fnc: callable
+            function to plot a vertical line
+        - suptitle: str
+            title of the whole plot
+        - cuts: list
+            list of cuts to plot (vertical lines)
+        - gini_fnc: callable
+            function to plot the gini coefficient in ranking (inequality)
+        - me_fnc: callable
+            function to plot the mean error in ranking (inequity)
+        - beta: float
+            beta value for smoothing the inequity areas (over, under, and fair representation of minority nodes)
+        - class_label_legend: bool
+            if True, the legend of the class labels is plotted
+
+        additional arguments sent to `ax.scatter` or `ax.plot` from matplotlib
+
+    Returns
+    -------
+
+    """
     iter_data = [data] if type(data) == pd.DataFrame else data
     nc = kwargs.pop('nc', None)
     nc, nr = _get_grid_info(len(iter_data), nc=nc)
@@ -230,7 +465,25 @@ def _show_beta(axline, data):
     axline(-const.INEQUITY_BETA, ls='--', color='grey', alpha=0.5)
 
 
-def plot_disparity(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[str, List], fn=None, **kwargs):
+def plot_disparity(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List], fn=None, **kwargs):
+    """
+    Plots the disparity of the ranking of the minority group.
+
+    Parameters
+    ----------
+    data: pd.DataFrame or List[pd.DataFrame]
+        Metadata of nodes (each column is a property, e.g., degree)
+    col_name: str
+        Name of the column to plot (property of node)
+    fn: str
+        File name to save the plot
+    kwargs: dict
+        Additional arguments to pass to the `plot_distribution` function
+
+    Returns
+    -------
+
+    """
     gap = 0.04
     kwargs['class_label_legend'] = False
     kwargs['xlabel'] = INEQUITY_AXIS_LABEL
@@ -241,13 +494,32 @@ def plot_disparity(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[
     kwargs['hline_fnc'] = _show_cuts
     kwargs['vline_fnc'] = _show_beta
 
-    plot_distribution(iter_data,
-                      col_name=x,
+    plot_distribution(data,
+                      col_name=col_name,
                       get_x_y_from_df_fnc=get_disparity,
                       fn=fn, **kwargs)
 
 
-def plot_gini_coefficient(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[str, List], fn=None, **kwargs):
+def plot_gini_coefficient(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List],
+                          fn=None, **kwargs):
+    """
+    Plots the Gini coefficient of the ranking of the minority group.
+
+    Parameters
+    ----------
+    data: pd.DataFrame or List[pd.DataFrame]
+        Metadata of nodes (each column is a property, e.g., degree)
+    col_name: str or List[str]
+        Name of the column to plot (property of node)
+    fn: str
+        File name to save the plot
+    kwargs: dict
+        Additional arguments to pass to the `plot_distribution` function
+
+    Returns
+    -------
+
+    """
     def show_gini(ax, ys, cuts):
         gini, x, y, va, ha, color = get_gini_label(ys, cuts)
         ax.text(s=gini,
@@ -272,8 +544,8 @@ def plot_gini_coefficient(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x:
         c = 'grey'
         return f"Gini={gini_global:.3f}\n{ineq}", x, y, va, ha, c
 
-    cuts = kwargs.pop('cuts', const.INEQUALITY_CUTS)
-
+    cuts = kwargs.get('cuts', None)
+    kwargs['cuts'] = cuts if cuts is not None else const.INEQUALITY_CUTS
     kwargs['class_label_legend'] = False
     kwargs['hline_fnc'] = _show_cuts
     kwargs['gini_fnc'] = show_gini
@@ -281,14 +553,32 @@ def plot_gini_coefficient(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x:
     kwargs['ylabel'] = GINI_TOPK_AXIS_LABEL
     kwargs['ylim'] = (-0.01, 1.01)
 
-    plot_distribution(iter_data,
-                      col_name=x,
+    plot_distribution(data,
+                      col_name=col_name,
                       get_x_y_from_df_fnc=get_gini_coefficient,
                       fn=fn, **kwargs)
 
 
-def plot_fraction_of_minority(iter_data: Union[pd.DataFrame, List[pd.DataFrame]], x: Union[str, List],
+def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List],
                               fn=None, **kwargs):
+    """
+    Plots the fraction of minority nodes in each top-k of the rank.
+
+    Parameters
+    ----------
+    data: pd.DataFrame or List[pd.DataFrame]
+        Metadata of nodes (each column is a property, e.g., degree)
+    col_name: str or List
+        Name of the column to plot (property of node)
+    fn: str:
+        File name to save the plot
+    kwargs: dict
+        Additional arguments to pass to the `plot_distribution` function
+
+    Returns
+    -------
+
+    """
     gap = 0.02
 
     def show_me(ax, f_m, ys, beta):
@@ -332,7 +622,8 @@ def plot_fraction_of_minority(iter_data: Union[pd.DataFrame, List[pd.DataFrame]]
     def show_minority(axline, data):
         axline(data.query("class_label==@const.MINORITY_LABEL").shape[0] / data.shape[0], color="black", linestyle='--')
 
-    beta = kwargs.pop('beta', const.INEQUITY_BETA)
+    beta = kwargs.get('beta', None)
+    kwargs['beta'] = beta if beta is not None else const.INEQUITY_BETA
     kwargs['class_label_legend'] = False
     kwargs['hline_fnc'] = show_minority
     kwargs['me_fnc'] = show_me
@@ -340,14 +631,70 @@ def plot_fraction_of_minority(iter_data: Union[pd.DataFrame, List[pd.DataFrame]]
     kwargs['ylabel'] = FM_TOPK_AXIS_LABEL
     kwargs['ylim'] = (0. - gap, 1. + gap)
 
-    plot_distribution(iter_data,
-                      col_name=x,
+    plot_distribution(data,
+                      col_name=col_name,
                       get_x_y_from_df_fnc=get_fraction_of_minority,
                       fn=fn, **kwargs)
 
 
 def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List], kind: str,
                       fn=None, **kwargs):
+    """
+    Plots the powerlaw fit of the data. It shows the empirical and fitted distributions
+
+    Parameters
+    ----------
+    data: pd.DataFrame or List[pd.DataFrame]
+        Metadata of nodes
+    col_name: str or List[str]
+        Column name of the data to plot (columns of the dataframe, for each (list) or for all (str)
+    kind: str
+        Type of distribution to plot. One of "ccdf", "cdf", "pdf"
+    fn: str
+        Name of the file to save the plot
+    kwargs: dict
+        Additional parameters to pass to the plot
+
+        - nc: int
+            Number of columns of the grid
+        - cell_size: float or tuple(float, float)
+            size of the cell in inches.
+            If a tuple is given, the first value is the width and the second value is the height.
+        - sharex: bool
+            If True, the X axis will be shared among all subplots.
+        - sharey: bool
+            If True, the Y axis will be shared among all subplots.
+        - log_scale: tuple(bool, bool)
+            If True, the X and Y axis will be in log scale
+        - xlabel: str
+            Label of the X axis
+        - ylabel: str
+            Label of the Y axis
+        - verbose: bool
+            If True, it prints the parameters of the fit
+        - wspace: float
+            The amount of width reserved for blank space between subplots,
+            expressed as a fraction of the average axis width
+        - hspace: float
+            The amount of height reserved for white space between subplots,
+            expressed as a fraction of the average axis height
+        - suptile: str
+            Title of the whole plot
+        - hue: str
+            Column name of the data to use to color the plot (groups)
+        - bbox: tuple(float, float, float, float)
+            The bounding box that the whole plot will be fitted into.
+            The four values represent (left, bottom, right, top) in figure coordinates.
+        - loc: str
+            Location of the legend. One of "best", "upper right", "upper left", "lower left", "lower right",
+            "right", "center left", "center right", "lower center", "upper center", "center"
+
+        Additional parameters to pass to the plot of each subplot (pdf, cdf, ccdf)
+
+    Returns
+    -------
+
+    """
 
     if kind not in TYPE_OF_DISTRIBUTION:
         raise ValueError(f"kind must be one of {TYPE_OF_DISTRIBUTION}")
