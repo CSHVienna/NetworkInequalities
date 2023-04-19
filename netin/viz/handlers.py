@@ -209,7 +209,7 @@ def _add_class_legend(fig: matplotlib.figure.Figure, **kwargs):
     min_patch = mpatches.Patch(color=COLOR_MINORITY, label='minority')
     bbox = kwargs.pop('bbox', (1.04, 1))
     loc = kwargs.pop('loc', "upper left")
-    fig.legend(handles=[maj_patch, min_patch], bbox_to_anchor=bbox, loc=loc, **kwargs)
+    fig.legend(handles=[maj_patch, min_patch], bbox_to_anchor=bbox, loc=loc)
 
 
 def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = False, fn : str = None, **kwargs):
@@ -595,20 +595,21 @@ def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col
         me = ranking.get_ranking_inequity(f_m, ys)
         # label
         ineq = ranking.get_ranking_inequity_class(me, beta)
-        # position
+        # position right
         right = False
         bottom = np.any(np.array(ys[:5]) > 0.8)
         y = 0 + (gap * 2) if bottom else 1 - (gap * 2)
         x = 0 + (gap * 2)
 
         if f_m <= 0.2 and bottom:
+            # right - top
             right = True
             bottom = False
             y = 0 + (gap * 2) if bottom else 1 - (gap * 2)
-            x = 0 + (gap * 2)
+            x = 1 - (gap * 2)
 
             if np.any(np.array(ys[5:]) > 0.8):
-                # above minority
+                # left - above fraction of minority
                 right = False
                 bottom = True
                 y = f_m + (gap * 2)
@@ -739,6 +740,11 @@ def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
         iter_groups = df.groupby(hue) if hue is not None else [(None, df)]
         for class_label, group in iter_groups:
             group_nonzero = group.query(f"{_col_name}>0")
+
+            if group_nonzero[_col_name].nunique() == 1:
+                # not enough data to fit the powerlaw
+                continue
+
             discrete = group_nonzero[_col_name].dtype == np.int64
             fit = fit_power_law(group_nonzero.loc[:, _col_name].values, discrete=discrete, verbose=verbose)
 
@@ -748,8 +754,11 @@ def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
             fnc = fit.power_law.plot_ccdf if kind == "ccdf" else fit.power_law.plot_cdf if kind == 'cdf' \
                 else fit.power_law.plot_pdf
 
-            ax = efnc(label=r"Empirical", ax=ax, color=color, **kwargs)
-            ax = fnc(label=f'Powerlaw $\gamma={fit.alpha:.2f}$', linestyle='--', ax=ax, color=color, **kwargs)
+            try:
+                ax = efnc(label=r"Empirical", ax=ax, color=color, **kwargs)
+                ax = fnc(label=f'Powerlaw $\gamma={fit.alpha:.2f}$', linestyle='--', ax=ax, color=color, **kwargs)
+            except Exception as ex:
+                logging.warning("%s saved" % fn)
 
             # legend inside: empirical vs powerlaw
             handles, labels = ax.get_legend_handles_labels()
@@ -776,8 +785,7 @@ def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
 
     # legend (min, maj)
     if hue and bbox:
-        kwargs['bbox'] = bbox
-        _add_class_legend(fig, **kwargs)
+        _add_class_legend(fig, bbox=bbox, **kwargs)
 
     # save plot
     _save_plot(fig, fn, wspace=wspace, hspace=hspace, **kwargs)
