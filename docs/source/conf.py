@@ -1,3 +1,4 @@
+from netin import __version__ as _version_netin
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -9,7 +10,7 @@
 project = 'NetIn'
 copyright = '2023, Fariba Karimi, Lisette Espin-Noboa, Jan Bachmann'
 author = 'Fariba Karimi, Lisette Espin-Noboa, Jan Bachmann'
-release = '1.0.5'
+release = _version_netin
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
