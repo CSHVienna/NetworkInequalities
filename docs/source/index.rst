@@ -14,6 +14,7 @@ Network Inequality
    :glob:
 
    generators/*
+   mechanisms
    statistics
 
 Indices and tables
