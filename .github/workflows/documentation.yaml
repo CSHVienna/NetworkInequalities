@@ -11,6 +11,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install sphinx
+      - name: Install netin
+        run: |
+          pip install ./
       - name: Sphinx build
         run: |
           sphinx-build docs/source/ docs/build/html/
