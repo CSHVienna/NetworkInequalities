@@ -98,12 +98,17 @@ class TriadicClosure(Graph):
         Graph._initialize(self, class_attribute, class_values, class_labels)
 
     def get_special_targets(self, source: int) -> object:
-        """
-        Return an empty dictionary (source node ids)
+        """ Return an empty dictionary (source node ids)
+
         Parameters
         ----------
-        source: int
+        source : int
             Newly added node
+
+        Returns
+        -------
+        object
+            Return an empty dictionary (source node ids)
         """
         return defaultdict(int)
 
