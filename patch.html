@@ -34,6 +34,65 @@
             
   <section id="patch">
 <h1>PATCH<a class="headerlink" href="#patch" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="netin.PATCH">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.</span></span><span class="sig-name descname"><span class="pre">PATCH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_mm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_MM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.PATCH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new PATCH instance.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>n: int</dt><dd><p>number of nodes (minimum=2)</p>
+</dd>
+<dt>k: int</dt><dd><p>minimum degree of nodes (minimum=1)</p>
+</dd>
+<dt>f_m: float</dt><dd><p>fraction of minorities (minimum=1/n, maximum=(n-1)/n)</p>
+</dd>
+<dt>h_MM: float</dt><dd><p>homophily (similarity) between majority nodes (minimum=0, maximum=1.)</p>
+</dd>
+<dt>h_mm: float</dt><dd><p>homophily (similarity) between minority nodes (minimum=0, maximum=1.)</p>
+</dd>
+<dt>tc: float</dt><dd><p>probability of a new edge to close a triad (minimum=0, maximum=1.)</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h2>
+<p>The initialization is a undirected with n nodes and no edges.
+Then, everytime a node is selected as source, it gets connected to k target nodes.
+Target nodes are selected via preferential attachment (in-degree), and homophily (h_**)</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<p>[1] A. L. Barabasi and R. Albert “Emergence of scaling in random networks”, Science 286, pp 509-512, 1999.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATCH.get_metadata_as_dict">
+<span class="sig-name descname"><span class="pre">get_metadata_as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#netin.PATCH.get_metadata_as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns metadata for a undirected.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATCH.get_special_targets">
+<span class="sig-name descname"><span class="pre">get_special_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#netin.PATCH.get_special_targets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an empty dictionary (source node ids)</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>source<span class="classifier">int</span></dt><dd><p>Newly added node</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Dict</dt><dd><p>Empty dictionary</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
 </section>
 
 
@@ -56,7 +115,10 @@
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="netin.html">netin</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">PATCH</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PATCH</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#netin.PATCH"><code class="docutils literal notranslate"><span class="pre">PATCH</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="summary.html">Summary</a></li>
 </ul>
 
