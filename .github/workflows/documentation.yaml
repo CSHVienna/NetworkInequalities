@@ -13,12 +13,12 @@ jobs:
           pip install sphinx
       - name: Sphinx build
         run: |
-          sphinx-build docs/source/ _build/
+          sphinx-build docs/source/ docs/build/html/
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' }}
         with:
-          publish_branch: docs
+          publish_branch: documentation
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/
+          publish_dir: docs/build/html/
          
