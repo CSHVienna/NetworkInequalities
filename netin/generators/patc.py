@@ -78,12 +78,17 @@ class PATC(PA, TriadicClosure):
         TriadicClosure.info_params(self)
 
     def get_special_targets(self, source: int) -> object:
-        """
-        Return an empty dictionary (source node ids)
+        """Return an empty dictionary (source node ids)
+
         Parameters
         ----------
-        source: int
-            Newly added node
+        source : int
+             Newly added node
+
+        Returns
+        -------
+        object
+            Empty dictionary (source node ids)
         """
         return TriadicClosure.get_special_targets(self, source)
 
