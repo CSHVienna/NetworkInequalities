@@ -8,44 +8,44 @@ from .pah import PAH
 
 
 class PATCH(PAH, TriadicClosure):
+    """Creates a new PATCH instance.
+
+    Parameters
+    ----------
+    n: int
+        number of nodes (minimum=2)
+
+    k: int
+        minimum degree of nodes (minimum=1)
+
+    f_m: float
+        fraction of minorities (minimum=1/n, maximum=(n-1)/n)
+
+    h_MM: float
+        homophily (similarity) between majority nodes (minimum=0, maximum=1.)
+
+    h_mm: float
+        homophily (similarity) between minority nodes (minimum=0, maximum=1.)
+
+    tc: float
+        probability of a new edge to close a triad (minimum=0, maximum=1.)
+
+    Notes
+    -----
+    The initialization is a undirected with n nodes and no edges.
+    Then, everytime a node is selected as source, it gets connected to k target nodes.
+    Target nodes are selected via preferential attachment (in-degree),homophily (h_**; see :class:`netin.Homophily`), and triadic closure (see :class:`netin.TriadicClosure`).
+
+    References
+    ----------
+    [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
+    """
 
     ############################################################
     # Constructor
     ############################################################
 
     def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, seed: object = None):
-        """
-
-        Parameters
-        ----------
-        n: int
-            number of nodes (minimum=2)
-
-        k: int
-            minimum degree of nodes (minimum=1)
-
-        f_m: float
-            fraction of minorities (minimum=1/n, maximum=(n-1)/n)
-
-        h_MM: float
-            homophily (similarity) between majority nodes (minimum=0, maximum=1.)
-
-        h_mm: float
-            homophily (similarity) between minority nodes (minimum=0, maximum=1.)
-
-        tc: float
-            probability of a new edge to close a triad (minimum=0, maximum=1.)
-
-        Notes
-        -----
-        The initialization is a undirected with n nodes and no edges.
-        Then, everytime a node is selected as source, it gets connected to k target nodes.
-        Target nodes are selected via preferential attachment (in-degree), and homophily (h_**)
-
-        References
-        ----------
-        - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
-        """
         PAH.__init__(self, n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
         TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
 
@@ -88,10 +88,16 @@ class PATCH(PAH, TriadicClosure):
     def get_special_targets(self, source: int) -> object:
         """
         Return an empty dictionary (source node ids)
+
         Parameters
         ----------
-        source: int
+        source : int
             Newly added node
+
+        Returns
+        -------
+        Dict
+            Empty dictionary
         """
         return TriadicClosure.get_special_targets(self, source)
 

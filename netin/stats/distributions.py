@@ -1,11 +1,27 @@
-from typing import Union, Set, List
+from typing import Union, Set, List, Tuple
 
 import numpy as np
 import pandas as pd
 import powerlaw
 
 
-def get_pdf(df: pd.DataFrame, x: str, total: float) -> (np.ndarray, np.ndarray):
+def get_pdf(df: pd.DataFrame, x: str, total: float) -> Tuple[np.ndarray, np.ndarray]:
+    """Compute the probability density of the input data.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame that contains the data.
+    x : str
+        The column name of the data.
+    total : float
+        The total amount by which to normalize the data.
+
+    Returns
+    -------
+    Tuple[np.ndarray, np.ndarray]
+        Two arrays holding the values and their probability.
+    """
     values = df.groupby(x).size()
     xs = values.index.values
     ys = values.values / total
