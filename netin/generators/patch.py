@@ -1,4 +1,4 @@
-from typing import Union, Set
+from typing import Union, Set, Tuple
 
 import numpy as np
 
@@ -67,6 +67,14 @@ class PATCH(PAH, TriadicClosure):
         TriadicClosure._validate_parameters(self)
 
     def get_metadata_as_dict(self) -> dict:
+        """
+        Returns a dictionary with the metadata of the PATCH graph.
+
+        Returns
+        -------
+        dict
+            the graph  metadata as a dictionary
+        """
         obj1 = PAH.get_metadata_as_dict(self)
         obj2 = TriadicClosure.get_metadata_as_dict(self)
         obj1.update(obj2)
@@ -77,17 +85,57 @@ class PATCH(PAH, TriadicClosure):
     ############################################################
 
     def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+                                 special_targets: Union[None, object, iter] = None) -> Tuple[np.array, set[int]]:
+        """
+        Returns the probabilities of nodes to be selected as target nodes.
+
+        Parameters
+        ----------
+        source: int
+            source node id
+
+        target_set: set
+            set of target node ids
+
+        special_targets: dict
+            dictionary of special target node ids to be considered
+
+        Returns
+        -------
+        tuple
+            probabilities of nodes to be selected as target nodes, and set of target of nodes
+
+        """
         return TriadicClosure.get_target_probabilities(self, source, target_set, special_targets)
 
     def get_target_probabilities_regular(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                         special_targets: Union[None, object, iter] = None) -> tuple[
+                                         special_targets: Union[None, object, iter] = None) -> Tuple[
         np.ndarray, set[int]]:
+        """
+        Returns the probability of nodes to be selected as target nodes using the
+        preferential attachment with homophily mechanism.
+
+        Parameters
+        ----------
+        source: int
+            source node id
+
+        target_set: set
+            set of target node ids
+
+        special_targets: dict
+            dictionary of special target node ids to be considered
+
+        Returns
+        -------
+        tuple
+            probabilities of nodes to be selected as target nodes, and set of target of nodes
+        """
         return PAH.get_target_probabilities(self, source, target_set, special_targets)
 
     def get_special_targets(self, source: int) -> object:
         """
-        Return an empty dictionary (source node ids)
+        Returns an empty dictionary (source node ids)
 
         Parameters
         ----------
@@ -106,18 +154,38 @@ class PATCH(PAH, TriadicClosure):
     ############################################################
 
     def info_params(self):
+        """
+        Shows the (input) parameters of the graph.
+        """
         PAH.info_params(self)
         TriadicClosure.info_params(self)
 
     def info_computed(self):
+        """
+        Shows the (computed) properties of the graph.
+        """
         PAH.info_computed(self)
         TriadicClosure.info_computed(self)
 
-    def infer_homophily_values(self) -> (float, float):
+    def infer_homophily_values(self) -> Tuple[float, float]:
+        """
+        Infers analytically the homophily values of the graph.
+
+        Returns
+        -------
+        tuple
+            homophily values of the graph (majority, minority)
+        """
         h_MM = None
         h_mm = None
         return h_MM, h_mm
 
     def infer_triadic_closure(self) -> float:
+        """
+
+        Returns
+        -------
+
+        """
         tc = None
         return tc

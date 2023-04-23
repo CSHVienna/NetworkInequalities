@@ -1,6 +1,6 @@
 import time
 from collections import Counter
-from typing import Union, Set
+from typing import Union, Set, List
 
 import networkx as nx
 import numpy as np
@@ -12,42 +12,49 @@ from netin.utils import validator as val
 
 
 class Graph(nx.Graph):
+    """Bi-populated network
+
+    Parameters
+    ----------
+    n: int
+        number of nodes (minimum=2)
+
+    f_m: float
+        fraction of minorities (minimum=1/n, maximum=(n-1)/n)
+
+    seed: object
+        seed for random number generator
+
+    Notes
+    -----
+    The initialization is a graph with n nodes and fraction of minority f_m.
+    Source nodes are selected one-by-one (if undirected) and based on their activity (if directed).
+    Target nodes are selected depending on the chosen edge mechanism.
+
+    Available target mechanisms for undirected networks:
+    - preferential attachment (pa), see PA [1].
+    - preferential attachment with homophily (h_**), see PAH [2].
+    - preferential attachment with triadic closure (tc), see PATC [3].
+    - preferential attachment with homophily and triadic closure (tc), see PATCH.
+
+    Available target mechanisms for directed networks:
+    - preferential attachment, see DPA [4]
+    - homophily, see DH [4]
+    - preferential attachment with homophily (h_**), see DPAH [4]
+
+    References
+    ----------
+    [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
+    [2] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
+    [3] P. Holme and B. J. Kim “Growing scale-free networks with tunable clustering” Phys. Rev. E 2002.
+    [4] L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
+    """
 
     ############################################################
     # Constructor
     ############################################################
 
     def __init__(self, n: int, f_m: float, seed: object = None):
-        """
-        Bi-populated network
-
-        Parameters
-        ----------
-        n: int
-            number of nodes (minimum=2)
-
-        f_m: float
-            fraction of minorities (minimum=1/n, maximum=(n-1)/n)
-
-        seed: object
-            seed for random number generator
-
-        attr: dict
-            attributes to add to graph as key=value pairs
-
-        Notes
-        -----
-        The initialization is a graph with n nodes: f_m are minorities and (1-f_m) are majority.
-        Source nodes are selected one-by-one (if undirected) and based on their activity (if directed).
-        Target nodes are selected via preferential attachment (in-degree) [1].
-        Other target mechanisms:
-        - homophily (h_**),
-        - triadic closure (tc).
-
-        References
-        ----------
-        - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
-        """
         nx.Graph.__init__(self)
         self.n = n
         self.f_m = f_m
@@ -68,17 +75,36 @@ class Graph(nx.Graph):
     ############################################################
 
     def _infer_model_name(self):
+        """
+        Infers the name of the model.
+        """
         pass
 
     def _validate_parameters(self):
         """
-        Validates the parameters of the graph.
+        Validates the parameters of the graph (n, f_m, seed).
         """
         val.validate_int(self.n, minimum=2)
         val.validate_float(self.f_m, minimum=1 / self.n, maximum=(self.n - 1) / self.n)
         self.seed = self.seed if self.seed is not None else np.random.randint(0, 2 ** 32)
 
-    def _set_class_info(self, class_attribute: str = 'm', class_values=None, class_labels=None):
+    def _set_class_info(self, class_attribute: str = 'm',
+                        class_values: list = None,
+                        class_labels: list = None):
+        """
+        Sets the class_attribute, class_values and class_labels.
+
+        Parameters
+        ----------
+        class_attribute: str
+            name of the class attribute
+
+        class_values: list
+            list of class values
+
+        class_labels: list
+            list of class labels
+        """
         if class_labels is None:
             class_labels = [const.MAJORITY_LABEL, const.MINORITY_LABEL]
         if class_values is None:
@@ -89,7 +115,14 @@ class Graph(nx.Graph):
 
     def get_metadata_as_dict(self) -> dict:
         """
-        Returns metadata for a graph.
+        Returns metadata for a graph as a dictionary.
+        It includes the model name, class attribute, class values, class labels, number of nodes,
+        fraction of minority, and seed.
+
+        Returns
+        -------
+        dict
+            metadata for a graph
         """
         obj = {'model': self.get_model_name(),
                'class_attribute': self.get_class_attribute(),
@@ -104,68 +137,240 @@ class Graph(nx.Graph):
     # Getters & Setters
     ############################################################
 
-    def set_expected_number_of_nodes(self, n):
+    def set_expected_number_of_nodes(self, n: int):
+        """
+        Sets the expected number of nodes.
+
+        Parameters
+        ----------
+        n: int
+            number of nodes
+        """
         self.n = n
 
-    def get_expected_number_of_nodes(self):
+    def get_expected_number_of_nodes(self) -> int:
+        """
+        Returns the expected number of nodes (n, the input parameter).
+
+        Returns
+        -------
+        int
+            number of nodes
+        """
         return self.n
 
     def get_expected_number_of_edges(self):
         pass
 
-    def set_expected_fraction_of_minorities(self, f_m):
+    def set_expected_fraction_of_minorities(self, f_m: float):
+        """
+        Sets the expected fraction of minorities.
+
+        Parameters
+        ----------
+        f_m: float
+            fraction of minorities (minimum=1/n, maximum=(n-1)/n)
+        """
         self.f_m = f_m
 
-    def get_expected_fraction_of_minorities(self):
+    def get_expected_fraction_of_minorities(self) -> float:
+        """
+        Returns the expected fraction of minorities (f_m, the input parameter).
+
+        Returns
+        -------
+        float
+            fraction of minorities
+        """
         return self.f_m
 
-    def set_seed(self, seed):
+    def set_seed(self, seed = None):
+        """
+        Sets the random seed.
+
+        Parameters
+        ----------
+        seed
+            random seed
+        """
         self.seed = seed
 
-    def get_seed(self):
+    def get_seed(self) -> object:
+        """
+        Returns the random seed (seed, the input parameter).
+
+        Returns
+        -------
+        object
+            random seed
+        """
         return self.seed
 
-    def set_model_name(self, model_name):
+    def set_model_name(self, model_name: str):
+        """
+        Sets the name of the model used to generate the graph.
+
+        Parameters
+        ----------
+        model_name: str
+            name of the model
+        """
         self.model_name = model_name
 
-    def get_model_name(self):
+    def get_model_name(self) -> str:
+        """
+        Returns the name of the model used to generate the graph.
+
+        Returns
+        -------
+        str
+            name of the model
+        """
         return self.model_name
 
-    def set_class_attribute(self, class_attribute):
+    def set_class_attribute(self, class_attribute: str):
+        """
+        Sets the class attribute of the graph used to infer minority and majority nodes.
+
+        Parameters
+        ----------
+        class_attribute: str
+            name of the class attribute
+        """
         self.class_attribute = class_attribute
 
-    def get_class_attribute(self):
+    def get_class_attribute(self) -> str:
+        """
+        Returns the class attribute of the graph used to infer minority and majority nodes.
+
+        Returns
+        -------
+        str
+            name of the class attribute
+        """
         return self.class_attribute
 
-    def set_class_values(self, class_values):
+    def set_class_values(self, class_values: list):
+        """
+        Sets the class values under the class attribute.
+        These values are used to identify minority and majority nodes.
+        
+        Parameters
+        ----------
+        class_values: list
+            list of class values
+        """
         self.class_values = class_values
 
-    def get_class_values(self):
+    def get_class_values(self) -> list:
+        """
+        Returns the class values under the class attribute.
+
+        Returns
+        -------
+        list
+            list of class values
+        """
         return self.class_values
 
-    def set_class_labels(self, class_labels):
+    def set_class_labels(self, class_labels: list):
+        """
+        Sets the class labels for minority and majority that map the class values.
+
+        Parameters
+        ----------
+        class_labels: list
+            list of class labels
+        """
         self.class_labels = class_labels
 
-    def get_class_labels(self):
+    def get_class_labels(self) -> list:
+        """
+        Returns the class labels for minority and majority that map the class values.
+
+        Returns
+        -------
+        list
+            list of class labels
+        """
         return self.class_labels
 
-    def get_class_value(self, node):
+    def get_class_value(self, node: int) -> int:
+        """
+        Returns the class value of a given node (id).
+
+        Parameters
+        ----------
+        node: int
+            node id
+
+        Returns
+        -------
+        int
+            class value
+
+        """
         return self.nodes[node][self.class_attribute]
 
-    def get_class_label(self, node):
+    def get_class_label(self, node: int) -> str:
+        """
+        Returns the class label of a given node (id).
+
+        Parameters
+        ----------
+        node: int
+            node id
+
+        Returns
+        -------
+        str
+            class label
+        """
         idx = self.class_values.index(self.nodes[node][self.class_attribute])
         return self.class_labels[idx]
 
     def get_majority_value(self) -> int:
+        """
+        Returns the value for the majority class.
+
+        Returns
+        -------
+        int
+            value for the majority class
+        """
         return const.MAJORITY_VALUE
 
     def get_minority_value(self) -> int:
+        """
+        Returns the value for the minority class
+
+        Returns
+        -------
+        int
+            value for the minority class
+        """
         return const.MINORITY_VALUE
 
-    def get_majority_label(self) -> int:
+    def get_majority_label(self) -> str:
+        """
+        Returns the label for the majority class.
+
+        Returns
+        -------
+        str
+            label for the majority class
+        """
         return const.MAJORITY_LABEL
 
-    def get_minority_label(self) -> int:
+    def get_minority_label(self) -> str:
+        """
+        Returns the labels for the minority class.
+
+        Returns
+        -------
+        str
+            label for the minority class
+        """
         return const.MINORITY_LABEL
 
     ############################################################
@@ -174,7 +379,7 @@ class Graph(nx.Graph):
 
     def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
-        Initializes the random seed and the graph metadata.
+        Initializes the random seed, the graph metadata, and node class information.
         """
         np.random.seed(self.seed)
         self._validate_parameters()
@@ -183,6 +388,7 @@ class Graph(nx.Graph):
 
     def _init_graph(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
+        Initializes the graph.
         Sets the name of the model, class information, and the graph metadata.
 
         Parameters
@@ -214,10 +420,51 @@ class Graph(nx.Graph):
         pass
 
     def get_potential_nodes_to_connect(self, source: int, targets: Set[int]) -> Set[int]:
+        """
+        Returns the set of potential target nodes to connect to the source node.
+        These target nodes are not the source node and are not already connected to the source node.
+
+        Parameters
+        ----------
+        source: int
+            source node id
+
+        targets: Set[int]
+            set of target node ids
+
+        Returns
+        -------
+        Set[int]
+            set of potential target node ids
+        """
         return set([t for t in targets if t != source and t not in nx.neighbors(self, source)])
 
     def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
                                  special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+        """
+        Returns the probability for each target node to be connected to the source node.
+        It follows an Erdos-Renyi model [1].
+
+        Parameters
+        ----------
+        source:  int
+            source node id (not used here)
+
+        target_set: set
+            set of target node ids
+
+        special_targets:
+            special targets to be considered (not used here)
+
+        Returns
+        -------
+        tuple[np.array, set[int]]
+            tuple of probabilities and target set
+
+        References
+        ----------
+        [1] P. Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).
+        """
         # Random (erdos renyi)
         probs = np.ones(len(target_set))
         probs /= probs.sum()
@@ -235,6 +482,9 @@ class Graph(nx.Graph):
         pass
 
     def generate(self):
+        """
+        Basic instructions run before generating the graph.
+        """
         self._gen_start_time = time.time()
 
         # init graph and nodes
@@ -246,6 +496,9 @@ class Graph(nx.Graph):
         # for each source_node, get target (based on specific mechanisms), then add edge, update special targets
 
     def _terminate(self):
+        """
+        Instructions run after the generation of the graph.
+        """
         self._gen_duration = time.time() - self._gen_start_time
 
     ############################################################
@@ -258,12 +511,9 @@ class Graph(nx.Graph):
     def info_computed(self):
         pass
 
-    def info(self, **kwargs):
+    def info(self):
         """
-
-        Returns
-        -------
-        object
+        Shows the parameters and the computed propoerties of the graph.
         """
         print("=== Params ===")
         print('n: {}'.format(self.n))
@@ -302,14 +552,38 @@ class Graph(nx.Graph):
         print(f"- average clustering: {nx.average_clustering(self)}")
         self.info_computed()
 
-    def calculate_minimum_degree(self):
+    def calculate_minimum_degree(self) -> int:
+        """
+        Returns the minimum degree of the graph.
+
+        Returns
+        -------
+        int
+            minimum degree
+        """
         return min([d for n, d in self.degree])
 
-    def calculate_fraction_of_minority(self):
+    def calculate_fraction_of_minority(self) -> float:
+        """
+        Returns the fraction of minority nodes in the graph (based on class attribute).
+
+        Returns
+        -------
+        float
+            fraction of minority nodes
+        """
         return sum([1 for n, obj in self.nodes(data=True) if obj[self.class_attribute] == self.class_values[
             self.class_labels.index(const.MINORITY_LABEL)]]) / self.number_of_nodes()
 
-    def count_edges_types(self):
+    def count_edges_types(self) -> Counter:
+        """
+        Returns the number of edges of each type, e.g., Mm (between majoriy and minority), mm, etc.
+
+        Returns
+        -------
+        Counter
+            counter of edges types
+        """
         return Counter([f"{self.class_labels[self.nodes[e[0]][self.class_attribute]]}"
                         f"{self.class_labels[self.nodes[e[1]][self.class_attribute]]}"
                         for e in self.edges])
@@ -318,7 +592,23 @@ class Graph(nx.Graph):
     # Metadata
     ############################################################
 
-    def compute_node_stats(self, metric, **kwargs):
+    def compute_node_stats(self, metric: str, **kwargs) -> List[Union[int, float]]:
+        """
+        Returns the property of each node in the graph based on the metric.
+
+        Parameters
+        ----------
+        metric: str
+            metric to compute
+
+        kwargs: dict
+            additional parameters for the metric
+
+        Returns
+        -------
+        List[Union[int, float]]
+            list properties for each node
+        """
         values = None
 
         # list of tuples (node, value)
@@ -346,7 +636,24 @@ class Graph(nx.Graph):
 
         return [values[n] for n in self.node_list] if values is not None else np.nan
 
-    def get_node_metadata_as_dataframe(self, include_graph_metadata=False, n_jobs=1):
+    def get_node_metadata_as_dataframe(self, include_graph_metadata: bool = False, n_jobs: int = 1) -> pd.DataFrame:
+        """
+        Returns the metadata of the nodes in the graph as a dataframe.
+        Every row represents a node, and the columns are the metadata of the node.
+
+        Parameters
+        ----------
+        include_graph_metadata: bool
+            whether to include the graph metadata (e.g., class attribute, class values, etc.)
+
+        n_jobs: int
+            number of parallel jobs
+
+        Returns
+        -------
+        pd.DataFrame
+            dataframe with the metadata of the nodes
+        """
         cols = ['node', 'class_label']
         obj = {'node': self.node_list,
                'class_label': [self.get_class_label(n) for n in self.node_list]}

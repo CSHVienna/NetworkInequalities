@@ -465,7 +465,7 @@ def _show_beta(axline, data):
     axline(-const.INEQUITY_BETA, ls='--', color='grey', alpha=0.5)
 
 
-def plot_disparity(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List], fn=None, **kwargs):
+def plot_disparity(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List], fn: str = None, **kwargs):
     """
     Plots the disparity of the ranking of the minority group.
 
@@ -501,7 +501,7 @@ def plot_disparity(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Unio
 
 
 def plot_gini_coefficient(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List],
-                          fn=None, **kwargs):
+                          fn: str = None, **kwargs):
     """
     Plots the Gini coefficient of the ranking of the minority group.
 
@@ -560,7 +560,7 @@ def plot_gini_coefficient(data: Union[pd.DataFrame, List[pd.DataFrame]], col_nam
 
 
 def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List],
-                              fn=None, **kwargs):
+                              fn: str = None, **kwargs):
     """
     Plots the fraction of minority nodes in each top-k of the rank.
 

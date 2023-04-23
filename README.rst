@@ -17,6 +17,7 @@ The package is currently under development and will be updated regularly.
     :target: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
 - **Website:** https://www.networkinequality.com
+- **Documentation:** https://cshvienna.github.io/NetworkInequalities
 - **Source:** https://github.com/CSHVienna/NetworkInequalities
 - **Bug reports:** https://github.com/CSHVienna/NetworkInequalities/issues
 - **GitHub Discussions:** https://github.com/CSHVienna/NetworkInequalities/discussions

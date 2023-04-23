@@ -19,6 +19,9 @@ tmp
 _tmp
 deleteme*
 
+# internal
+reports
+
 # pip install
 build
 dist

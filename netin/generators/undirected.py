@@ -1,5 +1,6 @@
 from typing import Set
 from typing import Union
+from typing import Tuple
 
 import networkx as nx
 import numpy as np
@@ -10,39 +11,44 @@ from .graph import Graph
 
 
 class UnDiGraph(Graph):
+    """Undirected graph base model.
+
+    Parameters
+    ----------
+    n: int
+        number of nodes (minimum=2)
+
+    k: int
+        minimum degree of nodes (minimum=1)
+
+    f_m: float
+        fraction of minorities (minimum=1/n, maximum=(n-1)/n)
+
+    seed: object
+        seed for random number generator
+
+    Notes
+    -----
+    The initialization is an undirected graph with n nodes and no edges.
+    Then, everytime a node is selected as source, it gets connected to k target nodes.
+    Target nodes are selected depending on the chosen mechanism of edge formation:
+        - PA: Preferential attachment (in-degree) [1]
+        - PAH: Preferential attachment (in-degree) with homophily [2]
+        - PATC: Preferential attachment (in-degree) with triadic closure [3]
+        - PATCH: Preferential attachment (in-degree) with homophily and triadic closure
+
+    References
+    ----------
+    [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
+    [2] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
+    [3] P. Holme and B. J. Kim “Growing scale-free networks with tunable clustering” Phys. Rev. E 2002.
+    """
 
     ############################################################
     # Constructor
     ############################################################
 
     def __init__(self, n: int, k: int, f_m: float, seed: object = None):
-        """
-
-        Parameters
-        ----------
-        n: int
-            number of nodes (minimum=2)
-
-        k: int
-            minimum degree of nodes (minimum=1)
-
-        f_m: float
-            fraction of minorities (minimum=1/n, maximum=(n-1)/n)
-
-        seed: object
-            seed for random number generator
-
-        Notes
-        -----
-        The initialization is an undirected graph with n nodes and no edges.
-        Then, everytime a node is selected as source, it gets connected to k target nodes.
-        Target nodes are selected via preferential attachment (in-degree), homophily (h_**),
-        and/or triadic closure (tc).
-
-        References
-        ----------
-        - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
-        """
         Graph.__init__(self, n=n, f_m=f_m, seed=seed)
         self.k = k
 
@@ -98,7 +104,7 @@ class UnDiGraph(Graph):
 
     def generate(self):
         """
-        An undirected of n nodes is grown by attaching new nodes each with k edges.
+        An undirected graph of n nodes is grown by attaching new nodes each with k edges.
         Each edge is either drawn by preferential attachment, homophily, and/or triadic closure.
 
         For triadic closure, a candidate is chosen uniformly at random from all triad-closing edges (of the new node).
@@ -142,10 +148,27 @@ class UnDiGraph(Graph):
     ############################################################
 
     def get_expected_number_of_edges(self) -> int:
+        """
+        Computes and returns the expected number of edges based on minimum degree `k` and number of nodes `n`
+
+        Returns
+        -------
+            int
+                Expected number of edges
+        """
         return (self.get_expected_number_of_nodes() * self.get_expected_minimum_degree()) - \
             (self.get_expected_minimum_degree() ** self.get_expected_minimum_degree())
 
     def get_expected_minimum_degree(self) -> int:
+        """
+        Returns the expected minimum degree of the graph (`k`, the input parameter)
+
+        Returns
+        -------
+            int
+                Expected minimum degree
+        """
+
         return self.k
 
     ############################################################
@@ -153,9 +176,15 @@ class UnDiGraph(Graph):
     ############################################################
 
     def info_params(self):
+        """
+        Shows the parameters of the model.
+        """
         print('k: {}'.format(self.k))
 
     def info_computed(self):
+        """
+        Shows the computed properties of the graph.
+        """
         fit_M, fit_m = self.fit_degree_powerlaw()
         print(f"- Powerlaw fit (degree):")
         print(f"- {self.get_majority_label()}: alpha={fit_M.power_law.alpha}, "
@@ -165,7 +194,17 @@ class UnDiGraph(Graph):
               f"sigma={fit_m.power_law.sigma}, "
               f"min={fit_m.power_law.xmin}, max={fit_m.power_law.xmax}")
 
-    def fit_degree_powerlaw(self) -> powerlaw.Fit:
+    def fit_degree_powerlaw(self) -> Tuple[powerlaw.Fit,powerlaw.Fit]:
+        """
+        Returns the powerlaw fit of the degree distribution to a powerlaw for the majority and minority class.
+
+        Returns
+        -------
+        fit_M : powerlaw.Fit
+            Powerlaw fit for the majority class
+        fit_m: powerlaw.Fit
+            Powerlaw fit for the minority class
+        """
         vM = self.get_majority_value()
         dM = [d for n, d in self.degree() if self.nodes[n][self.class_attribute] == vM]
         dm = [d for n, d in self.degree() if self.nodes[n][self.class_attribute] != vM]
@@ -174,7 +213,17 @@ class UnDiGraph(Graph):
         fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm))
         return fit_M, fit_m
 
-    def calculate_degree_powerlaw_exponents(self) -> (float, float):
+    def calculate_degree_powerlaw_exponents(self) -> Tuple[float, float]:
+        """
+        Returns the powerlaw exponents for the majority and minority class.
+
+        Returns
+        -------
+        pl_M : float
+            Powerlaw exponent for the majority class
+        pl_m: float
+            Powerlaw exponent for the minority class
+        """
         fit_M, fit_m = self.fit_degree_powerlaw()
         pl_M = fit_M.power_law.alpha
         pl_m = fit_m.power_law.alpha
