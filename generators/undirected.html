@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Undirected Graphs &#8212; NetIn 1.0.5.5 documentation</title>
+    <title>Undirected Graphs &#8212; NetIn 1.0.5.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -37,27 +37,513 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="netin.Graph">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.</span></span><span class="sig-name descname"><span class="pre">Graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Bi-populated network</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>n: int</dt><dd><p>number of nodes (minimum=2)</p>
+</dd>
+<dt>f_m: float</dt><dd><p>fraction of minorities (minimum=1/n, maximum=(n-1)/n)</p>
+</dd>
+<dt>seed: object</dt><dd><p>seed for random number generator</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h2>
+<p>The initialization is a graph with n nodes and fraction of minority f_m.
+Source nodes are selected one-by-one (if undirected) and based on their activity (if directed).
+Target nodes are selected depending on the chosen edge mechanism.</p>
+<p>Available target mechanisms for undirected networks:
+- preferential attachment (pa), see PA [1].
+- preferential attachment with homophily (h_**), see PAH [2].
+- preferential attachment with triadic closure (tc), see PATC [3].
+- preferential attachment with homophily and triadic closure (tc), see PATCH.</p>
+<p>Available target mechanisms for directed networks:
+- preferential attachment, see DPA [4]
+- homophily, see DH [4]
+- preferential attachment with homophily (h_**), see DPAH [4]</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<p>[1] A. L. Barabasi and R. Albert “Emergence of scaling in random networks”, Science 286, pp 509-512, 1999.
+[2] F. Karimi, M. Génois, C. Wagner, P. Singer, &amp; M. Strohmaier, M “Homophily influences ranking of minorities in social networks”, Scientific reports 8(1), 11077, 2018.
+[3] P. Holme and B. J. Kim “Growing scale-free networks with tunable clustering” Phys. Rev. E 2002.
+[4] L. Espín-Noboa, C. Wagner, M. Strohmaier, &amp; F. Karimi “Inequality and inequity in network-based ranking and recommendation algorithms” Scientific reports 12(1), 1-14, 2022.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.calculate_fraction_of_minority">
+<span class="sig-name descname"><span class="pre">calculate_fraction_of_minority</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#netin.Graph.calculate_fraction_of_minority" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the fraction of minority nodes in the graph (based on class attribute).</p>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>fraction of minority nodes</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.calculate_minimum_degree">
+<span class="sig-name descname"><span class="pre">calculate_minimum_degree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.Graph.calculate_minimum_degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the minimum degree of the graph.</p>
+<section id="id1">
+<h3>Returns<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>minimum degree</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.compute_node_stats">
+<span class="sig-name descname"><span class="pre">compute_node_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.Graph.compute_node_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the property of each node in the graph based on the metric.</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>metric: str</dt><dd><p>metric to compute</p>
+</dd>
+<dt>kwargs: dict</dt><dd><p>additional parameters for the metric</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>Returns<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List[Union[int, float]]</dt><dd><p>list properties for each node</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.count_edges_types">
+<span class="sig-name descname"><span class="pre">count_edges_types</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Counter</span></span></span><a class="headerlink" href="#netin.Graph.count_edges_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of edges of each type, e.g., Mm (between majoriy and minority), mm, etc.</p>
+<section id="id4">
+<h3>Returns<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Counter</dt><dd><p>counter of edges types</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic instructions run before generating the graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_class_attribute">
+<span class="sig-name descname"><span class="pre">get_class_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#netin.Graph.get_class_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the class attribute of the graph used to infer minority and majority nodes.</p>
+<section id="id5">
+<h3>Returns<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>name of the class attribute</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_class_label">
+<span class="sig-name descname"><span class="pre">get_class_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#netin.Graph.get_class_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the class label of a given node (id).</p>
+<section id="id6">
+<h3>Parameters<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>node: int</dt><dd><p>node id</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h3>Returns<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>class label</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_class_labels">
+<span class="sig-name descname"><span class="pre">get_class_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#netin.Graph.get_class_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the class labels for minority and majority that map the class values.</p>
+<section id="id8">
+<h3>Returns<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>list</dt><dd><p>list of class labels</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_class_value">
+<span class="sig-name descname"><span class="pre">get_class_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.Graph.get_class_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the class value of a given node (id).</p>
+<section id="id9">
+<h3>Parameters<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>node: int</dt><dd><p>node id</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h3>Returns<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>class value</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_class_values">
+<span class="sig-name descname"><span class="pre">get_class_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#netin.Graph.get_class_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the class values under the class attribute.</p>
+<section id="id11">
+<h3>Returns<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>list</dt><dd><p>list of class values</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_expected_fraction_of_minorities">
+<span class="sig-name descname"><span class="pre">get_expected_fraction_of_minorities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#netin.Graph.get_expected_fraction_of_minorities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the expected fraction of minorities (f_m, the input parameter).</p>
+<section id="id12">
+<h3>Returns<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>fraction of minorities</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_expected_number_of_nodes">
+<span class="sig-name descname"><span class="pre">get_expected_number_of_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.Graph.get_expected_number_of_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the expected number of nodes (n, the input parameter).</p>
+<section id="id13">
+<h3>Returns<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>number of nodes</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_majority_label">
+<span class="sig-name descname"><span class="pre">get_majority_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#netin.Graph.get_majority_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the label for the majority class.</p>
+<section id="id14">
+<h3>Returns<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>label for the majority class</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_majority_value">
+<span class="sig-name descname"><span class="pre">get_majority_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.Graph.get_majority_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value for the majority class.</p>
+<section id="id15">
+<h3>Returns<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>value for the majority class</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="netin.Graph.get_metadata_as_dict">
 <span class="sig-name descname"><span class="pre">get_metadata_as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#netin.Graph.get_metadata_as_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns metadata for a graph.</p>
+<dd><p>Returns metadata for a graph as a dictionary.
+It includes the model name, class attribute, class values, class labels, number of nodes,
+fraction of minority, and seed.</p>
+<section id="id16">
+<h3>Returns<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>dict</dt><dd><p>metadata for a graph</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_minority_label">
+<span class="sig-name descname"><span class="pre">get_minority_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#netin.Graph.get_minority_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the labels for the minority class.</p>
+<section id="id17">
+<h3>Returns<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>label for the minority class</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_minority_value">
+<span class="sig-name descname"><span class="pre">get_minority_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.Graph.get_minority_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value for the minority class</p>
+<section id="id18">
+<h3>Returns<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>value for the minority class</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_model_name">
+<span class="sig-name descname"><span class="pre">get_model_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#netin.Graph.get_model_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the model used to generate the graph.</p>
+<section id="id19">
+<h3>Returns<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>name of the model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_node_metadata_as_dataframe">
+<span class="sig-name descname"><span class="pre">get_node_metadata_as_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_graph_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#netin.Graph.get_node_metadata_as_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the metadata of the nodes in the graph as a dataframe.
+Every row represents a node, and the columns are the metadata of the node.</p>
+<section id="id20">
+<h3>Parameters<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>include_graph_metadata: bool</dt><dd><p>whether to include the graph metadata (e.g., class attribute, class values, etc.)</p>
+</dd>
+<dt>n_jobs: int</dt><dd><p>number of parallel jobs</p>
+</dd>
+</dl>
+</section>
+<section id="id21">
+<h3>Returns<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>pd.DataFrame</dt><dd><p>dataframe with the metadata of the nodes</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_potential_nodes_to_connect">
+<span class="sig-name descname"><span class="pre">get_potential_nodes_to_connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.Graph.get_potential_nodes_to_connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the set of potential target nodes to connect to the source node.
+These target nodes are not the source node and are not already connected to the source node.</p>
+<section id="id22">
+<h3>Parameters<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>source: int</dt><dd><p>source node id</p>
+</dd>
+<dt>targets: Set[int]</dt><dd><p>set of target node ids</p>
+</dd>
+</dl>
+</section>
+<section id="id23">
+<h3>Returns<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Set[int]</dt><dd><p>set of potential target node ids</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_seed">
+<span class="sig-name descname"><span class="pre">get_seed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#netin.Graph.get_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the random seed (seed, the input parameter).</p>
+<section id="id24">
+<h3>Returns<a class="headerlink" href="#id24" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>object</dt><dd><p>random seed</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.get_target_probabilities">
+<span class="sig-name descname"><span class="pre">get_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.Graph.get_target_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability for each target node to be connected to the source node.
+It follows an Erdos-Renyi model [1].</p>
+<section id="id25">
+<h3>Parameters<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>source:  int</dt><dd><p>source node id (not used here)</p>
+</dd>
+<dt>target_set: set</dt><dd><p>set of target node ids</p>
+</dd>
+<dt>special_targets:</dt><dd><p>special targets to be considered (not used here)</p>
+</dd>
+</dl>
+</section>
+<section id="id26">
+<h3>Returns<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple[np.array, set[int]]</dt><dd><p>tuple of probabilities and target set</p>
+</dd>
+</dl>
+</section>
+<section id="id27">
+<h3>References<a class="headerlink" href="#id27" title="Permalink to this heading">¶</a></h3>
+<p>[1] P. Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).</p>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="netin.Graph.info">
-<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.info" title="Permalink to this definition">¶</a></dt>
-<dd><section id="returns">
-<h2>Returns<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h2>
-<p>object</p>
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the parameters and the computed propoerties of the graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.set_class_attribute">
+<span class="sig-name descname"><span class="pre">set_class_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.set_class_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the class attribute of the graph used to infer minority and majority nodes.</p>
+<section id="id28">
+<h3>Parameters<a class="headerlink" href="#id28" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>class_attribute: str</dt><dd><p>name of the class attribute</p>
+</dd>
+</dl>
 </section>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.set_class_labels">
+<span class="sig-name descname"><span class="pre">set_class_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.set_class_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the class labels for minority and majority that map the class values.</p>
+<section id="id29">
+<h3>Parameters<a class="headerlink" href="#id29" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>class_labels: list</dt><dd><p>list of class labels</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.set_class_values">
+<span class="sig-name descname"><span class="pre">set_class_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.set_class_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the class values under the class attribute.
+These values are used to identify minority and majority nodes.</p>
+<section id="id30">
+<h3>Parameters<a class="headerlink" href="#id30" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>class_values: list</dt><dd><p>list of class values</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.set_expected_fraction_of_minorities">
+<span class="sig-name descname"><span class="pre">set_expected_fraction_of_minorities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.set_expected_fraction_of_minorities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the expected fraction of minorities.</p>
+<section id="id31">
+<h3>Parameters<a class="headerlink" href="#id31" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>f_m: float</dt><dd><p>fraction of minorities (minimum=1/n, maximum=(n-1)/n)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.set_expected_number_of_nodes">
+<span class="sig-name descname"><span class="pre">set_expected_number_of_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.set_expected_number_of_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the expected number of nodes.</p>
+<section id="id32">
+<h3>Parameters<a class="headerlink" href="#id32" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>n: int</dt><dd><p>number of nodes</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.set_model_name">
+<span class="sig-name descname"><span class="pre">set_model_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.set_model_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the name of the model used to generate the graph.</p>
+<section id="id33">
+<h3>Parameters<a class="headerlink" href="#id33" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>model_name: str</dt><dd><p>name of the model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.Graph.set_seed">
+<span class="sig-name descname"><span class="pre">set_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Graph.set_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the random seed.</p>
+<section id="id34">
+<h3>Parameters<a class="headerlink" href="#id34" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>seed</dt><dd><p>random seed</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="netin.PA">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.</span></span><span class="sig-name descname"><span class="pre">PA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.PA" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="netin.PA.get_target_probabilities">
+<span class="sig-name descname"><span class="pre">get_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.PA.get_target_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability for each target node to be connected to the source node.
+It follows an Erdos-Renyi model [1].</p>
+<section id="id35">
+<h2>Parameters<a class="headerlink" href="#id35" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>source:  int</dt><dd><p>source node id (not used here)</p>
+</dd>
+<dt>target_set: set</dt><dd><p>set of target node ids</p>
+</dd>
+<dt>special_targets:</dt><dd><p>special targets to be considered (not used here)</p>
+</dd>
+</dl>
+</section>
+<section id="id36">
+<h2>Returns<a class="headerlink" href="#id36" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>tuple[np.array, set[int]]</dt><dd><p>tuple of probabilities and target set</p>
+</dd>
+</dl>
+</section>
+<section id="id37">
+<h2>References<a class="headerlink" href="#id37" title="Permalink to this heading">¶</a></h2>
+<p>[1] P. Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).</p>
+</section>
+</dd></dl>
+
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="netin.PATC">
@@ -72,15 +558,15 @@
 <dt class="sig sig-object py" id="netin.PATC.get_special_targets">
 <span class="sig-name descname"><span class="pre">get_special_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#netin.PATC.get_special_targets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an empty dictionary (source node ids)</p>
-<section id="parameters">
-<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
+<section id="id38">
+<h2>Parameters<a class="headerlink" href="#id38" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
 <dt>source<span class="classifier">int</span></dt><dd><p>Newly added node</p>
 </dd>
 </dl>
 </section>
-<section id="id1">
-<h2>Returns<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+<section id="id39">
+<h2>Returns<a class="headerlink" href="#id39" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
 <dt>object</dt><dd><p>Empty dictionary (source node ids)</p>
 </dd>
@@ -88,25 +574,150 @@
 </section>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATC.get_target_probabilities">
+<span class="sig-name descname"><span class="pre">get_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.PATC.get_target_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability for each target node to be connected to the source node.
+It follows an Erdos-Renyi model [1].</p>
+<section id="id40">
+<h2>Parameters<a class="headerlink" href="#id40" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>source:  int</dt><dd><p>source node id (not used here)</p>
+</dd>
+<dt>target_set: set</dt><dd><p>set of target node ids</p>
+</dd>
+<dt>special_targets:</dt><dd><p>special targets to be considered (not used here)</p>
+</dd>
+</dl>
+</section>
+<section id="id41">
+<h2>Returns<a class="headerlink" href="#id41" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>tuple[np.array, set[int]]</dt><dd><p>tuple of probabilities and target set</p>
+</dd>
+</dl>
+</section>
+<section id="id42">
+<h2>References<a class="headerlink" href="#id42" title="Permalink to this heading">¶</a></h2>
+<p>[1] P. Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATC.info_params">
+<span class="sig-name descname"><span class="pre">info_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.PATC.info_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the parameters of the model.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="netin.PAH">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.</span></span><span class="sig-name descname"><span class="pre">PAH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_MM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_mm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.PAH" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Creates a new PAH instance.</p>
+<section id="id43">
+<h2>Parameters<a class="headerlink" href="#id43" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>n: int</dt><dd><p>number of nodes (minimum=2)</p>
+</dd>
+<dt>k: int</dt><dd><p>minimum degree of nodes (minimum=1)</p>
+</dd>
+<dt>f_m: float</dt><dd><p>fraction of minorities (minimum=1/n, maximum=(n-1)/n)</p>
+</dd>
+<dt>h_MM: float</dt><dd><p>homophily (similarity) between majority nodes (minimum=0, maximum=1.)</p>
+</dd>
+<dt>h_mm: float</dt><dd><p>homophily (similarity) between minority nodes (minimum=0, maximum=1.)</p>
+</dd>
+<dt>seed: object</dt><dd><p>seed for random number generator</p>
+</dd>
+</dl>
+</section>
+<section id="id44">
+<h2>Notes<a class="headerlink" href="#id44" title="Permalink to this heading">¶</a></h2>
+<p>The initialization is an undirected with n nodes, where f_m are the minority.
+Then, everytime a node is selected as source, it gets connected to k target nodes.
+Target nodes are selected via preferential attachment (in-degree) and homophily (h_**).
+This model is based on [1] known as the “Barabasi model with homophily” or “BA Homophily”.</p>
+</section>
+<section id="id45">
+<h2>References<a class="headerlink" href="#id45" title="Permalink to this heading">¶</a></h2>
+<p>[1] F. Karimi, M. Génois, C. Wagner, P. Singer, &amp; M. Strohmaier, M “Homophily influences ranking of minorities in social networks”, Scientific reports 8(1), 11077, 2018.</p>
+<dl class="py method">
 <dt class="sig sig-object py" id="netin.PAH.get_metadata_as_dict">
 <span class="sig-name descname"><span class="pre">get_metadata_as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#netin.PAH.get_metadata_as_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns metadata for a undirected.</p>
+<dd><p>Returns the metadata (parameters) of the model as a dictionary.</p>
+<section id="id46">
+<h3>Returns<a class="headerlink" href="#id46" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>dict</dt><dd><p>metadata of the model</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PAH.get_target_probabilities">
+<span class="sig-name descname"><span class="pre">get_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.PAH.get_target_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probabilities of selecting a target node from a set of nodes based on the preferential attachment
+and homophily.</p>
+<section id="id47">
+<h3>Parameters<a class="headerlink" href="#id47" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>source: int</dt><dd><p>source node</p>
+</dd>
+<dt>target_set: set[int]</dt><dd><p>set of target nodes</p>
+</dd>
+<dt>special_targets: object</dt><dd><p>special targets</p>
+</dd>
+</dl>
+</section>
+<section id="id48">
+<h3>Returns<a class="headerlink" href="#id48" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple[np.array, set[int]]</dt><dd><p>probabilities of selecting a target node from a set of nodes, and the set of target nodes</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PAH.infer_homophily_values">
+<span class="sig-name descname"><span class="pre">infer_homophily_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.PAH.infer_homophily_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infers the level of homopolily using the analutical solution of the model [1].</p>
+<section id="id49">
+<h3>Returns<a class="headerlink" href="#id49" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple[float, float]</dt><dd><p>homophily between majority nodes, and homophily between minority nodes</p>
+</dd>
+</dl>
+</section>
+<section id="id50">
+<h3>References<a class="headerlink" href="#id50" title="Permalink to this heading">¶</a></h3>
+<p>[1] F. Karimi, M. Génois, C. Wagner, P. Singer, &amp; M. Strohmaier, M “Homophily influences ranking of minorities in social networks”, Scientific reports 8(1), 11077, 2018.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PAH.info_computed">
+<span class="sig-name descname"><span class="pre">info_computed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.PAH.info_computed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the computed properties of the graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PAH.info_params">
+<span class="sig-name descname"><span class="pre">info_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.PAH.info_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the parameters of the model.</p>
+</dd></dl>
+
+</section>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="netin.PATCH">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.</span></span><span class="sig-name descname"><span class="pre">PATCH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_mm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_MM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.PATCH" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new PATCH instance.</p>
-<section id="id2">
-<h2>Parameters<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<section id="id51">
+<h2>Parameters<a class="headerlink" href="#id51" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
 <dt>n: int</dt><dd><p>number of nodes (minimum=2)</p>
 </dd>
@@ -122,39 +733,128 @@
 </dd>
 </dl>
 </section>
-<section id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h2>
+<section id="id52">
+<h2>Notes<a class="headerlink" href="#id52" title="Permalink to this heading">¶</a></h2>
 <p>The initialization is a undirected with n nodes and no edges.
 Then, everytime a node is selected as source, it gets connected to k target nodes.
 Target nodes are selected via preferential attachment (in-degree),homophily (h_**; see <a class="reference internal" href="../mechanisms.html#netin.Homophily" title="netin.Homophily"><code class="xref py py-class docutils literal notranslate"><span class="pre">netin.Homophily</span></code></a>), and triadic closure (see <a class="reference internal" href="../mechanisms.html#netin.TriadicClosure" title="netin.TriadicClosure"><code class="xref py py-class docutils literal notranslate"><span class="pre">netin.TriadicClosure</span></code></a>).</p>
 </section>
-<section id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<section id="id53">
+<h2>References<a class="headerlink" href="#id53" title="Permalink to this heading">¶</a></h2>
 <p>[1] A. L. Barabasi and R. Albert “Emergence of scaling in random networks”, Science 286, pp 509-512, 1999.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="netin.PATCH.get_metadata_as_dict">
 <span class="sig-name descname"><span class="pre">get_metadata_as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#netin.PATCH.get_metadata_as_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns metadata for a undirected.</p>
+<dd><p>Returns a dictionary with the metadata of the PATCH graph.</p>
+<section id="id54">
+<h3>Returns<a class="headerlink" href="#id54" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>dict</dt><dd><p>the graph  metadata as a dictionary</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="netin.PATCH.get_special_targets">
 <span class="sig-name descname"><span class="pre">get_special_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#netin.PATCH.get_special_targets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an empty dictionary (source node ids)</p>
-<section id="id3">
-<h3>Parameters<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<dd><p>Returns an empty dictionary (source node ids)</p>
+<section id="id55">
+<h3>Parameters<a class="headerlink" href="#id55" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>source<span class="classifier">int</span></dt><dd><p>Newly added node</p>
 </dd>
 </dl>
 </section>
-<section id="id4">
-<h3>Returns<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<section id="id56">
+<h3>Returns<a class="headerlink" href="#id56" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>Dict</dt><dd><p>Empty dictionary</p>
 </dd>
 </dl>
 </section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATCH.get_target_probabilities">
+<span class="sig-name descname"><span class="pre">get_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.PATCH.get_target_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probabilities of nodes to be selected as target nodes.</p>
+<section id="id57">
+<h3>Parameters<a class="headerlink" href="#id57" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>source: int</dt><dd><p>source node id</p>
+</dd>
+<dt>target_set: set</dt><dd><p>set of target node ids</p>
+</dd>
+<dt>special_targets: dict</dt><dd><p>dictionary of special target node ids to be considered</p>
+</dd>
+</dl>
+</section>
+<section id="id58">
+<h3>Returns<a class="headerlink" href="#id58" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple</dt><dd><p>probabilities of nodes to be selected as target nodes, and set of target of nodes</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATCH.get_target_probabilities_regular">
+<span class="sig-name descname"><span class="pre">get_target_probabilities_regular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.PATCH.get_target_probabilities_regular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability of nodes to be selected as target nodes using the
+preferential attachment with homophily mechanism.</p>
+<section id="id59">
+<h3>Parameters<a class="headerlink" href="#id59" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>source: int</dt><dd><p>source node id</p>
+</dd>
+<dt>target_set: set</dt><dd><p>set of target node ids</p>
+</dd>
+<dt>special_targets: dict</dt><dd><p>dictionary of special target node ids to be considered</p>
+</dd>
+</dl>
+</section>
+<section id="id60">
+<h3>Returns<a class="headerlink" href="#id60" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple</dt><dd><p>probabilities of nodes to be selected as target nodes, and set of target of nodes</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATCH.infer_homophily_values">
+<span class="sig-name descname"><span class="pre">infer_homophily_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.PATCH.infer_homophily_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infers analytically the homophily values of the graph.</p>
+<section id="id61">
+<h3>Returns<a class="headerlink" href="#id61" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple</dt><dd><p>homophily values of the graph (majority, minority)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATCH.infer_triadic_closure">
+<span class="sig-name descname"><span class="pre">infer_triadic_closure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#netin.PATCH.infer_triadic_closure" title="Permalink to this definition">¶</a></dt>
+<dd><section id="id62">
+<h3>Returns<a class="headerlink" href="#id62" title="Permalink to this heading">¶</a></h3>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATCH.info_computed">
+<span class="sig-name descname"><span class="pre">info_computed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.PATCH.info_computed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the (computed) properties of the graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.PATCH.info_params">
+<span class="sig-name descname"><span class="pre">info_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.PATCH.info_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the (input) parameters of the graph.</p>
 </dd></dl>
 
 </section>
