@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Documentation &#8212; NetIn 1.0.5 documentation</title>
+    <title>Network Inequality &#8212; NetIn 1.0.5.5 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -14,7 +14,7 @@
     <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="netin" href="netin.html" />
+    <link rel="next" title="Directed Graphs" href="generators/directed.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -31,22 +31,37 @@
 
           <div class="body" role="main">
             
-  <section id="documentation">
-<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This project is under active development.</p>
-</div>
+  <section id="module-netin">
+<span id="network-inequality"></span><h1>Network Inequality<a class="headerlink" href="#module-netin" title="Permalink to this heading">¶</a></h1>
+<p>NetIn is a Python package for the analysis of network inequalities.
+It is based on the NetworkX package and provides a set of functions to study inequalities (e.g., in ranking, inference)
+in social networks.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="netin.html">netin</a></li>
-<li class="toctree-l1"><a class="reference internal" href="patch.html">PATCH</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="patch.html#netin.PATCH"><code class="docutils literal notranslate"><span class="pre">PATCH</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="generators/directed.html">Directed Graphs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generators/directed.html#netin.DiGraph"><code class="docutils literal notranslate"><span class="pre">DiGraph</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="generators/directed.html#netin.DH"><code class="docutils literal notranslate"><span class="pre">DH</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="generators/directed.html#netin.DPA"><code class="docutils literal notranslate"><span class="pre">DPA</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="generators/directed.html#netin.DPAH"><code class="docutils literal notranslate"><span class="pre">DPAH</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="summary.html">Summary</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="netin.html">netin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generators/undirected.html">Undirected Graphs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.Graph"><code class="docutils literal notranslate"><span class="pre">Graph</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.PA"><code class="docutils literal notranslate"><span class="pre">PA</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.PATC"><code class="docutils literal notranslate"><span class="pre">PATC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.PAH"><code class="docutils literal notranslate"><span class="pre">PAH</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.PATCH"><code class="docutils literal notranslate"><span class="pre">PATCH</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mechanisms.html">Mechanisms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mechanisms.html#netin.TriadicClosure"><code class="docutils literal notranslate"><span class="pre">TriadicClosure</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mechanisms.html#netin.Homophily"><code class="docutils literal notranslate"><span class="pre">Homophily</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">Statistics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html#netin.stats.distributions.get_pdf"><code class="docutils literal notranslate"><span class="pre">get_pdf()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html#netin.stats.ranking.gini"><code class="docutils literal notranslate"><span class="pre">gini()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -80,16 +95,17 @@
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="netin.html">netin</a></li>
-<li class="toctree-l1"><a class="reference internal" href="patch.html">PATCH</a></li>
-<li class="toctree-l1"><a class="reference internal" href="summary.html">Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generators/directed.html">Directed Graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generators/undirected.html">Undirected Graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mechanisms.html">Mechanisms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">Statistics</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="netin.html" title="next chapter">netin</a></li>
+      <li>Next: <a href="generators/directed.html" title="next chapter">Directed Graphs</a></li>
   </ul></li>
 </ul>
 </div>
