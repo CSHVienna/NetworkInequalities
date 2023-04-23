@@ -11,7 +11,6 @@ from .graph import Graph
 
 
 class DiGraph(nx.DiGraph, Graph):
-
     """Directed graph base model.
 
     Parameters
@@ -37,15 +36,18 @@ class DiGraph(nx.DiGraph, Graph):
     Notes
     -----
     The initialization is a directed with n nodes and no edges.
-    Source nodes are selected based on their activity given by plo_M (if majority) or plo_m (if minority), see [1].
-    Target nodes are selected depending on the chosen mechanism of edge formation:
-        - DPAH: preferential attachment (in-degree) and homophily (h**) [1]
-        - DPA: preferential attachment (in-degree)
-        - DH: homophily (h**)
+    Source nodes are selected based on their activity given by plo_M (if majority) or plo_m (if minority).
+    Target nodes are selected depending on the chosen mechanism of edge formation.
+
+    - DPAH: preferential attachment (in-degree) and homophily (h**), see :class:`netin.DPAH`
+    - DPA: preferential attachment (in-degree), see :class:`netin.DPA`
+    - DH: homophily (h**), see :class:`netin.DH`
 
     References
     ----------
-    [1] L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
+    .. [Espin-Noboa2022] L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
+    .. [Karimi2018] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
+    .. [BarabasiAlbert1999] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
     """
 
     ############################################################
@@ -122,7 +124,7 @@ class DiGraph(nx.DiGraph, Graph):
 
     def _init_activity(self):
         """
-        Intializes the level of activity for each node based on the power law exponents (input param).
+        Initializes the level of activity for each node based on the power law exponents (input param).
         """
         act_M = powerlaw.Power_Law(parameters=[self.plo_M], discrete=True).generate_random(self.n_M)
         act_m = powerlaw.Power_Law(parameters=[self.plo_m], discrete=True).generate_random(self.n_m)
@@ -186,16 +188,11 @@ class DiGraph(nx.DiGraph, Graph):
         """
         A directed graph of n nodes is grown by attaching new nodes.
         Source nodes are selected randomly with replacement based on their activity.
-        Each target node drawn based on the chosen mechanism of edge formation [1].
+        Each target node drawn based on the chosen mechanism of edge formation.
 
-        - DPA: A graph with h_mm = h_MM in [0.5, None] is a directed BA preferential attachment model.
-        - DH: A graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] is a directed Erdos-Renyi with homophily.
-        - DPAH: A graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] is a DPA model with homophily.
-
-        References
-        ----------
-        [1] L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
-
+        - DPA: A graph with h_mm = h_MM in [0.5, None] is a directed BA preferential attachment model, see :class:`netin.DPA`.
+        - DH: A graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] is a directed Erdos-Renyi with homophily, see :class:`netin.DPH`.
+        - DPAH: A graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] is a DPA model with homophily, see :class:`netin.DPAH`.
         """
         # 1. Init directed and nodes (assign class labels)
         Graph.generate(self)
@@ -252,7 +249,7 @@ class DiGraph(nx.DiGraph, Graph):
             print(f"- {self.get_minority_label()}: alpha={fit_m.power_law.alpha}, sigma={fit_m.power_law.sigma}, "
                   f"min={fit_m.power_law.xmin}, max={fit_m.power_law.xmax}")
 
-    def fit_powerlaw(self, metric: str) -> powerlaw.Fit:
+    def fit_powerlaw(self, metric: str) -> Tuple[powerlaw.Fit, powerlaw.Fit]:
         """
         Fits a power law to the distribution given by 'metric' (the in- or out-degree of nodes in the graph).
 
@@ -264,7 +261,10 @@ class DiGraph(nx.DiGraph, Graph):
         Returns
         -------
         powerlaw.Fit
-            power law fit
+            power law fit of the majority class
+
+        powerlaw.Fit
+            power law fit of the minority class
         """
         # @TODO: validate if metric is not in_degree or out_degree
         vM = self.get_majority_value()

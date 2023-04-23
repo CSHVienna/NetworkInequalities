@@ -12,7 +12,7 @@ from netin.utils import validator as val
 
 
 class Graph(nx.Graph):
-    """Bi-populated network
+    """Bi-populated network (base graph model)
 
     Parameters
     ----------
@@ -32,22 +32,22 @@ class Graph(nx.Graph):
     Target nodes are selected depending on the chosen edge mechanism.
 
     Available target mechanisms for undirected networks:
-    - preferential attachment (pa), see PA [1].
-    - preferential attachment with homophily (h_**), see PAH [2].
-    - preferential attachment with triadic closure (tc), see PATC [3].
-    - preferential attachment with homophily and triadic closure (tc), see PATCH.
+    - preferential attachment (pa), see :class:`netin.PA` [1]_.
+    - preferential attachment with homophily (h_**), see :class:`netin.PAH` [2]_.
+    - preferential attachment with triadic closure (tc), see :class:`netin.PATC` [3]_.
+    - preferential attachment with homophily and triadic closure (tc), see :class:`netin.PATCH`.
 
     Available target mechanisms for directed networks:
-    - preferential attachment, see DPA [4]
-    - homophily, see DH [4]
-    - preferential attachment with homophily (h_**), see DPAH [4]
+    - preferential attachment, see :class:`netin.DPA` [4]_
+    - homophily, see :class:`netin.DH` [4]_
+    - preferential attachment with homophily (h_**), see :class:`netin.DPAH` [4]_
 
     References
     ----------
-    [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
-    [2] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
-    [3] P. Holme and B. J. Kim “Growing scale-free networks with tunable clustering” Phys. Rev. E 2002.
-    [4] L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
+    .. [BarabasiAlbert1999] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
+    .. [Karimi2018] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
+    .. [HolmeKim2002] P. Holme and B. J. Kim “Growing scale-free networks with tunable clustering” Phys. Rev. E 2002.
+    .. [Espin-Noboa2022] L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
     """
 
     ############################################################
@@ -443,7 +443,6 @@ class Graph(nx.Graph):
                                  special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
         """
         Returns the probability for each target node to be connected to the source node.
-        It follows an Erdos-Renyi model [1].
 
         Parameters
         ----------
@@ -456,6 +455,11 @@ class Graph(nx.Graph):
         special_targets:
             special targets to be considered (not used here)
 
+
+        Notes
+        -----
+        It follows an Erdos-Renyi model [ErdosRenyi1959]_.
+
         Returns
         -------
         tuple[np.array, set[int]]
@@ -463,7 +467,7 @@ class Graph(nx.Graph):
 
         References
         ----------
-        [1] P. Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).
+        .. [ErdosRenyi1959] P. Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).
         """
         # Random (erdos renyi)
         probs = np.ones(len(target_set))

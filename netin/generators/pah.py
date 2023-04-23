@@ -11,7 +11,7 @@ from .pa import PA
 
 
 class PAH(PA, Homophily):
-    """Creates a new PAH instance.
+    """Creates a new PAH instance. An undirected graph with preferential attachment and homophily.
 
     Parameters
     ----------
@@ -38,11 +38,7 @@ class PAH(PA, Homophily):
     The initialization is an undirected with n nodes, where f_m are the minority.
     Then, everytime a node is selected as source, it gets connected to k target nodes.
     Target nodes are selected via preferential attachment (in-degree) and homophily (h_**).
-    This model is based on [1] known as the "Barabasi model with homophily" or "BA Homophily".
-
-    References
-    ----------
-    [1] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
+    This model is based on [Karimi2018]_ known as the "Barabasi model with homophily" or "BA Homophily".
     """
 
     ############################################################
@@ -152,17 +148,16 @@ class PAH(PA, Homophily):
 
     def infer_homophily_values(self) -> Tuple[float, float]:
         """
-        Infers the level of homopolily using the analutical solution of the model [1].
+        Infers the level of homophily using the analytical solution of the model.
 
         Returns
         -------
         tuple[float, float]
             homophily between majority nodes, and homophily between minority nodes
 
-        References
-        ----------
-        [1] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
-
+        Notes
+        -----
+        See derivations in [Karimi2018]_.
         """
         f_m = self.calculate_fraction_of_minority()
         f_M = 1 - f_m

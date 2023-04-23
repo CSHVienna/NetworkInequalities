@@ -9,7 +9,7 @@ from .dpa import DPA
 
 class DPAH(DPA, Homophily):
 
-    """Creates a new DPAH instance.
+    """Creates a new DPAH instance. A directed graph with preferential attachment and homophily.
 
     Parameters
     ----------
@@ -42,12 +42,7 @@ class DPAH(DPA, Homophily):
     The initialization is a directed with n nodes where f_m are the minority.
     Source nodes are selected based on their activity given by plo_M (if majority) or plo_m (if minority).
     Target nodes are selected via preferential attachment (in-degree) an homophily (h**).
-    This model is based on [1] which is the directed version of the "BA Homophily" model [2].
-
-    References
-    ----------
-    [1] L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
-    [2] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
+    This model is based on [Espin-Noboa2022]_ which is the directed version of the "BA Homophily" model [Karimi2018]_.
     """
 
     ############################################################
@@ -95,7 +90,7 @@ class DPAH(DPA, Homophily):
                                  special_targets: Union[None, object, iter] = None) -> np.array:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on
-        preferential attachment and homophily,i.e., in-degree or target and homophily between source and target.
+        preferential attachment and homophily, i.e., in-degree or target and homophily between source and target.
 
         Parameters
         ----------

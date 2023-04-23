@@ -8,7 +8,7 @@ from .pah import PAH
 
 
 class PATCH(PAH, TriadicClosure):
-    """Creates a new PATCH instance.
+    """Creates a new PATCH instance. An undirected graph with preferential attachment, homophily, and triadic closure.
 
     Parameters
     ----------
@@ -32,13 +32,11 @@ class PATCH(PAH, TriadicClosure):
 
     Notes
     -----
-    The initialization is a undirected with n nodes and no edges.
+    The initialization is an undirected with n nodes and no edges.
     Then, everytime a node is selected as source, it gets connected to k target nodes.
-    Target nodes are selected via preferential attachment (in-degree),homophily (h_**; see :class:`netin.Homophily`), and triadic closure (see :class:`netin.TriadicClosure`).
-
-    References
-    ----------
-    [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
+    Target nodes are selected via preferential attachment (in-degree) [BarabasiAlbert1999]_,
+    homophily (h_**; see :class:`netin.Homophily`) [Karimi2018]_,
+    and triadic closure (see :class:`netin.TriadicClosure`) [HolmeKim2002]_.
     """
 
     ############################################################
@@ -182,10 +180,12 @@ class PATCH(PAH, TriadicClosure):
 
     def infer_triadic_closure(self) -> float:
         """
+        Infers analytically the triadic closure value of the graph.
 
         Returns
         -------
-
+        float
+            triadic closure probability of the graph
         """
         tc = None
         return tc

@@ -21,6 +21,7 @@ deleteme*
 
 # internal
 reports
+pre_submit.sh
 
 # pip install
 build

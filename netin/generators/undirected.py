@@ -1,6 +1,6 @@
 from typing import Set
-from typing import Union
 from typing import Tuple
+from typing import Union
 
 import networkx as nx
 import numpy as np
@@ -32,16 +32,17 @@ class UnDiGraph(Graph):
     The initialization is an undirected graph with n nodes and no edges.
     Then, everytime a node is selected as source, it gets connected to k target nodes.
     Target nodes are selected depending on the chosen mechanism of edge formation:
-        - PA: Preferential attachment (in-degree) [1]
-        - PAH: Preferential attachment (in-degree) with homophily [2]
-        - PATC: Preferential attachment (in-degree) with triadic closure [3]
-        - PATCH: Preferential attachment (in-degree) with homophily and triadic closure
+
+    - PA: Preferential attachment (in-degree), see :class:`netin.PA` [BarabasiAlbert1999]_
+    - PAH: Preferential attachment (in-degree) with homophily, see :class:`netin.PAH` [Karimi2018]_
+    - PATC: Preferential attachment (in-degree) with triadic closure, see :class:`netin.PATC` [HolmeKim2002]_
+    - PATCH: Preferential attachment (in-degree) with homophily and triadic closure, see :class:`netin.PATCH`
 
     References
     ----------
-    [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
-    [2] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
-    [3] P. Holme and B. J. Kim “Growing scale-free networks with tunable clustering” Phys. Rev. E 2002.
+    .. [BarabasiAlbert1999] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
+    .. [Karimi2018] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
+    .. [HolmeKim2002] P. Holme and B. J. Kim “Growing scale-free networks with tunable clustering” Phys. Rev. E 2002.
     """
 
     ############################################################
@@ -95,7 +96,8 @@ class UnDiGraph(Graph):
 
         Returns
         -------
-            int: Target node that an edge should be added to
+            int
+                Target node that an edge should be added to
         """
         # Collect probabilities to connect to each node in target_list
         target_set = set([t for t in targets if t != source and t not in nx.neighbors(self, source)])
@@ -113,12 +115,10 @@ class UnDiGraph(Graph):
         Homophily varies ranges from 0 (heterophilic) to 1 (homophilic), where 0.5 is neutral.
         Similarly, triadic closure varies from 0 (no triadic closure) to 1 (full triadic closure).
 
-        . PA:    An undirected graph with h_mm = h_MM in [0.5, None] and tc = 0 is a BA preferential attachment model.
-        . PAH:   An undirected graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc = 0 is a PA model
-                 with homophily.
-        . PATC:  An undirected graph with h_mm = h_MM in [0.5, None] and tc > 0 is a PA model with triadic closure.
-        . PATCH: An undirected graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc > 0 is a PA model
-                 with homophily and triadic closure.
+        - PA: An undirected graph with h_mm = h_MM in [0.5, None] and tc = 0 is a BA preferential attachment model.
+        - PAH: An undirected graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc = 0 is a PA model with homophily.
+        - PATC: An undirected graph with h_mm = h_MM in [0.5, None] and tc > 0 is a PA model with triadic closure.
+        - PATCH: An undirected graph with h_mm not in [0.5, None] and h_MM not in [0.5, None] and tc > 0 is a PA model with homophily and triadic closure.
 
         """
         # 1. Init an undirected graph and nodes (assign class labels)
@@ -153,8 +153,8 @@ class UnDiGraph(Graph):
 
         Returns
         -------
-            int
-                Expected number of edges
+        int
+            Expected number of edges
         """
         return (self.get_expected_number_of_nodes() * self.get_expected_minimum_degree()) - \
             (self.get_expected_minimum_degree() ** self.get_expected_minimum_degree())
@@ -165,8 +165,8 @@ class UnDiGraph(Graph):
 
         Returns
         -------
-            int
-                Expected minimum degree
+        int
+            Expected minimum degree
         """
 
         return self.k
@@ -194,7 +194,7 @@ class UnDiGraph(Graph):
               f"sigma={fit_m.power_law.sigma}, "
               f"min={fit_m.power_law.xmin}, max={fit_m.power_law.xmax}")
 
-    def fit_degree_powerlaw(self) -> Tuple[powerlaw.Fit,powerlaw.Fit]:
+    def fit_degree_powerlaw(self) -> Tuple[powerlaw.Fit, powerlaw.Fit]:
         """
         Returns the powerlaw fit of the degree distribution to a powerlaw for the majority and minority class.
 
@@ -202,6 +202,7 @@ class UnDiGraph(Graph):
         -------
         fit_M : powerlaw.Fit
             Powerlaw fit for the majority class
+
         fit_m: powerlaw.Fit
             Powerlaw fit for the minority class
         """
@@ -221,6 +222,7 @@ class UnDiGraph(Graph):
         -------
         pl_M : float
             Powerlaw exponent for the majority class
+
         pl_m: float
             Powerlaw exponent for the minority class
         """

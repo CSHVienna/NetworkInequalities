@@ -9,38 +9,32 @@ from .graph import Graph
 
 
 class TriadicClosure(Graph):
+    """Class to model triadic closure as a mechanism of edge formation given a source and a target node.
+
+    Parameters
+    ----------
+    n: int
+        number of nodes (minimum=2)
+
+    f_m: float
+        fraction of minorities (minimum=1/n, maximum=(n-1)/n)
+
+    tc: float
+        triadic closure probability (minimum=0, maximum=1)
+
+    seed: object
+        seed for random number generator
+
+    Notes
+    -----
+    This class does not generate a graph.
+    """
 
     ############################################################
     # Constructor
     ############################################################
 
     def __init__(self, n: int, f_m: float, tc: float, seed: object = None):
-        """
-
-        Parameters
-        ----------
-        n: int
-            number of nodes (minimum=2)
-
-        f_m: float
-            fraction of minorities (minimum=1/n, maximum=(n-1)/n)
-
-        tc: float
-            triadic closure probability (minimum=0, maximum=1)
-
-        seed: object
-            seed for random number generator
-
-        Notes
-        -----
-        The initialization is a graph with n nodes and no edges.
-        Then, everytime a node is selected as source, it gets connected to k target nodes.
-        Target nodes are selected via preferential attachment (in-degree), and homophily (h_**)
-
-        References
-        ----------
-        - [1] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
-        """
         Graph.__init__(self, n=n, f_m=f_m, seed=seed)
         self.tc = tc
 
@@ -62,6 +56,14 @@ class TriadicClosure(Graph):
         val.validate_float(self.tc, minimum=0., maximum=1.)
 
     def get_metadata_as_dict(self) -> dict:
+        """
+        Returns the metadata (parameters) of the model as a dictionary.
+
+        Returns
+        -------
+        dict
+            metadata of the model
+        """
         obj = Graph.get_metadata_as_dict(self)
         obj.update({
             'tc': self.tc,
@@ -74,6 +76,8 @@ class TriadicClosure(Graph):
 
     def set_triadic_closure(self, tc):
         """
+        Sets the triadic closure probability `tc`.
+
         Parameters
         ----------
         tc: float
@@ -81,8 +85,10 @@ class TriadicClosure(Graph):
         """
         self.tc = tc
 
-    def get_triadic_closure(self):
+    def get_triadic_closure(self) -> float:
         """
+        Returns the triadic closure probability `tc`.
+
         Returns
         -------
         tc: float
@@ -95,10 +101,25 @@ class TriadicClosure(Graph):
     ############################################################
 
     def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
+        """
+        Initializes the model.
+
+        Parameters
+        ----------
+        class_attribute: str
+            name of the attribute that represents the class
+
+        class_values: list
+            values of the class attribute
+
+        class_labels: list
+            labels of the class attribute mapping the class_values.
+        """
         Graph._initialize(self, class_attribute, class_values, class_labels)
 
     def get_special_targets(self, source: int) -> object:
-        """ Return an empty dictionary (source node ids)
+        """
+        Returns an empty dictionary (source node ids)
 
         Parameters
         ----------
@@ -112,14 +133,35 @@ class TriadicClosure(Graph):
         """
         return defaultdict(int)
 
-    def get_target_probabilities_regular(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                         special_targets: Union[None, object, iter] = None) -> tuple[
-        np.array, set[int]]:
+    def get_target_probabilities_regular(self, source: Union[None, int],
+                                         target_set: Union[None, Set[int]],
+                                         special_targets: Union[None, object, iter] = None) -> \
+            tuple[np.array, set[int]]:
         # return Graph.get_target_probabilities(self, source, target_set, special_targets)
         pass
 
     def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
                                  special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+        """
+        Returns the probabilities of selecting a target node from a set of nodes based on triadic closure,
+        or a regular mechanism.
+
+        Parameters
+        ----------
+        source: int
+            source node
+
+        target_set: set[int]
+            set of target nodes
+
+        special_targets: object
+            special targets
+
+        Returns
+        -------
+        tuple[np.array, set[int]]
+            probabilities of selecting a target node from a set of nodes, and the set of target nodes`
+        """
         tc_prob = np.random.random()
 
         if tc_prob < self.tc and len(special_targets) > 0:
@@ -132,7 +174,8 @@ class TriadicClosure(Graph):
         # Pick a target
         return self.get_target_probabilities_regular(source, target_set, special_targets)
 
-    def get_target(self, source: Union[None, int], targets: Union[None, Set[int]],
+    def get_target(self, source: Union[None, int],
+                   targets: Union[None, Set[int]],
                    special_targets: Union[None, object, iter]) -> int:
         """
         Picks a random target node based on the homophily/preferential attachment dynamic.
@@ -145,9 +188,13 @@ class TriadicClosure(Graph):
         targets: Set[int]
             Potential target nodes in the graph
 
+        special_targets: object
+            Special target nodes
+
         Returns
         -------
-            int: Target node that an edge should be added to
+            int
+                Target node that an edge should be created from `source`
         """
         # Collect probabilities to connect to each node in target_list
         target_set = self.get_potential_nodes_to_connect(source, targets)
@@ -156,6 +203,33 @@ class TriadicClosure(Graph):
 
     def update_special_targets(self, idx_target: int, source: int, target: int, targets: Set[int],
                                special_targets: object) -> object:
+        """
+        Updates the set of special targets based on the triadic closure mechanism.
+        When an edge is created, multiple potential triadic closures emerge (i.e., two-hop neighbors that are not yet
+        directly connected). These are added to the set of special targets.
+
+        Parameters
+        ----------
+        idx_target: int
+            index of the target node
+
+        source: int
+            source node
+
+        target: int
+            target node
+
+        targets: Set[int]
+            set of target nodes
+
+        special_targets: object
+            special targets
+
+        Returns
+        -------
+        object
+            updated special targets
+        """
         if idx_target < self.k - 1:
             # Remove target candidates of source
             targets.discard(target)
@@ -176,9 +250,15 @@ class TriadicClosure(Graph):
     ############################################################
 
     def info_params(self):
+        """
+        Shows the parameters of the model.
+        """
         print('tc: {}'.format(self.tc))
 
     def info_computed(self):
+        """
+        Shows the computed properties of the graph.
+        """
         inferred_tc = self.infer_triadic_closure()
         print("- Empirical triadic closure: {}".format(inferred_tc))
 

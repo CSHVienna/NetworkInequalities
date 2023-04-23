@@ -1,7 +1,7 @@
 Undirected Graphs
 =================
 
-.. autoclass:: netin.Graph
+.. autoclass:: netin.UnDiGraph
     :members:
 
 .. autoclass:: netin.PA
