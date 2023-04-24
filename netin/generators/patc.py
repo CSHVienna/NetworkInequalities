@@ -1,6 +1,7 @@
 from typing import Union, Set, Tuple
 
 import numpy as np
+import networkx as nx
 
 from netin.utils import constants as const
 from netin.generators.tc import TriadicClosure
@@ -195,3 +196,19 @@ class PATC(PA, TriadicClosure):
 
         """
         return TriadicClosure.update_special_targets(self, idx_target, source, target, targets, special_targets)
+
+    ############################################################
+    # Calculations
+    ############################################################
+
+    def infer_triadic_closure(self) -> float:
+        """
+        Approximates analytically the triadic closure value of the graph.
+
+        Returns
+        -------
+        float
+            triadic closure probability of the graph
+        """
+        tc = nx.average_clustering(self)
+        return tc

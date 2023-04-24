@@ -1,34 +1,30 @@
 import logging
-from typing import Set
 from typing import List
+from typing import Set
 from typing import Union
 
 import matplotlib
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
-from matplotlib import rc
 import networkx as nx
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from matplotlib import rc
 
-from netin.utils import constants as const
-from netin.viz.constants import *
 from netin.generators.graph import Graph
 from netin.stats.distributions import fit_power_law
+from netin.stats.distributions import get_disparity
 from netin.stats.distributions import get_fraction_of_minority
 from netin.stats.distributions import get_gini_coefficient
-from netin.stats.distributions import get_disparity
+from netin.utils import constants as const
+from netin.viz.constants import *
 
 
 def reset_style():
     """
     Resets the style of the plots to the default style.
-    Returns
-    -------
-
     """
-
     sns.reset_orig()
 
 
@@ -41,12 +37,7 @@ def set_paper_style(font_scale: float = 1.0):
     ----------
     font_scale: float
         A scale factor for the font size.
-
-    Returns
-    -------
-
     """
-
     sns.set_context("paper", font_scale=font_scale)
     rc('font', family='serif')
     rc('lines', linewidth=1.0)
@@ -117,27 +108,37 @@ def _save_plot(fig: matplotlib.figure.Figure, fn=None, **kwargs):
     ----------
     fig: matplotlib.figure.Figure
         figure to save
+
     fn: str
         filename to save the figure
+
     kwargs: dict
-        additional arguments for the `subplots_adjust` function of the figure.
-        - left: float
+        Additional arguments for the `subplots_adjust` function of the figure.
+
+        left: float
             left margin
-        - right: float
+
+        right: float
             right margin
-        - bottom: float
+
+        bottom: float
             bottom margin
-        - top: float
+
+        top: float
             top margin
-        - wspace: float
+
+        wspace: float
             width space between subplots
-        - hspace: float
+
+        hspace: float
             height space between subplots
 
         Additional arguments for the `savefig` function of the figure.
-        - dpi: int
+
+        dpi: int
             dpi of the figure
-        - bbox_inches: str
+
+        bbox_inches: str
             bounding box of the figure
 
     Returns
@@ -193,17 +194,16 @@ def _add_class_legend(fig: matplotlib.figure.Figure, **kwargs):
     Parameters
     ----------
     fig: matplotlib.figure.Figure
-        figure to add the legend
+        Figure to add the legend
+
     kwargs: dict
-        additional arguments for the `legend` function of the figure.
-            - bbox: tuple
-                bounding box of the legend
-            - loc: str
-                location of the legend
+        Additional arguments for the `legend` function of the figure.
 
-    Returns
-    -------
+        bbox: tuple
+            bounding box of the legend
 
+        loc: str
+            location of the legend
     """
     maj_patch = mpatches.Patch(color=COLOR_MAJORITY, label='majority')
     min_patch = mpatches.Patch(color=COLOR_MINORITY, label='minority')
@@ -212,7 +212,7 @@ def _add_class_legend(fig: matplotlib.figure.Figure, **kwargs):
     fig.legend(handles=[maj_patch, min_patch], bbox_to_anchor=bbox, loc=loc)
 
 
-def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = False, fn : str = None, **kwargs):
+def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = False, fn: str = None, **kwargs):
     """
     Plots one or multiple (netin.Graph) graphs as matplotlib figures.
 
@@ -220,36 +220,44 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
     ----------
     data: Union[netin.Graph, Set[netin.Graph]]
         graph or set of graphs to plot
+
     share_pos: bool
         if True, the positions of the nodes are shared between the graphs
+
     fn: str
         filename to save the figure
+
     kwargs: dict
-        additional arguments for the `subplots` function of the figure.
-            - cell_size: float
-                size of the cell in inches
-            - nc: int
-                number of columns
-            - node_size: int
-                size of the nodes
-            - node_shape: str
-                shape of the nodes e.g, 'o' for circle, 's' for square
-            - edge_width: float
-                width of the edges
-            - edge_style: str
-                style of the edges e.g., 'solid', 'dashed'
-            - edge_arrows: bool
-                if True, the edges are plotted with arrows
-            - arrow_style: str
-                style of the arrows e.g., '-|>' for filled arrow
-            - arrow_size: int
-                size of the arrows
+        Additional arguments for the `subplots` function of the figure.
 
-        additional arguments for the `subplots_adjust` and `savefig` functions of the figure.
+        cell_size: float
+            size of the cell in inches
 
-    Returns
-    -------
+        nc: int
+            number of columns
 
+        node_size: int
+            size of the nodes
+
+        node_shape: str
+            shape of the nodes e.g, 'o' for circle, 's' for square
+
+        edge_width: float
+            width of the edges
+
+        edge_style: str
+            style of the edges e.g., 'solid', 'dashed'
+
+        edge_arrows: bool
+            if True, the edges are plotted with arrows
+
+        arrow_style: str
+            style of the arrows e.g., '-|>' for filled arrow
+
+        arrow_size: int
+            size of the arrows
+
+        Additional arguments for the `subplots_adjust` and `savefig` functions of the figure.
     """
     iter_graph = [data] if isinstance(data, Graph) else data
     nc = kwargs.pop('nc', None)
@@ -299,7 +307,8 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
     _save_plot(fig, fn, **kwargs)
 
 
-def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List],
+def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]],
+                      col_name: Union[str, List],
                       get_x_y_from_df_fnc: callable, fn=None, **kwargs):
     """
     Plots a distribution of the values of a column of a dataframe.
@@ -307,62 +316,78 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
     Parameters
     ----------
     data: Union[pandas.DataFrame, List[pandas.DataFrame]]
-        dataframe or list of dataframes to plot including.
-        A column of this dataframe is used to plot the distribution.
+        Dataframe or list of dataframes to plot including. A column of this dataframe is used to plot the distribution.
+
     col_name: str
         name of the column to plot
+
     get_x_y_from_df_fnc: callable
-        function to get the x and y values from the dataframe
+        Function to get the x and y values from the dataframe
+
     fn: str
-        filename to save the figure
+        Filename to save the figure
+
     kwargs: dict
-        additional arguments
-        - nc: int
+        Additional arguments
+
+        nc: int
             number of columns to show in the grid
-        - cell_size: float or tuple(float, float)
-            size of the cell in inches.
-            If a tuple is given, the first value is the width and the second value is the height.
-        - scatter: bool
+
+        cell_size: float or tuple(float, float)
+            size of the cell in inches. If a tuple is given, the first value is the width and the second value is the height.
+
+        scatter: bool
             if True, the distribution is plotted as a scatter plot
-        - sharex: bool
+
+        sharex: bool
             if True, the x-axis is shared between the subplots
-        - sharey: bool
+
+        sharey: bool
             if True, the y-axis is shared between the subplots
-        - ylabel: str
+
+        ylabel: str
             label of the y-axis if not set, the name of the function get_x_y_from_df_fnc is used
-        - xlabel: str
+
+        xlabel: str
             label of the x-axis.
-        - xlim, ylim: tuple
+
+        xlim, ylim: tuple
             limits of the x and y-axis
-        - hue: str
+
+        hue: str
             name of the column to use for grouping the data
-        - common_norm: bool
-            if True, the y-axis is normalized to the same value (sum of all values).
-            Otherwise, the y-axis is normalized per class (hue)
-        - log_scale: tuple(bool, bool)
-            if True, the x and y-axis are plotted in log scale
-        - hline_fnc: callable
+
+        common_norm: bool
+            If True, the y-axis is normalized to the same value (sum of all values). Otherwise, the y-axis is normalized per class (hue)
+
+        log_scale: tuple(bool, bool)
+            If True, the x and y-axis are plotted in log scale
+
+        hline_fnc: callable
             function to plot a horizontal line
-        - vline_fnc: callable
+
+        vline_fnc: callable
             function to plot a vertical line
-        - suptitle: str
+
+        suptitle: str
             title of the whole plot
-        - cuts: list
+
+        cuts: list
             list of cuts to plot (vertical lines)
-        - gini_fnc: callable
+
+        gini_fnc: callable
             function to plot the gini coefficient in ranking (inequality)
-        - me_fnc: callable
+
+        me_fnc: callable
             function to plot the mean error in ranking (inequity)
-        - beta: float
+
+        beta: float
             beta value for smoothing the inequity areas (over, under, and fair representation of minority nodes)
-        - class_label_legend: bool
+
+        class_label_legend: bool
             if True, the legend of the class labels is plotted
 
-        additional arguments sent to `ax.scatter` or `ax.plot` from matplotlib
-
-    Returns
-    -------
-
+        And additional arguments sent to `ax.scatter` or `ax.plot` from matplotlib
     """
     iter_data = [data] if type(data) == pd.DataFrame else data
     nc = kwargs.pop('nc', None)
@@ -466,23 +491,21 @@ def _show_beta(axline, data):
 
 
 def plot_disparity(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List], fn: str = None, **kwargs):
-    """
-    Plots the disparity of the ranking of the minority group.
+    """Plots the disparity of the ranking of the minority group.
 
     Parameters
     ----------
     data: pd.DataFrame or List[pd.DataFrame]
         Metadata of nodes (each column is a property, e.g., degree)
+
     col_name: str
         Name of the column to plot (property of node)
+
     fn: str
         File name to save the plot
+
     kwargs: dict
         Additional arguments to pass to the `plot_distribution` function
-
-    Returns
-    -------
-
     """
     gap = 0.04
     kwargs['class_label_legend'] = False
@@ -509,17 +532,17 @@ def plot_gini_coefficient(data: Union[pd.DataFrame, List[pd.DataFrame]], col_nam
     ----------
     data: pd.DataFrame or List[pd.DataFrame]
         Metadata of nodes (each column is a property, e.g., degree)
+
     col_name: str or List[str]
         Name of the column to plot (property of node)
+
     fn: str
         File name to save the plot
+
     kwargs: dict
         Additional arguments to pass to the `plot_distribution` function
-
-    Returns
-    -------
-
     """
+
     def show_gini(ax, ys, cuts):
         gini, x, y, va, ha, color = get_gini_label(ys, cuts)
         ax.text(s=gini,
@@ -568,16 +591,15 @@ def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col
     ----------
     data: pd.DataFrame or List[pd.DataFrame]
         Metadata of nodes (each column is a property, e.g., degree)
+
     col_name: str or List
         Name of the column to plot (property of node)
+
     fn: str:
         File name to save the plot
+
     kwargs: dict
         Additional arguments to pass to the `plot_distribution` function
-
-    Returns
-    -------
-
     """
     gap = 0.02
 
@@ -692,9 +714,6 @@ def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
 
         Additional parameters to pass to the plot of each subplot (pdf, cdf, ccdf)
 
-    Returns
-    -------
-
     """
 
     if kind not in TYPE_OF_DISTRIBUTION:
@@ -711,7 +730,8 @@ def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
     sharey = kwargs.pop('sharey', False)
     log_scale = kwargs.pop('log_scale', (False, False))
     xlabel = kwargs.pop('xlabel', None)
-    ylabel = kwargs.pop('ylabel', "p(X≥x)" if kind == "ccdf" else "p(X<x)" if kind == 'cdf' else "p(X=x)" if kind == 'pdf' else None)
+    ylabel = kwargs.pop('ylabel',
+                        "p(X≥x)" if kind == "ccdf" else "p(X<x)" if kind == 'cdf' else "p(X=x)" if kind == 'pdf' else None)
     verbose = kwargs.pop('verbose', False)
     wspace = kwargs.pop('wspace', None)
     hspace = kwargs.pop('hspace', None)
