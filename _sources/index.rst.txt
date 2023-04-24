@@ -16,6 +16,7 @@ Network Inequality
    generators/*
    mechanisms
    statistics
+   visualizations
 
 Indices and tables
 ==================
