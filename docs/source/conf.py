@@ -37,3 +37,7 @@ suppress_warnings = ["ref.citation", "ref.footnote"]
 
 html_theme = 'alabaster'
 html_static_path = ['_static']
+html_logo = 'netin-logo.png'
+html_favicon = 'netin-logo.png'
+html_theme_options = {
+}

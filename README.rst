@@ -1,5 +1,10 @@
 NetIn
 ========
+
+.. image:: docs/source/netin-logo.png
+    :width: 200
+    :alt: NetworkInequality
+
 NetIn is a python package for network inference.
 It is based on the NetworkX package and provides a set of methods to study network inequalities.
 The package is currently under development and will be updated regularly.
