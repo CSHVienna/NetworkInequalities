@@ -249,7 +249,7 @@ class Homophily(Graph):
             homophily within minority group
         """
 
-        e = self.count_edges_types()
+        e = self.calculate_edge_type_counts()
         if self.is_directed():
             h_MM = e['MM'] / (e['MM'] + e['Mm'])
             h_mm = e['mm'] / (e['mm'] + e['mM'])

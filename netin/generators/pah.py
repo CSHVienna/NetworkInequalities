@@ -162,7 +162,7 @@ class PAH(PA, Homophily):
         f_m = self.calculate_fraction_of_minority()
         f_M = 1 - f_m
 
-        e = self.count_edges_types()
+        e = self.calculate_edge_type_counts()
         e_MM = e['MM']
         e_mm = e['mm']
         M = e['MM'] + e['mm'] + e['Mm'] + e['mM']
@@ -185,3 +185,14 @@ class PAH(PA, Homophily):
         solution = solve((eq1, eq2, eq3, eq4), (hmm, hmM, hMM, hMm))
         h_MM, h_mm = solution[hMM], solution[hmm]
         return h_MM, h_mm
+
+    def _makecopy(self):
+        """
+        Makes a copy of the current object.
+        """
+        return self.__class__(n=self.n,
+                              k=self.k,
+                              f_m=self.f_m,
+                              h_MM=self.h_MM,
+                              h_mm=self.h_mm,
+                              seed=self.seed)

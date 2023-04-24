@@ -1,9 +1,3 @@
-# from .graph import Graph
-# from .h import Homophily
-# from .tc import TC
-# from .directed import DiGraph
-# from .undirected import UnDiGraph
-
 from .graph import Graph
 from .directed import DiGraph
 from .undirected import UnDiGraph

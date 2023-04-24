@@ -189,3 +189,15 @@ class PATCH(PAH, TriadicClosure):
         """
         tc = None
         return tc
+
+    def _makecopy(self):
+        """
+        Makes a copy of the current object.
+        """
+        return self.__class__(n=self.n,
+                              k=self.k,
+                              f_m=self.f_m,
+                              tc=self.tc,
+                              h_MM=self.h_MM,
+                              h_mm=self.h_mm,
+                              seed=self.seed)

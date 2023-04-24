@@ -7,8 +7,10 @@ import numpy as np
 import pandas as pd
 from pqdm.threads import pqdm
 
+import netin
 from netin.utils import constants as const
 from netin.utils import validator as val
+from netin.stats import networks as net
 
 
 class Graph(nx.Graph):
@@ -106,10 +108,10 @@ class Graph(nx.Graph):
             list of class labels
         """
         if class_labels is None:
-            class_labels = [const.MAJORITY_LABEL, const.MINORITY_LABEL]
+            class_labels = const.CLASS_LABELS
         if class_values is None:
-            class_values = [0, 1]
-        self.set_class_attribute(class_attribute)
+            class_values = const.CLASS_VALUES
+        self.set_class_attribute(const.CLASS_ATTRIBUTE)
         self.set_class_values(class_values)
         self.set_class_labels(class_labels)
 
@@ -184,7 +186,7 @@ class Graph(nx.Graph):
         """
         return self.f_m
 
-    def set_seed(self, seed = None):
+    def set_seed(self, seed=None):
         """
         Sets the random seed.
 
@@ -404,7 +406,7 @@ class Graph(nx.Graph):
         """
         self._infer_model_name()
         self._set_class_info(class_attribute, class_values, class_labels)
-        self.graph = self.get_metadata_as_dict()
+        self.graph.update(self.get_metadata_as_dict())
 
     def _init_nodes(self):
         """
@@ -538,7 +540,7 @@ class Graph(nx.Graph):
         print(f'- number of edges: {self.number_of_edges()}')
         print(f'- minimum degree: {self.calculate_minimum_degree()}')
         print(f'- fraction of minority: {self.calculate_fraction_of_minority()}')
-        print(f'- edge-type counts: {self.count_edges_types()}')
+        print(f'- edge-type counts: {self.calculate_edge_type_counts()}')
         print(f"- density: {nx.density(self)}")
         try:
             print(f"- diameter: {nx.diameter(self)}")
@@ -548,7 +550,7 @@ class Graph(nx.Graph):
             print(f"- average shortest path length: {nx.average_shortest_path_length(self)}")
         except Exception as ex:
             print(f"- average shortest path length: <{ex}>")
-        print(f"- average degree: {sum([d for n, d in self.degree]) / self.number_of_nodes()}")
+        print(f"- average degree: {net.get_average_degree(self)}")
         print(f"- degree assortativity: {nx.degree_assortativity_coefficient(self)}")
         print(f"- attribute assortativity ({self.class_attribute}): "
               f"{nx.attribute_assortativity_coefficient(self, self.class_attribute)}")
@@ -565,7 +567,7 @@ class Graph(nx.Graph):
         int
             minimum degree
         """
-        return min([d for n, d in self.degree])
+        return net.get_min_degree(self)
 
     def calculate_fraction_of_minority(self) -> float:
         """
@@ -576,21 +578,18 @@ class Graph(nx.Graph):
         float
             fraction of minority nodes
         """
-        return sum([1 for n, obj in self.nodes(data=True) if obj[self.class_attribute] == self.class_values[
-            self.class_labels.index(const.MINORITY_LABEL)]]) / self.number_of_nodes()
+        return net.get_minority_fraction(self)
 
-    def count_edges_types(self) -> Counter:
+    def calculate_edge_type_counts(self) -> Counter:
         """
-        Returns the number of edges of each type, e.g., Mm (between majoriy and minority), mm, etc.
+        Returns the number of edges of each type, e.g., Mm (between majority and minority), mm, etc.
 
         Returns
         -------
         Counter
             counter of edges types
         """
-        return Counter([f"{self.class_labels[self.nodes[e[0]][self.class_attribute]]}"
-                        f"{self.class_labels[self.nodes[e[1]][self.class_attribute]]}"
-                        for e in self.edges])
+        return net.get_edge_type_counts(self)
 
     ############################################################
     # Metadata
@@ -684,3 +683,27 @@ class Graph(nx.Graph):
             df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
 
         return df
+
+    def _makecopy(self):
+        pass
+
+    def copy(self) -> Union[nx.Graph, nx.DiGraph]:
+        """
+        Makes a copy of the current object.
+        Returns
+        -------
+        netin.Graph
+            copy of the current object
+        """
+        g = self._makecopy()
+        g._init_graph(class_attribute=self.class_attribute,
+                      class_values=self.class_values,
+                      class_labels=self.class_labels)
+        g.graph.update(self.graph)
+        g.add_nodes_from((n, d.copy()) for n, d in self._node.items())
+        g.add_edges_from(
+            (u, v, datadict.copy())
+            for u, nbrs in self._adj.items()
+            for v, datadict in nbrs.items()
+        )
+        return g

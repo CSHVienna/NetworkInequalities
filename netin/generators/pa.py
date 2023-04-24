@@ -79,3 +79,12 @@ class PA(UnDiGraph):
         probs = np.array([(self.degree(target) + const.EPSILON) for target in target_set])
         probs /= probs.sum()
         return probs, target_set
+
+    def _makecopy(self):
+        """
+        Makes a copy of the current object.
+        """
+        return self.__class__(n=self.n,
+                              k=self.k,
+                              f_m=self.f_m,
+                              seed=self.seed)

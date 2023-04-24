@@ -104,3 +104,14 @@ class DPA(DiGraph):
         probs = np.array([self.get_in_degree(n) + const.EPSILON for n in target_set])
         probs /= probs.sum()
         return probs
+
+    def _makecopy(self):
+        """
+        Makes a copy of the current object.
+        """
+        return self.__class__(n=self.n,
+                              d=self.d,
+                              f_m=self.f_m,
+                              plo_M=self.plo_M,
+                              plo_m=self.plo_m,
+                              seed=self.seed)

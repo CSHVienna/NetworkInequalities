@@ -274,33 +274,37 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
     arrow_size = kwargs.get('arrow_size', 2)
 
     pos = None
-    same_n = len(set([g.number_of_nodes() for g in iter_graph])) == 1
-    for cell, g in enumerate(iter_graph):
+    # same_n = len(set([g.number_of_nodes() for g in iter_graph])) == 1
+    for cell in np.arange(nc * nr):
         row = cell // nc
         col = cell % nc
-
         ax = axes if nr == nc == 1 else axes[cell] if nr == 1 else axes[row, col]
 
-        pos = nx.spring_layout(g) if pos is None or not share_pos or not same_n else pos
+        if cell < len(iter_graph):
+            g = iter_graph[cell]
 
-        # nodes
-        maj = g.graph['class_values'][g.graph['class_labels'].index("M")]
-        nodes, node_colors = zip(
-            *[(node, COLOR_MAJORITY if data[g.graph['class_attribute']] == maj else COLOR_MINORITY)
-              for node, data in g.nodes(data=True)])
-        nx.draw_networkx_nodes(g, pos, nodelist=nodes, node_size=node_size, node_color=node_colors,
-                               node_shape=node_shape, ax=ax)
+            pos = nx.spring_layout(g) if pos is None or not share_pos else pos # or not same_n
 
-        # edges
-        edges = g.edges()
-        edges, edge_colors = zip(*[((s, t), _get_edge_color(s, t, g)) for s, t in edges])
-        nx.draw_networkx_edges(g, pos, ax=ax, edgelist=edges, edge_color=edge_colors,
-                               width=edge_width, style=edge_style, arrows=edge_arrows, arrowstyle=arrow_style,
-                               arrowsize=arrow_size)
+            # title
+            ax.set_title(g.get_model_name())
+
+            # nodes
+            maj = g.graph['class_values'][g.graph['class_labels'].index("M")]
+            nodes, node_colors = zip(
+                *[(node, COLOR_MAJORITY if data[g.graph['class_attribute']] == maj else COLOR_MINORITY)
+                  for node, data in g.nodes(data=True)])
+            nx.draw_networkx_nodes(g, pos, nodelist=nodes, node_size=node_size, node_color=node_colors,
+                                   node_shape=node_shape, ax=ax)
+
+            # edges
+            edges = g.edges()
+            edges, edge_colors = zip(*[((s, t), _get_edge_color(s, t, g)) for s, t in edges])
+            nx.draw_networkx_edges(g, pos, ax=ax, edgelist=edges, edge_color=edge_colors,
+                                   width=edge_width, style=edge_style, arrows=edge_arrows, arrowstyle=arrow_style,
+                                   arrowsize=arrow_size)
 
         # final touch
         ax.set_axis_off()
-        ax.set_title(g.get_model_name())
 
     # legend
     _add_class_legend(fig, **kwargs)

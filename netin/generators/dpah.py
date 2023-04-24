@@ -2,13 +2,12 @@ from typing import Union, Set, Tuple
 
 import numpy as np
 
-from netin.utils import constants as const
 from netin.generators.h import Homophily
+from netin.utils import constants as const
 from .dpa import DPA
 
 
 class DPAH(DPA, Homophily):
-
     """Creates a new DPAH instance. A directed graph with preferential attachment and homophily.
 
     Parameters
@@ -142,3 +141,20 @@ class DPAH(DPA, Homophily):
         """
         h_MM, h_mm = None, None
         return h_MM, h_mm
+
+    def _makecopy(self):
+        """
+        Makes a copy of the current object.
+        """
+        obj = self.__class__(n=self.n,
+                              d=self.d,
+                              f_m=self.f_m,
+                              plo_M=self.plo_M,
+                              plo_m=self.plo_m,
+                              h_MM=self.h_MM,
+                              h_mm=self.h_mm,
+                              seed=self.seed)
+        obj._initialize(class_attribute=self.class_attribute,
+                        class_values=self.class_values,
+                        class_labels=self.class_labels)
+        return obj

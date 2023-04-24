@@ -1,5 +1,7 @@
 from typing import Union
 
+import networkx as nx
+
 from netin.utils import constants as const
 
 
@@ -27,3 +29,23 @@ def validate_float(value: float, minimum: float, maximum: Union[None, float] = N
 
 def calibrate_null_probabilities(p: float) -> float:
     return const.EPSILON if p == 0 else 1 - const.EPSILON if p == 1 else p
+
+
+def validate_graph_metadata(g: Union[nx.Graph, nx.DiGraph]):
+    err = []
+    for gkey in ['class_attribute', 'class_values', 'class_labels']:
+        if gkey not in g.graph:
+            err.append(gkey)
+    if len(err) > 0:
+        raise ValueError(f'Graph must have these attributes: "{", ".join(err)}".')
+
+    nkey = g.graph['class_attribute']
+    for n, obj in g.nodes(data=True):
+        if nkey not in obj:
+            raise ValueError(f'Nodes must have a "{nkey}" attribute')
+        break
+
+
+def validate_more_than_one(iterable):
+    if len(iterable) < 2:
+        raise ValueError('At least two elements are required')

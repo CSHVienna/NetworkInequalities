@@ -212,3 +212,13 @@ class PATC(PA, TriadicClosure):
         """
         tc = nx.average_clustering(self)
         return tc
+
+    def _makecopy(self):
+        """
+        Makes a copy of the current object.
+        """
+        return self.__class__(n=self.n,
+                              k=self.k,
+                              f_m=self.f_m,
+                              tc=self.tc,
+                              seed=self.seed)

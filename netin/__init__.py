@@ -11,3 +11,6 @@ from netin.utils import *
 
 from netin import generators
 from netin.generators import *
+
+from netin import algorithms
+from netin.algorithms import sampling
