@@ -9,7 +9,7 @@ Network Inequality
 .. automodule:: netin
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
    :glob:
 
