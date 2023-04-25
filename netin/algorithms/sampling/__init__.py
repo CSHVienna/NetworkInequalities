@@ -1,3 +1,4 @@
+from .random_nodes import Sampling
 from .random_nodes import RandomNodes
 from .random_edges import RandomEdges
 from .degree_rank import DegreeRank

@@ -36,11 +36,18 @@ class Sampling(object):
 
     kwargs: dict
         additional parameters for the sampling method
+
+    Notes
+    -----
+    - The original graph ``g`` (passed as parameter) is not modified.
+       The sampling method creates a copy of it, and stores it in ``self.g``.
+    - This class does not create a subgraph.
+
     """
 
     def __init__(self, g: netin.Graph, pseeds: float, max_tries: int = const.MAX_TRIES,
                  random_seed: object = None, **kwargs):
-        self.g = g
+        self.g = g.copy()
         self.pseeds = pseeds
         self.max_tries = max_tries
         self.random_seed = random_seed
@@ -58,7 +65,6 @@ class Sampling(object):
     def sampling(self):
         """
         Creates a new instance of the respective sampling method, and calls its respective extract_subgraph method.
-
         """
         val.validate_float(self.pseeds, 0, 1)
         val.validate_more_than_one(net.get_node_attributes(self.g))
@@ -70,7 +76,6 @@ class Sampling(object):
     def method_name(self) -> str:
         """
         Name of sampling method.
-
         """
         return ''
 
@@ -163,9 +168,6 @@ class Sampling(object):
     def info(self):
         """
         Prints a summary of the training sample subgraph, including its attributes.
-
-        Returns
-        -------
 
         """
         print(nx.info(self.sample))

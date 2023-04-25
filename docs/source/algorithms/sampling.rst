@@ -1,6 +1,9 @@
 Sampling
 ========
 
+.. autoclass:: netin.sampling.Sampling
+    :members:
+
 .. autoclass:: netin.sampling.RandomNodes
     :members:
 
