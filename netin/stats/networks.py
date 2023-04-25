@@ -28,8 +28,11 @@ def _get_class_labels(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = Non
         class_attribute = _get_graph_metadata_value(g, 'class_attribute', const.CLASS_ATTRIBUTE)
         counter = Counter([obj[class_attribute] for n, obj in g.nodes(data=True)])
 
+    if len(counter) > 2:
+        warnings.warn(f'Graph contains more than two classes: {counter}')
+
     majority = counter.most_common()[0][0]
-    minority = counter.most_common()[-1][0]
+    minority = counter.most_common()[1][0]
 
     return majority, minority, class_attribute
 

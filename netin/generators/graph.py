@@ -6,12 +6,12 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 from pqdm.threads import pqdm
+import warnings
 
 import netin
 from netin.utils import constants as const
 from netin.utils import validator as val
 from netin.stats import networks as net
-from netin.utils import io
 
 
 class Graph(nx.Graph):
@@ -623,7 +623,14 @@ class Graph(nx.Graph):
         if metric == 'out_degree':
             values = self.out_degree(self.node_list, **kwargs) if self.is_directed() else None
         if metric == 'eigenvector':
-            values = nx.eigenvector_centrality_numpy(self, **kwargs)
+            try:
+                values = nx.eigenvector_centrality_numpy(self, **kwargs)
+            except Exception as ex:
+                try:
+                    values = nx.eigenvector_centrality_numpy(self, max_iter=200, tol=1.0e-5)
+                except Exception as ex:
+                    warnings.warn(f"The eigenvector centrality could not be computed: {ex}")
+                    values = None
 
         # dict of node -> value
         if metric == 'clustering':
@@ -681,18 +688,19 @@ class Graph(nx.Graph):
         # add ranking values
         for metric in const.VALID_METRICS:
             ncol = f'{metric}_rank'
+            df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
 
-            # compute ranking values and retry for ARPACK error.
-            done = False
-            tries = 10
-            while not done:
-                try:
-                    df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
-                    done = True
-                except Exception as ex:
-                    tries -= 1
-                    if tries <= 0:
-                        raise UserWarning(f"An error occurred while computing the ranking values: {ex}")
+            # # compute ranking values and retry for ARPACK error.
+            # done = False
+            # tries = 10
+            # while not done:
+            #     try:
+            #         df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
+            #         done = True
+            #     except Exception as ex:
+            #         tries -= 1
+            #         if tries <= 0:
+            #             raise UserWarning(f"An error occurred while computing the ranking values: {ex}")
 
         return df
 
