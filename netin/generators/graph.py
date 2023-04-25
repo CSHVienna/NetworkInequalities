@@ -680,7 +680,18 @@ class Graph(nx.Graph):
         # add ranking values
         for metric in const.VALID_METRICS:
             ncol = f'{metric}_rank'
-            df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
+
+            # compute ranking values and retry for ARPACK error.
+            done = False
+            tries = 10
+            while not done:
+                try:
+                    df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
+                    done = True
+                except Exception as ex:
+                    tries -= 1
+                    if tries <= 0:
+                        raise UserWarning(f"An error occurred while computing the ranking values: {ex}")
 
         return df
 
