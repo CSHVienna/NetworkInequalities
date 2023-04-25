@@ -6,8 +6,8 @@ from typing import Tuple
 from typing import Union
 
 import netin
-from .degree_rank import DegreeRank
 from . import constants as const
+from .degree_rank import DegreeRank
 
 
 ############################################
@@ -30,7 +30,7 @@ class DegreeGroupRank(DegreeRank):
     random_seed: object
         seed for random number generator
 
-    **kwargs: dict
+    kwargs: dict
         additional parameters for the sampling method
 
         order: str
@@ -50,6 +50,9 @@ class DegreeGroupRank(DegreeRank):
         name = f"{const.DEGREE_GROUP_RANK} ({const.DESC if self.is_descending() else const.ASC})"
         return name
 
+    def sampling(self):
+        super().sampling()
+
     def _sample(self) -> Tuple[list, Union[list, None]]:
         """
         Creates a subgraph from G based on degree rank
@@ -60,13 +63,12 @@ class DegreeGroupRank(DegreeRank):
         ### 1. pick nodes
         _nodes = {}
         for class_value in self.g.get_class_values():
-            valid = [(n,d) for n, d in self.g.degree() if d > 0 and
+            valid = [(n, d) for n, d in self.g.degree() if d > 0 and
                      self.g.nodes[n][self.g.get_class_attribute()] == class_value]
             _nodes[class_value] = sorted(valid,
                                          key=operator.itemgetter(1),
                                          reverse=self.is_descending())
             _nodes[class_value], _ = zip(*_nodes[class_value])
-
 
         while len(nodes) < self.nseeds:
             for class_value in self.g.get_class_values():

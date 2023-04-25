@@ -6,8 +6,8 @@ from typing import Tuple
 from typing import Union
 
 import netin
-from .sampling import Sampling
 from . import constants as const
+from .sampling import Sampling
 
 
 ############################################
@@ -30,7 +30,7 @@ class DegreeRank(Sampling):
     random_seed: object
         seed for random number generator
 
-    **kwargs: dict
+    kwargs: dict
         additional parameters for the sampling method
 
         order: str
@@ -50,6 +50,9 @@ class DegreeRank(Sampling):
         name = f"{const.DEGREE_RANK} ({const.DESC if self.is_descending() else const.ASC})"
         return name
 
+    def sampling(self):
+        super().sampling()
+
     def is_ascending(self) -> bool:
         return not self.is_descending()
 
@@ -63,7 +66,7 @@ class DegreeRank(Sampling):
         edges = None
 
         ### 1. pick random nodes
-        nodes = sorted([(n,d) for n, d in self.g.degree() if d > 0],
+        nodes = sorted([(n, d) for n, d in self.g.degree() if d > 0],
                        key=operator.itemgetter(1),
                        reverse=self.is_descending())
         nodes = nodes[:self.nseeds]

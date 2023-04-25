@@ -13,8 +13,8 @@ Network Inequality
    :caption: Contents:
    :glob:
 
-   generators/*
-   algorithms/*
+   graphs
+   algorithms
    mechanisms
    statistics
    visualizations

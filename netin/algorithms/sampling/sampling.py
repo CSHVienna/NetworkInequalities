@@ -34,7 +34,7 @@ class Sampling(object):
     random_seed: object
         seed for random number generator
 
-    **kwargs: dict
+    kwargs: dict
         additional parameters for the sampling method
     """
 
@@ -58,6 +58,7 @@ class Sampling(object):
     def sampling(self):
         """
         Creates a new instance of the respective sampling method, and calls its respective extract_subgraph method.
+
         """
         val.validate_float(self.pseeds, 0, 1)
         val.validate_more_than_one(net.get_node_attributes(self.g))
@@ -67,6 +68,10 @@ class Sampling(object):
 
     @property
     def method_name(self) -> str:
+        """
+        Name of sampling method.
+
+        """
         return ''
 
     def _count_classes(self, nodes: List) -> int:
@@ -158,6 +163,10 @@ class Sampling(object):
     def info(self):
         """
         Prints a summary of the training sample subgraph, including its attributes.
+
+        Returns
+        -------
+
         """
         print(nx.info(self.sample))
         print(self.sample.graph)

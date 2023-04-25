@@ -60,7 +60,7 @@ classifiers = [
 
 packages = [
     "netin",
-    "netin.algorithms",
+    "netin.algorithms.sampling",
     "netin.generators",
     "netin.utils",
     "netin.stats",

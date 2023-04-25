@@ -4,8 +4,8 @@
 import numpy as np
 
 import netin
-from .sampling import Sampling
 from . import constants as const
+from .sampling import Sampling
 
 
 ############################################
@@ -28,7 +28,7 @@ class RandomNodes(Sampling):
     random_seed: object
         seed for random number generator
 
-    **kwargs: dict
+    kwargs: dict
         additional parameters for the sampling method
     """
 
@@ -42,6 +42,9 @@ class RandomNodes(Sampling):
     @property
     def method_name(self) -> str:
         return const.RANDOM_NODES
+
+    def sampling(self):
+        super().sampling()
 
     def _sample(self):
         """

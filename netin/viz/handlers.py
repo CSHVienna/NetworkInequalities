@@ -24,6 +24,7 @@ from netin.viz.constants import *
 def reset_style():
     """
     Resets the style of the plots to the default style.
+
     """
     sns.reset_orig()
 
@@ -37,6 +38,7 @@ def set_paper_style(font_scale: float = 1.0):
     ----------
     font_scale: float
         A scale factor for the font size.
+
     """
     sns.set_context("paper", font_scale=font_scale)
     rc('font', family='serif')
@@ -113,7 +115,7 @@ def _save_plot(fig: matplotlib.figure.Figure, fn=None, **kwargs):
         filename to save the figure
 
     kwargs: dict
-        Additional arguments for the `subplots_adjust` function of the figure.
+        Additional arguments for the ``subplots_adjust`` function of the figure.
 
         left: float
             left margin
@@ -133,7 +135,7 @@ def _save_plot(fig: matplotlib.figure.Figure, fn=None, **kwargs):
         hspace: float
             height space between subplots
 
-        Additional arguments for the `savefig` function of the figure.
+        Additional arguments for the ``savefig`` function of the figure.
 
         dpi: int
             dpi of the figure
@@ -197,7 +199,7 @@ def _add_class_legend(fig: matplotlib.figure.Figure, **kwargs):
         Figure to add the legend
 
     kwargs: dict
-        Additional arguments for the `legend` function of the figure.
+        Additional arguments for the ``legend`` function of the figure.
 
         bbox: tuple
             bounding box of the legend
@@ -228,7 +230,7 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
         filename to save the figure
 
     kwargs: dict
-        Additional arguments for the `subplots` function of the figure.
+        Additional arguments for the ``subplots`` function of the figure.
 
         cell_size: float
             size of the cell in inches
@@ -252,12 +254,12 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
             if True, the edges are plotted with arrows
 
         arrow_style: str
-            style of the arrows e.g., '-|>' for filled arrow
+            style of the arrows e.g., '-\|>' for filled arrow
 
         arrow_size: int
             size of the arrows
 
-        Additional arguments for the `subplots_adjust` and `savefig` functions of the figure.
+        Additional arguments for the ``subplots_adjust`` and ``savefig`` functions of the figure.
     """
     iter_graph = [data] if isinstance(data, Graph) else data
     nc = kwargs.pop('nc', None)
@@ -391,7 +393,7 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]],
         class_label_legend: bool
             if True, the legend of the class labels is plotted
 
-        And additional arguments sent to `ax.scatter` or `ax.plot` from matplotlib
+        And additional arguments sent to ``ax.scatter`` or ``ax.plot`` from matplotlib
     """
     iter_data = [data] if type(data) == pd.DataFrame else data
     nc = kwargs.pop('nc', None)
@@ -509,7 +511,7 @@ def plot_disparity(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Unio
         File name to save the plot
 
     kwargs: dict
-        Additional arguments to pass to the `plot_distribution` function
+        Additional arguments to pass to the ``plot_distribution`` function
     """
     gap = 0.04
     kwargs['class_label_legend'] = False
@@ -544,7 +546,7 @@ def plot_gini_coefficient(data: Union[pd.DataFrame, List[pd.DataFrame]], col_nam
         File name to save the plot
 
     kwargs: dict
-        Additional arguments to pass to the `plot_distribution` function
+        Additional arguments to pass to the ``plot_distribution`` function
     """
 
     def show_gini(ax, ys, cuts):
@@ -603,7 +605,7 @@ def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col
         File name to save the plot
 
     kwargs: dict
-        Additional arguments to pass to the `plot_distribution` function
+        Additional arguments to pass to the ``plot_distribution`` function
     """
     gap = 0.02
 

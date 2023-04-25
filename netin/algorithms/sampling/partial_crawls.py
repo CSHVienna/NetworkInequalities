@@ -1,15 +1,15 @@
 ############################################
 # System dependencies
 ############################################
-import numpy as np
+import operator
 from typing import List
 from typing import Tuple
 
-import operator
+import numpy as np
 
 import netin
-from .sampling import Sampling
 from . import constants as const
+from .sampling import Sampling
 
 
 ############################################
@@ -32,7 +32,7 @@ class PartialCrawls(Sampling):
     random_seed: object
         seed for random number generator
 
-    **kwargs: dict
+    kwargs: dict
         additional parameters for the sampling method
 
     References
@@ -51,6 +51,9 @@ class PartialCrawls(Sampling):
     @property
     def method_name(self) -> str:
         return const.PARTIAL_CRAWLS
+
+    def sampling(self):
+        super().sampling()
 
     def _sample(self):
         """
