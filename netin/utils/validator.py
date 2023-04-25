@@ -1,4 +1,5 @@
 from typing import Union
+import warnings
 
 import networkx as nx
 
@@ -49,3 +50,15 @@ def validate_graph_metadata(g: Union[nx.Graph, nx.DiGraph]):
 def validate_more_than_one(iterable):
     if len(iterable) < 2:
         raise ValueError('At least two elements are required')
+
+
+def ignore_params(params: list, **kwargs) -> dict:
+    tmp = set()
+    for param in params:
+        p = kwargs.pop(param, None)
+        if p is not None:
+            tmp.add(param)
+    if len(tmp) > 0:
+        warnings.warn(f"These parameters are ignored: {', '.join(tmp)}")
+
+    return kwargs

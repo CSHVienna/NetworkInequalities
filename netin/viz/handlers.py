@@ -19,6 +19,7 @@ from netin.stats.distributions import get_fraction_of_minority
 from netin.stats.distributions import get_gini_coefficient
 from netin.utils import constants as const
 from netin.viz.constants import *
+from netin.utils import validator as val
 
 
 def reset_style():
@@ -659,6 +660,9 @@ def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col
     kwargs['xlabel'] = RANKING_LABEL
     kwargs['ylabel'] = FM_TOPK_AXIS_LABEL
     kwargs['ylim'] = (0. - gap, 1. + gap)
+
+    # validation
+    kwargs = val.ignore_params(['hue'], **kwargs)
 
     plot_distribution(data,
                       col_name=col_name,
