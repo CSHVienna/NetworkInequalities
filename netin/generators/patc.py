@@ -9,38 +9,38 @@ from .pa import PA
 
 
 class PATC(PA, TriadicClosure):
+    """Creates a new PATC instance. An undirected graph with preferential attachment and triadic closure.
+
+    Parameters
+    ----------
+    n: int
+        number of nodes (minimum=2)
+
+    k: int
+        minimum degree of nodes (minimum=1)
+
+    f_m: float
+        fraction of minorities (minimum=1/n, maximum=(n-1)/n)
+
+    tc: float
+        probability of a new edge to close a triad (minimum=0, maximum=1.)
+
+    seed: object
+        seed for random number generator
+
+    Notes
+    -----
+    The initialization is an undirected with n nodes and no edges.
+    Then, everytime a node is selected as source, it gets connected to k target nodes.
+    Target nodes are selected via preferential attachment `in-degree` [BarabasiAlbert1999]_, or
+    triadic closure `tc` [HolmeKim2002]_.
+    """
 
     ############################################################
     # Constructor
     ############################################################
 
     def __init__(self, n: int, k: int, f_m: float, tc: float, seed: object = None):
-        """Creates a new PATC instance. An undirected graph with preferential attachment and triadic closure.
-
-        Parameters
-        ----------
-        n: int
-            number of nodes (minimum=2)
-
-        k: int
-            minimum degree of nodes (minimum=1)
-
-        f_m: float
-            fraction of minorities (minimum=1/n, maximum=(n-1)/n)
-
-        tc: float
-            probability of a new edge to close a triad (minimum=0, maximum=1.)
-
-        seed: object
-            seed for random number generator
-
-        Notes
-        -----
-        The initialization is an undirected with n nodes and no edges.
-        Then, everytime a node is selected as source, it gets connected to k target nodes.
-        Target nodes are selected via preferential attachment `in-degree` [BarabasiAlbert1999]_, or
-        triadic closure `tc` [HolmeKim2002]_.
-        """
         PA.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
         TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
 
