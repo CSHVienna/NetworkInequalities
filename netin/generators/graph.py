@@ -706,4 +706,8 @@ class Graph(nx.Graph):
             for u, nbrs in self._adj.items()
             for v, datadict in nbrs.items()
         )
+        g.node_list = self.node_list.copy()
+        g.node_labels = self.node_labels.copy()
+        g.n_m = self.n_m
+        g.n_M = self.n_M
         return g

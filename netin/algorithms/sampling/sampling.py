@@ -14,6 +14,7 @@ from netin.utils import validator as val
 from netin.stats import networks as net
 from . import constants as const
 
+
 ############################################
 # Class
 ############################################
@@ -132,6 +133,8 @@ class Sampling(object):
             raise RuntimeWarning("The sample has no edges.")
 
         self.sample = sample.copy()
+        self.sample.node_list = [n for n in self.sample.node_list if n in self.sample.nodes()]
+        self.sample.node_labels = {n: l for n, l in self.sample.node_labels.items() if n in self.sample.nodes()}
         gc.collect()
 
     def _set_graph_metadata(self):
@@ -153,7 +156,7 @@ class Sampling(object):
         self.sample.graph['kM'] = kM
         self.sample.graph['random_seed'] = self.random_seed
         self.sample.graph['original_graph'] = self.sample.graph['model']
-        del(self.sample.graph['model'])
+        del (self.sample.graph['model'])
         self.sample.set_model_name(f"{self.sample.get_model_name()}\n{self.method_name}")
 
         # for LINK: working with matrices
