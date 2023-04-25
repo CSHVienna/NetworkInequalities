@@ -1,8 +1,8 @@
 NetIn
 ========
 
-.. image:: docs/source/netin-logo.png
-    :width: 200
+.. image:: https://github.com/CSHVienna/NetworkInequalities/blob/main/docs/source/netin-logo.png?raw=true
+    :width: 100
     :alt: NetworkInequality
 
 NetIn is a python package for network inference.
