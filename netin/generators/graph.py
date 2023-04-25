@@ -11,6 +11,7 @@ import netin
 from netin.utils import constants as const
 from netin.utils import validator as val
 from netin.stats import networks as net
+from netin.utils import io
 
 
 class Graph(nx.Graph):
@@ -695,7 +696,7 @@ class Graph(nx.Graph):
 
         return df
 
-    def _makecopy(self):
+    def _makecopy(self) -> Union[nx.Graph, nx.DiGraph]:
         pass
 
     def copy(self) -> Union[nx.Graph, nx.DiGraph]:

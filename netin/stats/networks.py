@@ -1,5 +1,6 @@
 from typing import Union
 from typing import Tuple
+import warnings
 
 import numpy as np
 import networkx as nx
@@ -19,29 +20,40 @@ def _get_graph_metadata_value(g: Union[nx.Graph, nx.DiGraph], key: str, default:
     return value
 
 
-def _get_class_labels(g: Union[nx.Graph, nx.DiGraph]) -> Tuple[str, str, str]:
-    val.validate_graph_metadata(g)
+def _get_class_labels(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = None) -> Tuple[str, str, str]:
+    if class_attribute:
+        counter = Counter([obj[class_attribute] for n, obj in g.nodes(data=True)]).most_common()
+    else:
+        val.validate_graph_metadata(g)
+        class_attribute = _get_graph_metadata_value(g, 'class_attribute', const.CLASS_ATTRIBUTE)
+        counter = Counter([obj[class_attribute] for n, obj in g.nodes(data=True)])
 
-    class_attribute = _get_graph_metadata_value(g, 'class_attribute', const.CLASS_ATTRIBUTE)
-    counter = Counter([obj[class_attribute] for n, obj in g.nodes(data=True)])
     majority = counter.most_common()[0][0]
     minority = counter.most_common()[-1][0]
 
     return majority, minority, class_attribute
 
 
-def get_minority_fraction(g: Union[nx.Graph, nx.DiGraph]) -> float:
-    majority, minority, class_attribute = _get_class_labels(g)
+def get_minority_fraction(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = None) -> float:
+    """
+    Computes the fraction of the minority class in the graph.
 
+    Parameters
+    ----------
+    g: Union[nx.Graph, nx.DiGraph]
+        Graph to compute the fraction of the minority class
+
+    """
     n = g.number_of_nodes()
+    majority, minority, class_attribute = _get_class_labels(g, class_attribute)
     minority_count = sum([1 for n, obj in g.nodes(data=True) if obj[class_attribute] == minority])
     f_m = minority_count / n
 
     return f_m
 
 
-def get_edge_type_counts(g: Union[nx.Graph, nx.DiGraph], fractions: bool = False) -> Counter:
-    majority, minority, class_attribute = _get_class_labels(g)
+def get_edge_type_counts(g: Union[nx.Graph, nx.DiGraph], fractions: bool = False, class_attribute: str = None) -> Counter:
+    majority, minority, class_attribute = _get_class_labels(g, class_attribute)
     class_values = [majority, minority]
     class_labels = [const.MAJORITY_LABEL, const.MINORITY_LABEL]
 
@@ -61,18 +73,18 @@ def get_average_degree(g: Union[nx.Graph, nx.DiGraph]) -> float:
     return k
 
 
-def get_average_degrees(g: Union[nx.Graph, nx.DiGraph]) -> Tuple[float, float, float]:
+def get_average_degrees(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = None) -> Tuple[float, float, float]:
     k = get_average_degree(g)
 
-    majority, minority, class_attribute = _get_class_labels(g)
+    majority, minority, class_attribute = _get_class_labels(g, class_attribute)
     kM = np.mean([d for n, d in g.degree if g.nodes[n][class_attribute] == majority])
     km = np.mean([d for n, d in g.degree if g.nodes[n][class_attribute] == minority])
 
     return k, kM, km
 
 
-def get_similitude(g: Union[nx.Graph, nx.DiGraph]) -> float:
-    majority, minority, class_attribute = _get_class_labels(g)
+def get_similitude(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = None) -> float:
+    majority, minority, class_attribute = _get_class_labels(g, class_attribute)
 
     tmp = [int(g.nodes[e[0]][class_attribute] == g.nodes[e[1]][class_attribute]) for e in g.edges]
     total = len(tmp)
