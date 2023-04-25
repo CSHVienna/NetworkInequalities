@@ -14,6 +14,7 @@ Network Inequality
    :glob:
 
    generators/*
+   algorithms/*
    mechanisms
    statistics
    visualizations
