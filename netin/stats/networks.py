@@ -22,7 +22,7 @@ def _get_graph_metadata_value(g: Union[nx.Graph, nx.DiGraph], key: str, default:
 
 def _get_class_labels(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = None) -> Tuple[str, str, str]:
     if class_attribute:
-        counter = Counter([obj[class_attribute] for n, obj in g.nodes(data=True)]).most_common()
+        counter = Counter([obj[class_attribute] for n, obj in g.nodes(data=True)])
     else:
         val.validate_graph_metadata(g)
         class_attribute = _get_graph_metadata_value(g, 'class_attribute', const.CLASS_ATTRIBUTE)
