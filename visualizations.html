@@ -47,7 +47,7 @@
 </dd>
 <dt>fn: str</dt><dd><p>File name to save the plot</p>
 </dd>
-<dt>kwargs: dict</dt><dd><p>Additional arguments to pass to the <cite>plot_distribution</cite> function</p>
+<dt>kwargs: dict</dt><dd><p>Additional arguments to pass to the <code class="docutils literal notranslate"><span class="pre">plot_distribution</span></code> function</p>
 </dd>
 </dl>
 </section>
@@ -109,7 +109,7 @@
 <dt>class_label_legend: bool</dt><dd><p>if True, the legend of the class labels is plotted</p>
 </dd>
 </dl>
-<p>And additional arguments sent to <cite>ax.scatter</cite> or <cite>ax.plot</cite> from matplotlib</p>
+<p>And additional arguments sent to <code class="docutils literal notranslate"><span class="pre">ax.scatter</span></code> or <code class="docutils literal notranslate"><span class="pre">ax.plot</span></code> from matplotlib</p>
 </dd>
 </dl>
 </section>
@@ -128,7 +128,7 @@
 </dd>
 <dt>fn: str:</dt><dd><p>File name to save the plot</p>
 </dd>
-<dt>kwargs: dict</dt><dd><p>Additional arguments to pass to the <cite>plot_distribution</cite> function</p>
+<dt>kwargs: dict</dt><dd><p>Additional arguments to pass to the <code class="docutils literal notranslate"><span class="pre">plot_distribution</span></code> function</p>
 </dd>
 </dl>
 </section>
@@ -147,7 +147,7 @@
 </dd>
 <dt>fn: str</dt><dd><p>File name to save the plot</p>
 </dd>
-<dt>kwargs: dict</dt><dd><p>Additional arguments to pass to the <cite>plot_distribution</cite> function</p>
+<dt>kwargs: dict</dt><dd><p>Additional arguments to pass to the <code class="docutils literal notranslate"><span class="pre">plot_distribution</span></code> function</p>
 </dd>
 </dl>
 </section>
@@ -166,7 +166,7 @@
 </dd>
 <dt>fn: str</dt><dd><p>filename to save the figure</p>
 </dd>
-<dt>kwargs: dict</dt><dd><p>Additional arguments for the <cite>subplots</cite> function of the figure.</p>
+<dt>kwargs: dict</dt><dd><p>Additional arguments for the <code class="docutils literal notranslate"><span class="pre">subplots</span></code> function of the figure.</p>
 <dl class="simple">
 <dt>cell_size: float</dt><dd><p>size of the cell in inches</p>
 </dd>
@@ -182,12 +182,12 @@
 </dd>
 <dt>edge_arrows: bool</dt><dd><p>if True, the edges are plotted with arrows</p>
 </dd>
-<dt>arrow_style: str</dt><dd><p>style of the arrows e.g., ‘-<a href="#id5"><span class="problematic" id="id6">|</span></a>&gt;’ for filled arrow</p>
+<dt>arrow_style: str</dt><dd><p>style of the arrows e.g., ‘-|&gt;’ for filled arrow</p>
 </dd>
 <dt>arrow_size: int</dt><dd><p>size of the arrows</p>
 </dd>
 </dl>
-<p>Additional arguments for the <cite>subplots_adjust</cite> and <cite>savefig</cite> functions of the figure.</p>
+<p>Additional arguments for the <code class="docutils literal notranslate"><span class="pre">subplots_adjust</span></code> and <code class="docutils literal notranslate"><span class="pre">savefig</span></code> functions of the figure.</p>
 </dd>
 </dl>
 </section>
@@ -197,8 +197,8 @@
 <dt class="sig sig-object py" id="netin.viz.handlers.plot_powerlaw_fit">
 <span class="sig-prename descclassname"><span class="pre">netin.viz.handlers.</span></span><span class="sig-name descname"><span class="pre">plot_powerlaw_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.viz.handlers.plot_powerlaw_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the powerlaw fit of the data. It shows the empirical and fitted distributions</p>
-<section id="id7">
-<h2>Parameters<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h2>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h2>
 <dl>
 <dt>data: pd.DataFrame or List[pd.DataFrame]</dt><dd><p>Metadata of nodes</p>
 </dd>
@@ -303,8 +303,8 @@ The four values represent (left, bottom, right, top) in figure coordinates.</p>
 <span class="sig-prename descclassname"><span class="pre">netin.viz.handlers.</span></span><span class="sig-name descname"><span class="pre">set_paper_style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">font_scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.viz.handlers.set_paper_style" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the style of the plots to the paper style.
 Font family serif, and allows to adjust the font scale.</p>
-<section id="id8">
-<h2>Parameters<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h2>
+<section id="id6">
+<h2>Parameters<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
 <dt>font_scale: float</dt><dd><p>A scale factor for the font size.</p>
 </dd>
@@ -336,8 +336,8 @@ Font family serif, and allows to adjust the font scale.</p>
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="generators/directed.html">Directed Graphs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="generators/undirected.html">Undirected Graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphs.html">Graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mechanisms.html">Mechanisms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistics.html">Statistics</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Visualization</a><ul>
@@ -387,7 +387,7 @@ Font family serif, and allows to adjust the font scale.</p>
       &copy;2023, Fariba Karimi, Lisette Espin-Noboa, Jan Bachmann.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
