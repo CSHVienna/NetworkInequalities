@@ -754,15 +754,23 @@ class Graph(nx.Graph):
         -------
         pd.DataFrame
             dataframe with the metadata of the nodes
+
+        Notes
+        -----
+        Column `class_label` is a binary column indicating whether the node belongs to the minority class.
         """
-        cols = ['node', 'class_label']
+        cols = ['node', 'class_label', 'real_label', 'source']
+
         obj = {'node': self.node_list,
-               'class_label': [self.get_class_label(n) for n in self.node_list]}
+               'class_label': [const.MAJORITY_LABEL if self.get_class_label(n) == self.get_majority_label() else const.MINORITY_LABEL for n in self.node_list],
+               'real_label': [self.get_class_label(n) for n in self.node_list],
+               'source': 'model' if 'empirical' not in self.graph else 'data'}
 
         # include graph metadata
         if include_graph_metadata:
             n = self.number_of_nodes()
-            newcols = [c for c in self.graph.keys() if c not in ['class_attribute', 'class_values', 'class_labels']]
+            newcols = [c for c in self.graph.keys() if c not in ['class_attribute', 'class_values',
+                                                                 'class_labels']]
             obj.update({c: self.graph[c] for c in newcols})
             cols.extend(newcols)
 

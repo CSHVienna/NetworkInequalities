@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import rc
+from collections import Counter
 
 from netin.generators.graph import Graph
 from netin.stats.distributions import fit_power_law
@@ -101,7 +102,9 @@ def _get_class_label_color(class_label: str, ylabel: str = None) -> str:
     -------
     color: str
         color for the class label
+
     """
+
     if ylabel in MINORITY_CURVE and class_label is None:
         return COLOR_MINORITY
 
@@ -458,7 +461,8 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]],
             total = df[_col_name].sum() if common_norm else group[_col_name].sum()
             xs, ys = get_x_y_from_df_fnc(group, _col_name, total)
             plot = ax.scatter if scatter else ax.plot
-            plot(xs, ys, label=class_label, color=_get_class_label_color(class_label, xy_fnc_name), **kwargs)
+            plot(xs, ys, label=class_label, color=_get_class_label_color(class_label=class_label,
+                                                                         ylabel=xy_fnc_name), **kwargs)
 
             if hline_fnc:
                 hline_fnc(ax.axhline, group)
@@ -789,7 +793,7 @@ def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
             discrete = group_nonzero[_col_name].dtype == np.int64
             fit = fit_power_law(group_nonzero.loc[:, _col_name].values, discrete=discrete, verbose=verbose)
 
-            color = _get_class_label_color(class_label)
+            color = _get_class_label_color(class_label=class_label)
 
             efnc = fit.plot_ccdf if kind == "ccdf" else fit.plot_cdf if kind == 'cdf' else fit.plot_pdf
             fnc = fit.power_law.plot_ccdf if kind == "ccdf" else fit.power_law.plot_cdf if kind == 'cdf' \
