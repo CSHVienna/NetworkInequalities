@@ -2,6 +2,7 @@ MAX_PLOTS_PER_ROW = 5
 COLOR_MAJORITY = 'tab:blue'
 COLOR_MINORITY = 'tab:orange'
 COLOR_MIXED = 'tab:green'
+COLOR_UNKNOWN = 'tab:grey'
 COLOR_BLACK = 'black'
 INACTIVE_COLOR = 'lightgrey'
 RANKING_LABEL = 'rank k'

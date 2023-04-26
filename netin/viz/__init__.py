@@ -1,6 +1,7 @@
 from .constants import COLOR_MAJORITY
 from .constants import COLOR_MINORITY
 from .constants import COLOR_MIXED
+from .constants import COLOR_UNKNOWN
 from .handlers import plot_graph
 from .handlers import plot_distribution
 from .handlers import plot_powerlaw_fit

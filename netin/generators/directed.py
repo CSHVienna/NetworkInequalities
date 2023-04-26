@@ -69,6 +69,12 @@ class DiGraph(nx.DiGraph, Graph):
     # Init
     ############################################################
 
+    def _infer_model_name(self):
+        """
+        Infers the name of the model.
+        """
+        return self.set_model_name(const.DIRECTED_MODEL_NAME)
+
     def _validate_parameters(self):
         """
         Validates the parameters of the directed.
@@ -364,3 +370,15 @@ class DiGraph(nx.DiGraph, Graph):
             activity distribution of all the nodes in the graph
         """
         return self.activity
+
+    def _makecopy(self):
+        """
+        Makes a copy of the current object.
+        """
+        obj = self.__class__(n=self.n,
+                              d=self.d,
+                              f_m=self.f_m,
+                              plo_M=self.plo_M,
+                              plo_m=self.plo_m,
+                              seed=self.seed)
+        return obj

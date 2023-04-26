@@ -49,7 +49,7 @@ def set_paper_style(font_scale: float = 1.0):
     rc('ytick.major', width=0.5)
 
 
-def _get_edge_color(s: int, t: int, g: Graph) -> str:
+def _get_edge_color(s: int, t: int, g: Graph, maj_val: object = None, min_val: object = None) -> str:
     """
     Returns the color of the edge between s and t in the graph g.
     If the edge is homophilic (same attribute value for s and t), the color is the color of the attribute class.
@@ -69,11 +69,18 @@ def _get_edge_color(s: int, t: int, g: Graph) -> str:
     color: str
         color of the edge
     """
+    maj_val = const.MAJORITY_VALUE if maj_val is None else maj_val
+    min_val = const.MINORITY_VALUE if min_val is None else min_val
+
     if g.get_class_value(s) == g.get_class_value(t):
-        if g.get_class_value(s) == const.MINORITY_VALUE:
-            return COLOR_MINORITY
-        else:
+        if g.get_class_value(s) == maj_val:
             return COLOR_MAJORITY
+
+        if g.get_class_value(s) == min_val:
+            return COLOR_MINORITY
+
+        return COLOR_UNKNOWN
+
     return COLOR_MIXED
 
 
@@ -267,7 +274,8 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
     nc, nr = _get_grid_info(len(iter_graph), nc=nc)
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
 
-    fig, axes = plt.subplots(nr, nc, figsize=(nc * cell_size, nr * cell_size), sharex=False, sharey=False)
+    sharex, sharey = (share_pos, share_pos)
+    fig, axes = plt.subplots(nr, nc, figsize=(nc * cell_size, nr * cell_size), sharex=sharex, sharey=sharey)
     node_size = kwargs.get('node_size', 1)
     node_shape = kwargs.get('node_shape', 'o')
     edge_width = kwargs.get('edge_width', 0.02)
@@ -277,7 +285,6 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
     arrow_size = kwargs.get('arrow_size', 2)
 
     pos = None
-    # same_n = len(set([g.number_of_nodes() for g in iter_graph])) == 1
     for cell in np.arange(nc * nr):
         row = cell // nc
         col = cell % nc
@@ -286,23 +293,26 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
         if cell < len(iter_graph):
             g = iter_graph[cell]
 
-            pos = nx.spring_layout(g) if pos is None or not share_pos else pos # or not same_n
+            if pos is None or not share_pos:
+                pos = nx.spring_layout(g)
 
             # title
             ax.set_title(g.get_model_name())
 
             # nodes
-            maj = g.graph['class_values'][0]
-            # maj = g.graph['class_values'][g.graph['class_labels'].index(maj)]
+            maj_val = g.graph['class_values'][0]
+            min_val = g.graph['class_values'][1]
             nodes, node_colors = zip(
-                *[(node, COLOR_MAJORITY if data[g.graph['class_attribute']] == maj else COLOR_MINORITY)
+                *[(node, COLOR_MAJORITY if data[g.graph['class_attribute']] == maj_val else
+                COLOR_MINORITY if data[g.graph['class_attribute']] == min_val else
+                COLOR_UNKNOWN)
                   for node, data in g.nodes(data=True)])
             nx.draw_networkx_nodes(g, pos, nodelist=nodes, node_size=node_size, node_color=node_colors,
                                    node_shape=node_shape, ax=ax)
 
             # edges
             edges = g.edges()
-            edges, edge_colors = zip(*[((s, t), _get_edge_color(s, t, g)) for s, t in edges])
+            edges, edge_colors = zip(*[((s, t), _get_edge_color(s, t, g, maj_val=maj_val, min_val=min_val)) for s, t in edges])
             nx.draw_networkx_edges(g, pos, ax=ax, edgelist=edges, edge_color=edge_colors,
                                    width=edge_width, style=edge_style, arrows=edge_arrows, arrowstyle=arrow_style,
                                    arrowsize=arrow_size)

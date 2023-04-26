@@ -154,7 +154,9 @@ class DPAH(DPA, Homophily):
                               h_MM=self.h_MM,
                               h_mm=self.h_mm,
                               seed=self.seed)
-        obj._initialize(class_attribute=self.class_attribute,
-                        class_values=self.class_values,
-                        class_labels=self.class_labels)
+
+        # @TODO: check if this is necessary
+        # obj._initialize(class_attribute=self.class_attribute,
+        #                 class_values=self.class_values,
+        #                 class_labels=self.class_labels)
         return obj

@@ -6,6 +6,7 @@ import networkx as nx
 import numpy as np
 import powerlaw
 
+from netin.utils import constants as const
 from netin.utils import validator as val
 from .graph import Graph
 
@@ -147,6 +148,12 @@ class UnDiGraph(Graph):
     # Getters and Setters
     ############################################################
 
+    def _infer_model_name(self):
+        """
+        Infers the name of the model.
+        """
+        return self.set_model_name(const.UNDIRECTED_MODEL_NAME)
+
     def get_expected_number_of_edges(self) -> int:
         """
         Computes and returns the expected number of edges based on minimum degree `k` and number of nodes `n`
@@ -230,3 +237,12 @@ class UnDiGraph(Graph):
         pl_M = fit_M.power_law.alpha
         pl_m = fit_m.power_law.alpha
         return pl_M, pl_m
+
+    def _makecopy(self):
+        """
+        Makes a copy of the current object.
+        """
+        return self.__class__(n=self.n,
+                              k=self.k,
+                              f_m=self.f_m,
+                              seed=self.seed)
