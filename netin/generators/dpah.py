@@ -147,13 +147,13 @@ class DPAH(DPA, Homophily):
         Makes a copy of the current object.
         """
         obj = self.__class__(n=self.n,
-                              d=self.d,
-                              f_m=self.f_m,
-                              plo_M=self.plo_M,
-                              plo_m=self.plo_m,
-                              h_MM=self.h_MM,
-                              h_mm=self.h_mm,
-                              seed=self.seed)
+                             d=self.d,
+                             f_m=self.f_m,
+                             plo_M=self.plo_M,
+                             plo_m=self.plo_m,
+                             h_MM=self.h_MM,
+                             h_mm=self.h_mm,
+                             seed=self.seed)
 
         # @TODO: check if this is necessary
         # obj._initialize(class_attribute=self.class_attribute,

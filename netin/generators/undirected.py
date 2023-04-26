@@ -233,9 +233,12 @@ class UnDiGraph(Graph):
         pl_m: float
             Powerlaw exponent for the minority class
         """
-        fit_M, fit_m = self.fit_degree_powerlaw()
-        pl_M = fit_M.power_law.alpha
-        pl_m = fit_m.power_law.alpha
+        pl_M, pl_m = calculate_degree_powerlaw_exponents(self)
+
+        # fit_M, fit_m = self.fit_degree_powerlaw()
+        # pl_M = fit_M.power_law.alpha
+        # pl_m = fit_m.power_law.alpha
+
         return pl_M, pl_m
 
     def _makecopy(self):
@@ -246,3 +249,23 @@ class UnDiGraph(Graph):
                               k=self.k,
                               f_m=self.f_m,
                               seed=self.seed)
+
+
+def calculate_degree_powerlaw_exponents(g: UnDiGraph) -> Tuple[float, float]:
+    """
+    Returns the power law exponents for the in-degree distribution of the majority and minority class.
+
+    Parameters
+    ----------
+    g: DiGraph
+        Graph to calculate the power law exponents for
+
+    Returns
+    -------
+    Tuple[float, float]
+        power law exponents for the in-degree distribution of the majority and minority class
+    """
+    fit_M, fit_m = g.fit_powerlaw(metric='in_degree')
+    pl_M = fit_M.power_law.alpha
+    pl_m = fit_m.power_law.alpha
+    return pl_M, pl_m

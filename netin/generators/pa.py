@@ -3,8 +3,8 @@ from typing import Union
 
 import numpy as np
 
-from netin.utils import constants as const
 from netin.generators.undirected import UnDiGraph
+from netin.utils import constants as const
 
 
 class PA(UnDiGraph):
@@ -30,6 +30,7 @@ class PA(UnDiGraph):
     Then, everytime a node is selected as source, it gets connected to k target nodes.
     Target nodes are selected via preferential attachment (in-degree), see [BarabasiAlbert1999]_.
     """
+
     ############################################################
     # Constructor
     ############################################################

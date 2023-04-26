@@ -10,3 +10,5 @@ from .networks import get_minority_fraction
 from .networks import get_edge_type_counts
 from .networks import get_average_degree
 from .networks import get_average_degrees
+from .networks import get_similitude
+from .networks import get_node_attributes

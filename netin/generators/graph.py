@@ -1,17 +1,18 @@
 import time
+import warnings
 from collections import Counter
-from typing import Union, Set, List
+from typing import Union, Set, List, Tuple, Iterable
 
 import networkx as nx
 import numpy as np
 import pandas as pd
+import powerlaw
 from pqdm.threads import pqdm
-import warnings
 
 import netin
+from netin.stats import networks as net
 from netin.utils import constants as const
 from netin.utils import validator as val
-from netin.stats import networks as net
 
 
 class Graph(nx.Graph):
@@ -332,7 +333,7 @@ class Graph(nx.Graph):
         idx = self.class_values.index(self.nodes[node][self.class_attribute])
         return self.class_labels[idx]
 
-    def get_majority_value(self) -> int:
+    def get_majority_value(self) -> object:
         """
         Returns the value for the majority class.
 
@@ -340,10 +341,16 @@ class Graph(nx.Graph):
         -------
         int
             value for the majority class
-        """
-        return const.MAJORITY_VALUE
 
-    def get_minority_value(self) -> int:
+        Notes
+        -----
+        Position 0 of the ``class_values`` is the majority value.
+        Position 1 of the ``class_values`` is the minority value.
+        """
+        # return const.MAJORITY_VALUE
+        return self.class_values[const.MAJORITY_VALUE]
+
+    def get_minority_value(self) -> object:
         """
         Returns the value for the minority class
 
@@ -351,8 +358,14 @@ class Graph(nx.Graph):
         -------
         int
             value for the minority class
+
+        Notes
+        -----
+        Position 0 of the ``class_values`` is the majority value.
+        Position 1 of the ``class_values`` is the minority value.
         """
-        return const.MINORITY_VALUE
+        # return const.MINORITY_VALUE
+        return self.class_values[const.MINORITY_VALUE]
 
     def get_majority_label(self) -> str:
         """
@@ -362,8 +375,14 @@ class Graph(nx.Graph):
         -------
         str
             label for the majority class
+
+        Notes
+        -----
+        Position 0 of the ``class_labels`` is the majority label.
+        Position 1 of the ``class_labels`` is the minority label.
         """
-        return const.MAJORITY_LABEL
+        # return const.MAJORITY_LABEL
+        return self.class_labels[const.MAJORITY_VALUE]
 
     def get_minority_label(self) -> str:
         """
@@ -373,14 +392,21 @@ class Graph(nx.Graph):
         -------
         str
             label for the minority class
+
+        Notes
+        -----
+        Position 0 of the ``class_labels`` is the majority label.
+        Position 1 of the ``class_labels`` is the minority label.
         """
-        return const.MINORITY_LABEL
+        # return const.MINORITY_LABEL
+        return self.class_labels[const.MINORITY_VALUE]
 
     ############################################################
     # Generation
     ############################################################
 
-    def _initialize(self, class_attribute: str = const.CLASS_ATTRIBUTE, class_values: list = None, class_labels: list = None):
+    def _initialize(self, class_attribute: str = const.CLASS_ATTRIBUTE, class_values: list = None,
+                    class_labels: list = None):
         """
         Initializes the random seed, the graph metadata, and node class information.
         """
@@ -389,7 +415,8 @@ class Graph(nx.Graph):
         self._init_graph(class_attribute, class_values, class_labels)
         self._init_nodes()
 
-    def _init_graph(self, class_attribute: str = const.CLASS_ATTRIBUTE, class_values: list = None, class_labels: list = None):
+    def _init_graph(self, class_attribute: str = const.CLASS_ATTRIBUTE, class_values: list = None,
+                    class_labels: list = None):
         """
         Initializes the graph.
         Sets the name of the model, class information, and the graph metadata.
@@ -592,6 +619,36 @@ class Graph(nx.Graph):
         """
         return net.get_edge_type_counts(self)
 
+    def fit_powerlaw(self, metric: str) -> Tuple[powerlaw.Fit, powerlaw.Fit]:
+        """
+        Fits a power law to the distribution given by 'metric' (the in- or out-degree of nodes in the graph).
+
+        Parameters
+        ----------
+        metric: str
+            metric to fit power law to
+
+        Returns
+        -------
+        powerlaw.Fit
+            power law fit of the majority class
+
+        powerlaw.Fit
+            power law fit of the minority class
+        """
+
+        fit_M, fit_m = fit_powerlaw_groups(self, metric)
+
+        # vM = self.get_majority_value()
+        # dist_fnc = self.in_degree if metric == 'in_degree' else self.out_degree
+        # dM = [d for n, d in dist_fnc if self.nodes[n][self.class_attribute] == vM]
+        # dm = [d for n, d in dist_fnc if self.nodes[n][self.class_attribute] != vM]
+        #
+        # fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM), verbose=False)
+        # fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm), verbose=False)
+
+        return fit_M, fit_m
+
     ############################################################
     # Metadata
     ############################################################
@@ -731,3 +788,88 @@ class Graph(nx.Graph):
         g.n_m = self.n_m
         g.n_M = self.n_M
         return g
+
+
+def fit_powerlaw_groups(g: Graph, metric: str) -> Tuple[powerlaw.Fit, powerlaw.Fit]:
+    """
+    Fits a power law to the distribution given by 'metric' (the in- or out-degree of nodes in the graph).
+
+    Parameters
+    ----------
+    g: Graph
+        Graph to fit power law to
+
+    metric: str
+        metric to fit power law to
+
+    Returns
+    -------
+    powerlaw.Fit
+        power law fit of the majority class
+
+    powerlaw.Fit
+        power law fit of the minority class
+    """
+
+    def _get_value_fnc(g: Graph, metric: str) -> Iterable:
+        if metric not in ['in_degree', 'out_degree', 'degree']:
+            raise ValueError(f"`metric` must be either 'in_degree', 'out_degree' or 'degree', not {metric}")
+        return g.in_degree if metric == 'in_degree' else g.out_degree if metric == 'out_degree' else g.degree
+
+    vM = g.get_majority_value()
+    fnc = _get_value_fnc(g, metric)
+    dM = [d for n, d in fnc if g.nodes[n][g.class_attribute] == vM]
+    dm = [d for n, d in fnc if g.nodes[n][g.class_attribute] != vM]
+
+    fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM), verbose=False)
+    fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm), verbose=False)
+    return fit_M, fit_m
+
+
+def convert_networkx_to_netin(g: Union[nx.Graph, nx.DiGraph], name: str, class_attribute: str) -> Graph:
+    """
+    Given a networkx graph, it creates a netin graph with the same structure and attributes.
+
+    Parameters
+    ----------
+    g:  networkx
+        Graph to convert
+
+    name:  str
+        name of the dataset
+
+    class_attribute:  str
+        name of the attribute that contains the class label
+
+    Returns
+    -------
+    netin.Graph
+        netin graph with the same structure and attributes
+    """
+    n = g.number_of_nodes()
+    f_m = net.get_minority_fraction(g, class_attribute)
+    seed = None
+
+    if g.is_directed():
+        d = nx.density(g)
+        plo_M, plo_m = netin.calculate_out_degree_powerlaw_exponents(g)
+        gn = netin.DiGraph(n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed)
+    else:
+        k = net.get_min_degree(g)
+        gn = netin.UnDiGraph(n=n, k=k, f_m=f_m, seed=seed)
+
+    gn.set_model_name(name)
+    gn.add_edges_from(g.edges(data=True))
+    gn.add_nodes_from(g.nodes(data=True))
+
+    counter = Counter([obj[class_attribute] for n, obj in g.nodes(data=True)])
+    class_values, class_counts = zip(*counter.most_common())  # from M to m
+    class_labels = ['female' if c == 1 else 'male' if c == 0 else 'unknown' for c in class_values]
+    gn._initialize(class_attribute=class_attribute, class_values=class_values, class_labels=class_labels)
+
+    obj = {'model': gn.get_model_name(),
+           'e': g.number_of_edges()}
+
+    gn.graph.update(obj)
+
+    return gn

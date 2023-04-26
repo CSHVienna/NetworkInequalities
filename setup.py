@@ -60,25 +60,29 @@ classifiers = [
 
 packages = [
     "netin",
-    "netin.algorithms.sampling",
     "netin.generators",
     "netin.utils",
     "netin.stats",
     "netin.viz",
+    "netin.algorithms.sampling",
     "netin.generators.tests",
 ]
 
 docdirbase = "share/doc/netin-%s" % version
+
 # add basic documentation
 data = [(docdirbase, glob("*.txt"))]
+
 # add examples
 for d in [
     ".",
+    "directed",
+    "undirected",
+    "notebooks",
     "advanced",
     "algorithms",
     "basic",
     "drawing",
-    "undirected",
     "subclass",
 ]:
     dd = os.path.join(docdirbase, "examples", d)

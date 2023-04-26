@@ -1,12 +1,12 @@
 from typing import Union, Set, Tuple
 
 import numpy as np
-from sympy import symbols
 from sympy import Eq
 from sympy import solve
+from sympy import symbols
 
-from netin.utils import constants as const
 from netin.generators.h import Homophily
+from netin.utils import constants as const
 from .pa import PA
 
 

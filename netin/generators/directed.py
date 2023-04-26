@@ -255,33 +255,6 @@ class DiGraph(nx.DiGraph, Graph):
             print(f"- {self.get_minority_label()}: alpha={fit_m.power_law.alpha}, sigma={fit_m.power_law.sigma}, "
                   f"min={fit_m.power_law.xmin}, max={fit_m.power_law.xmax}")
 
-    def fit_powerlaw(self, metric: str) -> Tuple[powerlaw.Fit, powerlaw.Fit]:
-        """
-        Fits a power law to the distribution given by 'metric' (the in- or out-degree of nodes in the graph).
-
-        Parameters
-        ----------
-        metric: str
-            metric to fit power law to
-
-        Returns
-        -------
-        powerlaw.Fit
-            power law fit of the majority class
-
-        powerlaw.Fit
-            power law fit of the minority class
-        """
-        # @TODO: validate if metric is not in_degree or out_degree
-        vM = self.get_majority_value()
-        dist_fnc = self.in_degree if metric == 'in_degree' else self.out_degree
-        dM = [d for n, d in dist_fnc if self.nodes[n][self.class_attribute] == vM]
-        dm = [d for n, d in dist_fnc if self.nodes[n][self.class_attribute] != vM]
-
-        fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM), verbose=False)
-        fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm), verbose=False)
-        return fit_M, fit_m
-
     def calculate_in_degree_powerlaw_exponents(self) -> Tuple[float, float]:
         """
         Returns the power law exponents for the in-degree distribution of the majority and minority class.
@@ -291,9 +264,12 @@ class DiGraph(nx.DiGraph, Graph):
         Tuple[float, float]
             power law exponents for the in-degree distribution of the majority and minority class
         """
-        fit_M, fit_m = self.fit_powerlaw(metric='in_degree')
-        pl_M = fit_M.power_law.alpha
-        pl_m = fit_m.power_law.alpha
+        pl_M, pl_m = calculate_in_degree_powerlaw_exponents(self)
+
+        # fit_M, fit_m = self.fit_powerlaw(metric='in_degree')
+        # pl_M = fit_M.power_law.alpha
+        # pl_m = fit_m.power_law.alpha
+
         return pl_M, pl_m
 
     def calculate_out_degree_powerlaw_exponents(self) -> Tuple[float, float]:
@@ -305,9 +281,12 @@ class DiGraph(nx.DiGraph, Graph):
         Tuple[float, float]
             power law exponents for the out-degree distribution of the majority and minority class
         """
-        fit_M, fit_m = self.fit_powerlaw(metric='out_degree')
-        pl_M = fit_M.power_law.alpha
-        pl_m = fit_m.power_law.alpha
+        pl_M, pl_m = calculate_out_degree_powerlaw_exponents(self)
+
+        # fit_M, fit_m = self.fit_powerlaw(metric='out_degree')
+        # pl_M = fit_M.power_law.alpha
+        # pl_m = fit_m.power_law.alpha
+
         return pl_M, pl_m
 
     ############################################################
@@ -376,9 +355,49 @@ class DiGraph(nx.DiGraph, Graph):
         Makes a copy of the current object.
         """
         obj = self.__class__(n=self.n,
-                              d=self.d,
-                              f_m=self.f_m,
-                              plo_M=self.plo_M,
-                              plo_m=self.plo_m,
-                              seed=self.seed)
+                             d=self.d,
+                             f_m=self.f_m,
+                             plo_M=self.plo_M,
+                             plo_m=self.plo_m,
+                             seed=self.seed)
         return obj
+
+
+def calculate_in_degree_powerlaw_exponents(g: DiGraph) -> Tuple[float, float]:
+    """
+    Returns the power law exponents for the in-degree distribution of the majority and minority class.
+
+    Parameters
+    ----------
+    g: DiGraph
+        Graph to calculate the power law exponents for
+
+    Returns
+    -------
+    Tuple[float, float]
+        power law exponents for the in-degree distribution of the majority and minority class
+    """
+    fit_M, fit_m = g.fit_powerlaw(metric='in_degree')
+    pl_M = fit_M.power_law.alpha
+    pl_m = fit_m.power_law.alpha
+    return pl_M, pl_m
+
+
+def calculate_out_degree_powerlaw_exponents(g: DiGraph) -> Tuple[float, float]:
+    """
+    Returns the power law exponents for the out-degree distribution of the majority and minority class.
+
+    Parameters
+    ----------
+    g: DiGraph
+        Graph to calculate the power law exponents for
+
+    Returns
+    -------
+    Tuple[float, float]
+        power law exponents for the out-degree distribution of the majority and minority class
+    """
+    fit_M, fit_m = g.fit_powerlaw(metric='out_degree')
+    pl_M = fit_M.power_law.alpha
+    pl_m = fit_m.power_law.alpha
+    return pl_M, pl_m

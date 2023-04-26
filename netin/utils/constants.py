@@ -15,8 +15,8 @@ MAJORITY_LABEL = 'M'
 MINORITY_LABEL = 'm'
 CLASS_LABELS = [MAJORITY_LABEL, MINORITY_LABEL]
 
-MAJORITY_VALUE = 0
-MINORITY_VALUE = 1
+MAJORITY_VALUE = 0  # value for synthetic, and position for both synthetic and empirical pre-processed graphs
+MINORITY_VALUE = 1  # value for synthetic, and position for both synthetic and empirical pre-processed graphs
 CLASS_VALUES = [MAJORITY_VALUE, MINORITY_VALUE]
 
 # GENERATIVE MODELS
