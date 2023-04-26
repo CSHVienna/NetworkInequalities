@@ -89,3 +89,37 @@ class PA(UnDiGraph):
                               k=self.k,
                               f_m=self.f_m,
                               seed=self.seed)
+
+    @staticmethod
+    def fit(g, n=None, k=None, seed=None):
+        """
+        It fits the PA model to the given graph.
+
+        Parameters
+        ----------
+        g: netin.UnDiGraph
+            graph to fit the model to
+
+        n: int
+            number of nodes to override (e.g., to generate a smaller network)
+
+        k: int
+            minimum node degree to override (e.g., to generate a denser network ``k>1``)
+        seed
+
+        Returns
+        -------
+        netin.PA
+            fitted model
+        """
+        n = n or g.number_of_nodes()
+        k = k or g.calculate_minimum_degree()
+        f_m = g.calculate_fraction_of_minority()
+
+        new_g = PA(n=n,
+                     k=k,
+                     f_m=f_m,
+                     seed=seed)
+        new_g.generate()
+
+        return new_g

@@ -265,7 +265,7 @@ def calculate_degree_powerlaw_exponents(g: UnDiGraph) -> Tuple[float, float]:
     Tuple[float, float]
         power law exponents for the in-degree distribution of the majority and minority class
     """
-    fit_M, fit_m = g.fit_powerlaw(metric='in_degree')
+    fit_M, fit_m = g.fit_powerlaw(metric='degree')
     pl_M = fit_M.power_law.alpha
     pl_m = fit_m.power_law.alpha
     return pl_M, pl_m

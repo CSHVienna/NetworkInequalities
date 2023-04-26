@@ -66,6 +66,10 @@ def get_edge_type_counts(g: Union[nx.Graph, nx.DiGraph], fractions: bool = False
     -------
     Counter
         Counter holding the edge type counts
+
+    Notes
+    -----
+    Class labels are assumed to be binary. The minority class is assumed to be labeled as 1.
     """
     majority, minority, class_attribute = _get_class_labels(g, class_attribute)
     class_values = [majority, minority]
@@ -73,7 +77,8 @@ def get_edge_type_counts(g: Union[nx.Graph, nx.DiGraph], fractions: bool = False
 
     counts = Counter([f"{class_labels[class_values.index(g.nodes[e[0]][class_attribute])]}"
                       f"{class_labels[class_values.index(g.nodes[e[1]][class_attribute])]}"
-                      for e in g.edges])
+                      for e in g.edges if g.nodes[e[0]][class_attribute] in class_values and
+                      g.nodes[e[1]][class_attribute] in class_values])
 
     if fractions:
         total = sum(counts.values())

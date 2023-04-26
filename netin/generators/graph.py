@@ -70,7 +70,7 @@ class Graph(nx.Graph):
         self.class_values = None
         self.class_labels = None
         self.node_list = None
-        self.node_labels = None
+        self.node_class_values = None
         self._gen_start_time = None
         self._gen_duration = None
 
@@ -140,6 +140,39 @@ class Graph(nx.Graph):
     ############################################################
     # Getters & Setters
     ############################################################
+
+    def set_node_list(self, node_list: np.array):
+        """
+        Sets the node list.
+
+        Parameters
+        ----------
+        node_list: np.array
+            vector of nodes
+        """
+        self.node_list = node_list
+
+    def get_node_list(self) -> np.array:
+        """
+        Returns the vector of nodes.
+
+        Returns
+        -------
+        np.array
+            vector of nodes
+        """
+        return self.node_list
+
+    def set_node_class_values(self, node_class_values: dict):
+        """
+        Sets the node class values.
+
+        Parameters
+        ----------
+        node_class_values: dict
+            dictionary of node class values
+        """
+        self.node_class_values = node_class_values
 
     def set_expected_number_of_nodes(self, n: int):
         """
@@ -444,7 +477,7 @@ class Graph(nx.Graph):
         self.n_M = int(round(self.n * (1 - self.f_m)))
         self.n_m = self.n - self.n_M
         minorities = np.random.choice(self.node_list, self.n_m, replace=False)
-        self.node_labels = {n: int(n in minorities) for n in self.node_list}
+        self.node_class_values = {n: int(n in minorities) for n in self.node_list}
 
     def get_special_targets(self, source: int) -> object:
         pass
@@ -524,7 +557,7 @@ class Graph(nx.Graph):
         # init graph and nodes
         self._initialize()
         self.add_nodes_from(self.node_list)
-        nx.set_node_attributes(self, self.node_labels, self.class_attribute)
+        nx.set_node_attributes(self, self.node_class_values, self.class_attribute)
 
         # iterate
         # for each source_node, get target (based on specific mechanisms), then add edge, update special targets
@@ -784,7 +817,7 @@ class Graph(nx.Graph):
             for v, datadict in nbrs.items()
         )
         g.node_list = self.node_list.copy()
-        g.node_labels = self.node_labels.copy()
+        g.node_class_values = self.node_class_values.copy()
         g.n_m = self.n_m
         g.n_M = self.n_M
         return g
@@ -859,13 +892,16 @@ def convert_networkx_to_netin(g: Union[nx.Graph, nx.DiGraph], name: str, class_a
         gn = netin.UnDiGraph(n=n, k=k, f_m=f_m, seed=seed)
 
     gn.set_model_name(name)
-    gn.add_edges_from(g.edges(data=True))
     gn.add_nodes_from(g.nodes(data=True))
+    gn.add_edges_from(g.edges(data=True))
 
     counter = Counter([obj[class_attribute] for n, obj in g.nodes(data=True)])
     class_values, class_counts = zip(*counter.most_common())  # from M to m
     class_labels = ['female' if c == 1 else 'male' if c == 0 else 'unknown' for c in class_values]
     gn._initialize(class_attribute=class_attribute, class_values=class_values, class_labels=class_labels)
+
+    gn.set_node_list(np.asarray(g.nodes()))
+    gn.set_node_class_values({n: obj[class_attribute] for n, obj in g.nodes(data=True)})
 
     obj = {'model': gn.get_model_name(),
            'e': g.number_of_edges()}

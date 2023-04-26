@@ -139,7 +139,7 @@ class Homophily(Graph):
         h: float
             homophily (similarity) between source and target nodes (minimum=0, maximum=1.)
         """
-        return self.mixing_matrix[self.node_labels[source], self.node_labels[target]]
+        return self.mixing_matrix[self.node_class_values[source], self.node_class_values[target]]
 
     ############################################################
     # Generation

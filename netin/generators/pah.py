@@ -5,6 +5,7 @@ from sympy import Eq
 from sympy import solve
 from sympy import symbols
 
+import netin
 from netin.generators.h import Homophily
 from netin.utils import constants as const
 from .pa import PA
@@ -159,31 +160,9 @@ class PAH(PA, Homophily):
         -----
         See derivations in [Karimi2018]_.
         """
-        f_m = self.calculate_fraction_of_minority()
-        f_M = 1 - f_m
 
-        e = self.calculate_edge_type_counts()
-        e_MM = e['MM']
-        e_mm = e['mm']
-        M = e['MM'] + e['mm'] + e['Mm'] + e['mM']
+        h_MM, h_mm = infer_homophily(self)
 
-        p_MM = e_MM / M
-        p_mm = e_mm / M
-
-        pl_M, pl_m = self.calculate_degree_powerlaw_exponents()
-        b_M = -1 / (pl_M + 1)
-        b_m = -1 / (pl_m + 1)
-
-        # equations
-        hmm, hMM, hmM, hMm = symbols('hmm hMM hmM hMm')
-        eq1 = Eq((f_m * f_m * hmm * (1 - b_M)) / ((f_m * hmm * (1 - b_M)) + (f_M * hmM * (1 - b_m))), p_mm)
-        eq2 = Eq(hmm + hmM, 1)
-
-        eq3 = Eq((f_M * f_M * hMM * (1 - b_m)) / ((f_M * hMM * (1 - b_m)) + (f_m * hMm * (1 - b_M))), p_MM)
-        eq4 = Eq(hMM + hMm, 1)
-
-        solution = solve((eq1, eq2, eq3, eq4), (hmm, hmM, hMM, hMm))
-        h_MM, h_mm = solution[hMM], solution[hmm]
         return h_MM, h_mm
 
     def _makecopy(self):
@@ -196,3 +175,69 @@ class PAH(PA, Homophily):
                               h_MM=self.h_MM,
                               h_mm=self.h_mm,
                               seed=self.seed)
+
+    @staticmethod
+    def fit(g, n=None, k=None, seed=None):
+        """
+        It fits the PAH model to the given graph.
+
+        Parameters
+        ----------
+        g: netin.UnDiGraph
+            graph to fit the model to
+
+        n: int
+            number of nodes to override (e.g., to generate a smaller network)
+
+        k: int
+            minimum node degree to override (e.g., to generate a denser network ``k>1``)
+        seed
+
+        Returns
+        -------
+        netin.PAH
+            fitted model
+        """
+        n = n or g.number_of_nodes()
+        k = k or g.calculate_minimum_degree()
+        f_m = g.calculate_fraction_of_minority()
+        h_MM, h_mm = infer_homophily(g)
+
+        new_g = PAH(n=n,
+                    k=k,
+                    f_m=f_m,
+                    h_MM=float(h_MM),
+                    h_mm=float(h_mm),
+                    seed=seed)
+        new_g.generate()
+
+        return new_g
+
+
+def infer_homophily(g) -> Tuple[float, float]:
+    f_m = g.calculate_fraction_of_minority()
+    f_M = 1 - f_m
+
+    e = g.calculate_edge_type_counts()
+    e_MM = e['MM']
+    e_mm = e['mm']
+    M = e['MM'] + e['mm'] + e['Mm'] + e['mM']
+
+    p_MM = e_MM / M
+    p_mm = e_mm / M
+
+    pl_M, pl_m = g.calculate_degree_powerlaw_exponents()
+    b_M = -1 / (pl_M + 1)
+    b_m = -1 / (pl_m + 1)
+
+    # equations
+    hmm, hMM, hmM, hMm = symbols('hmm hMM hmM hMm')
+    eq1 = Eq((f_m * f_m * hmm * (1 - b_M)) / ((f_m * hmm * (1 - b_M)) + (f_M * hmM * (1 - b_m))), p_mm)
+    eq2 = Eq(hmm + hmM, 1)
+
+    eq3 = Eq((f_M * f_M * hMM * (1 - b_m)) / ((f_M * hMM * (1 - b_m)) + (f_m * hMm * (1 - b_M))), p_MM)
+    eq4 = Eq(hMM + hMm, 1)
+
+    solution = solve((eq1, eq2, eq3, eq4), (hmm, hmM, hMM, hMm))
+    h_MM, h_mm = solution[hMM], solution[hmm]
+    return h_MM, h_mm

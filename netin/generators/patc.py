@@ -210,7 +210,7 @@ class PATC(PA, TriadicClosure):
         float
             triadic closure probability of the graph
         """
-        tc = nx.average_clustering(self)
+        tc = infer_triadic_closure(self)
         return tc
 
     def _makecopy(self):
@@ -222,3 +222,42 @@ class PATC(PA, TriadicClosure):
                               f_m=self.f_m,
                               tc=self.tc,
                               seed=self.seed)
+
+    @staticmethod
+    def fit(g, n=None, k=None, seed=None):
+        """
+        It fits the PATC model to the given graph.
+
+        Parameters
+        ----------
+        g: netin.UnDiGraph
+            graph to fit the model to
+
+        n: int
+            number of nodes to override (e.g., to generate a smaller network)
+
+        k: int
+            minimum node degree to override (e.g., to generate a denser network ``k>1``)
+        seed
+
+        Returns
+        -------
+        netin.PATC
+            fitted model
+        """
+        n = n or g.number_of_nodes()
+        k = k or g.calculate_minimum_degree()
+        f_m = g.calculate_fraction_of_minority()
+        tc = infer_triadic_closure(g)
+
+        new_g = PATC(n=n,
+                    k=k,
+                    f_m=f_m,
+                    tc=tc,
+                    seed=seed)
+        new_g.generate()
+
+        return new_g
+
+def infer_triadic_closure(g):
+    return nx.average_clustering(g)

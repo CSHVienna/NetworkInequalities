@@ -134,7 +134,7 @@ class Sampling(object):
 
         self.sample = sample.copy()
         self.sample.node_list = [n for n in self.sample.node_list if n in self.sample.nodes()]
-        self.sample.node_labels = {n: l for n, l in self.sample.node_labels.items() if n in self.sample.nodes()}
+        self.sample.node_class_values = {n: l for n, l in self.sample.node_class_values.items() if n in self.sample.nodes()}
         gc.collect()
 
     def _set_graph_metadata(self):
