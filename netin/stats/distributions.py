@@ -92,6 +92,7 @@ def get_disparity(df: pd.DataFrame, x: str, total: float = None) -> (np.ndarray,
         Two arrays holding the x values (ranking) and the y values (disparity)
     """
     from netin.stats import ranking
+    from netin.utils import constants as const
 
     gx, gy = get_gini_coefficient(df, x, total)
     fx, fy = get_fraction_of_minority(df, x, total)

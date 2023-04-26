@@ -91,7 +91,7 @@ class Graph(nx.Graph):
         val.validate_float(self.f_m, minimum=1 / self.n, maximum=(self.n - 1) / self.n)
         self.seed = self.seed if self.seed is not None else np.random.randint(0, 2 ** 32)
 
-    def _set_class_info(self, class_attribute: str = 'm',
+    def _set_class_info(self, class_attribute: str = const.CLASS_ATTRIBUTE,
                         class_values: list = None,
                         class_labels: list = None):
         """
@@ -112,7 +112,7 @@ class Graph(nx.Graph):
             class_labels = const.CLASS_LABELS
         if class_values is None:
             class_values = const.CLASS_VALUES
-        self.set_class_attribute(const.CLASS_ATTRIBUTE)
+        self.set_class_attribute(class_attribute)
         self.set_class_values(class_values)
         self.set_class_labels(class_labels)
 
@@ -380,7 +380,7 @@ class Graph(nx.Graph):
     # Generation
     ############################################################
 
-    def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
+    def _initialize(self, class_attribute: str = const.CLASS_ATTRIBUTE, class_values: list = None, class_labels: list = None):
         """
         Initializes the random seed, the graph metadata, and node class information.
         """
@@ -389,7 +389,7 @@ class Graph(nx.Graph):
         self._init_graph(class_attribute, class_values, class_labels)
         self._init_nodes()
 
-    def _init_graph(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
+    def _init_graph(self, class_attribute: str = const.CLASS_ATTRIBUTE, class_values: list = None, class_labels: list = None):
         """
         Initializes the graph.
         Sets the name of the model, class information, and the graph metadata.

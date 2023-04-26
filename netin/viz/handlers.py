@@ -292,7 +292,8 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
             ax.set_title(g.get_model_name())
 
             # nodes
-            maj = g.graph['class_values'][g.graph['class_labels'].index("M")]
+            maj = g.graph['class_values'][0]
+            # maj = g.graph['class_values'][g.graph['class_labels'].index(maj)]
             nodes, node_colors = zip(
                 *[(node, COLOR_MAJORITY if data[g.graph['class_attribute']] == maj else COLOR_MINORITY)
                   for node, data in g.nodes(data=True)])
