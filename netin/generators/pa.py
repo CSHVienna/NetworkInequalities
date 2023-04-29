@@ -105,7 +105,9 @@ class PA(UnDiGraph):
 
         k: int
             minimum node degree to override (e.g., to generate a denser network ``k>1``)
-        seed
+
+        seed: object
+            seed for random number generator
 
         Returns
         -------

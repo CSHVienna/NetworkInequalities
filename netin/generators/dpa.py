@@ -31,12 +31,9 @@ class DPA(DiGraph):
 
     Notes
     -----
-    The initialization is a directed with n nodes and no edges.
-    Source nodes are selected based on their activity given by plo_M (if majority) or plo_m (if minority) [Espin-Noboa2022]_.
-    Target nodes are selected via preferential attachment [BarabasiAlbert1999]_.
-
-    References
-    ----------
+    The initialization is a directed graph with n nodes and no edges.
+    Source nodes are selected based on their activity given by plo_M (if majority) or plo_m (if minority)
+    [Espin-Noboa2022]_. Target nodes are selected via preferential attachment [BarabasiAlbert1999]_.
 
     """
 

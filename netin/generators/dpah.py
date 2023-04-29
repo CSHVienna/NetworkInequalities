@@ -38,7 +38,7 @@ class DPAH(DPA, Homophily):
 
     Notes
     -----
-    The initialization is a directed with n nodes where f_m are the minority.
+    The initialization is a directed graph with n nodes where f_m are the minority.
     Source nodes are selected based on their activity given by plo_M (if majority) or plo_m (if minority).
     Target nodes are selected via preferential attachment (in-degree) an homophily (h**).
     This model is based on [Espin-Noboa2022]_ which is the directed version of the "BA Homophily" model [Karimi2018]_.

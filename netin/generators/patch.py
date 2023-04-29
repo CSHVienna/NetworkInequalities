@@ -32,11 +32,13 @@ class PATCH(PAH, TriadicClosure):
 
     Notes
     -----
-    The initialization is an undirected with n nodes and no edges.
+    The initialization is an undirected graph with n nodes and no edges.
     Then, everytime a node is selected as source, it gets connected to k target nodes.
-    Target nodes are selected via preferential attachment (in-degree) [BarabasiAlbert1999]_,
-    homophily (h_**; see :class:`netin.Homophily`) [Karimi2018]_,
-    and triadic closure (see :class:`netin.TriadicClosure`) [HolmeKim2002]_.
+    Target nodes are selected via preferential attachment (in-degree) [BarabasiAlbert1999]_ and
+    homophily (h_**; see :class:`netin.Homophily`) [Karimi2018]_ with probability ``1-p_{TC}``,
+    and with probability ``p_{TC}`` via triadic closure (see :class:`netin.TriadicClosure`) [HolmeKim2002]_.
+
+    Note that this model is still work in progress and not fully implemented yet.
     """
 
     ############################################################

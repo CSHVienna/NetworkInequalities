@@ -28,6 +28,11 @@ def validate_float(value: float, minimum: float, maximum: Union[None, float] = N
         raise ValueError(f'Value is out of range.')
 
 
+def validate_values(value: object, values: list):
+    if value not in values:
+        raise ValueError(f'Value must be one of {values}')
+
+
 def calibrate_null_probabilities(p: float) -> float:
     return const.EPSILON if p == 0 else 1 - const.EPSILON if p == 1 else p
 

@@ -32,7 +32,7 @@ def reset_style():
 
 
 def set_paper_style(font_scale: float = 1.0):
-    """
+    """plot_graph
     Sets the style of the plots to the paper style.
     Font family serif, and allows to adjust the font scale.
 
@@ -225,7 +225,8 @@ def _add_class_legend(fig: matplotlib.figure.Figure, **kwargs):
     fig.legend(handles=[maj_patch, min_patch], bbox_to_anchor=bbox, loc=loc)
 
 
-def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = False, fn: str = None, **kwargs):
+def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = False, ignore_singletons: bool = False,
+               fn: str = None, **kwargs):
     """
     Plots one or multiple (netin.Graph) graphs as matplotlib figures.
 
@@ -236,6 +237,9 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
 
     share_pos: bool
         if True, the positions of the nodes are shared between the graphs
+
+    ignore_singletons: bool
+        if True, only nodes with degree > 0 are plotted
 
     fn: str
         filename to save the figure
@@ -294,7 +298,12 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
         ax = axes if nr == nc == 1 else axes[cell] if nr == 1 else axes[row, col]
 
         if cell < len(iter_graph):
-            g = iter_graph[cell]
+            g = iter_graph[cell].copy()
+
+            if ignore_singletons:
+                to_remove = [n for n in g.nodes() if g.degree(n) == 0]
+                if len(to_remove) > 0:
+                    g.remove_nodes_from(to_remove)
 
             if pos is None or not share_pos:
                 pos = nx.spring_layout(g)

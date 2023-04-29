@@ -25,7 +25,7 @@ class Graph(nx.Graph):
 
     f_m: float
         fraction of minorities (minimum=1/n, maximum=(n-1)/n)
-
+cu
     seed: object
         seed for random number generator
 
@@ -682,6 +682,32 @@ class Graph(nx.Graph):
 
         return fit_M, fit_m
 
+    def calculate_powerlaw_exponents(self, metric: str) -> Tuple[float, float]:
+        """
+        Returns the power law exponents for the ``metric`` distribution of the majority and minority class.
+
+        Parameters
+        ----------
+        metric: str
+            Metric to calculate the power law exponents for.
+
+        Returns
+        -------
+        Tuple[float, float]
+            power law exponents for the ``metric`` distribution of the majority and minority class
+
+        Raises
+        ------
+            ValueError: Value of ``metric`` ∈ ['in_degree', 'out_degree'] if the graph is directed,
+            otherwise it must be 'degree'.
+        """
+        metrics = ['in_degree', 'out_degree'] if self.is_directed() else ['degree']
+        val.validate_values(metric, metrics)
+        fit_M, fit_m = self.fit_powerlaw(metric=metric)
+        pl_M = fit_M.power_law.alpha
+        pl_m = fit_m.power_law.alpha
+        return pl_M, pl_m
+
     ############################################################
     # Metadata
     ############################################################
@@ -817,6 +843,8 @@ class Graph(nx.Graph):
         g._init_graph(class_attribute=self.class_attribute,
                       class_values=self.class_values,
                       class_labels=self.class_labels)
+        g.set_model_name(self.get_model_name())
+
         g.graph.update(self.graph)
         g.add_nodes_from((n, d.copy()) for n, d in self._node.items())
         g.add_edges_from(

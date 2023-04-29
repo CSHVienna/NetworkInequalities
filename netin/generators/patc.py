@@ -30,7 +30,7 @@ class PATC(PA, TriadicClosure):
 
     Notes
     -----
-    The initialization is an undirected with n nodes and no edges.
+    The initialization is an undirected graph with n nodes and no edges.
     Then, everytime a node is selected as source, it gets connected to k target nodes.
     Target nodes are selected via preferential attachment `in-degree` [BarabasiAlbert1999]_, or
     triadic closure `tc` [HolmeKim2002]_.
@@ -238,7 +238,9 @@ class PATC(PA, TriadicClosure):
 
         k: int
             minimum node degree to override (e.g., to generate a denser network ``k>1``)
-        seed
+
+        seed: object
+            seed for random number generator
 
         Returns
         -------

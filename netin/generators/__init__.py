@@ -1,7 +1,5 @@
 from .dh import DH
 from .directed import DiGraph
-from .directed import calculate_out_degree_powerlaw_exponents
-from .directed import calculate_in_degree_powerlaw_exponents
 from .dpa import DPA
 from .dpah import DPAH
 from .graph import Graph
@@ -13,4 +11,3 @@ from .patc import PATC
 from .patch import PATCH
 from .tc import TriadicClosure
 from .undirected import UnDiGraph
-from .undirected import calculate_degree_powerlaw_exponents

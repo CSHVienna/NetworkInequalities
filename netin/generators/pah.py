@@ -36,7 +36,7 @@ class PAH(PA, Homophily):
 
     Notes
     -----
-    The initialization is an undirected with n nodes, where f_m are the minority.
+    The initialization is an undirected graph with n nodes, where f_m are the minority.
     Then, everytime a node is selected as source, it gets connected to k target nodes.
     Target nodes are selected via preferential attachment (in-degree) and homophily (h_**).
     This model is based on [Karimi2018]_ known as the "Barabasi model with homophily" or "BA Homophily".
@@ -191,7 +191,9 @@ class PAH(PA, Homophily):
 
         k: int
             minimum node degree to override (e.g., to generate a denser network ``k>1``)
-        seed
+
+        seed: object
+            seed for random number generator
 
         Returns
         -------

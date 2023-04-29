@@ -38,7 +38,7 @@ class DH(DiGraph, Homophily):
 
     Notes
     -----
-    The initialization is a directed with n nodes and no edges.
+    The initialization is a directed graph with n nodes and no edges.
     Source nodes are selected based on their activity given by plo_M (if majority) or plo_m (if minority).
     Target nodes are selected via homophily, see [Espin-Noboa2022]_.
     """
