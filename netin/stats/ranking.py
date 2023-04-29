@@ -105,7 +105,7 @@ def get_ranking_inequality(ys: np.array) -> float:
     float
         The Gini coefficient of the entire distribution (at op-100%).
     """
-    gini_global = ys[0]  # top-100%
+    gini_global = ys[-1]  # top-100%
     return gini_global
 
 
