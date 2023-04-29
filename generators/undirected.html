@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -6,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Undirected Graphs &#8212; NetIn 1.0.5.9.1 documentation</title>
+    <title>Undirected Graphs &#8212; NetIn 1.0.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -247,8 +246,9 @@ Target nodes are selected via preferential attachment (in-degree), see <a class=
 </dd>
 <dt>k: int</dt><dd><p>minimum node degree to override (e.g., to generate a denser network <code class="docutils literal notranslate"><span class="pre">k&gt;1</span></code>)</p>
 </dd>
+<dt>seed: object</dt><dd><p>seed for random number generator</p>
+</dd>
 </dl>
-<p>seed</p>
 </section>
 <section id="id13">
 <h3>Returns<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
@@ -310,7 +310,7 @@ This probability is proportional to the degree of the target node.</p>
 </section>
 <section id="id17">
 <h2>Notes<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h2>
-<p>The initialization is an undirected with n nodes and no edges.
+<p>The initialization is an undirected graph with n nodes and no edges.
 Then, everytime a node is selected as source, it gets connected to k target nodes.
 Target nodes are selected via preferential attachment <cite>in-degree</cite> <a class="reference internal" href="#barabasialbert1999" id="id18"><span>[BarabasiAlbert1999]</span></a>, or
 triadic closure <cite>tc</cite> <a class="reference internal" href="#holmekim2002" id="id19"><span>[HolmeKim2002]</span></a>.</p>
@@ -327,8 +327,9 @@ triadic closure <cite>tc</cite> <a class="reference internal" href="#holmekim200
 </dd>
 <dt>k: int</dt><dd><p>minimum node degree to override (e.g., to generate a denser network <code class="docutils literal notranslate"><span class="pre">k&gt;1</span></code>)</p>
 </dd>
+<dt>seed: object</dt><dd><p>seed for random number generator</p>
+</dd>
 </dl>
-<p>seed</p>
 </section>
 <section id="id21">
 <h3>Returns<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
@@ -510,7 +511,7 @@ or triadic closure.</p>
 </section>
 <section id="id36">
 <h2>Notes<a class="headerlink" href="#id36" title="Permalink to this heading">¶</a></h2>
-<p>The initialization is an undirected with n nodes, where f_m are the minority.
+<p>The initialization is an undirected graph with n nodes, where f_m are the minority.
 Then, everytime a node is selected as source, it gets connected to k target nodes.
 Target nodes are selected via preferential attachment (in-degree) and homophily (h_**).
 This model is based on <a class="reference internal" href="#karimi2018" id="id37"><span>[Karimi2018]</span></a> known as the “Barabasi model with homophily” or “BA Homophily”.</p>
@@ -527,8 +528,9 @@ This model is based on <a class="reference internal" href="#karimi2018" id="id37
 </dd>
 <dt>k: int</dt><dd><p>minimum node degree to override (e.g., to generate a denser network <code class="docutils literal notranslate"><span class="pre">k&gt;1</span></code>)</p>
 </dd>
+<dt>seed: object</dt><dd><p>seed for random number generator</p>
+</dd>
 </dl>
-<p>seed</p>
 </section>
 <section id="id39">
 <h3>Returns<a class="headerlink" href="#id39" title="Permalink to this heading">¶</a></h3>
@@ -632,11 +634,12 @@ and homophily.</p>
 </section>
 <section id="id47">
 <h2>Notes<a class="headerlink" href="#id47" title="Permalink to this heading">¶</a></h2>
-<p>The initialization is an undirected with n nodes and no edges.
+<p>The initialization is an undirected graph with n nodes and no edges.
 Then, everytime a node is selected as source, it gets connected to k target nodes.
-Target nodes are selected via preferential attachment (in-degree) <a class="reference internal" href="#barabasialbert1999" id="id48"><span>[BarabasiAlbert1999]</span></a>,
-homophily (h_**; see <a class="reference internal" href="../mechanisms.html#netin.Homophily" title="netin.Homophily"><code class="xref py py-class docutils literal notranslate"><span class="pre">netin.Homophily</span></code></a>) <a class="reference internal" href="#karimi2018" id="id49"><span>[Karimi2018]</span></a>,
-and triadic closure (see <a class="reference internal" href="../mechanisms.html#netin.TriadicClosure" title="netin.TriadicClosure"><code class="xref py py-class docutils literal notranslate"><span class="pre">netin.TriadicClosure</span></code></a>) <a class="reference internal" href="#holmekim2002" id="id50"><span>[HolmeKim2002]</span></a>.</p>
+Target nodes are selected via preferential attachment (in-degree) <a class="reference internal" href="#barabasialbert1999" id="id48"><span>[BarabasiAlbert1999]</span></a> and
+homophily (h_**; see <a class="reference internal" href="../mechanisms.html#netin.Homophily" title="netin.Homophily"><code class="xref py py-class docutils literal notranslate"><span class="pre">netin.Homophily</span></code></a>) <a class="reference internal" href="#karimi2018" id="id49"><span>[Karimi2018]</span></a> with probability <code class="docutils literal notranslate"><span class="pre">1-p_{TC}</span></code>,
+and with probability <code class="docutils literal notranslate"><span class="pre">p_{TC}</span></code> via triadic closure (see <a class="reference internal" href="../mechanisms.html#netin.TriadicClosure" title="netin.TriadicClosure"><code class="xref py py-class docutils literal notranslate"><span class="pre">netin.TriadicClosure</span></code></a>) <a class="reference internal" href="#holmekim2002" id="id50"><span>[HolmeKim2002]</span></a>.</p>
+<p>Note that this model is still work in progress and not fully implemented yet.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="netin.PATCH.get_metadata_as_dict">
 <span class="sig-name descname"><span class="pre">get_metadata_as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#netin.PATCH.get_metadata_as_dict" title="Permalink to this definition">¶</a></dt>
@@ -839,7 +842,7 @@ preferential attachment with homophily mechanism.</p>
       &copy;2023, Fariba Karimi, Lisette Espin-Noboa, Jan Bachmann.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
