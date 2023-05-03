@@ -21,6 +21,10 @@ The package is currently under development and will be updated regularly.
 .. image:: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
     :target: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
+.. image:: https://static.pepy.tech/personalized-badge/netin?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads
+ :target: https://pepy.tech/project/netin
+ 
+ 
 - **Website:** https://www.networkinequality.com
 - **Documentation:** https://cshvienna.github.io/NetworkInequalities
 - **Source:** https://github.com/CSHVienna/NetworkInequalities
