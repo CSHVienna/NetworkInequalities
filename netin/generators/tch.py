@@ -150,27 +150,24 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
     def infer_homophily_values(self) -> Tuple[float, float]:
         """
         Infers analytically the homophily values of the graph.
-
+        @TODO: This still needs to be implemented.
         Returns
         -------
         tuple
             homophily values of the graph (majority, minority)
         """
-        h_MM = None
-        h_mm = None
-        return h_MM, h_mm
+        raise NotImplementedError("Inferring homophily not implemented yet.")
 
     def infer_triadic_closure(self) -> float:
         """
         Infers analytically the triadic closure value of the graph.
-
+        @TODO: This still needs to be implemented.
         Returns
         -------
         float
             triadic closure probability of the graph
         """
-        tc = None
-        return tc
+        raise NotImplementedError("Inferring triadic closure probability not implemented yet.")
 
     def _makecopy(self):
         """

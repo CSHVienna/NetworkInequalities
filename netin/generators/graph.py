@@ -291,7 +291,7 @@ cu
         """
         Sets the class values under the class attribute.
         These values are used to identify minority and majority nodes.
-        
+
         Parameters
         ----------
         class_values: list
@@ -617,7 +617,10 @@ cu
               f"{nx.attribute_assortativity_coefficient(self, self.class_attribute)}")
         print(f"- transitivity: {nx.transitivity(self)}")
         print(f"- average clustering: {nx.average_clustering(self)}")
-        self.info_computed()
+        try:
+            self.info_computed()
+        except NotImplementedError as ex:
+            print(f"Could not dynamically infer attributes: <{ex}>")
 
     def calculate_minimum_degree(self) -> int:
         """
