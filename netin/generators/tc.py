@@ -22,6 +22,9 @@ class TriadicClosure(Graph):
     tc: float
         triadic closure probability (minimum=0, maximum=1)
 
+    tc_uniform: bool
+        specifies whether the triadic closure target is chosen uniform at random or if it follows the regular link formation mechanisms (e.g., homophily) (default=True)
+
     seed: object
         seed for random number generator
 
@@ -34,9 +37,10 @@ class TriadicClosure(Graph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, f_m: float, tc: float, seed: object = None):
+    def __init__(self, n: int, f_m: float, tc: float, tc_uniform: bool = False, seed: object = None):
         Graph.__init__(self, n=n, f_m=f_m, seed=seed)
         self.tc = tc
+        self.tc_uniform = tc_uniform
 
     ############################################################
     # Init
@@ -67,6 +71,7 @@ class TriadicClosure(Graph):
         obj = Graph.get_metadata_as_dict(self)
         obj.update({
             'tc': self.tc,
+            'tc_uniform': self.tc_uniform
         })
         return obj
 
@@ -165,6 +170,8 @@ class TriadicClosure(Graph):
         tc_prob = np.random.random()
 
         if tc_prob < self.tc and len(special_targets) > 0:
+            if not self.tc_uniform:
+                return self.get_target_probabilities_regular(source, special_targets)
             target_set, probs = zip(*[(t, w) for t, w in special_targets.items()])
             probs = np.array(probs).astype(np.float32)
             probs /= probs.sum()
@@ -254,6 +261,7 @@ class TriadicClosure(Graph):
         Shows the parameters of the model.
         """
         print('tc: {}'.format(self.tc))
+        print('tc_uniform: {}'.format(self.tc_uniform))
 
     def info_computed(self):
         """
