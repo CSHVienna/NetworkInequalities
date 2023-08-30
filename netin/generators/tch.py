@@ -31,6 +31,9 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
     tc: float
         probability of a new edge to close a triad (minimum=0, maximum=1.)
 
+    tc_uniform: bool
+        specifies whether the triadic closure target is chosen uniform at random or if it follows the regular link formation mechanisms (e.g., homophily) (default=True)
+
     Notes
     -----
     The initialization is an undirected graph with n nodes and no edges.
@@ -45,10 +48,10 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, seed: object = None):
+    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, tc_uniform: bool = True, seed: object = None):
         UnDiGraph.__init__(self, n, k, f_m, seed)
         Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
-        TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
+        TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, tc_uniform=tc_uniform, seed=seed)
 
     ############################################################
     # Init
