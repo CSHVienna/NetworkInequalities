@@ -78,14 +78,14 @@ Target nodes are selected depending on the chosen mechanism of edge formation:</
 </div>
 <div class="citation" id="karimi2018" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>Karimi2018<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id37">2</a>,<a role="doc-backlink" href="#id45">3</a>,<a role="doc-backlink" href="#id49">4</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id37">2</a>,<a role="doc-backlink" href="#id45">3</a>,<a role="doc-backlink" href="#id49">4</a>,<a role="doc-backlink" href="#id62">5</a>)</span>
 <ol class="upperalpha simple" start="6">
 <li><p>Karimi, M. Génois, C. Wagner, P. Singer, &amp; M. Strohmaier, M “Homophily influences ranking of minorities in social networks”, Scientific reports 8(1), 11077, 2018.</p></li>
 </ol>
 </div>
 <div class="citation" id="holmekim2002" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>HolmeKim2002<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id3">1</a>,<a role="doc-backlink" href="#id19">2</a>,<a role="doc-backlink" href="#id50">3</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id3">1</a>,<a role="doc-backlink" href="#id19">2</a>,<a role="doc-backlink" href="#id50">3</a>,<a role="doc-backlink" href="#id63">4</a>)</span>
 <ol class="upperalpha simple" start="16">
 <li><p>Holme and B. J. Kim “Growing scale-free networks with tunable clustering” Phys. Rev. E 2002.</p></li>
 </ol>
@@ -765,6 +765,145 @@ preferential attachment with homophily mechanism.</p>
 </section>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="netin.TCH">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.</span></span><span class="sig-name descname"><span class="pre">TCH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_mm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_MM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tc_uniform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.TCH" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new TCH graph. An undirected graph with homophily and triadic closure as link formation mechanisms.</p>
+<section id="id60">
+<h2>Parameters<a class="headerlink" href="#id60" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>n: int</dt><dd><p>number of nodes (minimum=2)</p>
+</dd>
+<dt>k: int</dt><dd><p>minimum degree of nodes (minimum=1)</p>
+</dd>
+<dt>f_m: float</dt><dd><p>fraction of minorities (minimum=1/n, maximum=(n-1)/n)</p>
+</dd>
+<dt>h_MM: float</dt><dd><p>homophily (similarity) between majority nodes (minimum=0, maximum=1.)</p>
+</dd>
+<dt>h_mm: float</dt><dd><p>homophily (similarity) between minority nodes (minimum=0, maximum=1.)</p>
+</dd>
+<dt>tc: float</dt><dd><p>probability of a new edge to close a triad (minimum=0, maximum=1.)</p>
+</dd>
+<dt>tc_uniform: bool</dt><dd><p>specifies whether the triadic closure target is chosen uniform at random or if it follows the regular link formation mechanisms (e.g., homophily) (default=True)</p>
+</dd>
+</dl>
+</section>
+<section id="id61">
+<h2>Notes<a class="headerlink" href="#id61" title="Link to this heading">¶</a></h2>
+<p>The initialization is an undirected graph with n nodes and no edges.
+Then, everytime a node is selected as source, it gets connected to k target nodes.
+Target nodes are selected via homophily (h_**; see <a class="reference internal" href="../mechanisms.html#netin.Homophily" title="netin.Homophily"><code class="xref py py-class docutils literal notranslate"><span class="pre">netin.Homophily</span></code></a>) <a class="reference internal" href="#karimi2018" id="id62"><span>[Karimi2018]</span></a> with probability <code class="docutils literal notranslate"><span class="pre">1-p_{TC}</span></code>,
+and with probability <code class="docutils literal notranslate"><span class="pre">p_{TC}</span></code> via triadic closure (see <a class="reference internal" href="../mechanisms.html#netin.TriadicClosure" title="netin.TriadicClosure"><code class="xref py py-class docutils literal notranslate"><span class="pre">netin.TriadicClosure</span></code></a>) <a class="reference internal" href="#holmekim2002" id="id63"><span>[HolmeKim2002]</span></a>.</p>
+<p>Note that this model is still work in progress and not fully implemented yet.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.TCH.get_special_targets">
+<span class="sig-name descname"><span class="pre">get_special_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#netin.TCH.get_special_targets" title="Link to this definition">¶</a></dt>
+<dd><p>Returns an empty dictionary (source node ids)</p>
+<section id="id64">
+<h3>Parameters<a class="headerlink" href="#id64" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>source<span class="classifier">int</span></dt><dd><p>Newly added node</p>
+</dd>
+</dl>
+</section>
+<section id="id65">
+<h3>Returns<a class="headerlink" href="#id65" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Dict</dt><dd><p>Empty dictionary</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.TCH.get_target_probabilities">
+<span class="sig-name descname"><span class="pre">get_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.TCH.get_target_probabilities" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the probabilities of nodes to be selected as target nodes.</p>
+<section id="id66">
+<h3>Parameters<a class="headerlink" href="#id66" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>source: int</dt><dd><p>source node id</p>
+</dd>
+<dt>target_set: set</dt><dd><p>set of target node ids</p>
+</dd>
+<dt>special_targets: dict</dt><dd><p>dictionary of special target node ids to be considered</p>
+</dd>
+</dl>
+</section>
+<section id="id67">
+<h3>Returns<a class="headerlink" href="#id67" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple</dt><dd><p>probabilities of nodes to be selected as target nodes, and set of target of nodes</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.TCH.get_target_probabilities_regular">
+<span class="sig-name descname"><span class="pre">get_target_probabilities_regular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.TCH.get_target_probabilities_regular" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the probability of nodes to be selected as target nodes using the homophily mechanism.</p>
+<section id="id68">
+<h3>Parameters<a class="headerlink" href="#id68" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>source: int</dt><dd><p>source node id</p>
+</dd>
+<dt>target_set: set</dt><dd><p>set of target node ids</p>
+</dd>
+<dt>special_targets: dict</dt><dd><p>dictionary of special target node ids to be considered</p>
+</dd>
+</dl>
+</section>
+<section id="id69">
+<h3>Returns<a class="headerlink" href="#id69" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple</dt><dd><p>probabilities of nodes to be selected as target nodes, and set of target of nodes</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.TCH.infer_homophily_values">
+<span class="sig-name descname"><span class="pre">infer_homophily_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.TCH.infer_homophily_values" title="Link to this definition">¶</a></dt>
+<dd><p>Infers analytically the homophily values of the graph.
+&#64;TODO: This still needs to be implemented.
+Returns
+——-
+tuple</p>
+<blockquote>
+<div><p>homophily values of the graph (majority, minority)</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.TCH.infer_triadic_closure">
+<span class="sig-name descname"><span class="pre">infer_triadic_closure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#netin.TCH.infer_triadic_closure" title="Link to this definition">¶</a></dt>
+<dd><p>Infers analytically the triadic closure value of the graph.
+&#64;TODO: This still needs to be implemented.
+Returns
+——-
+float</p>
+<blockquote>
+<div><p>triadic closure probability of the graph</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.TCH.info_computed">
+<span class="sig-name descname"><span class="pre">info_computed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.TCH.info_computed" title="Link to this definition">¶</a></dt>
+<dd><p>Shows the (computed) properties of the graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.TCH.info_params">
+<span class="sig-name descname"><span class="pre">info_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.TCH.info_params" title="Link to this definition">¶</a></dt>
+<dd><p>Shows the (input) parameters of the graph.</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
 </section>
 
 
@@ -797,6 +936,7 @@ preferential attachment with homophily mechanism.</p>
 <li class="toctree-l3"><a class="reference internal" href="#netin.PATC"><code class="docutils literal notranslate"><span class="pre">PATC</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#netin.PAH"><code class="docutils literal notranslate"><span class="pre">PAH</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#netin.PATCH"><code class="docutils literal notranslate"><span class="pre">PATCH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#netin.TCH"><code class="docutils literal notranslate"><span class="pre">TCH</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -844,7 +984,7 @@ preferential attachment with homophily mechanism.</p>
       &copy;2023, Fariba Karimi, Lisette Espin-Noboa, Jan Bachmann.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |

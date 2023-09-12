@@ -15,3 +15,6 @@ Undirected Graphs
 
 .. autoclass:: netin.PATCH
     :members:
+
+.. autoclass:: netin.TCH
+    :members:
