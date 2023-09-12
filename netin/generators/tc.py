@@ -249,7 +249,7 @@ class TriadicClosure(Graph):
                 # G.neighbors(source) returns an iterator which would
                 # need to be searched iteratively
                 if neighbor not in self[source]:
-                    special_targets[neighbor] += 1
+                    special_targets[neighbor] = 1
         return special_targets
 
     ############################################################
