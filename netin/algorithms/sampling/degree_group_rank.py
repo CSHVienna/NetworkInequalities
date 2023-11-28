@@ -62,16 +62,16 @@ class DegreeGroupRank(DegreeRank):
 
         ### 1. pick nodes
         _nodes = {}
-        for class_value in self.g.get_class_values():
+        for class_value in self.g.class_values:
             valid = [(n, d) for n, d in self.g.degree() if d > 0 and
-                     self.g.nodes[n][self.g.get_class_attribute()] == class_value]
+                     self.g.get_class_value_by_node(n) == class_value]
             _nodes[class_value] = sorted(valid,
                                          key=operator.itemgetter(1),
                                          reverse=self.is_descending())
             _nodes[class_value], _ = zip(*_nodes[class_value])
 
         while len(nodes) < self.nseeds:
-            for class_value in self.g.get_class_values():
+            for class_value in self.g.class_values:
                 _nodes[class_value] = list(_nodes[class_value])
                 if len(_nodes[class_value]) > 0:
                     nodes.append(_nodes[class_value].pop(0))

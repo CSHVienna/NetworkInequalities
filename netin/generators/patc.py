@@ -1,6 +1,5 @@
-from typing import Union, Set, Tuple
+from typing import Union
 
-import networkx as nx
 import numpy as np
 
 from netin.generators.tc import TriadicClosure
@@ -43,23 +42,18 @@ class PATC(PA, TriadicClosure):
     def __init__(self, n: int, k: int, f_m: float, tc: float, seed: object = None):
         PA.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
         TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
+        self.model_name = const.PATC_MODEL_NAME
 
     ############################################################
     # Init
     ############################################################
 
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.PATC_MODEL_NAME)
-
-    def _validate_parameters(self):
+    def validate_parameters(self):
         """
         Validates the parameters of the undirected.
         """
-        PA._validate_parameters(self)
-        TriadicClosure._validate_parameters(self)
+        PA.validate_parameters(self)
+        TriadicClosure.validate_parameters(self)
 
     def get_metadata_as_dict(self) -> dict:
         """
@@ -88,7 +82,7 @@ class PATC(PA, TriadicClosure):
 
     def get_special_targets(self, source: int) -> object:
         """
-        Returns the initial set of special targets based on the triadic closure mechanism.
+        Returns the initial set of special available_nodes based on the triadic closure mechanism.
 
         Parameters
         ----------
@@ -106,8 +100,8 @@ class PATC(PA, TriadicClosure):
         """
         return TriadicClosure.get_special_targets(self, source)
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: list[int],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on the preferential attachment
         or triadic closure.
@@ -117,11 +111,11 @@ class PATC(PA, TriadicClosure):
         source: int
             source node
 
-        target_set: set[int]
+        available_nodes: set[int]
             set of target nodes
 
         special_targets: object
-            special targets
+            special available_nodes
 
         Returns
         -------
@@ -132,12 +126,12 @@ class PATC(PA, TriadicClosure):
         --------
         :py:meth:`get_target_probabilities() <TriadicClosure.get_target_probabilities>` in :class:`netin.TC`.
         """
-        return TriadicClosure.get_target_probabilities(self, source, target_set, special_targets)
+        return TriadicClosure.get_target_probabilities(self, source, available_nodes, special_targets)
 
-    def get_target_probabilities_regular(self, source: Union[None, int],
-                                         target_set: Union[None, Set[int]],
+    def get_target_probabilities_regular(self, source: int,
+                                         target_list: list[int],
                                          special_targets: Union[None, object, iter] = None) -> \
-            Tuple[np.array, Set[int]]:
+            tuple[np.array, list[int]]:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on the preferential attachment.
 
@@ -146,11 +140,11 @@ class PATC(PA, TriadicClosure):
         source: int
             source node
 
-        target_set: set[int]
+        target_list: set[int]
             set of target nodes
 
         special_targets: object
-            special targets
+            special available_nodes
 
         Returns
         -------
@@ -161,12 +155,14 @@ class PATC(PA, TriadicClosure):
         --------
         :py:meth:`get_target_probabilities() <PA.get_target_probabilities>` in :class:`netin.PA`.
         """
-        return PA.get_target_probabilities(self, source, target_set, special_targets)
+        return PA.get_target_probabilities(self, source, target_list, special_targets)
 
-    def update_special_targets(self, idx_target: int, source: int, target: int, targets: Set[int],
+    def update_special_targets(self, idx_target: int,
+                               source: int, target: int,
+                               available_nodes: list[int],
                                special_targets: object) -> object:
         """
-        Updates the set of special targets based on the triadic closure mechanism.
+        Updates the set of special available_nodes based on the triadic closure mechanism.
 
         Parameters
         ----------
@@ -179,23 +175,23 @@ class PATC(PA, TriadicClosure):
         target: int
             target node
 
-        targets: Set[int]
+        available_nodes: Set[int]
             set of target nodes
 
         special_targets: object
-            special targets
+            special available_nodes
 
         Returns
         -------
         object
-            updated special targets
+            updated special available_nodes
 
         See Also
         --------
         :func:`netin.TC.update_special_targets`
 
         """
-        return TriadicClosure.update_special_targets(self, idx_target, source, target, targets, special_targets)
+        return TriadicClosure.update_special_targets(self, idx_target, source, target, available_nodes, special_targets)
 
     ############################################################
     # Calculations
@@ -213,7 +209,7 @@ class PATC(PA, TriadicClosure):
         tc = infer_triadic_closure(self)
         return tc
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """
@@ -253,13 +249,15 @@ class PATC(PA, TriadicClosure):
         tc = infer_triadic_closure(g)
 
         new_g = PATC(n=n,
-                    k=k,
-                    f_m=f_m,
-                    tc=tc,
-                    seed=seed)
+                     k=k,
+                     f_m=f_m,
+                     tc=tc,
+                     seed=seed)
         new_g.generate()
 
         return new_g
 
+
 def infer_triadic_closure(g):
+    import networkx as nx
     return nx.average_clustering(g)

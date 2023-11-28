@@ -124,7 +124,7 @@ class Sampling(object):
 
             # removing nodes
             if nodes:
-                nodes_to_remove = [n for n in self.g.nodes() if n not in nodes]
+                nodes_to_remove = [n for n in self.g.node_list if n not in nodes]
                 sample.remove_nodes_from(nodes_to_remove)
 
             num_edges = sample.number_of_edges()
@@ -133,8 +133,8 @@ class Sampling(object):
             raise RuntimeWarning("The sample has no edges.")
 
         self.sample = sample.copy()
-        self.sample.node_list = [n for n in self.sample.node_list if n in self.sample.nodes()]
-        self.sample.node_class_values = {n: l for n, l in self.sample.node_class_values.items() if n in self.sample.nodes()}
+        self.sample.node_list = [n for n in self.sample.node_list if n in self.sample.node_list]
+        self.sample.node_class_values = {n: l for n, l in self.sample.node_class_values.items() if n in self.sample.node_list}
         gc.collect()
 
     def _set_graph_metadata(self):
@@ -143,7 +143,7 @@ class Sampling(object):
         """
         self.sample.graph['method'] = self.method_name
         self.sample.graph['pseeds'] = self.pseeds
-        nx.set_node_attributes(G=self.g, name='seed', values={n: int(n in self.sample) for n in self.g.nodes()})
+        nx.set_node_attributes(G=self.g, name='seed', values={n: int(n in self.sample) for n in self.g.node_list})
         self.sample.graph['m'] = net.get_min_degree(self.sample)
         self.sample.graph['d'] = nx.density(self.sample)
         self.sample.graph['n'] = self.sample.number_of_nodes()
@@ -157,10 +157,10 @@ class Sampling(object):
         self.sample.graph['random_seed'] = self.random_seed
         self.sample.graph['original_graph'] = self.sample.graph['model']
         del (self.sample.graph['model'])
-        self.sample.set_model_name(f"{self.sample.get_model_name()}\n{self.method_name}")
+        self.sample.model_name = f"{self.sample.model_name}\n{self.method_name}"
 
         # for LINK: working with matrices
-        self.nodes = list(self.g.nodes())
+        self.nodes = list(self.g.node_list)
         self.train_index = np.array([i for i, n in enumerate(self.nodes) if n in self.sample])
         self.test_nodes, self.test_index = zip(*[(n, i) for i, n in enumerate(self.nodes) if n not in self.sample])
         self.test_index = np.array(self.test_index)

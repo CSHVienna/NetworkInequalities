@@ -1,5 +1,5 @@
-from typing import Set
 from typing import Union
+from typing import Tuple
 
 import numpy as np
 
@@ -37,23 +37,14 @@ class PA(UnDiGraph):
 
     def __init__(self, n: int, k: int, f_m: float, seed: object = None):
         super().__init__(n, k, f_m, seed)
-
-    ############################################################
-    # Init
-    ############################################################
-
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.PA_MODEL_NAME)
+        self.model_name = const.PA_MODEL_NAME
 
     ############################################################
     # Generation
     ############################################################
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: list[int],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
         """
         Returns the probabilities of the target nodes to be selected given a source node.
         This probability is proportional to the degree of the target node.
@@ -63,25 +54,25 @@ class PA(UnDiGraph):
         source: int
             source node (id)
 
-        target_set: set
+        available_nodes: set
             set of target nodes (ids)
 
         special_targets: object
-            special targets
+            special available_nodes
 
         Returns
         -------
         probs: np.array
             probabilities of the target nodes to be selected
 
-        target_set: set
+        target_list: set
             set of target nodes (ids)
         """
-        probs = np.array([(self.degree(target) + const.EPSILON) for target in target_set])
+        probs = np.array([(self.degree(target) + const.EPSILON) for target in available_nodes])
         probs /= probs.sum()
-        return probs, target_set
+        return probs, available_nodes
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """
@@ -119,9 +110,9 @@ class PA(UnDiGraph):
         f_m = g.calculate_fraction_of_minority()
 
         new_g = PA(n=n,
-                     k=k,
-                     f_m=f_m,
-                     seed=seed)
+                   k=k,
+                   f_m=f_m,
+                   seed=seed)
         new_g.generate()
 
         return new_g

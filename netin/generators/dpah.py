@@ -1,4 +1,4 @@
-from typing import Union, Set, Tuple
+from typing import Union
 
 import numpy as np
 
@@ -52,22 +52,13 @@ class DPAH(DPA, Homophily):
                  seed: object = None):
         DPA.__init__(self, n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed)
         Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
-
-    ############################################################
-    # Init
-    ############################################################
-
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.DPAH_MODEL_NAME)
+        self.model_name = const.DPAH_MODEL_NAME
 
     ############################################################
     # Generation
     ############################################################
 
-    def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
+    def initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
         Initializes the model.
 
@@ -82,10 +73,10 @@ class DPAH(DPA, Homophily):
         class_labels: list
             labels of the class attribute mapping the class_values.
         """
-        DPA._initialize(self, class_attribute, class_values, class_labels)
-        Homophily._initialize(self, class_attribute, class_values, class_labels)
+        DPA.initialize(self, class_attribute, class_values, class_labels)
+        Homophily.initialize(self, class_attribute, class_values, class_labels)
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
+    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int]],
                                  special_targets: Union[None, object, iter] = None) -> np.array:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on
@@ -96,11 +87,11 @@ class DPAH(DPA, Homophily):
         source: int
             source node
 
-        target_set: Set[int]
+        available_nodes: Set[int]
             set of target nodes
 
         special_targets: object
-            special targets
+            special available_nodes
 
         Returns
         -------
@@ -108,7 +99,7 @@ class DPAH(DPA, Homophily):
             probabilities of selecting a target node from a set of nodes
         """
         probs = np.array([self.get_homophily_between_source_and_target(source, target) *
-                          (self.get_in_degree(target) + const.EPSILON) for target in target_set])
+                          (self.get_in_degree(target) + const.EPSILON) for target in available_nodes])
         probs /= probs.sum()
         return probs
 
@@ -130,7 +121,7 @@ class DPAH(DPA, Homophily):
         DPA.info_computed(self)
         Homophily.info_computed(self)
 
-    def infer_homophily_values(self) -> Tuple[float, float]:
+    def infer_homophily_values(self) -> tuple[float, float]:
         """
         Infers the level of homophily within the majority and minority groups analytically.
 
@@ -142,7 +133,7 @@ class DPAH(DPA, Homophily):
         h_MM, h_mm = None, None
         return h_MM, h_mm
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """
@@ -156,7 +147,7 @@ class DPAH(DPA, Homophily):
                              seed=self.seed)
 
         # @TODO: check if this is necessary
-        # obj._initialize(class_attribute=self.class_attribute,
+        # obj.initialize(class_attribute=self.class_attribute,
         #                 class_values=self.class_values,
         #                 class_labels=self.class_labels)
         return obj

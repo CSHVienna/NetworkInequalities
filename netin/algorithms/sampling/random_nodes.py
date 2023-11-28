@@ -55,7 +55,7 @@ class RandomNodes(Sampling):
 
         ### 1. pick random nodes
         while num_classes < const.MIN_CLASSES:
-            nodes = list(self.g.nodes())
+            nodes = list(self.g.node_list)
             np.random.shuffle(nodes)
             nodes = nodes[:self.nseeds]
             num_classes = self._count_classes(nodes)

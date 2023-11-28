@@ -79,7 +79,7 @@ class PartialCrawls(Sampling):
         list
             list of nodes
         """
-        nodes = list(self.g.nodes())
+        nodes = list(self.g.node_list)
         np.random.shuffle(nodes)
         super_node_size = int(round(self.g.number_of_nodes() * self.snsize))
         sn = nodes[:super_node_size]
@@ -102,7 +102,7 @@ class PartialCrawls(Sampling):
             list of edges
         """
         # proportional to the number of edges out of the super node
-        sorted_S = {ni: len([nj for nj in self.g.neighbors(ni) if nj not in super_node]) for ni in self.g.nodes()}
+        sorted_S = {ni: len([nj for nj in self.g.neighbors(ni) if nj not in super_node]) for ni in self.g.node_list}
         sorted_S = sorted(sorted_S.items(), key=operator.itemgetter(1), reverse=True)
         sorted_S = [n[0] for n in sorted_S]
 

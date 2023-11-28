@@ -56,7 +56,7 @@ class RandomNeighbor(Sampling):
 
         ### 1. pick random neighbors including source node both at random
         while num_classes < const.MIN_CLASSES:
-            tmp_nodes = list(self.g.nodes())
+            tmp_nodes = list(self.g.node_list)
             np.random.shuffle(tmp_nodes)
 
             for node in tmp_nodes:

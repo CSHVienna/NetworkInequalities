@@ -1,4 +1,4 @@
-from typing import Union, Set, Tuple
+from typing import Union
 
 import numpy as np
 
@@ -51,22 +51,13 @@ class DH(DiGraph, Homophily):
                  seed: object = None):
         DiGraph.__init__(self, n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed)
         Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
-
-    ############################################################
-    # Init
-    ############################################################
-
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.DH_MODEL_NAME)
+        self.model_name = const.DH_MODEL_NAME
 
     ############################################################
     # Generation
     ############################################################
 
-    def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
+    def initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
         Initializes the model.
 
@@ -81,10 +72,10 @@ class DH(DiGraph, Homophily):
         class_labels: list
             labels of the class attribute mapping the class_values.
         """
-        DiGraph._initialize(self, class_attribute, class_values, class_labels)
-        Homophily._initialize(self, class_attribute, class_values, class_labels)
+        DiGraph.initialize(self, class_attribute, class_values, class_labels)
+        Homophily.initialize(self, class_attribute, class_values, class_labels)
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int], np.array],
+    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int], np.array],
                                  special_targets: Union[None, object, iter] = None) -> np.array:
         """
         Returns the probabilities of the target nodes to be selected given a source node.
@@ -94,11 +85,11 @@ class DH(DiGraph, Homophily):
         source: int
             source node (id)
 
-        target_set: set
+        available_nodes: set
             set of target nodes (ids)
 
         special_targets: object
-            special targets
+            special available_nodes
 
         Returns
         -------
@@ -106,7 +97,7 @@ class DH(DiGraph, Homophily):
             probabilities of the target nodes to be selected
 
         """
-        probs, ts = Homophily.get_target_probabilities(self, source, target_set, special_targets)
+        probs, ts = Homophily.get_target_probabilities(self, source, available_nodes, special_targets)
         return probs
 
     ############################################################
@@ -126,7 +117,7 @@ class DH(DiGraph, Homophily):
         """
         Homophily.info_computed(self)
 
-    def infer_homophily_values(self) -> Tuple[float, float]:
+    def infer_homophily_values(self) -> tuple[float, float]:
         """
         Infers analytically the homophily values for the majority and minority classes.
 
@@ -166,7 +157,7 @@ class DH(DiGraph, Homophily):
         h_MM, h_mm = solution[hMM], solution[hmm]
         return h_MM, h_mm
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """

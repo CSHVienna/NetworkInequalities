@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Union, Set, Tuple
+from typing import Union
 
 import networkx as nx
 import numpy as np
@@ -64,22 +64,17 @@ class DiGraph(nx.DiGraph, Graph):
         self.out_degrees = None
         self.activity = None
         self.expected_number_of_edges = None
+        self.model_name = const.DIRECTED_MODEL_NAME
 
     ############################################################
     # Init
     ############################################################
 
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.DIRECTED_MODEL_NAME)
-
-    def _validate_parameters(self):
+    def validate_parameters(self):
         """
         Validates the parameters of the directed.
         """
-        Graph._validate_parameters(self)
+        Graph.validate_parameters(self)
         val.validate_float(self.d, minimum=1. / (self.n * (self.n - 1)), maximum=1.)
         val.validate_float(self.plo_M, minimum=1. + const.EPSILON)
         val.validate_float(self.plo_m, minimum=1. + const.EPSILON)
@@ -100,7 +95,7 @@ class DiGraph(nx.DiGraph, Graph):
     # Generation
     ############################################################
 
-    def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
+    def initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
         Initializes the model.
 
@@ -115,11 +110,11 @@ class DiGraph(nx.DiGraph, Graph):
         class_labels: list
             labels of the class attribute mapping the class_values.
         """
-        Graph._initialize(self, class_attribute, class_values, class_labels)
-        self._init_edges()
-        self._init_activity()
+        Graph.initialize(self, class_attribute, class_values, class_labels)
+        self.init_edges()
+        self.init_activity()
 
-    def _init_edges(self):
+    def init_edges(self):
         """
         Initializes the expected number of edges based on the number of nodes and density of the graph (input param).
         It also initializes the in- and out-degrees of the nodes.
@@ -128,7 +123,7 @@ class DiGraph(nx.DiGraph, Graph):
         self.in_degrees = np.zeros(self.n)
         self.out_degrees = np.zeros(self.n)
 
-    def _init_activity(self):
+    def init_activity(self):
         """
         Initializes the level of activity for each node based on the power law exponents (input param).
         """
@@ -153,7 +148,7 @@ class DiGraph(nx.DiGraph, Graph):
         """
         return np.random.choice(a=np.arange(self.n), size=self.expected_number_of_edges, replace=True, p=self.activity)
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int], np.array],
+    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int], np.array],
                                  special_targets: Union[None, object, iter] = None) -> np.array:
         pass
 
@@ -237,7 +232,7 @@ class DiGraph(nx.DiGraph, Graph):
                       f"seed={self.seed}, plo_M={self.plo_M}, plo_m={self.plo_m}")
                 break
 
-        self._terminate()
+        self.terminate()
 
     ############################################################
     # Calculations
@@ -263,7 +258,7 @@ class DiGraph(nx.DiGraph, Graph):
             print(f"- {self.get_minority_label()}: alpha={fit_m.power_law.alpha}, sigma={fit_m.power_law.sigma}, "
                   f"min={fit_m.power_law.xmin}, max={fit_m.power_law.xmax}")
 
-    def calculate_in_degree_powerlaw_exponents(self) -> Tuple[float, float]:
+    def calculate_in_degree_powerlaw_exponents(self) -> tuple[float, float]:
         """
         Returns the power law exponents for the in-degree distribution of the majority and minority class.
 
@@ -280,7 +275,7 @@ class DiGraph(nx.DiGraph, Graph):
 
         return pl_M, pl_m
 
-    def calculate_out_degree_powerlaw_exponents(self) -> Tuple[float, float]:
+    def calculate_out_degree_powerlaw_exponents(self) -> tuple[float, float]:
         """
         Returns the power law exponents for the out-degree distribution of the majority and minority class.
 
@@ -358,7 +353,7 @@ class DiGraph(nx.DiGraph, Graph):
         """
         return self.activity
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """

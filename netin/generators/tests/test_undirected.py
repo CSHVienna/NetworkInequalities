@@ -18,7 +18,7 @@ class TestUnDiGraph(object):
         c2 = g.number_of_nodes() == n
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
-        c5 = g.get_model_name() == const.PA_MODEL_NAME
+        c5 = g.model_name == const.PA_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
 
     def test_patch_case_pah(self):
@@ -34,7 +34,7 @@ class TestUnDiGraph(object):
         c2 = g.number_of_nodes() == n
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
-        c5 = g.get_model_name() == const.PAH_MODEL_NAME
+        c5 = g.model_name == const.PAH_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
 
     def test_case_patc(self):
@@ -49,7 +49,7 @@ class TestUnDiGraph(object):
         c2 = g.number_of_nodes() == n
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
-        c5 = g.get_model_name() == const.PATC_MODEL_NAME
+        c5 = g.model_name == const.PATC_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
 
     def test_case_patch(self):
@@ -66,7 +66,7 @@ class TestUnDiGraph(object):
         c2 = g.number_of_nodes() == n
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
-        c5 = g.get_model_name() == const.PATCH_MODEL_NAME
+        c5 = g.model_name == const.PATCH_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
 
     def test_case_all(self):
@@ -92,8 +92,8 @@ class TestUnDiGraph(object):
         c3 = g_pa.calculate_minimum_degree() == g_pah.calculate_minimum_degree() == g_patc.calculate_minimum_degree() == g_patch.calculate_minimum_degree() == k
         c4 = g_pa.calculate_fraction_of_minority() == g_pah.calculate_fraction_of_minority() == g_patc.calculate_fraction_of_minority() == g_patch.calculate_fraction_of_minority() == f_m
         c5 = g_pa.get_expected_number_of_edges() == g_pah.get_expected_number_of_edges() == g_patc.get_expected_number_of_edges() == g_patch.get_expected_number_of_edges()
-        c6 = g_pa.get_model_name() == const.PA_MODEL_NAME
-        c7 = g_pah.get_model_name() == const.PAH_MODEL_NAME
-        c8 = g_patc.get_model_name() == const.PATC_MODEL_NAME
-        c9 = g_patch.get_model_name() == const.PATCH_MODEL_NAME
+        c6 = g_pa.model_name == const.PA_MODEL_NAME
+        c7 = g_pah.model_name == const.PAH_MODEL_NAME
+        c8 = g_patc.model_name == const.PATC_MODEL_NAME
+        c9 = g_patch.model_name == const.PATCH_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5 and c6 and c7 and c8 and c9, "Incorrect undirected parameters."

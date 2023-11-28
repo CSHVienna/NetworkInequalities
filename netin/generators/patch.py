@@ -51,23 +51,18 @@ class PATCH(PAH, TriadicClosure):
     def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, tc_uniform: bool = True, seed: object = None):
         PAH.__init__(self, n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
         TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, tc_uniform=tc_uniform, seed=seed)
+        self.model_name = const.PATCH_MODEL_NAME
 
     ############################################################
     # Init
     ############################################################
 
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.PATCH_MODEL_NAME)
-
-    def _validate_parameters(self):
+    def validate_parameters(self):
         """
         Validates the parameters of the undirected.
         """
-        PAH._validate_parameters(self)
-        TriadicClosure._validate_parameters(self)
+        PAH.validate_parameters(self)
+        TriadicClosure.validate_parameters(self)
 
     def get_metadata_as_dict(self) -> dict:
         """
@@ -87,7 +82,7 @@ class PATCH(PAH, TriadicClosure):
     # Generation
     ############################################################
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
+    def get_target_probabilities(self, source: Union[None, int], available_nodes: Union[None, Set[int]],
                                  special_targets: Union[None, object, iter] = None) -> Tuple[np.array, set[int]]:
         """
         Returns the probabilities of nodes to be selected as target nodes.
@@ -97,7 +92,7 @@ class PATCH(PAH, TriadicClosure):
         source: int
             source node id
 
-        target_set: set
+        available_nodes: set
             set of target node ids
 
         special_targets: dict
@@ -109,9 +104,9 @@ class PATCH(PAH, TriadicClosure):
             probabilities of nodes to be selected as target nodes, and set of target of nodes
 
         """
-        return TriadicClosure.get_target_probabilities(self, source, target_set, special_targets)
+        return TriadicClosure.get_target_probabilities(self, source, available_nodes, special_targets)
 
-    def get_target_probabilities_regular(self, source: Union[None, int], target_set: Union[None, Set[int]],
+    def get_target_probabilities_regular(self, source: Union[None, int], target_list: Union[None, Set[int]],
                                          special_targets: Union[None, object, iter] = None) -> Tuple[
         np.ndarray, set[int]]:
         """
@@ -123,7 +118,7 @@ class PATCH(PAH, TriadicClosure):
         source: int
             source node id
 
-        target_set: set
+        target_list: set
             set of target node ids
 
         special_targets: dict
@@ -134,7 +129,7 @@ class PATCH(PAH, TriadicClosure):
         tuple
             probabilities of nodes to be selected as target nodes, and set of target of nodes
         """
-        return PAH.get_target_probabilities(self, source, target_set, special_targets)
+        return PAH.get_target_probabilities(self, source, target_list, special_targets)
 
     def get_special_targets(self, source: int) -> object:
         """
@@ -195,7 +190,7 @@ class PATCH(PAH, TriadicClosure):
         tc = None
         return tc
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """

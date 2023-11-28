@@ -1,4 +1,4 @@
-from typing import Union, Set, Tuple
+from typing import Union
 
 import numpy as np
 from sympy import Eq
@@ -49,23 +49,18 @@ class PAH(PA, Homophily):
     def __init__(self, n: int, k: int, f_m: float, h_MM: float, h_mm: float, seed: object = None):
         PA.__init__(self, n=n, k=k, f_m=f_m, seed=seed)
         Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
+        self.model_name = const.PAH_MODEL_NAME
 
     ############################################################
     # Init
     ############################################################
 
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.PAH_MODEL_NAME)
-
-    def _validate_parameters(self):
+    def validate_parameters(self):
         """
         Validates the parameters of the undirected.
         """
-        PA._validate_parameters(self)
-        Homophily._validate_parameters(self)
+        PA.validate_parameters(self)
+        Homophily.validate_parameters(self)
 
     def get_metadata_as_dict(self) -> dict:
         """
@@ -84,7 +79,7 @@ class PAH(PA, Homophily):
     # Generation
     ############################################################
 
-    def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
+    def initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
         Initializes the model.
 
@@ -99,11 +94,11 @@ class PAH(PA, Homophily):
         class_labels: list
             labels of the class attribute mapping the class_values.
         """
-        PA._initialize(self, class_attribute, class_values, class_labels)
-        Homophily._initialize(self, class_attribute, class_values, class_labels)
+        PA.initialize(self, class_attribute, class_values, class_labels)
+        Homophily.initialize(self, class_attribute, class_values, class_labels)
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: list[int],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on the preferential attachment
         and homophily.
@@ -113,11 +108,11 @@ class PAH(PA, Homophily):
         source: int
             source node
 
-        target_set: set[int]
+        available_nodes: set[int]
             set of target nodes
 
         special_targets: object
-            special targets
+            special available_nodes
 
         Returns
         -------
@@ -125,9 +120,9 @@ class PAH(PA, Homophily):
             probabilities of selecting a target node from a set of nodes, and the set of target nodes
         """
         probs = np.array([self.get_homophily_between_source_and_target(source, target) *
-                          (self.degree(target) + const.EPSILON) for target in target_set])
+                          (self.degree(target) + const.EPSILON) for target in available_nodes])
         probs /= probs.sum()
-        return probs, target_set
+        return probs, available_nodes
 
     ############################################################
     # Calculations
@@ -147,7 +142,7 @@ class PAH(PA, Homophily):
         PA.info_computed(self)
         Homophily.info_computed(self)
 
-    def infer_homophily_values(self) -> Tuple[float, float]:
+    def infer_homophily_values(self) -> tuple[float, float]:
         """
         Infers the level of homophily using the analytical solution of the model.
 
@@ -165,7 +160,7 @@ class PAH(PA, Homophily):
 
         return h_MM, h_mm
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """
@@ -216,7 +211,7 @@ class PAH(PA, Homophily):
         return new_g
 
 
-def infer_homophily(g) -> Tuple[float, float]:
+def infer_homophily(g) -> tuple[float, float]:
     f_m = g.calculate_fraction_of_minority()
     f_M = 1 - f_m
 

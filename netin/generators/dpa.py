@@ -1,4 +1,4 @@
-from typing import Union, Set
+from typing import Union
 
 import numpy as np
 
@@ -43,16 +43,7 @@ class DPA(DiGraph):
 
     def __init__(self, n: int, d: float, f_m: float, plo_M: float, plo_m: float, seed: object = None):
         super().__init__(n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed)
-
-    ############################################################
-    # Init
-    ############################################################
-
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.DPA_MODEL_NAME)
+        self.model_name = const.DPA_MODEL_NAME
 
     ############################################################
     # Generation
@@ -76,10 +67,10 @@ class DPA(DiGraph):
         """
         return self.in_degrees[n]
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int], np.array],
+    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int], np.array],
                                  special_targets: Union[None, object, iter] = None) -> np.array:
         """
-        Returns the probabilities for each target node in `target_set` to be selected as target node
+        Returns the probabilities for each target node in `target_list` to be selected as target node
         given source node `source`.
 
         Parameters
@@ -87,22 +78,22 @@ class DPA(DiGraph):
         source: int
             source node id
 
-        target_set: Set[int]
+        available_nodes: Set[int]
             set of target node ids
 
         special_targets: object
-            special targets
+            special available_nodes
 
         Returns
         -------
         np.array
             array of probabilities for each target node.
         """
-        probs = np.array([self.get_in_degree(n) + const.EPSILON for n in target_set])
+        probs = np.array([self.get_in_degree(n) + const.EPSILON for n in available_nodes])
         probs /= probs.sum()
         return probs
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """

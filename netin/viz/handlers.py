@@ -73,11 +73,11 @@ def _get_edge_color(s: int, t: int, g: Graph, maj_val: object = None, min_val: o
     maj_val = const.MAJORITY_VALUE if maj_val is None else maj_val
     min_val = const.MINORITY_VALUE if min_val is None else min_val
 
-    if g.get_class_value(s) == g.get_class_value(t):
-        if g.get_class_value(s) == maj_val:
+    if g.get_class_value_by_node(s) == g.get_class_value_by_node(t):
+        if g.get_class_value_by_node(s) == maj_val:
             return COLOR_MAJORITY
 
-        if g.get_class_value(s) == min_val:
+        if g.get_class_value_by_node(s) == min_val:
             return COLOR_MINORITY
 
         return COLOR_UNKNOWN
@@ -291,6 +291,8 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
     arrow_style = kwargs.get('arrow_style', '-|>')
     arrow_size = kwargs.get('arrow_size', 2)
 
+
+
     pos = None
     for cell in np.arange(nc * nr):
         row = cell // nc
@@ -309,7 +311,7 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
                 pos = nx.spring_layout(g)
 
             # title
-            ax.set_title(g.get_model_name())
+            ax.set_title(g.model_name)
 
             # nodes
             maj_val = g.graph['class_values'][0]

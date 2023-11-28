@@ -9,6 +9,6 @@ from .pa import PA
 from .pah import PAH
 from .patc import PATC
 from .patch import PATCH
-from .tch import TCH
 from .tc import TriadicClosure
+from .tch import TCH
 from .undirected import UnDiGraph

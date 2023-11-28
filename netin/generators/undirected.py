@@ -1,8 +1,5 @@
-from typing import Set
-from typing import Tuple
 from typing import Union
 
-import networkx as nx
 import numpy as np
 import powerlaw
 
@@ -52,17 +49,18 @@ class UnDiGraph(Graph):
 
     def __init__(self, n: int, k: int, f_m: float, seed: object = None):
         Graph.__init__(self, n=n, f_m=f_m, seed=seed)
-        self.k = k
+        self.k = k  # minimum degree of nodes
+        self.model_name = const.UNDIRECTED_MODEL_NAME
 
     ############################################################
     # Init
     ############################################################
 
-    def _validate_parameters(self):
+    def validate_parameters(self):
         """
         Validates the parameters of the undirected.
         """
-        super()._validate_parameters()
+        super().validate_parameters()
         val.validate_int(self.k, minimum=1)
 
     def get_metadata_as_dict(self) -> dict:
@@ -76,10 +74,24 @@ class UnDiGraph(Graph):
         return obj
 
     ############################################################
+    # Getters & setters
+    ############################################################
+
+    @property
+    def k(self):
+        return self._k
+
+    @k.setter
+    def k(self, k: int):
+        self._k = k
+
+    ############################################################
     # Generation
     ############################################################
 
-    def get_target(self, source: Union[None, int], targets: Union[None, Set[int]],
+    def get_target(self,
+                   source: int,
+                   available_nodes: list[int],
                    special_targets: Union[None, object, iter]) -> int:
         """
         Picks a random target node based on preferential attachment.
@@ -87,23 +99,23 @@ class UnDiGraph(Graph):
         Parameters
         ----------
         special_targets : object
-            Special targets to be considered
+            Special available_nodes to be considered
 
         source: int
             Newly added node
 
-        targets: Set[int]
-            Potential target nodes in the undirected based on preferential attachment
+        available_nodes: List[int]
+            Potential (available) target nodes to connect to
 
         Returns
         -------
             int
                 Target node that an edge should be added to
         """
-        # Collect probabilities to connect to each node in target_list
-        target_set = set([t for t in targets if t != source and t not in nx.neighbors(self, source)])
-        probs, target_set = self.get_target_probabilities(source, target_set, special_targets)
-        return np.random.choice(a=list(target_set), size=1, replace=False, p=probs)[0]
+        # Collect probabilities to connect to each node in available_nodes
+        available_nodes = self.get_potential_nodes_to_connect(source, available_nodes)
+        probs, targets = self.get_target_probabilities(source, available_nodes, special_targets)
+        return np.random.choice(a=targets, size=1, replace=False, p=probs)[0]
 
     def generate(self):
         """
@@ -127,14 +139,18 @@ class UnDiGraph(Graph):
 
         # 2. Iterate until n nodes are added (starts with k pre-existing, unconnected nodes)
         for source in self.node_list[self.k:]:
-            targets = set(range(source))  # targets via preferential attachment
+            available_nodes = np.arange(source).tolist()  # available_nodes via preferential attachment
             special_targets = self.get_special_targets(source)
 
             for idx_target in range(self.k):
                 # Choose next target
-                target = self.get_target(source, targets, special_targets)
+                target = self.get_target(source, available_nodes, special_targets)
 
-                special_targets = self.update_special_targets(idx_target, source, target, targets, special_targets)
+                special_targets = self.update_special_targets(idx_target,
+                                                              source,
+                                                              target,
+                                                              available_nodes,
+                                                              special_targets)
 
                 # Finally add edge to undirected
                 self.add_edge(source, target)
@@ -142,41 +158,7 @@ class UnDiGraph(Graph):
                 # Call event handlers if present
                 self.on_edge_added(source, target)
 
-        self._terminate()
-
-    ############################################################
-    # Getters and Setters
-    ############################################################
-
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.UNDIRECTED_MODEL_NAME)
-
-    def get_expected_number_of_edges(self) -> int:
-        """
-        Computes and returns the expected number of edges based on minimum degree `k` and number of nodes `n`
-
-        Returns
-        -------
-        int
-            Expected number of edges
-        """
-        return (self.get_expected_number_of_nodes() * self.get_expected_minimum_degree()) - \
-            (self.get_expected_minimum_degree() ** self.get_expected_minimum_degree())
-
-    def get_expected_minimum_degree(self) -> int:
-        """
-        Returns the expected minimum degree of the graph (`k`, the input parameter)
-
-        Returns
-        -------
-        int
-            Expected minimum degree
-        """
-
-        return self.k
+        self.terminate()
 
     ############################################################
     # Calculations
@@ -201,7 +183,18 @@ class UnDiGraph(Graph):
               f"sigma={fit_m.power_law.sigma}, "
               f"min={fit_m.power_law.xmin}, max={fit_m.power_law.xmax}")
 
-    def fit_degree_powerlaw(self) -> Tuple[powerlaw.Fit, powerlaw.Fit]:
+    def get_expected_number_of_edges(self) -> int:
+        """
+        Computes and returns the expected number of edges based on minimum degree `k` and number of nodes `n`
+
+        Returns
+        -------
+        int
+            Expected number of edges
+        """
+        return (self.n * self.k) - (self.k ** self.k)
+
+    def fit_degree_powerlaw(self) -> tuple[powerlaw.Fit, powerlaw.Fit]:
         """
         Returns the powerlaw fit of the degree distribution to a powerlaw for the majority and minority class.
 
@@ -214,17 +207,9 @@ class UnDiGraph(Graph):
             Powerlaw fit for the minority class
         """
         fit_M, fit_m = self.fit_powerlaw(metric='degree')
-
-        # vM = self.get_majority_value()
-        # dM = [d for n, d in self.degree() if self.nodes[n][self.class_attribute] == vM]
-        # dm = [d for n, d in self.degree() if self.nodes[n][self.class_attribute] != vM]
-        #
-        # fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM))
-        # fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm))
-
         return fit_M, fit_m
 
-    def calculate_degree_powerlaw_exponents(self) -> Tuple[float, float]:
+    def calculate_degree_powerlaw_exponents(self) -> tuple[float, float]:
         """
         Returns the powerlaw exponents for the majority and minority class.
 
@@ -237,15 +222,9 @@ class UnDiGraph(Graph):
             Powerlaw exponent for the minority class
         """
         pl_M, pl_m = self.calculate_powerlaw_exponents(metric='degree')
-
-        # pl_M, pl_m = calculate_degree_powerlaw_exponents(self)
-        # fit_M, fit_m = self.fit_degree_powerlaw()
-        # pl_M = fit_M.power_law.alpha
-        # pl_m = fit_m.power_law.alpha
-
         return pl_M, pl_m
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """

@@ -1,4 +1,4 @@
-from typing import Union, Set, Tuple
+from typing import Union
 
 import numpy as np
 
@@ -38,22 +38,17 @@ class Homophily(Graph):
         self.h_MM = h_MM
         self.h_mm = h_mm
         self.mixing_matrix = None
+        self.model_name = const.H_MODEL_NAME
 
     ############################################################
     # Init
     ############################################################
 
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.H_MODEL_NAME)
-
-    def _validate_parameters(self):
+    def validate_parameters(self):
         """
         Validates the parameters of the graph.
         """
-        Graph._validate_parameters(self)
+        Graph.validate_parameters(self)
         val.validate_float(self.h_MM, minimum=0., maximum=1.)
         val.validate_float(self.h_mm, minimum=0., maximum=1.)
 
@@ -145,7 +140,7 @@ class Homophily(Graph):
     # Generation
     ############################################################
 
-    def _initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
+    def initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
         """
         Initializes the model.
 
@@ -160,13 +155,13 @@ class Homophily(Graph):
         class_labels: list
             labels of the class attribute mapping the class_values.
         """
-        Graph._initialize(self, class_attribute, class_values, class_labels)
+        Graph.initialize(self, class_attribute, class_values, class_labels)
         self.h_MM = val.calibrate_null_probabilities(self.h_MM)
         self.h_mm = val.calibrate_null_probabilities(self.h_mm)
         self.mixing_matrix = np.array([[self.h_MM, 1 - self.h_MM], [1 - self.h_mm, self.h_mm]])
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int], np.array],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, set[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: Union[list[int], np.array],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on homophily.
         Homophily is inferred from the mixing matrix.
@@ -176,22 +171,22 @@ class Homophily(Graph):
         source: int
             source node
 
-        target_set: set[int]
+        available_nodes: set[int]
             set of target nodes
 
         special_targets: object
-            special targets
+            special available_nodes
 
         Returns
         -------
         tuple[np.array, set[int]]
             probabilities of selecting a target node from a set of nodes, and the set of target nodes`
         """
-        probs = np.array([self.get_homophily_between_source_and_target(source, target) for target in target_set])
+        probs = np.array([self.get_homophily_between_source_and_target(source, target) for target in available_nodes])
         probs /= probs.sum()
-        return probs, target_set
+        return probs, available_nodes
 
-    def get_target(self, source: Union[None, int], targets: Union[None, Set[int]],
+    def get_target(self, source: int, available_nodes: list[int],
                    special_targets: Union[None, object, iter]) -> int:
         """
         Picks a random target node based on the homophily dynamic.
@@ -201,7 +196,7 @@ class Homophily(Graph):
         source: int
             Newly added node
 
-        targets: Set[int]
+        available_nodes: Set[int]
             Potential target nodes in the graph
 
         special_targets: object
@@ -211,10 +206,10 @@ class Homophily(Graph):
         -------
             int: Target node that an edge should be added to from `source`
         """
-        # Collect probabilities to connect to each node in target_list
-        target_set = self.get_potential_nodes_to_connect(source, targets)
-        probs = self.get_target_probabilities(source, target_set, special_targets)
-        return np.random.choice(a=target_set, size=1, replace=False, p=probs)[0]
+        # Collect probabilities to connect to each node in available_nodes
+        available_nodes = self.get_potential_nodes_to_connect(source, available_nodes)
+        probs, target_list = self.get_target_probabilities(source, available_nodes, special_targets)
+        return np.random.choice(a=target_list, size=1, replace=False, p=probs)[0]
 
     ############################################################
     # Calculations
@@ -236,7 +231,7 @@ class Homophily(Graph):
         print("- Empirical homophily within majority: {}".format(inferred_h_MM))
         print("- Empirical homophily within minority: {}".format(inferred_h_mm))
 
-    def infer_homophily_values(self) -> Tuple[float, float]:
+    def infer_homophily_values(self) -> tuple[float, float]:
         """
         Infers analytically the homophily values for the majority and minority classes.
 

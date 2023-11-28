@@ -19,7 +19,7 @@ class TestDiGraph(object):
         c2 = g.number_of_nodes() == n
         c3 = g.number_of_edges() == g.get_expected_number_of_edges()
         c4 = g.calculate_fraction_of_minority() == f_m
-        c5 = g.get_model_name() == const.DPA_MODEL_NAME
+        c5 = g.model_name == const.DPA_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
     def test_case_dh(self):
@@ -37,7 +37,7 @@ class TestDiGraph(object):
         c2 = g.number_of_nodes() == n
         c3 = g.number_of_edges() == g.get_expected_number_of_edges()
         c4 = g.calculate_fraction_of_minority() == f_m
-        c5 = g.get_model_name() == const.DH_MODEL_NAME
+        c5 = g.model_name == const.DH_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
     def test_case_dpah(self):
@@ -55,7 +55,7 @@ class TestDiGraph(object):
         c2 = g.number_of_nodes() == n
         c3 = g.number_of_edges() == g.get_expected_number_of_edges()
         c4 = g.calculate_fraction_of_minority() == f_m
-        c5 = g.get_model_name() == const.DPAH_MODEL_NAME
+        c5 = g.model_name == const.DPAH_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5, "Incorrect directed parameters."
 
     def test_case_all(self):
@@ -79,7 +79,7 @@ class TestDiGraph(object):
         c2 = g_dpa.calculate_fraction_of_minority() == g_dh.calculate_fraction_of_minority() == g_dpah.calculate_fraction_of_minority() == f_m
         c3 = g_dpa.get_expected_number_of_edges() == g_dh.get_expected_number_of_edges() == g_dpah.get_expected_number_of_edges()
 
-        c4 = g_dpa.get_model_name() == const.DPA_MODEL_NAME
-        c5 = g_dh.get_model_name() == const.DH_MODEL_NAME
-        c6 = g_dpah.get_model_name() == const.DPAH_MODEL_NAME
+        c4 = g_dpa.model_name == const.DPA_MODEL_NAME
+        c5 = g_dh.model_name == const.DH_MODEL_NAME
+        c6 = g_dpah.model_name == const.DPAH_MODEL_NAME
         assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect directed parameters."

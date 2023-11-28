@@ -1,4 +1,4 @@
-from typing import Set, Union, Tuple
+from typing import Union
 
 import numpy as np
 
@@ -48,27 +48,19 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, tc_uniform: bool = True, seed: object = None):
+    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, tc_uniform: bool = True,
+                 seed: object = None):
         UnDiGraph.__init__(self, n, k, f_m, seed)
         Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
         TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, tc_uniform=tc_uniform, seed=seed)
-
-    ############################################################
-    # Init
-    ############################################################
-
-    def _infer_model_name(self):
-        """
-        Infers the name of the model.
-        """
-        return self.set_model_name(const.TCH_MODEL_NAME)
+        self.model_name = const.TCH_MODEL_NAME
 
     ############################################################
     # Generation
     ############################################################
 
-    def get_target_probabilities(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                 special_targets: Union[None, object, iter] = None) -> Tuple[np.array, set[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: list[int],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
         """
         Returns the probabilities of nodes to be selected as target nodes.
 
@@ -77,7 +69,7 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
         source: int
             source node id
 
-        target_set: set
+        available_nodes: set
             set of target node ids
 
         special_targets: dict
@@ -89,11 +81,11 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
             probabilities of nodes to be selected as target nodes, and set of target of nodes
 
         """
-        return TriadicClosure.get_target_probabilities(self, source, target_set, special_targets)
+        return TriadicClosure.get_target_probabilities(self, source, available_nodes, special_targets)
 
-    def get_target_probabilities_regular(self, source: Union[None, int], target_set: Union[None, Set[int]],
-                                         special_targets: Union[None, object, iter] = None) -> Tuple[
-        np.ndarray, set[int]]:
+    def get_target_probabilities_regular(self, source: int, target_list: list[int],
+                                         special_targets: Union[None, object, iter] = None) -> \
+            tuple[np.ndarray, list[int]]:
         """
         Returns the probability of nodes to be selected as target nodes using the homophily mechanism.
 
@@ -102,7 +94,7 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
         source: int
             source node id
 
-        target_set: set
+        target_list: set
             set of target node ids
 
         special_targets: dict
@@ -113,8 +105,9 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
         tuple
             probabilities of nodes to be selected as target nodes, and set of target of nodes
         """
-        probs = np.asarray([self.get_homophily_between_source_and_target(source, target) + const.EPSILON for target in target_set])
-        return probs / probs.sum(), target_set
+        probs = np.asarray(
+            [self.get_homophily_between_source_and_target(source, target) + const.EPSILON for target in target_list])
+        return probs / probs.sum(), target_list
 
     def get_special_targets(self, source: int) -> object:
         """
@@ -150,7 +143,7 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
         Homophily.info_computed(self)
         TriadicClosure.info_computed(self)
 
-    def infer_homophily_values(self) -> Tuple[float, float]:
+    def infer_homophily_values(self) -> tuple[float, float]:
         """
         Infers analytically the homophily values of the graph.
         @TODO: This still needs to be implemented.
@@ -172,7 +165,7 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
         """
         raise NotImplementedError("Inferring triadic closure probability not implemented yet.")
 
-    def _makecopy(self):
+    def makecopy(self):
         """
         Makes a copy of the current object.
         """
