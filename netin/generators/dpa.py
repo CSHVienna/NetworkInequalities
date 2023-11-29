@@ -70,7 +70,7 @@ class DPA(DiGraph):
     def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int], np.array],
                                  special_targets: Union[None, object, iter] = None) -> np.array:
         """
-        Returns the probabilities for each target node in `target_list` to be selected as target node
+        Returns the probabilities for each target node in `available_nodes` to be selected as target node
         given source node `source`.
 
         Parameters

@@ -1,5 +1,4 @@
 from typing import Union
-from typing import Tuple
 
 import numpy as np
 
@@ -65,7 +64,7 @@ class PA(UnDiGraph):
         probs: np.array
             probabilities of the target nodes to be selected
 
-        target_list: set
+        available_nodes: set
             set of target nodes (ids)
         """
         probs = np.array([(self.degree(target) + const.EPSILON) for target in available_nodes])

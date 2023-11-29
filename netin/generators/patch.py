@@ -1,4 +1,4 @@
-from typing import Union, Set, Tuple
+from typing import Union
 
 import numpy as np
 
@@ -82,8 +82,9 @@ class PATCH(PAH, TriadicClosure):
     # Generation
     ############################################################
 
-    def get_target_probabilities(self, source: Union[None, int], available_nodes: Union[None, Set[int]],
-                                 special_targets: Union[None, object, iter] = None) -> Tuple[np.array, set[int]]:
+    def get_target_probabilities(self, source: int,
+                                 available_nodes: list[int],
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
         """
         Returns the probabilities of nodes to be selected as target nodes.
 
@@ -106,9 +107,9 @@ class PATCH(PAH, TriadicClosure):
         """
         return TriadicClosure.get_target_probabilities(self, source, available_nodes, special_targets)
 
-    def get_target_probabilities_regular(self, source: Union[None, int], target_list: Union[None, Set[int]],
-                                         special_targets: Union[None, object, iter] = None) -> Tuple[
-        np.ndarray, set[int]]:
+    def get_target_probabilities_regular(self, source: int,
+                                         available_nodes: list[int],
+                                         special_targets: Union[None, object, iter] = None) -> tuple[np.ndarray, list[int]]:
         """
         Returns the probability of nodes to be selected as target nodes using the
         preferential attachment with homophily mechanism.
@@ -118,7 +119,7 @@ class PATCH(PAH, TriadicClosure):
         source: int
             source node id
 
-        target_list: set
+        available_nodes: set
             set of target node ids
 
         special_targets: dict
@@ -129,7 +130,7 @@ class PATCH(PAH, TriadicClosure):
         tuple
             probabilities of nodes to be selected as target nodes, and set of target of nodes
         """
-        return PAH.get_target_probabilities(self, source, target_list, special_targets)
+        return PAH.get_target_probabilities(self, source, available_nodes, special_targets)
 
     def get_special_targets(self, source: int) -> object:
         """
@@ -165,7 +166,7 @@ class PATCH(PAH, TriadicClosure):
         PAH.info_computed(self)
         TriadicClosure.info_computed(self)
 
-    def infer_homophily_values(self) -> Tuple[float, float]:
+    def infer_homophily_values(self) -> tuple[float, float]:
         """
         Infers analytically the homophily values of the graph.
 
@@ -187,8 +188,8 @@ class PATCH(PAH, TriadicClosure):
         float
             triadic closure probability of the graph
         """
-        tc = None
-        return tc
+        # @TODO: To be implemented
+        raise NotImplementedError("Inferring triadic closure not implemented yet.")
 
     def makecopy(self):
         """

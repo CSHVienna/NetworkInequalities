@@ -1,7 +1,7 @@
 import time
 import warnings
 from collections import Counter
-from typing import Union, Tuple, Iterable, Any
+from typing import Union, Iterable, Any
 
 import networkx as nx
 import numpy as np
@@ -581,7 +581,7 @@ class Graph(nx.Graph):
 
     def get_target_probabilities(self, source: int,
                                  available_nodes: list[int],
-                                 special_targets: Union[None, object, iter] = None) -> Tuple[np.array, list[int]]:
+                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
         """
         Returns the probability for each target node to be connected to the source node.
 
@@ -737,7 +737,7 @@ class Graph(nx.Graph):
         """
         return net.get_edge_type_counts(self)
 
-    def fit_powerlaw(self, metric: str) -> Tuple[powerlaw.Fit, powerlaw.Fit]:
+    def fit_powerlaw(self, metric: str) -> tuple[powerlaw.Fit, powerlaw.Fit]:
         """
         Fits a power law to the distribution given by 'metric' (the in- or out-degree of nodes in the graph).
 
@@ -757,17 +757,9 @@ class Graph(nx.Graph):
 
         fit_M, fit_m = fit_powerlaw_groups(self, metric)
 
-        # vM = self.get_majority_value()
-        # dist_fnc = self.in_degree if metric == 'in_degree' else self.out_degree
-        # dM = [d for n, d in dist_fnc if self.nodes[n][self.class_attribute] == vM]
-        # dm = [d for n, d in dist_fnc if self.nodes[n][self.class_attribute] != vM]
-        #
-        # fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM), verbose=False)
-        # fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm), verbose=False)
-
         return fit_M, fit_m
 
-    def calculate_powerlaw_exponents(self, metric: str) -> Tuple[float, float]:
+    def calculate_powerlaw_exponents(self, metric: str) -> tuple[float, float]:
         """
         Returns the power law exponents for the ``metric`` distribution of the majority and minority class.
 
@@ -949,7 +941,7 @@ class Graph(nx.Graph):
 # Static functions
 ######################################################################################################################
 
-def fit_powerlaw_groups(g: Graph, metric: str) -> Tuple[powerlaw.Fit, powerlaw.Fit]:
+def fit_powerlaw_groups(g: Graph, metric: str) -> tuple[powerlaw.Fit, powerlaw.Fit]:
     """
     Fits a power law to the distribution given by 'metric' (the in- or out-degree of nodes in the graph).
 

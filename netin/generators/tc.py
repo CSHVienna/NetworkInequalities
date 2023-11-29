@@ -284,5 +284,13 @@ class TriadicClosure(Graph):
         print("- Empirical triadic closure: {}".format(inferred_tc))
 
     def infer_triadic_closure(self) -> float:
+        """
+        Infers analytically the triadic closure value of the graph.
+
+        Returns
+        -------
+        float
+            triadic closure probability of the graph
+        """
         # @TODO: To be implemented
         raise NotImplementedError("Inferring triadic closure not implemented yet.")
