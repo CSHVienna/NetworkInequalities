@@ -170,6 +170,19 @@ special_targets</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="netin.TriadicClosure.infer_triadic_closure">
+<span class="sig-name descname"><span class="pre">infer_triadic_closure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#netin.TriadicClosure.infer_triadic_closure" title="Link to this definition">¶</a></dt>
+<dd><p>Infers analytically the triadic closure value of the graph.</p>
+<section id="id10">
+<h3>Returns<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>triadic closure probability of the graph</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="netin.TriadicClosure.info_computed">
 <span class="sig-name descname"><span class="pre">info_computed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.TriadicClosure.info_computed" title="Link to this definition">¶</a></dt>
 <dd><p>Shows the computed properties of the graph.</p>
@@ -185,8 +198,8 @@ special_targets</p>
 <dt class="sig sig-object py" id="netin.TriadicClosure.initialize">
 <span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'m'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.TriadicClosure.initialize" title="Link to this definition">¶</a></dt>
 <dd><p>Initializes the model.</p>
-<section id="id10">
-<h3>Parameters<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<section id="id11">
+<h3>Parameters<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>class_attribute: str</dt><dd><p>name of the attribute that represents the class</p>
 </dd>
@@ -202,8 +215,8 @@ special_targets</p>
 <dt class="sig sig-object py" id="netin.TriadicClosure.set_triadic_closure">
 <span class="sig-name descname"><span class="pre">set_triadic_closure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.TriadicClosure.set_triadic_closure" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the triadic closure probability <cite>tc</cite>.</p>
-<section id="id11">
-<h3>Parameters<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<section id="id12">
+<h3>Parameters<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>tc: float</dt><dd><p>triadic closure probability (minimum=0, maximum=1)</p>
 </dd>
@@ -217,8 +230,8 @@ special_targets</p>
 <dd><p>Updates the set of special available_nodes based on the triadic closure mechanism.
 When an edge is created, multiple potential triadic closures emerge (i.e., two-hop neighbors that are not yet
 directly connected). These are added to the set of special available_nodes.</p>
-<section id="id12">
-<h3>Parameters<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<section id="id13">
+<h3>Parameters<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>idx_target: int</dt><dd><p>index of the target node</p>
 </dd>
@@ -232,8 +245,8 @@ directly connected). These are added to the set of special available_nodes.</p>
 </dd>
 </dl>
 </section>
-<section id="id13">
-<h3>Returns<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
+<section id="id14">
+<h3>Returns<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>object</dt><dd><p>updated special available_nodes</p>
 </dd>
@@ -254,8 +267,8 @@ directly connected). These are added to the set of special available_nodes.</p>
 <dt class="sig sig-object py" id="netin.Homophily">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.</span></span><span class="sig-name descname"><span class="pre">Homophily</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_MM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_mm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Homophily" title="Link to this definition">¶</a></dt>
 <dd><p>Class to model homophily as a mechanism of edge formation given a source and a target node.</p>
-<section id="id14">
-<h2>Parameters<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<section id="id15">
+<h2>Parameters<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>n: int</dt><dd><p>number of nodes (minimum=2)</p>
 </dd>
@@ -267,16 +280,16 @@ directly connected). These are added to the set of special available_nodes.</p>
 </dd>
 </dl>
 </section>
-<section id="id15">
-<h2>Notes<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<section id="id16">
+<h2>Notes<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
 <p>This class does not generate a graph.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="netin.Homophily.get_homophily_between_source_and_target">
 <span class="sig-name descname"><span class="pre">get_homophily_between_source_and_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#netin.Homophily.get_homophily_between_source_and_target" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the homophily value between a source and a target node based on their class values.
 This homophily value is inferred from the mixing matrix.</p>
-<section id="id16">
-<h3>Parameters<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h3>
+<section id="id17">
+<h3>Parameters<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>source: int</dt><dd><p>Source node id</p>
 </dd>
@@ -284,8 +297,8 @@ This homophily value is inferred from the mixing matrix.</p>
 </dd>
 </dl>
 </section>
-<section id="id17">
-<h3>Returns<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
+<section id="id18">
+<h3>Returns<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>h: float</dt><dd><p>homophily (similarity) between source and target nodes (minimum=0, maximum=1.)</p>
 </dd>
@@ -297,8 +310,8 @@ This homophily value is inferred from the mixing matrix.</p>
 <dt class="sig sig-object py" id="netin.Homophily.get_homophily_majority">
 <span class="sig-name descname"><span class="pre">get_homophily_majority</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#netin.Homophily.get_homophily_majority" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the homophily value between majority nodes.</p>
-<section id="id18">
-<h3>Returns<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
+<section id="id19">
+<h3>Returns<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>h_MM: float</dt><dd><p>homophily (similarity) between majority nodes (minimum=0, maximum=1.)</p>
 </dd>
@@ -310,8 +323,8 @@ This homophily value is inferred from the mixing matrix.</p>
 <dt class="sig sig-object py" id="netin.Homophily.get_homophily_minority">
 <span class="sig-name descname"><span class="pre">get_homophily_minority</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#netin.Homophily.get_homophily_minority" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the homophily value between minority nodes.</p>
-<section id="id19">
-<h3>Returns<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h3>
+<section id="id20">
+<h3>Returns<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>h_mm: float</dt><dd><p>homophily (similarity) between minority nodes (minimum=0, maximum=1.)</p>
 </dd>
@@ -323,8 +336,8 @@ This homophily value is inferred from the mixing matrix.</p>
 <dt class="sig sig-object py" id="netin.Homophily.get_metadata_as_dict">
 <span class="sig-name descname"><span class="pre">get_metadata_as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#netin.Homophily.get_metadata_as_dict" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the metadata info (input parameters of the model) of the graph as a dictionary.</p>
-<section id="id20">
-<h3>Returns<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
+<section id="id21">
+<h3>Returns<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>obj dict</dt><dd><p>dictionary with the metadata info of the graph.</p>
 </dd>
@@ -336,8 +349,8 @@ This homophily value is inferred from the mixing matrix.</p>
 <dt class="sig sig-object py" id="netin.Homophily.get_target">
 <span class="sig-name descname"><span class="pre">get_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.Homophily.get_target" title="Link to this definition">¶</a></dt>
 <dd><p>Picks a random target node based on the homophily dynamic.</p>
-<section id="id21">
-<h3>Parameters<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h3>
+<section id="id22">
+<h3>Parameters<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>source: int</dt><dd><p>Newly added node</p>
 </dd>
@@ -347,8 +360,8 @@ This homophily value is inferred from the mixing matrix.</p>
 </dd>
 </dl>
 </section>
-<section id="id22">
-<h3>Returns<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h3>
+<section id="id23">
+<h3>Returns<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p>int: Target node that an edge should be added to from <cite>source</cite></p>
 </div></blockquote>
@@ -360,8 +373,8 @@ This homophily value is inferred from the mixing matrix.</p>
 <span class="sig-name descname"><span class="pre">get_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">iter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.Homophily.get_target_probabilities" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the probabilities of selecting a target node from a set of nodes based on homophily.
 Homophily is inferred from the mixing matrix.</p>
-<section id="id23">
-<h3>Parameters<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h3>
+<section id="id24">
+<h3>Parameters<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>source: int</dt><dd><p>source node</p>
 </dd>
@@ -371,8 +384,8 @@ Homophily is inferred from the mixing matrix.</p>
 </dd>
 </dl>
 </section>
-<section id="id24">
-<h3>Returns<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h3>
+<section id="id25">
+<h3>Returns<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>tuple[np.array, set[int]]</dt><dd><p>probabilities of selecting a target node from a set of nodes, and the set of target nodes`</p>
 </dd>
@@ -384,8 +397,8 @@ Homophily is inferred from the mixing matrix.</p>
 <dt class="sig sig-object py" id="netin.Homophily.infer_homophily_values">
 <span class="sig-name descname"><span class="pre">infer_homophily_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.Homophily.infer_homophily_values" title="Link to this definition">¶</a></dt>
 <dd><p>Infers analytically the homophily values for the majority and minority classes.</p>
-<section id="id25">
-<h3>Returns<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h3>
+<section id="id26">
+<h3>Returns<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>h_MM: float</dt><dd><p>homophily within majority group</p>
 </dd>
@@ -411,8 +424,8 @@ Homophily is inferred from the mixing matrix.</p>
 <dt class="sig sig-object py" id="netin.Homophily.initialize">
 <span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'m'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Homophily.initialize" title="Link to this definition">¶</a></dt>
 <dd><p>Initializes the model.</p>
-<section id="id26">
-<h3>Parameters<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h3>
+<section id="id27">
+<h3>Parameters<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>class_attribute: str</dt><dd><p>name of the attribute that represents the class</p>
 </dd>
@@ -428,8 +441,8 @@ Homophily is inferred from the mixing matrix.</p>
 <dt class="sig sig-object py" id="netin.Homophily.set_homophily_majority">
 <span class="sig-name descname"><span class="pre">set_homophily_majority</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h_MM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Homophily.set_homophily_majority" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the homophily value between majority nodes.</p>
-<section id="id27">
-<h3>Parameters<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h3>
+<section id="id28">
+<h3>Parameters<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>h_MM: float</dt><dd><p>homophily (similarity) between majority nodes (minimum=0, maximum=1.)</p>
 </dd>
@@ -441,8 +454,8 @@ Homophily is inferred from the mixing matrix.</p>
 <dt class="sig sig-object py" id="netin.Homophily.set_homophily_minority">
 <span class="sig-name descname"><span class="pre">set_homophily_minority</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h_mm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.Homophily.set_homophily_minority" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the homophily value between minority nodes.</p>
-<section id="id28">
-<h3>Parameters<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h3>
+<section id="id29">
+<h3>Parameters<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>h_mm: float</dt><dd><p>homophily (similarity) between minority nodes (minimum=0, maximum=1.)</p>
 </dd>
@@ -493,6 +506,7 @@ Homophily is inferred from the mixing matrix.</p>
 <li class="toctree-l3"><a class="reference internal" href="#netin.TriadicClosure.get_target_probabilities"><code class="docutils literal notranslate"><span class="pre">TriadicClosure.get_target_probabilities()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#netin.TriadicClosure.get_target_probabilities_regular"><code class="docutils literal notranslate"><span class="pre">TriadicClosure.get_target_probabilities_regular()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#netin.TriadicClosure.get_triadic_closure"><code class="docutils literal notranslate"><span class="pre">TriadicClosure.get_triadic_closure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#netin.TriadicClosure.infer_triadic_closure"><code class="docutils literal notranslate"><span class="pre">TriadicClosure.infer_triadic_closure()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#netin.TriadicClosure.info_computed"><code class="docutils literal notranslate"><span class="pre">TriadicClosure.info_computed()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#netin.TriadicClosure.info_params"><code class="docutils literal notranslate"><span class="pre">TriadicClosure.info_params()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#netin.TriadicClosure.initialize"><code class="docutils literal notranslate"><span class="pre">TriadicClosure.initialize()</span></code></a></li>
