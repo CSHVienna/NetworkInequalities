@@ -1,7 +1,7 @@
 import time
 import warnings
 from collections import Counter
-from typing import Union, Iterable, Any
+from typing import Union, Iterable, Any, Dict
 
 import networkx as nx
 import numpy as np
@@ -555,7 +555,7 @@ class Graph(nx.Graph):
         self.add_nodes_from(self.node_list)
         nx.set_node_attributes(self, self.node_class_values, self.class_attribute)
 
-    def get_special_targets(self, source: int) -> object:
+    def get_special_targets(self, source: int) -> Dict[int, int]:
         pass
 
     def get_potential_nodes_to_connect(self, source: int,
@@ -581,7 +581,7 @@ class Graph(nx.Graph):
 
     def get_target_probabilities(self, source: int,
                                  available_nodes: list[int],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
+                                 special_targets: Union[None, Dict[int, int]] = None) -> tuple[np.array, list[int]]:
         """
         Returns the probability for each target node to be connected to the source node.
 
@@ -617,13 +617,13 @@ class Graph(nx.Graph):
 
     def get_target(self, source: int,
                    available_nodes: list[int],
-                   special_targets: Union[None, object, iter]) -> int:
+                   special_targets: Union[None, Dict[int, int]]) -> int:
         pass
 
     def update_special_targets(self, idx_target: int,
                                source: int, target: int,
                                available_nodes: list[int],
-                               special_targets: Union[None, object, iter]):
+                               special_targets: Union[None, Dict[int, int]]) -> Dict[int, int]:
         pass
 
     def on_edge_added(self, source: int, target: int):

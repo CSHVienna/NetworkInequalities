@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List, Dict
 
 import numpy as np
 
@@ -159,8 +159,8 @@ class PATC(PA, TriadicClosure):
 
     def update_special_targets(self, idx_target: int,
                                source: int, target: int,
-                               available_nodes: list[int],
-                               special_targets: object) -> object:
+                               available_nodes: List[int],
+                               special_targets: Union[None, Dict[int, int]]) ->  Union[None, Dict[int, int]]:
         """
         Updates the set of special available_nodes based on the triadic closure mechanism.
 
