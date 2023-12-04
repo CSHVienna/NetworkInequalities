@@ -1,13 +1,12 @@
 from collections import defaultdict
 from typing import Union
-from typing import List, Iterable, Any, Tuple, Dict
+from typing import List, Any, Tuple, Dict
 
 import numpy as np
 
 from netin.utils import constants as const
 from netin.utils import validator as val
 from .graph import Graph
-
 
 class TriadicClosure(Graph):
     """Class to model triadic closure as a mechanism of edge formation given a source and a target node.
@@ -136,7 +135,7 @@ class TriadicClosure(Graph):
 
     def get_target_probabilities(self, source: int,
                                  available_nodes: List[int],
-                                 special_targets: Union[None, Iterable] = None) -> Tuple[np.array, List[int]]:
+                                 special_targets: Union[None, Dict[int, float]] = None) -> Tuple[np.array, List[int]]:
         """Returns the probabilities of selecting a target node from a set of nodes based on triadic closure, or a regular mechanism,
 
         Parameters
@@ -145,7 +144,7 @@ class TriadicClosure(Graph):
             source node
         available_nodes : List[int]
             list of available target nodes
-        special_targets : Union[None, Iteratable], optional
+        special_targets : Union[None, Dict[int, float]], optional
             List of limited target nodes, by default None
 
         Returns
@@ -155,7 +154,7 @@ class TriadicClosure(Graph):
             The first list contains the probabilities and the second list the available nodes.
         """
         # Triadic closure is not uniform (biased towards common neighbors)
-        available_nodes, probs = zip(*[(t, w) for t, w in special_targets.items()])
+        available_nodes, probs = zip(*list(special_targets.items()))
         probs = np.array(probs).astype(np.float32)
         probs /= probs.sum()
         return probs, available_nodes

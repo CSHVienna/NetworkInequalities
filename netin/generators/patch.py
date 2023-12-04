@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Dict, Any, List, Tuple
 
 import numpy as np
 
@@ -64,7 +64,7 @@ class PATCH(GraphTC, PAH):
         PAH.validate_parameters(self)
         GraphTC.validate_parameters(self)
 
-    def get_metadata_as_dict(self) -> dict:
+    def get_metadata_as_dict(self) -> Dict[str, Any]:
         """
         Returns a dictionary with the metadata of the PATCH graph.
 
@@ -82,8 +82,8 @@ class PATCH(GraphTC, PAH):
     # Generation
     ############################################################
     def get_target_probabilities_regular(self, source: int,
-                                         available_nodes: list[int],
-                                         special_targets: Union[None, object, iter] = None) -> tuple[np.ndarray, list[int]]:
+                                         target_list: List[int],
+                                         special_targets: Union[None, Dict[int, float]] = None) -> Tuple[np.ndarray, List[int]]:
         """
         Returns the probability of nodes to be selected as target nodes using the
         preferential attachment with homophily mechanism.
@@ -104,7 +104,7 @@ class PATCH(GraphTC, PAH):
         tuple
             probabilities of nodes to be selected as target nodes, and set of target of nodes
         """
-        return PAH.get_target_probabilities(self, source, available_nodes, special_targets)
+        return PAH.get_target_probabilities(self, source, target_list, special_targets)
 
     ############################################################
     # Calculations

@@ -1,6 +1,5 @@
-
 from abc import abstractmethod
-from typing import Union, Dict, Any
+from typing import Union, Dict, Any, List, Tuple
 
 import numpy as np
 
@@ -69,8 +68,8 @@ class GraphTC(UnDiGraph, TriadicClosure):
     # Generation
     ############################################################
 
-    def get_target_probabilities(self, source: int, available_nodes: list[int],
-                                 special_targets: Union[None, Dict[int, float]] = None) -> tuple[np.array, list[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: List[int],
+                                 special_targets: Union[None, Dict[int, float]] = None) -> Tuple[np.array, List[int]]:
         """
         Returns the probabilities of nodes to be selected as target nodes.
 
@@ -106,9 +105,9 @@ class GraphTC(UnDiGraph, TriadicClosure):
         return self.get_target_probabilities_regular(source, available_nodes, special_targets)
 
     @abstractmethod
-    def get_target_probabilities_regular(self, source: int, target_list: list[int],
-                                         special_targets: Union[None, object, iter] = None) -> \
-            tuple[np.ndarray, list[int]]:
+    def get_target_probabilities_regular(self, source: int, target_list: List[int],
+                                         special_targets: Union[None, Dict[int, float]] = None) -> \
+            Tuple[np.ndarray, List[int]]:
         raise NotImplementedError
 
     def get_special_targets(self, source: int) -> object:

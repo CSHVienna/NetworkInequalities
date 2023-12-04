@@ -1,4 +1,4 @@
-from typing import Union, List, Dict
+from typing import Union, List, Dict, Tuple, Any
 
 import numpy as np
 
@@ -55,7 +55,7 @@ class PATC(GraphTC, PA):
         PA.validate_parameters(self)
         GraphTC.validate_parameters(self)
 
-    def get_metadata_as_dict(self) -> dict:
+    def get_metadata_as_dict(self) -> Dict[str, Any]:
         """
         Returns the metadata information (input parameters of the model) of the graph as a dictionary.
 
@@ -81,9 +81,9 @@ class PATC(GraphTC, PA):
         GraphTC.info_params(self)
 
     def get_target_probabilities_regular(self, source: int,
-                                         target_list: list[int],
-                                         special_targets: Union[None, object, iter] = None) -> \
-            tuple[np.array, list[int]]:
+                                         target_list: List[int],
+                                         special_targets: Union[None, Dict[int, float]] = None) -> \
+            Tuple[np.array, List[int]]:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on the preferential attachment.
 
@@ -100,7 +100,7 @@ class PATC(GraphTC, PA):
 
         Returns
         -------
-        tuple[np.array, set[int]]
+        Tuple[np.array, set[int]]
             probabilities of selecting a target node from a set of nodes, and the set of target nodes
 
         See Also
