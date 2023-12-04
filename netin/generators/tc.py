@@ -160,30 +160,6 @@ class TriadicClosure(Graph):
         probs /= probs.sum()
         return probs, available_nodes
 
-    def get_target(self, source: int,
-                   available_nodes: List[int],
-                   special_targets: Union[None, Iterable]) -> int:
-        """Picks a random target node based on the homophily/preferential attachment dynamic.
-
-        Parameters
-        ----------
-        source : int
-            Newly added node
-        available_nodes : List[int]
-            Potential target nodes in the graph
-        special_targets : Union[None, Iteratable]
-            Limited target nodes
-
-        Returns
-        -------
-        int
-            Target node that and edge should be created to from `source`
-        """
-        # Collect probabilities to connect to each node in available_nodes
-        target_set = self.get_potential_nodes_to_connect(source, available_nodes)
-        probs = self.get_target_probabilities(source, target_set, special_targets)
-        return np.random.choice(a=target_set, size=1, replace=False, p=probs)[0]
-
     def update_special_targets(self,
                                idx_target: int,
                                source: int, target: int,
