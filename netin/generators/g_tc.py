@@ -31,9 +31,12 @@ class GraphTC(UnDiGraph, TriadicClosure):
     Notes
     -----
     The initialization is an undirected graph with n nodes and no edges.
-    Then, everytime a node is selected as source, it gets connected to k target nodes.
+    The first `k` nodes are marked as active.
+    Then, every node, starting from `k+1` is selected as source in order of their id.
+    When selected as source, a node connects to `k` active target nodes which were chosen as sources before.
     Target nodes are selected via any link formation mechanism (to be implemented in sub-classes) with probability ``1-p_{TC}``,
     and with probability ``p_{TC}`` via triadic closure (see :class:`netin.TriadicClosure`) [HolmeKim2002]_.
+    Afterwards, the source node is flagged as being active (so that subsequent sources can connect to it).
 
     Note that this model is still work in progress and not fully implemented yet.
     """
@@ -78,16 +81,16 @@ class GraphTC(UnDiGraph, TriadicClosure):
         source: int
             source node id
 
-        available_nodes: set
-            set of target node ids
+        available_nodes: List[int]
+            list of available nodes to connect to
 
-        special_targets: dict
-            dictionary of special target node ids to be considered
+        special_targets: Union[None, Dict[int, float]]
+            if present, it should be a map of a special selection of targets and their weight
 
         Returns
         -------
-        tuple
-            probabilities of nodes to be selected as target nodes, and set of target of nodes
+        Tuple[np.ndarray, List[int]]
+            probabilities of nodes to be selected as target nodes, and list of target of nodes
 
         """
         tc_prob = np.random.random()
@@ -112,7 +115,7 @@ class GraphTC(UnDiGraph, TriadicClosure):
 
     def get_special_targets(self, source: int) -> object:
         """
-        Returns an empty dictionary (source node ids)
+        Returns selection of special targets
 
         Parameters
         ----------
