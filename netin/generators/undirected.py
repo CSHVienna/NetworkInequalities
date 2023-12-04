@@ -117,6 +117,13 @@ class UnDiGraph(Graph):
         probs, targets = self.get_target_probabilities(source, available_nodes, special_targets)
         return np.random.choice(a=targets, size=1, replace=False, p=probs)[0]
 
+    def _link_init_nodes(self):
+        for source in self.node_list[:self.k]:
+            for target in self.node_list[:self.k]:
+                if (source != target) and (target not in self[source]):
+                    self.add_edge(source, target)
+                    self.on_edge_added(source, target)
+
     def generate(self):
         """
         An undirected graph of n nodes is grown by attaching new nodes each with k edges.
@@ -136,6 +143,7 @@ class UnDiGraph(Graph):
         """
         # 1. Init an undirected graph and nodes (assign class labels)
         super().generate()
+        self._link_init_nodes()
 
         # 2. Iterate until n nodes are added (starts with k pre-existing, unconnected nodes)
         for source in self.node_list[self.k:]:
