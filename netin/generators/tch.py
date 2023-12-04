@@ -78,9 +78,7 @@ class TCH(GraphTC, Homophily):
         tuple
             probabilities of nodes to be selected as target nodes, and set of target of nodes
         """
-        probs = np.asarray(
-            [self.get_homophily_between_source_and_target(source, target) + const.EPSILON for target in target_list])
-        return probs / probs.sum(), target_list
+        return Homophily.get_target_probabilities(self=self, source=source, available_nodes=target_list, special_targets=special_targets)
 
     ############################################################
     # Calculations
