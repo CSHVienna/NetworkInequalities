@@ -97,7 +97,7 @@ class GraphTC(UnDiGraph, TriadicClosure):
         if tc_prob < self.tc and len(self._tc_candidates) > 0:
             if not self.tc_uniform:
                 # Triadic closure is uniform
-                return self.get_target_probabilities_regular(
+                return self.get_target_probabilities_tc(
                     source,
                     list(self._tc_candidates.keys()))
             return TriadicClosure\
@@ -105,6 +105,10 @@ class GraphTC(UnDiGraph, TriadicClosure):
 
         # Edge is added based on regular mechanism (not triadic closure)
         return self.get_target_probabilities_regular(source, available_nodes)
+
+    def get_target_probabilities_tc(self, source: int, target_list: List[int]) -> \
+            Tuple[np.ndarray, List[int]]:
+        return self.get_target_probabilities_regular(source, target_list)
 
     @abstractmethod
     def get_target_probabilities_regular(self, source: int, target_list: List[int]) -> \
