@@ -19,7 +19,8 @@ class TestUnDiGraph(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PA_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_patch_case_pah(self):
         n = 200
@@ -35,7 +36,8 @@ class TestUnDiGraph(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PAH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_case_patc(self):
         n = 200
@@ -50,7 +52,8 @@ class TestUnDiGraph(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATC_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_case_patch(self):
         n = 200
@@ -67,7 +70,8 @@ class TestUnDiGraph(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_case_all(self):
         n = 200

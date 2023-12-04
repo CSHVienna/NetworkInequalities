@@ -23,7 +23,8 @@ class TestPATCH(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_patch_case_2(self):
         n = 200
@@ -40,7 +41,8 @@ class TestPATCH(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_patch_case_3(self):
         n = 200
@@ -57,7 +59,8 @@ class TestPATCH(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_patch_case_4(self):
         n = 200
@@ -74,7 +77,8 @@ class TestPATCH(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_patch_case_5(self):
         n = 200
