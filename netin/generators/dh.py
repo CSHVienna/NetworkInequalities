@@ -75,8 +75,7 @@ class DH(DiGraph, Homophily):
         DiGraph.initialize(self, class_attribute, class_values, class_labels)
         Homophily.initialize(self, class_attribute, class_values, class_labels)
 
-    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int], np.array],
-                                 special_targets: Union[None, object, iter] = None) -> np.array:
+    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int], np.array]) -> np.array:
         """
         Returns the probabilities of the target nodes to be selected given a source node.
 
@@ -97,7 +96,7 @@ class DH(DiGraph, Homophily):
             probabilities of the target nodes to be selected
 
         """
-        probs, ts = Homophily.get_target_probabilities(self, source, available_nodes, special_targets)
+        probs, ts = Homophily.get_target_probabilities(self, source, available_nodes)
         return probs
 
     ############################################################

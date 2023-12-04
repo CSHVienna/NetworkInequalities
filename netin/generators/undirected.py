@@ -91,15 +91,12 @@ class UnDiGraph(Graph):
 
     def get_target(self,
                    source: int,
-                   available_nodes: list[int],
-                   special_targets: Union[None, object, iter]) -> int:
+                   available_nodes: list[int]) -> int:
         """
         Picks a random target node based on preferential attachment.
 
         Parameters
         ----------
-        special_targets : object
-            Special available_nodes to be considered
 
         source: int
             Newly added node
@@ -114,8 +111,15 @@ class UnDiGraph(Graph):
         """
         # Collect probabilities to connect to each node in available_nodes
         available_nodes = self.get_potential_nodes_to_connect(source, available_nodes)
-        probs, targets = self.get_target_probabilities(source, available_nodes, special_targets)
+        probs, targets = self.get_target_probabilities(source, available_nodes)
         return np.random.choice(a=targets, size=1, replace=False, p=probs)[0]
+
+    def _link_init_nodes(self):
+        for source in self.node_list[:self.k]:
+            for target in self.node_list[:self.k]:
+                if (source != target) and (target not in self[source]):
+                    self.add_edge(source, target)
+                    self.on_edge_added(source, target)
 
     def generate(self):
         """
@@ -136,21 +140,15 @@ class UnDiGraph(Graph):
         """
         # 1. Init an undirected graph and nodes (assign class labels)
         super().generate()
+        self._link_init_nodes()
 
         # 2. Iterate until n nodes are added (starts with k pre-existing, unconnected nodes)
         for source in self.node_list[self.k:]:
             available_nodes = np.arange(source).tolist()  # available_nodes via preferential attachment
-            special_targets = self.get_special_targets(source)
 
-            for idx_target in range(self.k):
+            for _ in range(self.k):
                 # Choose next target
-                target = self.get_target(source, available_nodes, special_targets)
-
-                special_targets = self.update_special_targets(idx_target,
-                                                              source,
-                                                              target,
-                                                              available_nodes,
-                                                              special_targets)
+                target = self.get_target(source, available_nodes)
 
                 # Finally add edge to undirected
                 self.add_edge(source, target)

@@ -1,12 +1,11 @@
 from collections import defaultdict
-from typing import Union
+from typing import List, Any, Tuple, Dict
 
 import numpy as np
 
 from netin.utils import constants as const
 from netin.utils import validator as val
 from .graph import Graph
-
 
 class TriadicClosure(Graph):
     """Class to model triadic closure as a mechanism of edge formation given a source and a target node.
@@ -22,9 +21,6 @@ class TriadicClosure(Graph):
     tc: float
         triadic closure probability (minimum=0, maximum=1)
 
-    tc_uniform: bool
-        specifies whether the triadic closure target is chosen uniform at random or if it follows the regular link formation mechanisms (e.g., homophily) (default=True)
-
     seed: object
         seed for random number generator
 
@@ -37,11 +33,12 @@ class TriadicClosure(Graph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, f_m: float, tc: float, tc_uniform: bool = False, seed: object = None):
+    def __init__(self, n: int, f_m: float, tc: float, seed: object = None):
         Graph.__init__(self, n=n, f_m=f_m, seed=seed)
         self.tc = tc
-        self.tc_uniform = tc_uniform
         self.model_name = const.TC_MODEL_NAME
+        self._tc_candidates = defaultdict(int)
+        self._node_source_curr = -1
 
     ############################################################
     # Init
@@ -54,7 +51,7 @@ class TriadicClosure(Graph):
         Graph.validate_parameters(self)
         val.validate_float(self.tc, minimum=0., maximum=1.)
 
-    def get_metadata_as_dict(self) -> dict:
+    def get_metadata_as_dict(self) -> Dict[str, Any]:
         """
         Returns the metadata (parameters) of the model as a dictionary.
 
@@ -65,8 +62,7 @@ class TriadicClosure(Graph):
         """
         obj = Graph.get_metadata_as_dict(self)
         obj.update({
-            'tc': self.tc,
-            'tc_uniform': self.tc_uniform
+            'tc': self.tc
         })
         return obj
 
@@ -74,7 +70,7 @@ class TriadicClosure(Graph):
     # Getters & Setters
     ############################################################
 
-    def set_triadic_closure(self, tc):
+    def set_triadic_closure(self, tc: float):
         """
         Sets the triadic closure probability `tc`.
 
@@ -83,6 +79,8 @@ class TriadicClosure(Graph):
         tc: float
             triadic closure probability (minimum=0, maximum=1)
         """
+        assert 0. <= tc <= 1.,\
+               f"Triadic closure probability should be between 0. and 1. but is {tc}"
         self.tc = tc
 
     def get_triadic_closure(self) -> float:
@@ -100,7 +98,10 @@ class TriadicClosure(Graph):
     # Generation
     ############################################################
 
-    def initialize(self, class_attribute: str = 'm', class_values: list = None, class_labels: list = None):
+    def initialize(self,
+                   class_attribute: str = 'm',
+                   class_values: List[Any] = None,
+                   class_labels: List[str] = None):
         """
         Initializes the model.
 
@@ -117,7 +118,7 @@ class TriadicClosure(Graph):
         """
         Graph.initialize(self, class_attribute, class_values, class_labels)
 
-    def get_special_targets(self, source: int) -> object:
+    def init_special_targets(self, source: int) -> object:
         """
         Returns an empty dictionary (source node ids)
 
@@ -131,98 +132,33 @@ class TriadicClosure(Graph):
         object
             Return an empty dictionary (source node ids)
         """
-        return defaultdict(int)
-
-    def get_target_probabilities_regular(self, source: int,
-                                         target_list: list[int],
-                                         special_targets: Union[None, object, iter] = None) -> \
-            tuple[np.array, list[int]]:
-        """
-        If the edge is not added by triadic closure, then the edge is added based on the regular mechanism
-        (e.g., random).
-
-        Parameters
-        ----------
-        source
-        target_list
-        special_targets
-
-        Returns
-        -------
-
-        """
-        # TODO: consider uncommenting line below (anyway overridden by the method in the child class) or delete
-        # return Graph.get_target_probabilities(self, source, available_nodes, special_targets)
-        pass
+        self._node_source_curr = source
+        self._tc_candidates = defaultdict(int)
 
     def get_target_probabilities(self, source: int,
-                                 available_nodes: list[int],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
-        """
-        Returns the probabilities of selecting a target node from a set of nodes based on triadic closure,
-        or a regular mechanism.
+                                 available_nodes: List[int]) -> Tuple[np.array, List[int]]:
+        """Returns the probabilities of selecting a target node from a set of nodes based on triadic closure, or a regular mechanism,
 
         Parameters
         ----------
-        source: int
+        source : int
             source node
-
-        available_nodes: set[int]
-            set of target nodes
-
-        special_targets: object
-            special available_nodes
+        available_nodes : List[int]
+            list of available target nodes
 
         Returns
         -------
-        tuple[np.array, set[int]]
-            probabilities of selecting a target node from a set of nodes, and the set of target nodes`
+        Tuple[np.array, List[int]]
+            Tuple of two equally sizes lists.
+            The first list contains the probabilities and the second list the available nodes.
         """
-        tc_prob = np.random.random()
+        # Triadic closure is not uniform (biased towards common neighbors)
+        available_nodes, probs = zip(*list(self._tc_candidates.items()))
+        probs = np.array(probs).astype(np.float32)
+        probs /= probs.sum()
+        return probs, available_nodes
 
-        if tc_prob < self.tc and len(special_targets) > 0:
-            # Edge is added based on triadic closure
-            if not self.tc_uniform:
-                # Triadic closure is uniform
-                return self.get_target_probabilities_regular(source, list(special_targets.keys()))
-            # Triadic closure is not uniform (biased towards common neighbors)
-            available_nodes, probs = zip(*[(t, w) for t, w in special_targets.items()])
-            probs = np.array(probs).astype(np.float32)
-            probs /= probs.sum()
-            return probs, available_nodes
-
-        # Edge is added based on regular mechanism (not triadic closure)
-        return self.get_target_probabilities_regular(source, available_nodes, special_targets)
-
-    def get_target(self, source: int,
-                   available_nodes: list[int],
-                   special_targets: Union[None, object, iter]) -> int:
-        """
-        Picks a random target node based on the homophily/preferential attachment dynamic.
-
-        Parameters
-        ----------
-        source: int
-            Newly added node
-
-        available_nodes: Set[int]
-            Potential target nodes in the graph
-
-        special_targets: object
-            Special target nodes
-
-        Returns
-        -------
-            int
-                Target node that an edge should be created from `source`
-        """
-        # Collect probabilities to connect to each node in available_nodes
-        target_set = self.get_potential_nodes_to_connect(source, available_nodes)
-        probs = self.get_target_probabilities(source, target_set, special_targets)
-        return np.random.choice(a=target_set, size=1, replace=False, p=probs)[0]
-
-    def update_special_targets(self, idx_target: int, source: int, target: int, available_nodes: list[int],
-                               special_targets: object) -> object:
+    def on_edge_added(self, source: int, target: int):
         """
         Updates the set of special available_nodes based on the triadic closure mechanism.
         When an edge is created, multiple potential triadic closures emerge (i.e., two-hop neighbors that are not yet
@@ -239,31 +175,26 @@ class TriadicClosure(Graph):
         target: int
             target node
 
-        available_nodes: Set[int]
-            set of target nodes
+        available_nodes: List[int]
+            list of target nodes
 
-        special_targets: object
+        special_targets: Union[None, Dict[int, int]]
             special available_nodes
 
         Returns
         -------
-        object
+         Union[None, Dict[int, int]
             updated special available_nodes
         """
-        if idx_target < self.k - 1:
-            # Remove target candidates of source
-            available_nodes.remove(target)
-            if target in special_targets:
-                del(special_targets[target])  # Remove target from TC candidates
-
-            # Incr. occurrence counter for friends of new friend
-            for neighbor in self.neighbors(target):
-                # G[source] gives direct access (O(1)) to source's neighbors
-                # G.neighbors(source) returns an iterator which would
-                # need to be searched iteratively
-                if neighbor not in self[source]:
-                    special_targets[neighbor] += 1
-        return special_targets
+        if target in self._tc_candidates:
+            del self._tc_candidates[target]
+        for neighbor in self.neighbors(target):
+            # G[source] gives direct access (O(1)) to source's neighbors
+            # G.neighbors(source) returns an iterator which would
+            # need to be searched iteratively
+            if neighbor not in self[source]:
+                self._tc_candidates[neighbor] += 1
+        return super().on_edge_added(source, target)
 
     ############################################################
     # Calculations
@@ -274,7 +205,6 @@ class TriadicClosure(Graph):
         Shows the parameters of the model.
         """
         print('tc: {}'.format(self.tc))
-        print('tc_uniform: {}'.format(self.tc_uniform))
 
     def info_computed(self):
         """

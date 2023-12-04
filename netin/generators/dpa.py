@@ -67,8 +67,7 @@ class DPA(DiGraph):
         """
         return self.in_degrees[n]
 
-    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int], np.array],
-                                 special_targets: Union[None, object, iter] = None) -> np.array:
+    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int], np.array]) -> np.array:
         """
         Returns the probabilities for each target node in `available_nodes` to be selected as target node
         given source node `source`.
@@ -80,9 +79,6 @@ class DPA(DiGraph):
 
         available_nodes: Set[int]
             set of target node ids
-
-        special_targets: object
-            special available_nodes
 
         Returns
         -------

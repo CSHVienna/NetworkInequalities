@@ -2,13 +2,12 @@ from typing import Union
 
 import numpy as np
 
-from netin.generators.undirected import UnDiGraph
 from netin.generators.h import Homophily
-from netin.generators.tc import TriadicClosure
 from netin.utils import constants as const
 
+from .g_tc import GraphTC
 
-class TCH(UnDiGraph, Homophily, TriadicClosure):
+class TCH(GraphTC, Homophily):
     """Creates a new TCH graph. An undirected graph with homophily and triadic closure as link formation mechanisms.
 
     Parameters
@@ -50,41 +49,14 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
 
     def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, tc_uniform: bool = True,
                  seed: object = None):
-        UnDiGraph.__init__(self, n, k, f_m, seed)
+        GraphTC.__init__(self, n=n, k=k, f_m=f_m, tc=tc, tc_uniform=tc_uniform, seed=seed)
         Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
-        TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, tc_uniform=tc_uniform, seed=seed)
         self.model_name = const.TCH_MODEL_NAME
 
     ############################################################
     # Generation
     ############################################################
-
-    def get_target_probabilities(self, source: int, available_nodes: list[int],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
-        """
-        Returns the probabilities of nodes to be selected as target nodes.
-
-        Parameters
-        ----------
-        source: int
-            source node id
-
-        available_nodes: set
-            set of target node ids
-
-        special_targets: dict
-            dictionary of special target node ids to be considered
-
-        Returns
-        -------
-        tuple
-            probabilities of nodes to be selected as target nodes, and set of target of nodes
-
-        """
-        return TriadicClosure.get_target_probabilities(self, source, available_nodes, special_targets)
-
-    def get_target_probabilities_regular(self, source: int, target_list: list[int],
-                                         special_targets: Union[None, object, iter] = None) -> \
+    def get_target_probabilities_regular(self, source: int, target_list: list[int]) -> \
             tuple[np.ndarray, list[int]]:
         """
         Returns the probability of nodes to be selected as target nodes using the homophily mechanism.
@@ -105,25 +77,7 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
         tuple
             probabilities of nodes to be selected as target nodes, and set of target of nodes
         """
-        probs = np.asarray(
-            [self.get_homophily_between_source_and_target(source, target) + const.EPSILON for target in target_list])
-        return probs / probs.sum(), target_list
-
-    def get_special_targets(self, source: int) -> object:
-        """
-        Returns an empty dictionary (source node ids)
-
-        Parameters
-        ----------
-        source : int
-            Newly added node
-
-        Returns
-        -------
-        Dict
-            Empty dictionary
-        """
-        return TriadicClosure.get_special_targets(self, source)
+        return Homophily.get_target_probabilities(self=self, source=source, available_nodes=target_list)
 
     ############################################################
     # Calculations
@@ -134,25 +88,14 @@ class TCH(UnDiGraph, Homophily, TriadicClosure):
         Shows the (input) parameters of the graph.
         """
         Homophily.info_params(self)
-        TriadicClosure.info_params(self)
+        GraphTC.info_params(self)
 
     def info_computed(self):
         """
         Shows the (computed) properties of the graph.
         """
         Homophily.info_computed(self)
-        TriadicClosure.info_computed(self)
-
-    def infer_homophily_values(self) -> tuple[float, float]:
-        """
-        Infers analytically the homophily values of the graph.
-        @TODO: This still needs to be implemented.
-        Returns
-        -------
-        tuple
-            homophily values of the graph (majority, minority)
-        """
-        raise NotImplementedError("Inferring homophily not implemented yet.")
+        GraphTC.info_computed(self)
 
     def infer_triadic_closure(self) -> float:
         """

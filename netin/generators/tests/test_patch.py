@@ -1,5 +1,7 @@
 import pytest
 
+import networkx as nx
+
 from netin import PATCH
 from netin.utils import constants as const
 
@@ -21,7 +23,8 @@ class TestPATCH(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_patch_case_2(self):
         n = 200
@@ -38,7 +41,8 @@ class TestPATCH(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_patch_case_3(self):
         n = 200
@@ -55,7 +59,8 @@ class TestPATCH(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_patch_case_4(self):
         n = 200
@@ -72,7 +77,8 @@ class TestPATCH(object):
         c3 = g.calculate_minimum_degree() == k
         c4 = g.calculate_fraction_of_minority() == f_m
         c5 = g.model_name == const.PATCH_MODEL_NAME
-        assert c1 and c2 and c3 and c4 and c5, "Incorrect undirected parameters."
+        c6 = sum(k for _, k in g.degree()) == ((k*(k-1)) + ((n-k)*k*2))
+        assert c1 and c2 and c3 and c4 and c5 and c6, "Incorrect undirected parameters."
 
     def test_patch_case_5(self):
         n = 200
@@ -100,3 +106,21 @@ class TestPATCH(object):
         seed = 1234
         with pytest.raises(TypeError, match="missing 3 required positional arguments: 'h_mm', 'h_MM', and 'tc'"):
             _ = PATCH(n=n, k=k, f_m=f_m, seed=seed)
+
+    def test_patch_ccf_increase(self):
+        """Test that increasing TC probabilities lead to higher clustering coefficients.
+        """
+        n = 200
+        k = 2
+        f_m = 0.1
+        seed = 1234
+        h = .5
+        tc = [0., .25, .5, .75, 1.]
+
+        l_g = [PATCH(n=n, k=k, f_m=f_m, seed=seed, tc=p_tc, h_MM=h, h_mm=h) for p_tc in tc]
+        l_ccf = []
+        for g in l_g:
+            g.generate()
+            l_ccf.append(nx.average_clustering(g))
+
+        assert(all(l_ccf[i] > l_ccf[i-1] for i in range(1, len(l_ccf))))

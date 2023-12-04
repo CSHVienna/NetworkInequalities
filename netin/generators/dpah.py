@@ -76,8 +76,7 @@ class DPAH(DPA, Homophily):
         DPA.initialize(self, class_attribute, class_values, class_labels)
         Homophily.initialize(self, class_attribute, class_values, class_labels)
 
-    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int]],
-                                 special_targets: Union[None, object, iter] = None) -> np.array:
+    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int]]) -> np.array:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on
         preferential attachment and homophily, i.e., in-degree or target and homophily between source and target.
@@ -89,9 +88,6 @@ class DPAH(DPA, Homophily):
 
         available_nodes: Set[int]
             set of target nodes
-
-        special_targets: object
-            special available_nodes
 
         Returns
         -------

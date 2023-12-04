@@ -1,7 +1,7 @@
 import time
 import warnings
 from collections import Counter
-from typing import Union, Iterable, Any
+from typing import Union, Iterable, Any, Dict
 
 import networkx as nx
 import numpy as np
@@ -555,9 +555,6 @@ class Graph(nx.Graph):
         self.add_nodes_from(self.node_list)
         nx.set_node_attributes(self, self.node_class_values, self.class_attribute)
 
-    def get_special_targets(self, source: int) -> object:
-        pass
-
     def get_potential_nodes_to_connect(self, source: int,
                                        available_nodes: list[int]) -> list[int]:
         """
@@ -580,8 +577,7 @@ class Graph(nx.Graph):
         return [t for t in available_nodes if t != source and t not in nx.neighbors(self, source)]
 
     def get_target_probabilities(self, source: int,
-                                 available_nodes: list[int],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
+                                 available_nodes: list[int] = None) -> tuple[np.array, list[int]]:
         """
         Returns the probability for each target node to be connected to the source node.
 
@@ -592,10 +588,6 @@ class Graph(nx.Graph):
 
         available_nodes:
             list of target node ids
-
-        special_targets:
-            special available_nodes to be considered (not used here)
-
 
         Notes
         -----
@@ -616,14 +608,7 @@ class Graph(nx.Graph):
         return probs, available_nodes
 
     def get_target(self, source: int,
-                   available_nodes: list[int],
-                   special_targets: Union[None, object, iter]) -> int:
-        pass
-
-    def update_special_targets(self, idx_target: int,
-                               source: int, target: int,
-                               available_nodes: list[int],
-                               special_targets: Union[None, object, iter]):
+                   available_nodes: list[int]) -> int:
         pass
 
     def on_edge_added(self, source: int, target: int):
