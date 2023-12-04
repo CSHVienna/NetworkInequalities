@@ -80,7 +80,7 @@ class TCH(GraphTC, Homophily):
         return Homophily.get_target_probabilities(self=self, source=source, available_nodes=target_list)
 
     def initialize(self, class_attribute: str = 'm', class_values: List[Any] = None, class_labels: List[str] = None):
-        return Homophily.initialize(class_attribute, class_values, class_labels)
+        return Homophily.initialize(self, class_attribute, class_values, class_labels)
 
     ############################################################
     # Calculations
