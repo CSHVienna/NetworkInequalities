@@ -71,8 +71,7 @@ class GraphTC(UnDiGraph, TriadicClosure):
     # Generation
     ############################################################
 
-    def get_target_probabilities(self, source: int, available_nodes: List[int],
-                                 special_targets: Union[None, Dict[int, float]] = None) -> Tuple[np.array, List[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: List[int]) -> Tuple[np.array, List[int]]:
         """
         Returns the probabilities of nodes to be selected as target nodes.
 
@@ -84,9 +83,6 @@ class GraphTC(UnDiGraph, TriadicClosure):
         available_nodes: List[int]
             list of available nodes to connect to
 
-        special_targets: Union[None, Dict[int, float]]
-            if present, it should be a map of a special selection of targets and their weight
-
         Returns
         -------
         Tuple[np.ndarray, List[int]]
@@ -95,39 +91,25 @@ class GraphTC(UnDiGraph, TriadicClosure):
         """
         tc_prob = np.random.random()
 
-        if tc_prob < self.tc and len(special_targets) > 0:
+        if source != self._node_source_curr:
+            self.init_special_targets(source)
+
+        if tc_prob < self.tc and len(self._tc_candidates) > 0:
             if not self.tc_uniform:
                 # Triadic closure is uniform
                 return self.get_target_probabilities_regular(
                     source,
-                    list(special_targets.keys()))
+                    list(self._tc_candidates.keys()))
             return TriadicClosure\
-                .get_target_probabilities(self, source, available_nodes, special_targets)
+                .get_target_probabilities(self, source, available_nodes)
 
         # Edge is added based on regular mechanism (not triadic closure)
-        return self.get_target_probabilities_regular(source, available_nodes, special_targets)
+        return self.get_target_probabilities_regular(source, available_nodes)
 
     @abstractmethod
-    def get_target_probabilities_regular(self, source: int, target_list: List[int],
-                                         special_targets: Union[None, Dict[int, float]] = None) -> \
+    def get_target_probabilities_regular(self, source: int, target_list: List[int]) -> \
             Tuple[np.ndarray, List[int]]:
         raise NotImplementedError
-
-    def get_special_targets(self, source: int) -> object:
-        """
-        Returns selection of special targets
-
-        Parameters
-        ----------
-        source : int
-            Newly added node
-
-        Returns
-        -------
-        Dict
-            Empty dictionary
-        """
-        return TriadicClosure.get_special_targets(self, source)
 
     ############################################################
     # Calculations

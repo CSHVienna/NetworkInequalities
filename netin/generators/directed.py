@@ -148,10 +148,6 @@ class DiGraph(nx.DiGraph, Graph):
         """
         return np.random.choice(a=np.arange(self.n), size=self.expected_number_of_edges, replace=True, p=self.activity)
 
-    def get_target_probabilities(self, source: int, available_nodes: Union[None, list[int], np.array],
-                                 special_targets: Union[None, object, iter] = None) -> np.array:
-        pass
-
     def get_target(self, source: int, edge_list: dict, **kwargs) -> Union[None, int]:
         """
         Returns a target node for a given source node.

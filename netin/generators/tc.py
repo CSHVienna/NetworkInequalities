@@ -1,5 +1,4 @@
 from collections import defaultdict
-from typing import Union
 from typing import List, Any, Tuple, Dict
 
 import numpy as np
@@ -38,6 +37,8 @@ class TriadicClosure(Graph):
         Graph.__init__(self, n=n, f_m=f_m, seed=seed)
         self.tc = tc
         self.model_name = const.TC_MODEL_NAME
+        self._tc_candidates = defaultdict(int)
+        self._node_source_curr = -1
 
     ############################################################
     # Init
@@ -117,7 +118,7 @@ class TriadicClosure(Graph):
         """
         Graph.initialize(self, class_attribute, class_values, class_labels)
 
-    def get_special_targets(self, source: int) -> object:
+    def init_special_targets(self, source: int) -> object:
         """
         Returns an empty dictionary (source node ids)
 
@@ -131,11 +132,11 @@ class TriadicClosure(Graph):
         object
             Return an empty dictionary (source node ids)
         """
-        return defaultdict(int)
+        self._node_source_curr = source
+        self._tc_candidates = defaultdict(int)
 
     def get_target_probabilities(self, source: int,
-                                 available_nodes: List[int],
-                                 special_targets: Union[None, Dict[int, float]] = None) -> Tuple[np.array, List[int]]:
+                                 available_nodes: List[int]) -> Tuple[np.array, List[int]]:
         """Returns the probabilities of selecting a target node from a set of nodes based on triadic closure, or a regular mechanism,
 
         Parameters
@@ -144,8 +145,6 @@ class TriadicClosure(Graph):
             source node
         available_nodes : List[int]
             list of available target nodes
-        special_targets : Union[None, Dict[int, float]], optional
-            List of limited target nodes, by default None
 
         Returns
         -------
@@ -154,16 +153,12 @@ class TriadicClosure(Graph):
             The first list contains the probabilities and the second list the available nodes.
         """
         # Triadic closure is not uniform (biased towards common neighbors)
-        available_nodes, probs = zip(*list(special_targets.items()))
+        available_nodes, probs = zip(*list(self._tc_candidates.items()))
         probs = np.array(probs).astype(np.float32)
         probs /= probs.sum()
         return probs, available_nodes
 
-    def update_special_targets(self,
-                               idx_target: int,
-                               source: int, target: int,
-                               available_nodes: List[int],
-                               special_targets: Union[None, Dict[int, int]]) -> Union[None, Dict[int, int]]:
+    def on_edge_added(self, source: int, target: int):
         """
         Updates the set of special available_nodes based on the triadic closure mechanism.
         When an edge is created, multiple potential triadic closures emerge (i.e., two-hop neighbors that are not yet
@@ -191,20 +186,15 @@ class TriadicClosure(Graph):
          Union[None, Dict[int, int]
             updated special available_nodes
         """
-        if idx_target < self.k - 1:
-            # Remove target candidates of source
-            available_nodes.remove(target)
-            if target in special_targets:
-                del(special_targets[target])  # Remove target from TC candidates
-
-            # Incr. occurrence counter for friends of new friend
-            for neighbor in self.neighbors(target):
-                # G[source] gives direct access (O(1)) to source's neighbors
-                # G.neighbors(source) returns an iterator which would
-                # need to be searched iteratively
-                if neighbor not in self[source]:
-                    special_targets[neighbor] += 1
-        return special_targets
+        if target in self._tc_candidates:
+            del self._tc_candidates[target]
+        for neighbor in self.neighbors(target):
+            # G[source] gives direct access (O(1)) to source's neighbors
+            # G.neighbors(source) returns an iterator which would
+            # need to be searched iteratively
+            if neighbor not in self[source]:
+                self._tc_candidates[neighbor] += 1
+        return super().on_edge_added(source, target)
 
     ############################################################
     # Calculations

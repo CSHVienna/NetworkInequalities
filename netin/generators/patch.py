@@ -82,8 +82,7 @@ class PATCH(GraphTC, PAH):
     # Generation
     ############################################################
     def get_target_probabilities_regular(self, source: int,
-                                         target_list: List[int],
-                                         special_targets: Union[None, Dict[int, float]] = None) -> Tuple[np.ndarray, List[int]]:
+                                         target_list: List[int]) -> Tuple[np.ndarray, List[int]]:
         """
         Returns the probability of nodes to be selected as target nodes using the
         preferential attachment with homophily mechanism.
@@ -104,7 +103,10 @@ class PATCH(GraphTC, PAH):
         tuple
             probabilities of nodes to be selected as target nodes, and set of target of nodes
         """
-        return PAH.get_target_probabilities(self, source, target_list, special_targets)
+        return PAH.get_target_probabilities(self, source, target_list)
+
+    def get_target_probabilities(self, source: int, available_nodes: List[int]) -> Tuple[Any, List[int]]:
+        return GraphTC.get_target_probabilities(self, source, available_nodes)
 
     ############################################################
     # Calculations

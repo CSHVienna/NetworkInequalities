@@ -42,8 +42,7 @@ class PA(UnDiGraph):
     # Generation
     ############################################################
 
-    def get_target_probabilities(self, source: int, available_nodes: list[int],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: list[int]) -> tuple[np.array, list[int]]:
         """
         Returns the probabilities of the target nodes to be selected given a source node.
         This probability is proportional to the degree of the target node.

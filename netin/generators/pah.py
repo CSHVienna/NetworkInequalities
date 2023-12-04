@@ -1,11 +1,8 @@
-from typing import Union
-
 import numpy as np
 from sympy import Eq
 from sympy import solve
 from sympy import symbols
 
-import netin
 from netin.generators.h import Homophily
 from netin.utils import constants as const
 from .pa import PA
@@ -97,8 +94,7 @@ class PAH(PA, Homophily):
         PA.initialize(self, class_attribute, class_values, class_labels)
         Homophily.initialize(self, class_attribute, class_values, class_labels)
 
-    def get_target_probabilities(self, source: int, available_nodes: list[int],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: list[int]) -> tuple[np.array, list[int]]:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on the preferential attachment
         and homophily.

@@ -160,8 +160,7 @@ class Homophily(Graph):
         self.h_mm = val.calibrate_null_probabilities(self.h_mm)
         self.mixing_matrix = np.array([[self.h_MM, 1 - self.h_MM], [1 - self.h_mm, self.h_mm]])
 
-    def get_target_probabilities(self, source: int, available_nodes: Union[list[int], np.array],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
+    def get_target_probabilities(self, source: int, available_nodes: Union[list[int], np.array]) -> tuple[np.array, list[int]]:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on homophily.
         Homophily is inferred from the mixing matrix.
@@ -208,7 +207,7 @@ class Homophily(Graph):
         """
         # Collect probabilities to connect to each node in available_nodes
         available_nodes = self.get_potential_nodes_to_connect(source, available_nodes)
-        probs, target_list = self.get_target_probabilities(source, available_nodes, special_targets)
+        probs, target_list = self.get_target_probabilities(source, available_nodes)
         return np.random.choice(a=target_list, size=1, replace=False, p=probs)[0]
 
     ############################################################

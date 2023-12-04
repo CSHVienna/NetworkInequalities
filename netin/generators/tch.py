@@ -56,8 +56,7 @@ class TCH(GraphTC, Homophily):
     ############################################################
     # Generation
     ############################################################
-    def get_target_probabilities_regular(self, source: int, target_list: list[int],
-                                         special_targets: Union[None, object, iter] = None) -> \
+    def get_target_probabilities_regular(self, source: int, target_list: list[int]) -> \
             tuple[np.ndarray, list[int]]:
         """
         Returns the probability of nodes to be selected as target nodes using the homophily mechanism.
@@ -78,7 +77,7 @@ class TCH(GraphTC, Homophily):
         tuple
             probabilities of nodes to be selected as target nodes, and set of target of nodes
         """
-        return Homophily.get_target_probabilities(self=self, source=source, available_nodes=target_list, special_targets=special_targets)
+        return Homophily.get_target_probabilities(self=self, source=source, available_nodes=target_list)
 
     ############################################################
     # Calculations

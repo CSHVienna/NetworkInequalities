@@ -81,8 +81,7 @@ class PATC(GraphTC, PA):
         GraphTC.info_params(self)
 
     def get_target_probabilities_regular(self, source: int,
-                                         target_list: List[int],
-                                         special_targets: Union[None, Dict[int, float]] = None) -> \
+                                         target_list: List[int]) -> \
             Tuple[np.array, List[int]]:
         """
         Returns the probabilities of selecting a target node from a set of nodes based on the preferential attachment.
@@ -107,7 +106,7 @@ class PATC(GraphTC, PA):
         --------
         :py:meth:`get_target_probabilities() <PA.get_target_probabilities>` in :class:`netin.PA`.
         """
-        return PA.get_target_probabilities(self, source, target_list, special_targets)
+        return PA.get_target_probabilities(self, source, target_list)
 
     ############################################################
     # Calculations
