@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Any, List, Union
 
 import numpy as np
 
@@ -78,6 +78,9 @@ class TCH(GraphTC, Homophily):
             probabilities of nodes to be selected as target nodes, and set of target of nodes
         """
         return Homophily.get_target_probabilities(self=self, source=source, available_nodes=target_list)
+
+    def initialize(self, class_attribute: str = 'm', class_values: List[Any] = None, class_labels: List[str] = None):
+        return Homophily.initialize(class_attribute, class_values, class_labels)
 
     ############################################################
     # Calculations
