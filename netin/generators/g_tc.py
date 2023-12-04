@@ -1,14 +1,16 @@
-from typing import Union
+
+from abc import abstractmethod
+from typing import Union, Dict, Any
 
 import numpy as np
 
-from netin.generators.h import Homophily
+from netin.generators.undirected import UnDiGraph
+from netin.generators.tc import TriadicClosure
 from netin.utils import constants as const
 
-from .g_tc import GraphTC
 
-class TCH(GraphTC, Homophily):
-    """Creates a new TCH graph. An undirected graph with homophily and triadic closure as link formation mechanisms.
+class GraphTC(UnDiGraph, TriadicClosure):
+    """Abstract base class for undirected triadic closure graphs.
 
     Parameters
     ----------
@@ -21,12 +23,6 @@ class TCH(GraphTC, Homophily):
     f_m: float
         fraction of minorities (minimum=1/n, maximum=(n-1)/n)
 
-    h_MM: float
-        homophily (similarity) between majority nodes (minimum=0, maximum=1.)
-
-    h_mm: float
-        homophily (similarity) between minority nodes (minimum=0, maximum=1.)
-
     tc: float
         probability of a new edge to close a triad (minimum=0, maximum=1.)
 
@@ -37,7 +33,7 @@ class TCH(GraphTC, Homophily):
     -----
     The initialization is an undirected graph with n nodes and no edges.
     Then, everytime a node is selected as source, it gets connected to k target nodes.
-    Target nodes are selected via homophily (h_**; see :class:`netin.Homophily`) [Karimi2018]_ with probability ``1-p_{TC}``,
+    Target nodes are selected via any link formation mechanism (to be implemented in sub-classes) with probability ``1-p_{TC}``,
     and with probability ``p_{TC}`` via triadic closure (see :class:`netin.TriadicClosure`) [HolmeKim2002]_.
 
     Note that this model is still work in progress and not fully implemented yet.
@@ -47,27 +43,43 @@ class TCH(GraphTC, Homophily):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, tc_uniform: bool = True,
+    def __init__(self, n: int, k: int, f_m: float, tc: float, tc_uniform: bool = True,
                  seed: object = None):
-        GraphTC.__init__(self, n=n, k=k, f_m=f_m, tc=tc, tc_uniform=tc_uniform, seed=seed)
-        Homophily.__init__(self, n=n, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
+        UnDiGraph.__init__(self, n, k, f_m, seed)
+        TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
+        self.tc_uniform = tc_uniform
         self.model_name = const.TCH_MODEL_NAME
+
+    def get_metadata_as_dict(self) -> Dict[str, Any]:
+        """
+        Returns the metadata (parameters) of the model as a dictionary.
+
+        Returns
+        -------
+        dict
+            metadata of the model
+        """
+        obj = UnDiGraph.get_metadata_as_dict(self)
+        obj.update({
+            'tc_uniform': self.tc_uniform
+        })
+        return obj
 
     ############################################################
     # Generation
     ############################################################
-    def get_target_probabilities_regular(self, source: int, target_list: list[int],
-                                         special_targets: Union[None, object, iter] = None) -> \
-            tuple[np.ndarray, list[int]]:
+
+    def get_target_probabilities(self, source: int, available_nodes: list[int],
+                                 special_targets: Union[None, Dict[int, float]] = None) -> tuple[np.array, list[int]]:
         """
-        Returns the probability of nodes to be selected as target nodes using the homophily mechanism.
+        Returns the probabilities of nodes to be selected as target nodes.
 
         Parameters
         ----------
         source: int
             source node id
 
-        target_list: set
+        available_nodes: set
             set of target node ids
 
         special_targets: dict
@@ -77,10 +89,43 @@ class TCH(GraphTC, Homophily):
         -------
         tuple
             probabilities of nodes to be selected as target nodes, and set of target of nodes
+
         """
-        probs = np.asarray(
-            [self.get_homophily_between_source_and_target(source, target) + const.EPSILON for target in target_list])
-        return probs / probs.sum(), target_list
+        tc_prob = np.random.random()
+
+        if tc_prob < self.tc and len(special_targets) > 0:
+            if not self.tc_uniform:
+                # Triadic closure is uniform
+                return self.get_target_probabilities_regular(
+                    source,
+                    list(special_targets.keys()))
+            return TriadicClosure\
+                .get_target_probabilities(self, source, available_nodes, special_targets)
+
+        # Edge is added based on regular mechanism (not triadic closure)
+        return self.get_target_probabilities_regular(source, available_nodes, special_targets)
+
+    @abstractmethod
+    def get_target_probabilities_regular(self, source: int, target_list: list[int],
+                                         special_targets: Union[None, object, iter] = None) -> \
+            tuple[np.ndarray, list[int]]:
+        raise NotImplementedError
+
+    def get_special_targets(self, source: int) -> object:
+        """
+        Returns an empty dictionary (source node ids)
+
+        Parameters
+        ----------
+        source : int
+            Newly added node
+
+        Returns
+        -------
+        Dict
+            Empty dictionary
+        """
+        return TriadicClosure.get_special_targets(self, source)
 
     ############################################################
     # Calculations
@@ -90,15 +135,15 @@ class TCH(GraphTC, Homophily):
         """
         Shows the (input) parameters of the graph.
         """
-        Homophily.info_params(self)
-        GraphTC.info_params(self)
+        print('tc_uniform: {}'.format(self.tc_uniform))
+        TriadicClosure.info_params(self)
 
     def info_computed(self):
         """
         Shows the (computed) properties of the graph.
         """
-        Homophily.info_computed(self)
-        GraphTC.info_computed(self)
+        TriadicClosure.info_computed(self)
+
 
     def infer_triadic_closure(self) -> float:
         """
@@ -119,6 +164,4 @@ class TCH(GraphTC, Homophily):
                               k=self.k,
                               f_m=self.f_m,
                               tc=self.tc,
-                              h_MM=self.h_MM,
-                              h_mm=self.h_mm,
                               seed=self.seed)

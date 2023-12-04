@@ -2,12 +2,12 @@ from typing import Union
 
 import numpy as np
 
-from netin.generators.tc import TriadicClosure
 from netin.utils import constants as const
 from .pah import PAH
+from .g_tc import GraphTC
 
 
-class PATCH(PAH, TriadicClosure):
+class PATCH(GraphTC, PAH):
     """Creates a new PATCH instance. An undirected graph with preferential attachment, homophily, and triadic closure.
 
     Parameters
@@ -39,7 +39,7 @@ class PATCH(PAH, TriadicClosure):
     Then, everytime a node is selected as source, it gets connected to k target nodes.
     Target nodes are selected via preferential attachment (in-degree) [BarabasiAlbert1999]_ and
     homophily (h_**; see :class:`netin.Homophily`) [Karimi2018]_ with probability ``1-p_{TC}``,
-    and with probability ``p_{TC}`` via triadic closure (see :class:`netin.TriadicClosure`) [HolmeKim2002]_.
+    and with probability ``p_{TC}`` via triadic closure (see :class:`netin.GraphTC`) [HolmeKim2002]_.
 
     Note that this model is still work in progress and not fully implemented yet.
     """
@@ -50,7 +50,7 @@ class PATCH(PAH, TriadicClosure):
 
     def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, tc_uniform: bool = True, seed: object = None):
         PAH.__init__(self, n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
-        TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, tc_uniform=tc_uniform, seed=seed)
+        GraphTC.__init__(self, n=n, k=k, f_m=f_m, tc=tc, tc_uniform=tc_uniform, seed=seed)
         self.model_name = const.PATCH_MODEL_NAME
 
     ############################################################
@@ -62,7 +62,7 @@ class PATCH(PAH, TriadicClosure):
         Validates the parameters of the undirected.
         """
         PAH.validate_parameters(self)
-        TriadicClosure.validate_parameters(self)
+        GraphTC.validate_parameters(self)
 
     def get_metadata_as_dict(self) -> dict:
         """
@@ -74,39 +74,13 @@ class PATCH(PAH, TriadicClosure):
             the graph  metadata as a dictionary
         """
         obj1 = PAH.get_metadata_as_dict(self)
-        obj2 = TriadicClosure.get_metadata_as_dict(self)
+        obj2 = GraphTC.get_metadata_as_dict(self)
         obj1.update(obj2)
         return obj1
 
     ############################################################
     # Generation
     ############################################################
-
-    def get_target_probabilities(self, source: int,
-                                 available_nodes: list[int],
-                                 special_targets: Union[None, object, iter] = None) -> tuple[np.array, list[int]]:
-        """
-        Returns the probabilities of nodes to be selected as target nodes.
-
-        Parameters
-        ----------
-        source: int
-            source node id
-
-        available_nodes: set
-            set of target node ids
-
-        special_targets: dict
-            dictionary of special target node ids to be considered
-
-        Returns
-        -------
-        tuple
-            probabilities of nodes to be selected as target nodes, and set of target of nodes
-
-        """
-        return TriadicClosure.get_target_probabilities(self, source, available_nodes, special_targets)
-
     def get_target_probabilities_regular(self, source: int,
                                          available_nodes: list[int],
                                          special_targets: Union[None, object, iter] = None) -> tuple[np.ndarray, list[int]]:
@@ -132,22 +106,6 @@ class PATCH(PAH, TriadicClosure):
         """
         return PAH.get_target_probabilities(self, source, available_nodes, special_targets)
 
-    def get_special_targets(self, source: int) -> object:
-        """
-        Returns an empty dictionary (source node ids)
-
-        Parameters
-        ----------
-        source : int
-            Newly added node
-
-        Returns
-        -------
-        Dict
-            Empty dictionary
-        """
-        return TriadicClosure.get_special_targets(self, source)
-
     ############################################################
     # Calculations
     ############################################################
@@ -157,14 +115,14 @@ class PATCH(PAH, TriadicClosure):
         Shows the (input) parameters of the graph.
         """
         PAH.info_params(self)
-        TriadicClosure.info_params(self)
+        GraphTC.info_params(self)
 
     def info_computed(self):
         """
         Shows the (computed) properties of the graph.
         """
         PAH.info_computed(self)
-        TriadicClosure.info_computed(self)
+        GraphTC.info_computed(self)
 
     def infer_homophily_values(self) -> tuple[float, float]:
         """

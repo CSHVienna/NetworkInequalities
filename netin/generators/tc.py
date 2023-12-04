@@ -23,9 +23,6 @@ class TriadicClosure(Graph):
     tc: float
         triadic closure probability (minimum=0, maximum=1)
 
-    tc_uniform: bool
-        specifies whether the triadic closure target is chosen uniform at random or if it follows the regular link formation mechanisms (e.g., homophily) (default=True)
-
     seed: object
         seed for random number generator
 
@@ -38,10 +35,9 @@ class TriadicClosure(Graph):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, f_m: float, tc: float, tc_uniform: bool = False, seed: object = None):
+    def __init__(self, n: int, f_m: float, tc: float, seed: object = None):
         Graph.__init__(self, n=n, f_m=f_m, seed=seed)
         self.tc = tc
-        self.tc_uniform = tc_uniform
         self.model_name = const.TC_MODEL_NAME
 
     ############################################################
@@ -66,8 +62,7 @@ class TriadicClosure(Graph):
         """
         obj = Graph.get_metadata_as_dict(self)
         obj.update({
-            'tc': self.tc,
-            'tc_uniform': self.tc_uniform
+            'tc': self.tc
         })
         return obj
 
@@ -159,21 +154,11 @@ class TriadicClosure(Graph):
             Tuple of two equally sizes lists.
             The first list contains the probabilities and the second list the available nodes.
         """
-        tc_prob = np.random.random()
-
-        if tc_prob < self.tc and len(special_targets) > 0:
-            # Edge is added based on triadic closure
-            if not self.tc_uniform:
-                # Triadic closure is uniform
-                return self.get_target_probabilities_regular(source, list(special_targets.keys()))
-            # Triadic closure is not uniform (biased towards common neighbors)
-            available_nodes, probs = zip(*[(t, w) for t, w in special_targets.items()])
-            probs = np.array(probs).astype(np.float32)
-            probs /= probs.sum()
-            return probs, available_nodes
-
-        # Edge is added based on regular mechanism (not triadic closure)
-        return self.get_target_probabilities_regular(source, available_nodes, special_targets)
+        # Triadic closure is not uniform (biased towards common neighbors)
+        available_nodes, probs = zip(*[(t, w) for t, w in special_targets.items()])
+        probs = np.array(probs).astype(np.float32)
+        probs /= probs.sum()
+        return probs, available_nodes
 
     def get_target(self, source: int,
                    available_nodes: List[int],
@@ -255,7 +240,6 @@ class TriadicClosure(Graph):
         Shows the parameters of the model.
         """
         print('tc: {}'.format(self.tc))
-        print('tc_uniform: {}'.format(self.tc_uniform))
 
     def info_computed(self):
         """
