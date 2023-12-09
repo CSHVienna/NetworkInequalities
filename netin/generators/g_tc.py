@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Union, Dict, Any, List, Tuple
+from typing import Union, Dict, Any, List, Tuple, Callable, Collection
 
 import numpy as np
 
@@ -9,6 +9,8 @@ from netin.utils import constants as const
 
 
 class GraphTC(UnDiGraph, TriadicClosure):
+    _event_handlers_tc: List[Callable[[int, Tuple[List[int], List[int]]], None]]
+    _event_handlers_reg: List[Callable[[int, Tuple[List[int], List[int]]], None]]
     """Abstract base class for undirected triadic closure graphs.
 
     Parameters
@@ -45,12 +47,16 @@ class GraphTC(UnDiGraph, TriadicClosure):
     # Constructor
     ############################################################
 
-    def __init__(self, n: int, k: int, f_m: float, tc: float, tc_uniform: bool = True,
-                 seed: object = None):
+    def __init__(self,
+             n: int, k: int, f_m: float, tc: float,
+             tc_uniform: bool = True,
+             seed: object = None):
         UnDiGraph.__init__(self, n, k, f_m, seed)
         TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
         self.tc_uniform = tc_uniform
         self.model_name = const.TCH_MODEL_NAME
+        self._event_handlers_tc = []
+        self._event_handlers_reg = []
 
     def get_metadata_as_dict(self) -> Dict[str, Any]:
         """
@@ -97,14 +103,22 @@ class GraphTC(UnDiGraph, TriadicClosure):
         if tc_prob < self.tc and len(self._tc_candidates) > 0:
             if not self.tc_uniform:
                 # Triadic closure is uniform
-                return self.get_target_probabilities_tc(
+                targets, prob = self.get_target_probabilities_tc(
                     source,
                     list(self._tc_candidates.keys()))
-            return TriadicClosure\
+                return targets, prob
+            else:
+                targets, prob = TriadicClosure\
                 .get_target_probabilities(self, source, available_nodes)
+            for f in self._event_handlers_tc:
+                f(source, targets, prob)
+            return targets, prob
 
         # Edge is added based on regular mechanism (not triadic closure)
-        return self.get_target_probabilities_regular(source, available_nodes)
+        targets, prob = self.get_target_probabilities_regular(source, available_nodes)
+        for f in self._event_handlers_reg:
+            f(source, targets, prob)
+        return targets, prob
 
     def get_target_probabilities_tc(self, source: int, target_list: List[int]) -> \
             Tuple[np.ndarray, List[int]]:
@@ -114,6 +128,11 @@ class GraphTC(UnDiGraph, TriadicClosure):
     def get_target_probabilities_regular(self, source: int, target_list: List[int]) -> \
             Tuple[np.ndarray, List[int]]:
         raise NotImplementedError
+
+    def register_event_handler_tc(self, f: Callable[[int, Tuple[List[int], List[int]]], None]):
+        self._event_handlers_tc.append(f)
+    def register_event_handler_reg(self, f: Callable[[int, Tuple[List[int], List[int]]], None]):
+        self._event_handlers_reg.append(f)
 
     ############################################################
     # Calculations
