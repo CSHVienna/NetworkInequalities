@@ -41,8 +41,8 @@ class ERPATCH(PATCH):
 
     Note that this model is still work in progress and not fully implemented yet.
     """
-    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, seed: object = None):
-        super().__init__(n=n, k=k, f_m=f_m, h_mm=h_mm, h_MM=h_MM, tc=tc, tc_uniform=False, seed=seed)
+    def __init__(self, n: int, k: int, f_m: float, h_mm: float, h_MM: float, tc: float, tc_uniform: bool = False, seed: object = None):
+        super().__init__(n=n, k=k, f_m=f_m, h_mm=h_mm, h_MM=h_MM, tc=tc, tc_uniform=tc_uniform, seed=seed)
         self.model_name = const.ERPATCH_MODEL_NAME
 
     ############################################################

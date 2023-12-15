@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from enum import Enum
 from typing import Union, Dict, Any, List, Tuple, Callable, Collection
 
 import numpy as np
@@ -7,10 +8,14 @@ from netin.generators.undirected import UnDiGraph
 from netin.generators.tc import TriadicClosure
 from netin.utils import constants as const
 
+class LinkType(Enum):
+    TRIADIC_CLOSURE="triadic_closure"
+    REGULAR="regular"
+    INIT="init"
 
 class GraphTC(UnDiGraph, TriadicClosure):
-    _event_handlers_tc: List[Callable[[int, Tuple[List[int], List[int]]], None]]
-    _event_handlers_reg: List[Callable[[int, Tuple[List[int], List[int]]], None]]
+    _event_handlers_edges : List[Callable[[int, int, LinkType], None]]
+    _last_decision: LinkType
     """Abstract base class for undirected triadic closure graphs.
 
     Parameters
@@ -46,7 +51,6 @@ class GraphTC(UnDiGraph, TriadicClosure):
     ############################################################
     # Constructor
     ############################################################
-
     def __init__(self,
              n: int, k: int, f_m: float, tc: float,
              tc_uniform: bool = True,
@@ -55,8 +59,8 @@ class GraphTC(UnDiGraph, TriadicClosure):
         TriadicClosure.__init__(self, n=n, f_m=f_m, tc=tc, seed=seed)
         self.tc_uniform = tc_uniform
         self.model_name = const.TCH_MODEL_NAME
-        self._event_handlers_tc = []
-        self._event_handlers_reg = []
+        self._event_handlers_edges = []
+        self._last_decision = LinkType.INIT
 
     def get_metadata_as_dict(self) -> Dict[str, Any]:
         """
@@ -101,23 +105,21 @@ class GraphTC(UnDiGraph, TriadicClosure):
             self.init_special_targets(source)
 
         if tc_prob < self.tc and len(self._tc_candidates) > 0:
+            self._last_decision = LinkType.TRIADIC_CLOSURE
             if not self.tc_uniform:
                 # Triadic closure is uniform
                 targets, prob = self.get_target_probabilities_tc(
                     source,
                     list(self._tc_candidates.keys()))
                 return targets, prob
-            else:
-                targets, prob = TriadicClosure\
-                .get_target_probabilities(self, source, available_nodes)
-            for f in self._event_handlers_tc:
-                f(source, targets, prob)
+
+            targets, prob = TriadicClosure\
+            .get_target_probabilities(self, source, available_nodes)
             return targets, prob
 
         # Edge is added based on regular mechanism (not triadic closure)
+        self._last_decision = LinkType.REGULAR
         targets, prob = self.get_target_probabilities_regular(source, available_nodes)
-        for f in self._event_handlers_reg:
-            f(source, targets, prob)
         return targets, prob
 
     def get_target_probabilities_tc(self, source: int, target_list: List[int]) -> \
@@ -129,10 +131,16 @@ class GraphTC(UnDiGraph, TriadicClosure):
             Tuple[np.ndarray, List[int]]:
         raise NotImplementedError
 
-    def register_event_handler_tc(self, f: Callable[[int, Tuple[List[int], List[int]]], None]):
-        self._event_handlers_tc.append(f)
-    def register_event_handler_reg(self, f: Callable[[int, Tuple[List[int], List[int]]], None]):
-        self._event_handlers_reg.append(f)
+    def register_event_handler(self, f: Callable[[int, int, LinkType], None]):
+        self._event_handlers_edges.append(f)
+
+    def on_edge_added(self, source: int, target: int):
+        _ret_super = super().on_edge_added(source, target)
+
+        for f in self._event_handlers_edges:
+            f(source, target, self._last_decision)
+
+        return _ret_super
 
     ############################################################
     # Calculations
