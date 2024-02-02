@@ -1,3 +1,3 @@
-from graph import Graph
-from directed import DiGraph
-from event import Event
+from .graph import Graph
+from .directed import DiGraph
+from .event import Event
