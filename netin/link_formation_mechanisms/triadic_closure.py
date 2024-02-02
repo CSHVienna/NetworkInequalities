@@ -26,8 +26,9 @@ class TriadicClosure(LinkFormationMechanism):
     _source_curr: int
 
     def __init__(self, graph: Graph) -> None:
-        super().__init__(graph)
+        super().__init__()
         self._source_curr = -1
+        self.graph = graph
         self.graph.register_event_handler(
             event=Event.LINK_ADD_AFTER,
             function=self._update_friends_of_friends)
@@ -84,4 +85,4 @@ class TriadicClosure(LinkFormationMechanism):
         """
         if source != self._source_curr:
             self._init_friends_of_friends(source=source)
-        return self._a_friend_of_friends
+        return self._a_friend_of_friends / self._a_friend_of_friends.sum()

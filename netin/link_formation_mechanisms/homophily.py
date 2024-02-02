@@ -4,17 +4,15 @@ from netin.graphs import Graph
 from .link_formation_mechanism import LinkFormationMechanism
 
 class Homophily(LinkFormationMechanism):
-    _a_class: np.ndarray
-    _a_h: np.ndarray
+    node_class_values: np.ndarray
     h: float
 
-    def __init__(self, graph: Graph, h: float) -> None:
-        super().__init__(graph)
+    def __init__(self, node_class_values: np.ndarray, h: float) -> None:
+        super().__init__()
         self.h=h
-        self._a_class = np.full(len(self.graph), -1)
-        for node in self.graph:
-            self._a_class[node] = self.graph.node_class_values[node]
+        self.node_class_values = node_class_values
 
     def get_target_probabilities(self, source: int) -> np.ndarray:
-        class_source = self.graph.node_class_values[source]
-        return np.where(class_source == self._a_class, self.h, 1 - self.h)
+        class_source = self.node_class_values[source]
+        p_target = np.where(class_source == self.node_class_values, self.h, 1 - self.h)
+        return p_target / p_target.sum()

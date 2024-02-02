@@ -15,7 +15,7 @@ class PreferentialAttachment(LinkFormationMechanism):
     """
     _a_degree: np.ndarray
 
-    def __init__(self, graph: Graph) -> None:
+    def __init__(self, graph: Graph, n: int) -> None:
         """
         Initializes a PreferentialAttachment object.
 
@@ -25,13 +25,18 @@ class PreferentialAttachment(LinkFormationMechanism):
         Returns:
             None
         """
-        super().__init__(graph)
-        self._a_degree = np.zeros(len(graph), dtype=int)
-        for i,k in graph.degree():
-            self._a_degree[i] = k
+        super().__init__()
+        self.graph = graph
+        self._a_degree = np.zeros(n, dtype=int)
+
         self.graph.register_event_handler(
             event=Event.LINK_ADD_AFTER,
             function=self._update_degree_by_link)
+
+    def initialize_simulation(self):
+        super().initialize_simulation()
+        for i,k in self.graph.degree():
+            self._a_degree[i] = k
 
     def get_target_probabilities(self, _) -> np.ndarray:
         """
