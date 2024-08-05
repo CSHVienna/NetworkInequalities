@@ -2,5 +2,5 @@ import networkx as nx
 
 from .graph import Graph
 
-class DiGraph(Graph, nx.DiGraph):
+class DiGraph(nx.DiGraph, Graph):
     """Directed graph."""
