@@ -4,11 +4,130 @@ import warnings
 
 import numpy as np
 import networkx as nx
+import pandas as pd
 from collections import Counter
 
 from netin.utils import constants as const
 from netin.utils import validator as val
+from ..graphs.graph import Graph
+from ..graphs.directed import DiGraph
 
+def get_node_metadata_as_dataframe(graph: Union[Graph, DiGraph], include_graph_metadata: bool = False, n_jobs: int = 1) -> pd.DataFrame:
+        """
+        Returns the metadata of the nodes in the graph as a dataframe.
+        Every row represents a node, and the columns are the metadata of the node.
+
+        Parameters
+        ----------
+        include_graph_metadata: bool
+            whether to include the graph metadata (e.g., class attribute, class values, etc.)
+
+        n_jobs: int
+            number of parallel jobs
+
+        Returns
+        -------
+        pd.DataFrame
+            dataframe with the metadata of the nodes
+
+        Notes
+        -----
+        Column `class_label` is a binary column indicating whether the node belongs to the minority class.
+        """
+        cols = ['node', 'class_label', 'real_label', 'source']
+
+        obj = {'node': graph.node_list,
+               'class_label': [const.MAJORITY_LABEL if graph.get_class_label_by_node(
+                   n) == graph.get_majority_label() else const.MINORITY_LABEL for n in graph.node_list],
+               'real_label': [graph.get_class_label_by_node(n) for n in graph.node_list],
+               'source': 'model' if 'empirical' not in graph.graph else 'data'}
+
+        # include graph metadata
+        if include_graph_metadata:
+            # n = graph.number_of_nodes()
+            new_cols = [c for c in graph.graph.keys() if c not in ['class_attribute', 'class_values',
+                                                                  'class_labels']]
+            obj.update({c: graph.graph[c] for c in new_cols})
+            cols.extend(new_cols)
+
+        # include metrics
+        column_values = pqdm(const.VALID_METRICS, graph.compute_node_stats, n_jobs=n_jobs)
+        obj.update({col: values for col, values in zip(const.VALID_METRICS, column_values)})
+        cols.extend(const.VALID_METRICS)
+
+        # create dataframe
+        df = pd.DataFrame(obj, columns=cols, index=graph.node_list)
+        df.name = graph.model_name
+
+        # add ranking values
+        for metric in const.VALID_METRICS:
+            ncol = f'{metric}_rank'
+            df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
+
+            # # compute ranking values and retry for ARPACK error.
+            # done = False
+            # tries = 10
+            # while not done:
+            #     try:
+            #         df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
+            #         done = True
+            #     except Exception as ex:
+            #         tries -= 1
+            #         if tries <= 0:
+            #             raise UserWarning(f"An error occurred while computing the ranking values: {ex}")
+
+        return df
+
+def compute_node_stats(graph: Union[Graph, DiGraph], metric: str, **kwargs) -> list[Union[int, float]]:
+    """
+    Returns the property of each node in a graph based on the metric.
+
+    Parameters
+    ----------
+    metric: str
+        metric to compute
+
+    kwargs: dict
+        additional parameters for the metric
+
+    Returns
+    -------
+    List[Union[int, float]]
+        list properties for each node
+    """
+    values = None
+
+    # list of tuples (node, value)
+    if metric == 'degree':
+        values = graph.degree(graph.node_list, **kwargs) if not graph.is_directed() else None
+    if metric == 'in_degree':
+        values = graph.in_degree(graph.node_list, **kwargs) if graph.is_directed() else None
+    if metric == 'out_degree':
+        values = graph.out_degree(graph.node_list, **kwargs) if graph.is_directed() else None
+    if metric == 'eigenvector':
+        try:
+            values = nx.eigenvector_centrality_numpy(graph, **kwargs)
+        except Exception as ex:
+            try:
+                values = nx.eigenvector_centrality_numpy(graph, max_iter=200, tol=1.0e-5)
+            except Exception as ex:
+                warnings.warn(f"The eigenvector centrality could not be computed: {ex}")
+                values = None
+
+    # dict of node -> value
+    if metric == 'clustering':
+        values = nx.clustering(graph, graph.node_list, **kwargs)
+    if metric == 'betweenness':
+        values = nx.betweenness_centrality(graph, **kwargs)
+    if metric == 'closeness':
+        if isinstance(graph, nx.DiGraph):
+            values = nx.closeness_centrality(nx.DiGraph(graph), **kwargs)
+        else:
+            values = nx.closeness_centrality(graph, **kwargs)
+    if metric == 'pagerank':
+        values = nx.pagerank(graph, **kwargs)
+
+    return [values[n] for n in graph.node_list] if values is not None else np.nan
 
 def get_min_degree(g: Union[nx.Graph, nx.DiGraph]) -> int:
     """

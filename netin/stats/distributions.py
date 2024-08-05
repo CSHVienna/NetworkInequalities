@@ -1,9 +1,49 @@
-from typing import Union, Set, List, Tuple
+from typing import Union, Set, List, Iterable, Tuple
 
 import numpy as np
 import pandas as pd
 import powerlaw
 
+from ..graphs.graph import Graph
+from ..graphs.directed import DiGraph
+
+def fit_powerlaw_groups(
+        g: Union[Graph, DiGraph], metric: str)\
+    -> Tuple[powerlaw.Fit, powerlaw.Fit]:
+    """
+    Fits a power law to the distribution given by 'metric' (the in- or out-degree of nodes in the graph).
+
+    Parameters
+    ----------
+    g: Graph
+        Graph to fit power law to
+
+    metric: str
+        metric to fit power law to
+
+    Returns
+    -------
+    powerlaw.Fit
+        power law fit of the majority class
+
+    powerlaw.Fit
+        power law fit of the minority class
+    """
+
+    def _get_value_fnc(g: Graph, metric: str) -> Iterable:
+        if metric not in ['in_degree', 'out_degree', 'degree']:
+            raise ValueError(f"`metric` must be either 'in_degree', 'out_degree' or 'degree', not {metric}")
+        return g.in_degree if metric == 'in_degree' else g.out_degree if metric == 'out_degree' else g.degree
+
+    vM = g.get_majority_value()
+    fnc = _get_value_fnc(g, metric)
+
+    dM = [d for n, d in fnc if g.node_class_values[n] == vM]
+    dm = [d for n, d in fnc if g.node_class_values[n] != vM]
+
+    fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM), verbose=False)
+    fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm), verbose=False)
+    return fit_M, fit_m
 
 def get_pdf(df: pd.DataFrame, x: str, total: float) -> Tuple[np.ndarray, np.ndarray]:
     """Computes the probability density of the input data.
