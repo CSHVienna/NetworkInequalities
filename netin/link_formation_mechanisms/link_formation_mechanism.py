@@ -6,3 +6,6 @@ class LinkFormationMechanism:
     @abstractmethod
     def get_target_probabilities(self, source: int) -> np.ndarray:
         raise NotImplementedError
+
+    def initialize_simulation(self):
+        pass
