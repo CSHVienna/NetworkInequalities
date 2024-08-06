@@ -77,6 +77,39 @@ class Model(ABC, BaseClass):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(N={self.N}, f={self.f})"
 
+    def get_minority_mask(self) -> np.ndarray:
+        """Returns the mask of the minority class.
+
+        Returns
+        -------
+        np.ndarray
+            Mask of the minority class.
+        """
+        return self.node_minority_class == 1
+
+    def get_majority_mask(self) -> np.ndarray:
+        """Returns the mask of the majority class.
+
+        Returns
+        -------
+        np.ndarray
+            Mask of the majority class.
+        """
+        return ~self.get_minority_mask()
+
+    def get_n_minority(self) -> int:
+        """Returns the number of nodes in the minority class.
+
+        Returns
+        -------
+        int
+            Number of nodes in the minority class.
+        """
+        return np.sum(self.node_minority_class)
+
+    def get_n_majority(self) -> int:
+        return self.N - self.get_n_minority()
+
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
