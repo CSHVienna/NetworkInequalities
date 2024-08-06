@@ -4,9 +4,9 @@ from netin.graphs import Graph
 import numpy as np
 
 from ..link_formation_mechanisms.homophily import Homophily
-from .model import Model
+from .undirected_model import UndirectedModel
 
-class HomophilyModel(Model):
+class HomophilyModel(UndirectedModel):
     def __init__(self, N: int, m: int, f: float, h: float, graph: Optional[Graph] = None):
         super().__init__(N, m, f, graph)
         self.h = Homophily(self.node_class_values, h)

@@ -13,14 +13,13 @@ class Model(ABC, BaseClass):
     Specific growing-network-model implementations should inherit from this class and implement the provided abstract methods.
     """
     N: int
-    m: int
     f: float
     graph: Graph
     node_minority_class: NodeAttributes
     seed: int
 
     def __init__(
-            self, N: int, m: int, f: float,
+            self, N: int, f: float,
             graph: Optional[Graph] = None,
             seed: int = 1):
         """Creates a new instance of the Model class.
@@ -29,8 +28,6 @@ class Model(ABC, BaseClass):
         ----------
         N : int
             Number of final nodes in the network.
-        m : int
-            Number of links that each new node creates.
         f : float
             Fraction of nodes that belong to the minority class.
         graph : Optional[Graph], optional
@@ -42,26 +39,28 @@ class Model(ABC, BaseClass):
         super().__init__()
 
         self.N = N
-        self.m = m
         self.f = f
         self.seed = seed
         np.random.seed(seed)
 
-        self.node_minority_class = NodeAttributes.from_ndarray(
-            np.where(np.random.rand(N) < f, 1, 0), name="minority_class")
+        self.node_minority_class = NodeAttributes\
+            .from_ndarray(
+                np.where(np.random.rand(N) < f, 1, 0), name="minority_class")
 
         if graph is None:
-            self.graph = Graph()
-        else:
-            self.graph = graph
             self._initialize_graph()
+            self._populate_initial_graph()
         self._initialize_lfms()
 
     def _initialize_graph(self):
-        for i in range(self.m):
-            self.graph.add_node(i)
-            for j in range(i):
-                self.graph.add_edge(i, j)
+        """Initializes an empty graph.
+        Function can be overwritten by subclasses.
+        """
+        self.graph = Graph()
+
+    @abstractmethod
+    def _populate_initial_graph(self):
+        raise NotImplementedError
 
     @abstractmethod
     def _initialize_lfms(self):
@@ -71,29 +70,17 @@ class Model(ABC, BaseClass):
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         pass
 
+    @abstractmethod
     def simulate(self) -> Graph:
-        for source in range(
-                self.graph.number_of_nodes(), self.N):
-            self.graph.add_node(
-                source,
-                minority=self.node_minority_class[source])
-            for _ in range(self.m):
-                target_probabilities = self.compute_target_probabilities(source)[:source]
-                target_probabilities /= target_probabilities.sum()
-                target = np.random.choice(
-                    np.arange(source),
-                    p=target_probabilities[:source])
-                self.graph.add_edge(source, target)
-        return self.graph
+        raise NotImplementedError
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(N={self.N}, m={self.m}, f={self.f})"
+        return f"{self.__class__.__name__}(N={self.N}, f={self.f})"
 
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
             "N": self.N,
-            "m": self.m,
             "f": self.f,
             "seed": self.seed
         }
