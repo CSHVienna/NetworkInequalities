@@ -1,7 +1,5 @@
 from typing import Any, Dict, Optional
 
-import numpy as np
-
 from ..graphs import Graph
 from .model import Model
 
