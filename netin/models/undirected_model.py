@@ -4,9 +4,11 @@ from ..graphs import Graph
 from .model import Model
 
 class UndirectedModel(Model):
+    m: int
+
     def __init__(self, N: int, m: int, f: float, graph=None):
-        super().__init__(N, f, graph)
         self.m = m
+        super().__init__(N, f, graph)
 
     def _initialize_graph(self):
         self.graph = Graph()
