@@ -118,7 +118,8 @@ class DirectedModel(Model):
 
     def simulate(self) -> Graph:
         tries = 0
-        while self.graph.number_of_edges() < self._get_expected_number_of_edges():
+        while self.graph.number_of_edges()\
+                < self._get_expected_number_of_edges():
             tries += 1
             for source in self._get_sources():
                 target = self._get_target(source)
