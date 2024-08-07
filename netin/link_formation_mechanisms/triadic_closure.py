@@ -1,7 +1,7 @@
 import numpy as np
 
-from netin.graphs import Graph
-from netin.graphs.event import Event
+from ..graphs.graph import Graph
+from ..graphs.event import Event
 from .link_formation_mechanism import LinkFormationMechanism
 
 class TriadicClosure(LinkFormationMechanism):

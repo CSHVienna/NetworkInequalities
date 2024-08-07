@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..graphs.graphs import Graph
+from ..graphs.graph import Graph
 from ..graphs.event import Event
 from ..graphs.node_attributes import NodeAttributes
 from .link_formation_mechanism import LinkFormationMechanism
