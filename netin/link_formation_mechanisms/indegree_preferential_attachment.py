@@ -10,15 +10,24 @@ class InDegreePreferentialAttachment(PreferentialAttachment):
     """
     _a_degree: np.ndarray
 
-    def __init__(self, graph: Graph, n: int) -> None:
+    def __init__(self,
+                 graph: Graph,
+                 n: int,
+                 init_degrees: bool = True) -> None:
         assert graph.is_directed(), "The graph must be directed."
         super().__init__(graph=graph, n=n)
+
+        if init_degrees:
+            self.initialize_degree_array()
 
         self.graph.register_event_handler(
             event=Event.LINK_ADD_AFTER,
             function=self._update_degree_by_link)
 
-    def initialize_simulation(self):
+    def initialize_degree_array(self):
+        """Initializes the degree array.
+        This is useful for when an existing graph is loaded and the degrees need to be computed.
+        """
         for i,k in self.graph.in_degree():
             self._a_degree[i] = k
 
