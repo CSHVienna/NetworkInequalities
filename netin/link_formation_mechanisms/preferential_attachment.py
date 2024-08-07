@@ -15,12 +15,16 @@ class PreferentialAttachment(LinkFormationMechanism):
     """
     _a_degree: np.ndarray
 
-    def __init__(self, graph: Graph, n: int) -> None:
+    def __init__(
+            self, graph: Graph, n: int,
+            init_degrees: bool = True) -> None:
         """
         Initializes a PreferentialAttachment object.
 
         Args:
             graph (Graph): The graph object representing the network.
+            n (int): The total (final) number of nodes.
+            init_degrees (bool, optional): Whether to initialize the degree array. Defaults to True.
 
         Returns:
             None
@@ -29,12 +33,14 @@ class PreferentialAttachment(LinkFormationMechanism):
         self.graph = graph
         self._a_degree = np.zeros(n, dtype=int)
 
+        if init_degrees:
+            self.initialize_degree_array()
+
         self.graph.register_event_handler(
             event=Event.LINK_ADD_AFTER,
             function=self._update_degree_by_link)
 
-    def initialize_simulation(self):
-        super().initialize_simulation()
+    def initialize_degree_array(self):
         for i,k in self.graph.degree():
             self._a_degree[i] = k
 
