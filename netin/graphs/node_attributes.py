@@ -1,4 +1,5 @@
 from typing import Dict, Type, Optional, Any
+from numbers import Number
 
 import numpy as np
 
@@ -8,9 +9,12 @@ class NodeAttributes(BaseClass):
     _attributes: np.ndarray
     name: str
 
-    def __init__(self, N: int, dtype: Type, name: Optional[str] = None) -> None:
+    def __init__(self, N: int, dtype: Type, fill_value: Optional[Number] = None, name: Optional[str] = None) -> None:
         super().__init__()
-        self._attributes = np.empty(N, dtype=dtype)
+        self._attributes = np.zeros(
+            N,
+            dtype=dtype) if fill_value is None else\
+                np.full(N, fill_value, dtype=dtype)
         self.name = name
 
     def set_attributes(self, attributes: np.ndarray) -> None:
@@ -22,6 +26,12 @@ class NodeAttributes(BaseClass):
             Node attributes.
         """
         self._attributes = attributes
+
+    def get_attributes(self) -> Any:
+        return self._attributes
+
+    def attr(self) -> np.ndarray:
+        return self.get_attributes()
 
     @classmethod
     def from_ndarray(
