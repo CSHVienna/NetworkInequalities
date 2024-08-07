@@ -6,8 +6,8 @@ import numpy as np
 from ..graphs.graph import Graph
 from ..graphs.node_attributes import NodeAttributes
 from ..base_class import BaseClass
-from ..link_formation_mechanisms.no_double_links import NoDoubleLinks
-from ..link_formation_mechanisms.no_self_links import NoSelfLinks
+from ..link_formation_mechanisms.filters.no_double_links import NoDoubleLinks
+from ..link_formation_mechanisms.filters.no_self_links import NoSelfLinks
 
 class Model(ABC, BaseClass):
     """Model class.

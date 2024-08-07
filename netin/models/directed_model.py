@@ -10,7 +10,7 @@ from ..graphs.directed import DiGraph
 from ..graphs.node_attributes import NodeAttributes
 from .model import Model
 from ..utils import constants as const
-from ..link_formation_mechanisms.active_nodes import ActiveNodes
+from ..link_formation_mechanisms.filters.active_nodes import ActiveNodes
 
 class DirectedModel(Model):
     node_activity: NodeAttributes
