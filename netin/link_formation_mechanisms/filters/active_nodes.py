@@ -1,9 +1,9 @@
 import numpy as np
 
-from .link_formation_mechanism import LinkFormationMechanism
-from ..graphs.node_attributes import NodeAttributes
-from ..graphs.directed import DiGraph
-from ..graphs.event import Event
+from ..link_formation_mechanism import LinkFormationMechanism
+from ...graphs.node_attributes import NodeAttributes
+from ...graphs.directed import DiGraph
+from ...graphs.event import Event
 
 class ActiveNodes(LinkFormationMechanism):
     _out_degrees: NodeAttributes

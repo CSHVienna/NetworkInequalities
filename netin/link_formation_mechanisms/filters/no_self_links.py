@@ -1,8 +1,6 @@
-from typing import Union
 import numpy as np
 
-from .link_formation_mechanism import LinkFormationMechanism
-from ..graphs.node_attributes import NodeAttributes
+from ..link_formation_mechanism import LinkFormationMechanism
 
 class NoSelfLinks(LinkFormationMechanism):
     N: int
