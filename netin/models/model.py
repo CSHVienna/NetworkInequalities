@@ -56,7 +56,6 @@ class Model(ABC, BaseClass):
         if graph is None:
             self._initialize_graph()
             self._populate_initial_graph()
-        self._initialize_lfms()
 
         self._lfm_no_self_links = NoSelfLinks(N)
         self._lfm_no_double_links = NoDoubleLinks(N, self.graph)
