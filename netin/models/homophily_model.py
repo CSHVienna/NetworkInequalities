@@ -9,7 +9,10 @@ from .undirected_model import UndirectedModel
 class HomophilyModel(UndirectedModel):
     def __init__(self, N: int, m: int, f: float, h: float, graph: Optional[Graph] = None):
         super().__init__(N, m, f, graph)
-        self.h = Homophily(self.node_class_values, h)
+        self.h = Homophily(
+            node_class_values=self.node_minority_class,
+            homophily=h)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
-        return self.h.get_target_probabilities(source)
+        return super().compute_target_probabilities(source) * \
+            self.h.get_target_probabilities(source)

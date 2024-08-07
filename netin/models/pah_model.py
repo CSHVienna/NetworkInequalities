@@ -29,6 +29,7 @@ class PAH(BarabasiAlbertModel, HomophilyModel):
             Target probabilities.
         """
         p_target =\
-            self.pa.get_target_probabilities(source)\
-                * self.h.get_target_probabilities(source)
+            super().compute_target_probabilities(source)\
+            * self.pa.get_target_probabilities(source)\
+            * self.h.get_target_probabilities(source)
         return p_target / p_target.sum()
