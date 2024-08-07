@@ -10,11 +10,17 @@ class DPAModel(DirectedModel):
     pa: InDegreePreferentialAttachment
 
     def __init__(
-            self, N: int, f: float, d: float,
+            self, *args,
+            N: int, f: float, d: float,
             plo_M: float, plo_m: float,
             graph: Optional[DiGraph] = None,
-            seed: int = 1):
-        super().__init__(N, f, d, plo_M, plo_m, graph, seed)
+            seed: int = 1,
+            **kwargs):
+        super().__init__(
+            *args, N=N, f=f, d=d,
+            plo_M=plo_M, plo_m=plo_m,
+            graph=graph, seed=seed,
+            **kwargs)
         self.pa = InDegreePreferentialAttachment(graph=self.graph, n=N)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:

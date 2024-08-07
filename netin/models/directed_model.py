@@ -21,12 +21,17 @@ class DirectedModel(Model):
     _lfm_active_nodes: ActiveNodes
 
     def __init__(
-            self, N: int, f: float,
+            self, *args,
+            N: int, f: float,
             d: float, plo_M: float, plo_m: float,
             graph: Optional[DiGraph] = None,
-            seed: int = 1):
+            seed: int = 1,
+            **kwargs):
         assert graph is None or isinstance(graph, DiGraph), "graph must be a DiGraph"
-        super().__init__(N, f, graph, seed)
+        super().__init__(
+            *args, N=N, f=f,
+            graph=graph, seed=seed,
+            **kwargs)
 
         self.d = d
         self.plo_M = plo_M

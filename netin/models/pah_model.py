@@ -2,17 +2,22 @@ from typing import Optional
 
 import numpy as np
 
+from .undirected_model import UndirectedModel
 from ..graphs import Graph
-from .barabasi_albert_model import BarabasiAlbertModel
-from .homophily_model import HomophilyModel
+from ..link_formation_mechanisms.homophily import Homophily
+from ..link_formation_mechanisms.preferential_attachment import PreferentialAttachment
 
-class PAHModel(BarabasiAlbertModel, HomophilyModel):
+class PAHModel(UndirectedModel):
     def __init__(
-            self, N: int, m: int, f: float, h: float,
-            graph: Optional[Graph] = None):
-        BarabasiAlbertModel.__init__(self, N, m, f, graph)
-        graph = self.graph # Needed to not initialize the graph twice
-        HomophilyModel.__init__(self, N, m, f, h, graph)
+            self, *args,
+            N: int, m: int, f: float, h: float,
+            graph: Optional[Graph] = None,
+            **kwargs):
+        super().__init__(
+            *args, N=N, m=m, f=f, graph=graph, **kwargs)
+        self.h = Homophily(
+            node_class_values=self.node_minority_class, homophily=h)
+        self.pa = PreferentialAttachment(n=N, graph=self.graph)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         """Computes the target probabilities for the source node.

@@ -25,9 +25,11 @@ class Model(ABC, BaseClass):
     seed: int
 
     def __init__(
-            self, N: int, f: float,
+            self, *args,
+            N: int, f: float,
             graph: Optional[Graph] = None,
-            seed: int = 1):
+            seed: int = 1,
+            **kwargs):
         """Creates a new instance of the Model class.
 
         Parameters
@@ -42,7 +44,7 @@ class Model(ABC, BaseClass):
         seed : int, optional
             A random seed for reproducibility, by default 1
         """
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
         self.N = N
         self.f = f

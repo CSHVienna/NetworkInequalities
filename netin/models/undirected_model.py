@@ -6,9 +6,12 @@ from .model import Model
 class UndirectedModel(Model):
     m: int
 
-    def __init__(self, N: int, m: int, f: float, graph=None):
+    def __init__(self, *args, N: int, m: int, f: float, graph=None, **kwargs):
         self.m = m
-        super().__init__(N, f, graph)
+        super().__init__(
+            *args,
+            N=N, f=f, graph=graph,
+            **kwargs)
 
     def _initialize_graph(self):
         self.graph = Graph()
