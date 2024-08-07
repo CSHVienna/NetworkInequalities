@@ -72,10 +72,6 @@ class Model(ABC, BaseClass):
         raise NotImplementedError
 
     @abstractmethod
-    def _initialize_lfms(self):
-        pass
-
-    @abstractmethod
     def simulate(self) -> Graph:
         raise NotImplementedError
 
