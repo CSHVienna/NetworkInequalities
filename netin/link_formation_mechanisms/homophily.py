@@ -36,16 +36,21 @@ class Homophily(LinkFormationMechanism):
         super().__init__()
 
         if n_class_values is None:
-            n_class_values = np.max(node_class_values.attr())
+            n_class_values = np.max(node_class_values.attr()) + 1
 
         assert node_class_values.attr().ndim == 1,\
             ("Node class values must be a 1D array with dimensions (n_nodes,). "
              "Multiple dimensions are not (yet) supported by this class.")
         if isinstance(homophily, float):
-            self.h = np.full(n_class_values * n_class_values, homophily)
+            self.h = np.full(
+                (n_class_values,  n_class_values), 1 - homophily)
+            np.fill_diagonal(self.h, homophily)
         else:
             assert homophily.shape == (n_class_values, n_class_values),\
-                "Homophily matrix must have the same shape as the node class values matrix"
+                ("Homophily matrix must have symmetric "
+                 "shape of (`n_class_values`, `n_class_values`)="
+                 f"{(n_class_values, n_class_values)} "
+                 f"but is {homophily.shape}")
             self.h = homophily
         self.node_class_values = node_class_values
 
