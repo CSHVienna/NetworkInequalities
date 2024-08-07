@@ -75,13 +75,12 @@ class Model(ABC, BaseClass):
     def _initialize_lfms(self):
         pass
 
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(N={self.N}, f={self.f})"
-
     @abstractmethod
     def simulate(self) -> Graph:
         raise NotImplementedError
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(N={self.N}, f={self.f})"
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         return self._lfm_no_self_links.get_target_probabilities(source) * \
@@ -120,12 +119,6 @@ class Model(ABC, BaseClass):
     def get_n_majority(self) -> int:
         return self.N - self.get_n_minority()
 
-    @staticmethod
-    def _sample_target_node(target_probabilities: np.ndarray) -> int:
-        return np.random.choice(
-            np.arange(len(target_probabilities)),
-            p=target_probabilities)
-
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
@@ -139,3 +132,9 @@ class Model(ABC, BaseClass):
             d[self.__class__.__name__])
 
         return d
+
+    @staticmethod
+    def _sample_target_node(target_probabilities: np.ndarray) -> int:
+        return np.random.choice(
+            np.arange(len(target_probabilities)),
+            p=target_probabilities)
