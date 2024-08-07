@@ -1,5 +1,6 @@
 import numpy as np
 
+from ..utils.constants import EPSILON
 from ..graphs.graph import Graph
 from ..graphs.event import Event
 from ..graphs.node_attributes import NodeAttributes
@@ -56,7 +57,8 @@ class PreferentialAttachment(LinkFormationMechanism):
         Returns:
             np.ndarray: An array of target probabilities for each node in the network.
         """
-        return self._a_degree.attr() / np.sum(self._a_degree)
+        a_degree_const = self._a_degree.attr() + EPSILON
+        return a_degree_const / np.sum(a_degree_const)
 
     def _update_degree_by_link(self, source: int, target: int):
         """
