@@ -6,7 +6,7 @@ from ..graphs import Graph
 from .barabasi_albert_model import BarabasiAlbertModel
 from .homophily_model import HomophilyModel
 
-class PAH(BarabasiAlbertModel, HomophilyModel):
+class PAHModel(BarabasiAlbertModel, HomophilyModel):
     def __init__(
             self, N: int, m: int, f: float, h: float,
             graph: Optional[Graph] = None):
