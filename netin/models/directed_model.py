@@ -8,15 +8,17 @@ from netin.graphs.graph import Graph
 
 from ..graphs.directed import DiGraph
 from ..graphs.node_attributes import NodeAttributes
-from ..graphs.event import Event
 from .model import Model
 from ..utils import constants as const
+from ..link_formation_mechanisms.active_nodes import ActiveNodes
 
 class DirectedModel(Model):
     node_activity: NodeAttributes
     d: float
     plo_M: float
     plo_m: float
+
+    _lfm_active_nodes: ActiveNodes
 
     def __init__(
             self, N: int, f: float,
@@ -30,15 +32,13 @@ class DirectedModel(Model):
         self.plo_m = plo_m
         self._in_degrees = NodeAttributes(N, dtype=int, name="in_degrees")
         self._out_degrees = NodeAttributes(N, dtype=int, name="out_degrees")
+        self._lfm_active_nodes = ActiveNodes(N, graph)
 
         super().__init__(N, f, graph, seed)
         self._initialize_node_activity()
 
     def _initialize_graph(self):
         self.graph = DiGraph()
-        self.graph.register_event_handler(
-            event=Event.LINK_ADD_AFTER, function=self._update_node_degrees
-        )
 
     def _populate_initial_graph(self):
         self.graph.add_nodes_from(range(self.N))
@@ -57,24 +57,23 @@ class DirectedModel(Model):
         a_out_degrees = self._out_degrees.attr()
 
         # Initialize uniform probabilities
-        # @TODO: Model these as link formation mechanisms
-        target_probabilities = np.full(self.N, 1/self.N)
-        target_probabilities[source] = 0. # Exclude self selection
-        target_probabilities[self.graph[source]] = 0. # Exclude existing links
+        target_probabilities = np.full(self.N, 1. / self.N)
+
+        # Check if there are enough edges to consider only nodes with out_degree > 0
         one_percent = self.N * 1 / 100.
         if np.count_nonzero(a_out_degrees) > one_percent:
             # if there are enough edges, then select only nodes with out_degree > 0 that are not already
             # connected to the source.
             # Having out_degree > 0 means they are nodes that have been in the network for at least one time step
-            target_probabilities *= np.where(a_out_degrees > 0, 1., 0.)
+            target_probabilities *= self._lfm_active_nodes.get_target_probabilities(source)
 
         # Check if all probabilities are zero
         # Follows https://stackoverflow.com/questions/18395725/test-if-numpy-array-contains-only-zeros
         if not np.any(target_probabilities):
             return None
 
-        # Add potential link formation mechanisms
-        target_probabilities = self.compute_target_probabilities(source)
+        # Call other potential link formation mechanisms
+        target_probabilities *= self.compute_target_probabilities(source)
 
         return self._sample_target_node(
             target_probabilities=target_probabilities
@@ -103,10 +102,6 @@ class DirectedModel(Model):
         a_node_activity /= a_node_activity.sum()
 
         self.node_activity = NodeAttributes.from_ndarray(a_node_activity, name="node_activity")
-
-    def _update_node_degrees(self, source: int, target: int):
-        self._in_degrees[target] += 1
-        self._out_degrees[source] += 1
 
     def get_metadata(
             self, d_meta_data: Optional[Dict[str, Any]] = None)\
