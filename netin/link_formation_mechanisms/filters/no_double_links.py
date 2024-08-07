@@ -1,7 +1,7 @@
 import numpy as np
 
-from .link_formation_mechanism import LinkFormationMechanism
-from ..graphs.graph import Graph
+from ..link_formation_mechanism import LinkFormationMechanism
+from ...graphs.graph import Graph
 
 class NoDoubleLinks(LinkFormationMechanism):
     N: int
