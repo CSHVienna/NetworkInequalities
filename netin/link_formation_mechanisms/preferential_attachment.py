@@ -1,7 +1,8 @@
 import numpy as np
 
-from netin.graphs import Graph
-from netin.graphs.event import Event
+from ..graphs.graphs import Graph
+from ..graphs.event import Event
+from ..graphs.node_attributes import NodeAttributes
 from .link_formation_mechanism import LinkFormationMechanism
 
 class PreferentialAttachment(LinkFormationMechanism):
@@ -13,7 +14,7 @@ class PreferentialAttachment(LinkFormationMechanism):
     LinkFormationMechanism : type
         The base class for link formation mechanisms.
     """
-    _a_degree: np.ndarray
+    _a_degree: NodeAttributes
 
     def __init__(
             self, graph: Graph, n: int,
@@ -31,7 +32,8 @@ class PreferentialAttachment(LinkFormationMechanism):
         """
         super().__init__()
         self.graph = graph
-        self._a_degree = np.zeros(n, dtype=int)
+        self._a_degree = NodeAttributes(
+            n, dtype=int, name="degrees")
 
         if init_degrees:
             self.initialize_degree_array()
@@ -54,7 +56,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         Returns:
             np.ndarray: An array of target probabilities for each node in the network.
         """
-        return self._a_degree / np.sum(self._a_degree)
+        return self._a_degree.attr() / np.sum(self._a_degree)
 
     def _update_degree_by_link(self, source: int, target: int):
         """

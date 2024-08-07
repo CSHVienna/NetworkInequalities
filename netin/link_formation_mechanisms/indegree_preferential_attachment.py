@@ -1,14 +1,13 @@
-import numpy as np
-
-from netin.graphs import Graph
-from netin.graphs.event import Event
 from .preferential_attachment import PreferentialAttachment
+from ..graphs.graph import Graph
+from ..graphs.event import Event
+from ..graphs.node_attributes import NodeAttributes
 
 class InDegreePreferentialAttachment(PreferentialAttachment):
     """
     The preferential attachment link formation mechanism based on nodes' in-degree.
     """
-    _a_degree: np.ndarray
+    _a_degree: NodeAttributes
 
     def __init__(self,
                  graph: Graph,
@@ -17,6 +16,8 @@ class InDegreePreferentialAttachment(PreferentialAttachment):
         assert graph.is_directed(), "The graph must be directed."
         super().__init__(graph=graph, n=n)
 
+        self._a_degree = NodeAttributes(
+            n, dtype=int, name="in_degrees")
         if init_degrees:
             self.initialize_degree_array()
 
