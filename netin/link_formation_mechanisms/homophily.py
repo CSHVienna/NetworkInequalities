@@ -1,17 +1,19 @@
-from typing import Union
+from typing import Union, Optional
 import numpy as np
 
 from .link_formation_mechanism import LinkFormationMechanism
+from ..graphs.node_attributes import NodeAttributes
 
 class Homophily(LinkFormationMechanism):
-    node_class_values: np.ndarray
+    node_class_values: NodeAttributes
     h: np.ndarray
 
     def __init__(
             self,
-            node_class_values: np.ndarray,
-            n_class_values: int,
-            homophily: Union[float, np.ndarray]) -> None:
+            node_class_values: NodeAttributes,
+            homophily: Union[float, np.ndarray],
+            n_class_values: Optional[int] = None,
+            ) -> None:
         """Initializes the Homophily link formation mechanism.
         The probabilities to connect to a target node are determined
         by the group membership of the source and target nodes.
@@ -33,7 +35,10 @@ class Homophily(LinkFormationMechanism):
         """
         super().__init__()
 
-        assert node_class_values.ndim == 1,\
+        if n_class_values is None:
+            n_class_values = np.max(node_class_values.attr())
+
+        assert node_class_values.attr().ndim == 1,\
             ("Node class values must be a 1D array with dimensions (n_nodes,). "
              "Multiple dimensions are not (yet) supported by this class.")
         if isinstance(homophily, float):
@@ -45,6 +50,7 @@ class Homophily(LinkFormationMechanism):
         self.node_class_values = node_class_values
 
     def get_target_probabilities(self, source: int) -> np.ndarray:
-        class_source = self.node_class_values[source]
-        p_target = self.h[class_source, self.node_class_values]
+        a_node_class_values = self.node_class_values.attr()
+        class_source = a_node_class_values[source]
+        p_target = self.h[class_source, a_node_class_values]
         return p_target / p_target.sum()
