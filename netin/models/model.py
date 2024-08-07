@@ -110,6 +110,12 @@ class Model(ABC, BaseClass):
     def get_n_majority(self) -> int:
         return self.N - self.get_n_minority()
 
+    @staticmethod
+    def _sample_target_node(target_probabilities: np.ndarray) -> int:
+        return np.random.choice(
+            np.arange(len(target_probabilities)),
+            p=target_probabilities)
+
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
