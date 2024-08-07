@@ -18,13 +18,16 @@ class Graph(BaseClass, nx.Graph):
     """
     _event_handlers: Dict[Event, Callable[[Any], None]]
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, **attr) -> None:
+        nx.Graph.__init__(
+            self, incoming_graph_data=None, **attr)
+        BaseClass.__init__(self)
+
         self._event_handlers = defaultdict(list)
 
     def add_edge(self, source: int, target: int, **attr) -> None:
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
-        self.add_edge(source, target, **attr)
+        nx.Graph.add_edge(self, source, target, **attr)
         self.trigger_event(source, target, event=Event.LINK_ADD_AFTER)
 
     def add_edges_from(self, ebunch_to_add: Any, **attr) -> None:
