@@ -75,6 +75,9 @@ class DirectedModel(Model):
         # Call other potential link formation mechanisms
         target_probabilities *= self.compute_target_probabilities(source)
 
+        # Normalize probabilities
+        target_probabilities /= target_probabilities.sum()
+
         return self._sample_target_node(
             target_probabilities=target_probabilities
         )
