@@ -26,22 +26,22 @@ class DirectedModel(Model):
             graph: Optional[DiGraph] = None,
             seed: int = 1):
         assert graph is None or isinstance(graph, DiGraph), "graph must be a DiGraph"
+        super().__init__(N, f, graph, seed)
 
         self.d = d
         self.plo_M = plo_M
         self.plo_m = plo_m
         self._in_degrees = NodeAttributes(N, dtype=int, name="in_degrees")
         self._out_degrees = NodeAttributes(N, dtype=int, name="out_degrees")
-        self._lfm_active_nodes = ActiveNodes(N, graph)
+        self._lfm_active_nodes = ActiveNodes(N, self.graph)
 
-        super().__init__(N, f, graph, seed)
         self._initialize_node_activity()
 
     def _initialize_graph(self):
         self.graph = DiGraph()
 
     def _populate_initial_graph(self):
-        self.graph.add_nodes_from(range(self.N))
+        self.graph.add_nodes_from(np.arange(self.N))
 
     def _get_expected_number_of_edges(self):
         return int(round(self.d * self.N * (self.N - 1)))
@@ -51,7 +51,7 @@ class DirectedModel(Model):
             a=np.arange(self.N),
             size=self._get_expected_number_of_edges(),
             replace=True,
-            p=self.node_activity)
+            p=self.node_activity.attr())
 
     def _get_target(self, source: int):
         a_out_degrees = self._out_degrees.attr()
