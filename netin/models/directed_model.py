@@ -125,7 +125,6 @@ class DirectedModel(Model):
             "plo_M": self.plo_M,
             "plo_m": self.plo_m
         }
-        self._in_degrees.get_metadata(d[self.__class__.__name__])
         self._out_degrees.get_metadata(d[self.__class__.__name__])
         return d
 
