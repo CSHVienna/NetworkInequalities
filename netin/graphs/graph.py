@@ -59,3 +59,30 @@ class Graph(BaseClass):
         for event, functions in self._event_handlers.items():
             g_copy.register_event_handler(event, functions)
         return g_copy
+
+    ################################################
+    # Method forwards to networkx.Graph
+    ################################################
+    def add_node(self, node: int, **attr):
+        return self.graph.add_node(node, **attr)
+
+    def add_nodes_from(self, *args, **kwargs):
+        return self.graph.add_nodes_from(*args, **kwargs)
+
+    def number_of_nodes(self):
+        return self.graph.number_of_nodes()
+
+    def number_of_edges(self):
+        return self.graph.number_of_edges()
+
+    def degree(self):
+        return self.graph.degree()
+
+    def neighbors(self, node: int):
+        return self.graph.neighbors(node)
+
+    def __len__(self):
+        return len(self.graph)
+
+    def __getattribute__(self, name: str) -> Any:
+        return self.graph.__getattribute__(name)
