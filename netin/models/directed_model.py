@@ -135,6 +135,8 @@ class DirectedModel(Model):
                 if target is None:
                     continue
 
+                self.graph.add_edge(source, target)
+
                 if self.graph.number_of_edges() >= self._get_expected_number_of_edges():
                     break
 
@@ -143,7 +145,6 @@ class DirectedModel(Model):
                 and (self.graph.number_of_edges() <\
                      self._get_expected_number_of_edges()):
                 print((
-                    f">> Edge density ({nx.density(self)}) "
-                    f"might differ from {self.d:.5f} (N={self.N}, f={self.f}"
-                    f"seed={self.seed}, plo_M={self.plo_M}, plo_m={self.plo_m}"))
+                    f">> Edge density ({nx.density(self.graph)}) "
+                    f"might differ from {self.d:.5f} ({self})"))
                 break
