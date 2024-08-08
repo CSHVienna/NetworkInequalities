@@ -4,8 +4,7 @@ import powerlaw
 import numpy as np
 import networkx as nx
 
-from netin.graphs.graph import Graph
-
+from ..graphs.event import Event
 from ..graphs.directed import DiGraph
 from ..graphs.node_attributes import NodeAttributes
 from .model import Model
@@ -19,6 +18,7 @@ class DirectedModel(Model):
     plo_m: float
 
     _lfm_active_nodes: ActiveNodes
+    _out_degrees: NodeAttributes
 
     def __init__(
             self, *args,
@@ -36,7 +36,6 @@ class DirectedModel(Model):
         self.d = d
         self.plo_M = plo_M
         self.plo_m = plo_m
-        self._in_degrees = NodeAttributes(N, dtype=int, name="in_degrees")
         self._out_degrees = NodeAttributes(N, dtype=int, name="out_degrees")
         self._lfm_active_nodes = ActiveNodes(N, self.graph)
 
@@ -44,6 +43,12 @@ class DirectedModel(Model):
 
     def _initialize_graph(self):
         self.graph = DiGraph()
+        self.graph.register_event_handler(
+            event=Event.LINK_ADD_AFTER,
+            function=self._update_out_degrees)
+
+    def _update_out_degrees(self, source: int, _: int):
+        self._out_degrees[source] += 1
 
     def _populate_initial_graph(self):
         self.graph.add_nodes_from(np.arange(self.N))
@@ -124,7 +129,7 @@ class DirectedModel(Model):
         self._out_degrees.get_metadata(d[self.__class__.__name__])
         return d
 
-    def simulate(self) -> Graph:
+    def simulate(self) -> DiGraph:
         tries = 0
         while self.graph.number_of_edges()\
                 < self._get_expected_number_of_edges():
