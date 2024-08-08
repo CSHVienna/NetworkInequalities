@@ -25,7 +25,7 @@ class Graph(BaseClass):
         self._event_handlers = defaultdict(list)
 
     def _init_graph(self, *args, **kwargs):
-        self.graph = nx.Graph()
+        self.graph = nx.Graph(*args, **kwargs)
 
     def add_edge(self, source: int, target: int, **attr) -> None:
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
@@ -69,6 +69,9 @@ class Graph(BaseClass):
     def add_nodes_from(self, *args, **kwargs):
         return self.graph.add_nodes_from(*args, **kwargs)
 
+    def is_directed(self):
+        return self.graph.is_directed()
+
     def number_of_nodes(self):
         return self.graph.number_of_nodes()
 
@@ -84,5 +87,5 @@ class Graph(BaseClass):
     def __len__(self):
         return len(self.graph)
 
-    def __getattribute__(self, name: str) -> Any:
-        return self.graph.__getattribute__(name)
+    def __getitem__(self, name: str) -> Any:
+        return self.graph.__getitem__(name)
