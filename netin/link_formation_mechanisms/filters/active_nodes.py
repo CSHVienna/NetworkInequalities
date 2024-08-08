@@ -10,7 +10,7 @@ class ActiveNodes(LinkFormationMechanism):
 
     def __init__(self, N: int, graph: DiGraph) -> None:
         super().__init__()
-        self.out_degrees = NodeAttributes(N, dtype=int)
+        self._out_degrees = NodeAttributes(N, dtype=int)
         graph.register_event_handler(
             event=Event.LINK_ADD_AFTER,
             function=self._update_out_degrees
