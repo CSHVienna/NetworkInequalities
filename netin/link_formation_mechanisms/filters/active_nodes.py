@@ -21,6 +21,5 @@ class ActiveNodes(LinkFormationMechanism):
 
     def get_target_probabilities(self, _: int) -> np.ndarray:
         target_probabilities = np.where(
-            np.where(self._out_degrees.attr() > 0, 1., 0.)
-        )
+            self._out_degrees.attr() > 0, 1., 0.)
         return target_probabilities / target_probabilities.sum()
