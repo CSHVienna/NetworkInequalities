@@ -4,16 +4,16 @@ import numpy as np
 
 from netin.graphs.directed import DiGraph
 from .dpa_model import DPAModel
-from ..link_formation_mechanisms.homophily import Homophily
+from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
 
 class DPAHModel(DPAModel):
-    h: Homophily
+    h: TwoClassHomophily
 
     def __init__(
             self, *args,
             N: int, f: float, d: float,
             plo_M: float, plo_m: float,
-            h: float,
+            h_m: float, h_M: float,
             graph: Optional[DiGraph] = None,
             seed: int = 1,
             **kwargs):
@@ -22,9 +22,9 @@ class DPAHModel(DPAModel):
             plo_M=plo_M, plo_m=plo_m,
             graph=graph, seed=seed,
             **kwargs)
-        self.h = Homophily(
+        self.h = TwoClassHomophily.from_two_class_homophily(
             node_class_values=self.node_minority_class,
-            homophily=h)
+            homophily=(h_m, h_M))
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         return\

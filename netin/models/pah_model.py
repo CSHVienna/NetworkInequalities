@@ -4,19 +4,21 @@ import numpy as np
 
 from .undirected_model import UndirectedModel
 from ..graphs import Graph
-from ..link_formation_mechanisms.homophily import Homophily
+from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
 from ..link_formation_mechanisms.preferential_attachment import PreferentialAttachment
 
 class PAHModel(UndirectedModel):
     def __init__(
             self, *args,
-            N: int, m: int, f: float, h: float,
+            N: int, m: int, f: float,
+            h_m: float, h_M: float,
             graph: Optional[Graph] = None,
             **kwargs):
         super().__init__(
             *args, N=N, m=m, f=f, graph=graph, **kwargs)
-        self.h = Homophily(
-            node_class_values=self.node_minority_class, homophily=h)
+        self.h = TwoClassHomophily.from_two_class_homophily(
+            node_class_values=self.node_minority_class,
+            homophily=(h_m, h_M))
         self.pa = PreferentialAttachment(n=N, graph=self.graph)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
