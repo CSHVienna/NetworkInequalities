@@ -47,7 +47,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         for i,k in self.graph.degree():
             self._a_degree[i] = k
 
-    def get_target_probabilities(self, _) -> np.ndarray:
+    def get_target_probabilities(self, _) -> NodeAttributes:
         """
         Calculates the target probabilities for link formation based on the preferential attachment mechanism.
 
@@ -55,10 +55,11 @@ class PreferentialAttachment(LinkFormationMechanism):
             _ : Placeholder argument.
 
         Returns:
-            np.ndarray: An array of target probabilities for each node in the network.
+            NodeAttributes: An array of target probabilities for each node in the network.
         """
         a_degree_const = self._a_degree.attr() + EPSILON
-        return a_degree_const / np.sum(a_degree_const)
+        return NodeAttributes.from_ndarray(
+            a_degree_const / np.sum(a_degree_const))
 
     def _update_degree_by_link(self, source: int, target: int):
         """

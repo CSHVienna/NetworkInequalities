@@ -2,6 +2,7 @@ import numpy as np
 
 from ..graphs.graph import Graph
 from ..graphs.event import Event
+from ..graphs.node_attributes import NodeAttributes
 from .link_formation_mechanism import LinkFormationMechanism
 
 class TriadicClosure(LinkFormationMechanism):
@@ -71,7 +72,7 @@ class TriadicClosure(LinkFormationMechanism):
             if fof not in self.graph.neighbors[source]:
                 self._a_friend_of_friends[fof] = 1.
 
-    def get_target_probabilities(self, source) -> np.ndarray:
+    def get_target_probabilities(self, source) -> NodeAttributes:
         """
         Returns the probabilities of forming links to target nodes.
 
@@ -85,4 +86,5 @@ class TriadicClosure(LinkFormationMechanism):
         """
         if source != self._source_curr:
             self._init_friends_of_friends(source=source)
-        return self._a_friend_of_friends / self._a_friend_of_friends.sum()
+        return NodeAttributes.from_ndarray(
+            self._a_friend_of_friends / self._a_friend_of_friends.sum())

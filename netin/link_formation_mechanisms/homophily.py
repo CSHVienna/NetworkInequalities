@@ -54,8 +54,8 @@ class Homophily(LinkFormationMechanism):
             self.h = homophily
         self.node_class_values = node_class_values
 
-    def get_target_probabilities(self, source: int) -> np.ndarray:
+    def get_target_probabilities(self, source: int) -> NodeAttributes:
         a_node_class_values = self.node_class_values.attr()
         class_source = a_node_class_values[source]
         p_target = self.h[class_source, a_node_class_values]
-        return p_target / p_target.sum()
+        return NodeAttributes.from_ndarray(p_target / p_target.sum())
