@@ -9,7 +9,7 @@ from ..graphs.directed import DiGraph
 from ..graphs.node_attributes import NodeAttributes
 from .model import Model
 from ..utils import constants as const
-from ..link_formation_mechanisms.filters.active_nodes import ActiveNodes
+from ..filters.active_nodes import ActiveNodes
 
 class DirectedModel(Model):
     node_activity: NodeAttributes
@@ -17,7 +17,7 @@ class DirectedModel(Model):
     plo_M: float
     plo_m: float
 
-    _lfm_active_nodes: ActiveNodes
+    _f_active_nodes: ActiveNodes
     _out_degrees: NodeAttributes
 
     def __init__(
@@ -37,7 +37,7 @@ class DirectedModel(Model):
         self.plo_M = plo_M
         self.plo_m = plo_m
         self._out_degrees = NodeAttributes(N, dtype=int, name="out_degrees")
-        self._lfm_active_nodes = ActiveNodes(N, self.graph)
+        self._f_active_nodes = ActiveNodes(N, self.graph)
 
         self._initialize_node_activity()
 
@@ -75,7 +75,7 @@ class DirectedModel(Model):
             # if there are enough edges, then select only nodes with out_degree > 0 that are not already
             # connected to the source.
             # Having out_degree > 0 means they are nodes that have been in the network for at least one time step
-            target_probabilities *= self._lfm_active_nodes.get_target_probabilities(source)
+            target_probabilities *= self._f_active_nodes.get_target_mask(source)
 
         # Check if all probabilities are zero
         # Follows https://stackoverflow.com/questions/18395725/test-if-numpy-array-contains-only-zeros

@@ -6,8 +6,8 @@ import numpy as np
 from ..graphs.graph import Graph
 from ..graphs.node_attributes import NodeAttributes
 from ..base_class import BaseClass
-from ..link_formation_mechanisms.filters.no_double_links import NoDoubleLinks
-from ..link_formation_mechanisms.filters.no_self_links import NoSelfLinks
+from ..filters.no_double_links import NoDoubleLinks
+from ..filters.no_self_links import NoSelfLinks
 
 class Model(ABC, BaseClass):
     """Model class.
@@ -19,8 +19,8 @@ class Model(ABC, BaseClass):
     graph: Graph
     node_minority_class: NodeAttributes
 
-    _lfm_no_double_links: NoDoubleLinks
-    _lfm_no_self_links: NoSelfLinks
+    _f_no_double_links: NoDoubleLinks
+    _f_no_self_links: NoSelfLinks
 
     seed: int
 
@@ -59,8 +59,8 @@ class Model(ABC, BaseClass):
             self._initialize_graph()
             self._populate_initial_graph()
 
-        self._lfm_no_self_links = NoSelfLinks(N)
-        self._lfm_no_double_links = NoDoubleLinks(N, self.graph)
+        self._f_no_self_links = NoSelfLinks(N)
+        self._f_no_double_links = NoDoubleLinks(N, self.graph)
 
     def _initialize_graph(self):
         """Initializes an empty graph.
@@ -80,8 +80,8 @@ class Model(ABC, BaseClass):
         return f"{self.__class__.__name__}(N={self.N}, f={self.f})"
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
-        return self._lfm_no_self_links.get_target_probabilities(source) * \
-        self._lfm_no_double_links.get_target_probabilities(source)
+        return self._f_no_self_links.get_target_mask(source)\
+            * self._f_no_double_links.get_target_mask(source)
 
     def get_minority_mask(self) -> np.ndarray:
         """Returns the mask of the minority class.
