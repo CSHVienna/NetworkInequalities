@@ -71,3 +71,9 @@ class NodeAttributes(BaseClass):
             d[name_cls] = {self.name: [d_meta_data]}
 
         return d
+
+    def __mul__(self, other):
+        return NodeAttributes.from_ndarray(self._attributes * other)
+
+    def __rmul__(self, other):
+        return NodeAttributes.from_ndarray(other * self._attributes)
