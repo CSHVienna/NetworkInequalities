@@ -25,7 +25,8 @@ class UndirectedModel(Model):
 
     def _populate_initial_graph(self):
         for i in range(self.m):
-            self.graph.add_node(i)
+            self.graph.add_node(
+                i, minority_class=self.node_minority_class[i])
             for j in range(i):
                 self.graph.add_edge(i, j)
 

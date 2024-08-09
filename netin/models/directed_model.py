@@ -54,7 +54,7 @@ class DirectedModel(Model):
         self._out_degrees[source] += 1
 
     def _populate_initial_graph(self):
-        self.graph.add_nodes_from(np.arange(self.N))
+        self.graph.add_nodes_from(np.arange(self.N), minority_class=self.node_minority_class)
 
     def _get_expected_number_of_edges(self):
         return int(round(self.d * self.N * (self.N - 1)))
