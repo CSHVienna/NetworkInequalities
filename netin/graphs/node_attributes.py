@@ -7,14 +7,15 @@ from ..base_class import BaseClass
 
 class NodeAttributes(BaseClass):
     _attributes: np.ndarray
+    __array_interface__: Any
     name: str
 
     def __init__(self, N: int, dtype: Type, fill_value: Optional[Number] = None, name: Optional[str] = None) -> None:
         super().__init__()
-        self._attributes = np.zeros(
+        self.set_attributes(np.zeros(
             N,
             dtype=dtype) if fill_value is None else\
-                np.full(N, fill_value, dtype=dtype)
+                np.full(N, fill_value, dtype=dtype))
         self.name = name
 
     def set_attributes(self, attributes: np.ndarray) -> None:
@@ -26,6 +27,7 @@ class NodeAttributes(BaseClass):
             Node attributes.
         """
         self._attributes = attributes
+        self.__array_interface__ = attributes.__array_interface__
 
     def get_attributes(self) -> Any:
         return self._attributes
@@ -47,15 +49,9 @@ class NodeAttributes(BaseClass):
         """
         assert isinstance(attributes, np.ndarray),\
             f"attributes must be of type np.ndarray, but is {type(attributes)}"
-        node_attributes = cls(attributes.shape[0], attributes.dtype, **kwargs)
+        node_attributes = cls(len(attributes), attributes.dtype, **kwargs)
         node_attributes.set_attributes(attributes)
         return node_attributes
-
-    def __getitem__(self, key: int) -> np.ndarray:
-        return self._attributes[key]
-
-    def __setitem__(self, key: int, value: np.ndarray) -> None:
-        self._attributes[key] = value
 
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
@@ -74,14 +70,22 @@ class NodeAttributes(BaseClass):
 
         return d
 
+    def sum(self, *args, **kwargs) -> Any:
+        return self._attributes.sum(*args, **kwargs)
+
+    def __getitem__(self, key: int) -> np.ndarray:
+        return self._attributes[key]
+
+    def __setitem__(self, key: int, value: np.ndarray) -> None:
+        self._attributes[key] = value
+
     def __mul__(self, other):
-        return NodeAttributes.from_ndarray(
-            np.multiply(self._attributes, other._attributes)
-            if isinstance(other, NodeAttributes) else
-            np.multiply(self._attributes, other))
+        return np.multiply(self, other)
 
     def __rmul__(self, other):
-        return NodeAttributes.from_ndarray(
-            np.multiply(other._attributes, self._attributes)
-            if isinstance(other, NodeAttributes) else
-            np.multiply(other, self._attributes))
+        return np.multiply(other, self)
+
+    def __array__(self, dtype=None, copy=None):
+        # This allows the usage of numpy functions
+        # Such as np.sum(node_attributes)
+        return self._attributes.__array__(dtype=dtype, copy=copy)
