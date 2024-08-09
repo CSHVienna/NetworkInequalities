@@ -9,11 +9,14 @@ from ..link_formation_mechanisms.preferential_attachment import PreferentialAtta
 class BarabasiAlbertModel(UndirectedModel):
     def __init__(
             self, *args,
-            N: int, m: int, f: float,
+            N: int, f: float,
+            m:int,
             graph: Optional[Graph] = None,
+            seed: int = 1,
             **kwargs):
         super().__init__(
-            *args, N=N, m=m, f=f, graph=graph, **kwargs)
+            *args, N=N, m=m, f=f,
+            graph=graph, seed=seed, **kwargs)
         self.pa = PreferentialAttachment(n=N, graph=self.graph)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:

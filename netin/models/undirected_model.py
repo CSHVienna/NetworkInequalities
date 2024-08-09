@@ -6,11 +6,18 @@ from .model import Model
 class UndirectedModel(Model):
     m: int
 
-    def __init__(self, *args, N: int, m: int, f: float, graph=None, **kwargs):
+    def __init__(
+            self, *args,
+            N: int, f: float,
+            m:int,
+            graph: Optional[Graph] = None,
+            seed: int = 1,
+            **kwargs):
         self.m = m
         super().__init__(
             *args,
             N=N, f=f, graph=graph,
+            seed=seed
             **kwargs)
 
     def _initialize_graph(self):

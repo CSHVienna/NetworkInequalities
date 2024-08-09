@@ -9,11 +9,16 @@ from .undirected_model import UndirectedModel
 class HomophilyModel(UndirectedModel):
     def __init__(
             self, *args,
-            N: int, m: int, f: float,
+            N: int, f: float,
+            m:int,
             h_m: float, h_M: float,
             graph: Optional[Graph] = None,
+            seed: int = 1,
             **kwargs):
-        super().__init__(*args, N=N, m=m, f=f, graph=graph, **kwargs)
+        super().__init__(
+            *args, N=N, m=m, f=f,
+            graph=graph,
+            seed=seed, **kwargs)
         self.h = TwoClassHomophily.from_two_class_homophily(
             node_class_values=self.node_minority_class,
             homophily=(h_m, h_M))
