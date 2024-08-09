@@ -45,6 +45,8 @@ class NodeAttributes(BaseClass):
         attributes : np.ndarray
             The values of the node attributes.
         """
+        assert isinstance(attributes, np.ndarray),\
+            f"attributes must be of type np.ndarray, but is {type(attributes)}"
         node_attributes = cls(attributes.shape[0], attributes.dtype, **kwargs)
         node_attributes.set_attributes(attributes)
         return node_attributes
@@ -73,7 +75,13 @@ class NodeAttributes(BaseClass):
         return d
 
     def __mul__(self, other):
-        return NodeAttributes.from_ndarray(self._attributes * other)
+        return NodeAttributes.from_ndarray(
+            np.multiply(self._attributes, other._attributes)
+            if isinstance(other, NodeAttributes) else
+            np.multiply(self._attributes, other))
 
     def __rmul__(self, other):
-        return NodeAttributes.from_ndarray(other * self._attributes)
+        return NodeAttributes.from_ndarray(
+            np.multiply(other._attributes, self._attributes)
+            if isinstance(other, NodeAttributes) else
+            np.multiply(other, self._attributes))
