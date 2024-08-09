@@ -48,7 +48,7 @@ class Model(ABC, BaseClass):
 
         self.N = N
         self.f = f
-        self.seed = seed
+        self.rng = np.random.default_rng(seed=seed)
         np.random.seed(seed)
 
         self.node_minority_class = NodeAttributes\
@@ -130,8 +130,8 @@ class Model(ABC, BaseClass):
 
         return d
 
-    @staticmethod
-    def _sample_target_node(target_probabilities: np.ndarray) -> int:
-        return np.random.choice(
+    def _sample_target_node(
+            self, target_probabilities: np.ndarray) -> int:
+        return self.rng.choice(
             np.arange(len(target_probabilities)),
             p=target_probabilities)
