@@ -64,26 +64,24 @@ class DirectedModel(Model):
             p=self.node_activity.attr())
 
     def _get_target(self, source: int):
-        a_out_degrees = self._out_degrees.attr()
-
         # Initialize uniform probabilities
         target_probabilities = np.full(self.N, 1. / self.N)
 
         # Check if there are enough edges to consider only nodes with out_degree > 0
         one_percent = self.N * 1 / 100.
-        if np.count_nonzero(a_out_degrees) > one_percent:
+        if np.count_nonzero(self._out_degrees) > one_percent:
             # if there are enough edges, then select only nodes with out_degree > 0 that are not already
             # connected to the source.
             # Having out_degree > 0 means they are nodes that have been in the network for at least one time step
             target_probabilities *= self._f_active_nodes.get_target_mask(source)
 
+        # Call other potential link formation mechanisms
+        target_probabilities *= self.compute_target_probabilities(source)
+
         # Check if all probabilities are zero
         # Follows https://stackoverflow.com/questions/18395725/test-if-numpy-array-contains-only-zeros
         if not np.any(target_probabilities):
             return None
-
-        # Call other potential link formation mechanisms
-        target_probabilities *= self.compute_target_probabilities(source)
 
         # Normalize probabilities
         target_probabilities /= target_probabilities.sum()
