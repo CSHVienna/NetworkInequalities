@@ -3,14 +3,13 @@ import numpy as np
 from ..graphs.graph import Graph
 from ..graphs.event import Event
 from ..graphs.node_attributes import NodeAttributes
-from .link_formation_mechanism import LinkFormationMechanism
+from .filter import Filter
 
-class TriadicClosure(LinkFormationMechanism):
+class TriadicClosure(Filter):
     """
-    A link formation mechanism based on triadic closure.
+    A filter based on triadic closure.
 
-    This mechanism calculates the probabilities of forming links based on the concept of triadic closure,
-    which states that individuals who have a common friend are more likely to form a connection.
+    This filter assigns a zero probability to nodes who are not friend of friends of the source node.
 
     Attributes:
         _a_friend_of_friends (np.ndarray): Array representing the presence of friends of friends.
@@ -72,7 +71,7 @@ class TriadicClosure(LinkFormationMechanism):
             if fof not in self.graph.neighbors[source]:
                 self._a_friend_of_friends[fof] = 1.
 
-    def get_target_probabilities(self, source) -> NodeAttributes:
+    def get_target_mask(self, source) -> NodeAttributes:
         """
         Returns the probabilities of forming links to target nodes.
 
@@ -87,4 +86,4 @@ class TriadicClosure(LinkFormationMechanism):
         if source != self._source_curr:
             self._init_friends_of_friends(source=source)
         return NodeAttributes.from_ndarray(
-            self._a_friend_of_friends / self._a_friend_of_friends.sum())
+            self._a_friend_of_friends)
