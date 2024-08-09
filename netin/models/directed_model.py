@@ -10,6 +10,7 @@ from ..graphs.node_attributes import NodeAttributes
 from .model import Model
 from ..utils import constants as const
 from ..filters.active_nodes import ActiveNodes
+from ..link_formation_mechanisms.uniform import Uniform
 
 class DirectedModel(Model):
     node_activity: NodeAttributes
@@ -18,6 +19,7 @@ class DirectedModel(Model):
     plo_m: float
 
     _f_active_nodes: ActiveNodes
+    _lfm_uniform: Uniform
     _out_degrees: NodeAttributes
 
     def __init__(
@@ -38,6 +40,7 @@ class DirectedModel(Model):
         self.plo_m = plo_m
         self._out_degrees = NodeAttributes(N, dtype=int, name="out_degrees")
         self._f_active_nodes = ActiveNodes(N, self.graph)
+        self._lfm_uniform = Uniform(N)
 
         self._initialize_node_activity()
 
@@ -65,7 +68,7 @@ class DirectedModel(Model):
 
     def _get_target(self, source: int):
         # Initialize uniform probabilities
-        target_probabilities = np.full(self.N, 1. / self.N)
+        target_probabilities = self._lfm_uniform.get_target_probabilities(source)
 
         # Check if there are enough edges to consider only nodes with out_degree > 0
         one_percent = self.N * 1 / 100.
