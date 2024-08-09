@@ -49,7 +49,6 @@ class Model(ABC, BaseClass):
         self.N = N
         self.f = f
         self.rng = np.random.default_rng(seed=seed)
-        np.random.seed(seed)
 
         self.node_minority_class = NodeAttributes\
             .from_ndarray(
