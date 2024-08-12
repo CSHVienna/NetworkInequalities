@@ -30,20 +30,29 @@ class Homophily(LinkFormationMechanism):
         homophily : Union[float, np.ndarray]
             The homophily value(s).
             If a single value is provided, the in-group links have a probability of
-            `homophily` and out-group links have a probability of `1 - homophily`.
+            `homophily` and out-group links have a uniforom probability of `1 - homophily / n_class_values - 1`.
             If a matrix is provided, the probabilities are determined by the matrix values.
+            The matrix must be symmetric and have the shape of (`n_class_values`, `n_class_values`).
+            Moreover, row values have to sum up to 1.
         """
         super().__init__()
 
         if n_class_values is None:
             n_class_values = np.max(node_class_values.attr()) + 1
+        else:
+            _max = np.max(node_class_values)
+            assert _max < n_class_values,\
+            ("Classes must be numbered form 0 to "
+             f"`n_class_values`. Highest class was {_max} "
+             f"and `n_class_values` is {n_class_values}.")
 
         assert node_class_values.attr().ndim == 1,\
             ("Node class values must be a 1D array with dimensions (n_nodes,). "
              "Multiple dimensions are not (yet) supported by this class.")
         if isinstance(homophily, float):
             self.h = np.full(
-                (n_class_values,  n_class_values), 1 - homophily)
+                (n_class_values,  n_class_values),
+                (1 - homophily) / (n_class_values - 1))
             np.fill_diagonal(self.h, homophily)
         else:
             assert homophily.shape == (n_class_values, n_class_values),\
@@ -51,6 +60,9 @@ class Homophily(LinkFormationMechanism):
                  "shape of (`n_class_values`, `n_class_values`)="
                  f"{(n_class_values, n_class_values)} "
                  f"but is {homophily.shape}")
+            assert np.all(np.sum(homophily, axis=1) == 1.),\
+                ("Row values of the homophily matrix must sum up to 1. "
+                 f"Matrix is {homophily}")
             self.h = homophily
         self.node_class_values = node_class_values
 
