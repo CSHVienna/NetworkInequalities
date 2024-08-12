@@ -73,6 +73,9 @@ class NodeAttributes(BaseClass):
     def sum(self, *args, **kwargs) -> Any:
         return self._attributes.sum(*args, **kwargs)
 
+    def __eq__(self, value: object):
+        return self._attributes.__eq__(value)
+
     def __getitem__(self, key: int) -> np.ndarray:
         return self._attributes[key]
 
