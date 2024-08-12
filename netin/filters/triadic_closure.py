@@ -50,7 +50,7 @@ class TriadicClosure(Filter):
             f_o_f\
                 for friend in self.graph.neighbors(source)\
                     for f_o_f in self.graph.neighbors(friend)\
-                        if f_o_f not in self.graph.neighbors(source)
+                        if (f_o_f not in self.graph.neighbors(source)) and (f_o_f != source)
         ]
         self._a_friend_of_friends[fof] = 1.
 
@@ -68,7 +68,8 @@ class TriadicClosure(Filter):
         if source != self._source_curr:
             return
         for fof in self.graph.neighbors[target]:
-            if fof not in self.graph.neighbors[source]:
+            if (fof not in self.graph.neighbors[source])\
+                and (source != fof):
                 self._a_friend_of_friends[fof] = 1.
 
     def get_target_mask(self, source) -> NodeAttributes:
