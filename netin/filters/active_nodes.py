@@ -9,6 +9,8 @@ class ActiveNodes(Filter):
     _out_degrees: NodeAttributes
 
     def __init__(self, N: int, graph: DiGraph) -> None:
+        assert isinstance(graph, DiGraph),\
+            f"`graph` should be directe but is of type `{type(graph)}`"
         super().__init__()
         self._out_degrees = NodeAttributes(N, dtype=int)
         graph.register_event_handler(
