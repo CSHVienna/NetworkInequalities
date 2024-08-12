@@ -21,6 +21,9 @@ class TwoClassHomophily(Homophily):
             node_class_values: NodeAttributes)\
             -> "TwoClassHomophily":
 
+        assert(len(homophily) == 2),\
+            ("Homophily for two classes must be a tuple of two values. "
+             f"Received {homophily}.")
         return cls(
             node_class_values=node_class_values,
             homophily=np.asarray(
