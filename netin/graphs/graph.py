@@ -72,6 +72,9 @@ class Graph(BaseClass):
     def is_directed(self):
         return self.graph.is_directed()
 
+    def has_edge(self, source: int, target: int):
+        return self.graph.has_edge(source, target)
+
     def number_of_nodes(self):
         return self.graph.number_of_nodes()
 
