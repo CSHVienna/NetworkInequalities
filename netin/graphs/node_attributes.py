@@ -4,6 +4,7 @@ from numbers import Number
 import numpy as np
 
 from ..base_class import BaseClass
+from ..utils.validator import validate_int
 
 class NodeAttributes(BaseClass):
     _attributes: np.ndarray
@@ -11,6 +12,7 @@ class NodeAttributes(BaseClass):
     name: str
 
     def __init__(self, N: int, dtype: Type, fill_value: Optional[Number] = None, name: Optional[str] = None) -> None:
+        validate_int(N, minimum=1)
         super().__init__()
         self.set_attributes(np.zeros(
             N,

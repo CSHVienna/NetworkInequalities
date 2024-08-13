@@ -3,6 +3,7 @@ from typing import Tuple, Union
 import numpy as np
 
 from ..graphs.node_attributes import NodeAttributes
+from ..utils.validator import validate_float
 from .homophily import Homophily
 
 class TwoClassHomophily(Homophily):
@@ -24,6 +25,8 @@ class TwoClassHomophily(Homophily):
         assert(len(homophily) == 2),\
             ("Homophily for two classes must be a tuple of two values. "
              f"Received {homophily}.")
+        for h in homophily:
+            validate_float(h, minimum=0., maximum=1.)
         return cls(
             node_class_values=node_class_values,
             homophily=np.asarray(

@@ -3,6 +3,7 @@ import numpy as np
 
 from .link_formation_mechanism import LinkFormationMechanism
 from ..graphs.node_attributes import NodeAttributes
+from ..utils.validator import validate_float
 
 class Homophily(LinkFormationMechanism):
     node_class_values: NodeAttributes
@@ -50,6 +51,7 @@ class Homophily(LinkFormationMechanism):
             ("Node class values must be a 1D array with dimensions (n_nodes,). "
              "Multiple dimensions are not (yet) supported by this class.")
         if isinstance(homophily, float):
+            validate_float(homophily, minimum=0., maximum=1.)
             self.h = np.full(
                 (n_class_values,  n_class_values),
                 (1 - homophily) / (n_class_values - 1))

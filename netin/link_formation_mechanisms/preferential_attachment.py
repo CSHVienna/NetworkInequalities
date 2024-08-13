@@ -4,6 +4,7 @@ from ..utils.constants import EPSILON
 from ..graphs.graph import Graph
 from ..graphs.event import Event
 from ..graphs.node_attributes import NodeAttributes
+from ..utils.validator import validate_int
 from .link_formation_mechanism import LinkFormationMechanism
 
 class PreferentialAttachment(LinkFormationMechanism):
@@ -31,6 +32,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         Returns:
             None
         """
+        validate_int(n, minimum=1)
         super().__init__()
         self.graph = graph
         self._a_degree = NodeAttributes(

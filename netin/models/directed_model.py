@@ -9,6 +9,7 @@ from ..graphs.directed import DiGraph
 from ..graphs.node_attributes import NodeAttributes
 from .model import Model
 from ..utils import constants as const
+from ..utils.validator import validate_float, validate_int
 from ..filters.active_nodes import ActiveNodes
 from ..link_formation_mechanisms.uniform import Uniform
 
@@ -30,6 +31,11 @@ class DirectedModel(Model):
             seed: int = 1,
             **kwargs):
         assert graph is None or isinstance(graph, DiGraph), "graph must be a DiGraph"
+        validate_float(d, minimum=0., maximum=1.)
+        validate_float(plo_M, minimum=0.)
+        validate_float(plo_m, minimum=0.)
+        validate_float(f, minimum=0., maximum=1.)
+        validate_int(N, minimum=1)
         super().__init__(
             *args, N=N, f=f,
             graph=graph, seed=seed,

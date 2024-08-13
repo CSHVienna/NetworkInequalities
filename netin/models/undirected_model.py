@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional
 
 from ..graphs import Graph
+from ..utils.validator import validate_float, validate_int
 from .model import Model
 
 class UndirectedModel(Model):
@@ -13,6 +14,9 @@ class UndirectedModel(Model):
             graph: Optional[Graph] = None,
             seed: int = 1,
             **kwargs):
+        validate_int(N, minimum=1)
+        validate_int(m, minimum=1)
+        validate_float(f, minimum=0., maximum=1.)
         self.m = m
         super().__init__(
             *args,
