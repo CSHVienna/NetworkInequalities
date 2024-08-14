@@ -59,6 +59,8 @@ class Graph(BaseClass):
         g_copy = self.graph.copy()
         if node_attributes is not None:
             for name, node_vector in node_attributes.items():
+                assert(len(node_vector) == len(g_copy)),\
+                    f"Length of node vector `{name}` does not match the number of nodes in the graph"
                 nx.set_node_attributes(
                     G=g_copy,
                     name=name,
