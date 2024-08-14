@@ -7,15 +7,6 @@ from .event import Event
 from ..base_class import BaseClass
 
 class Graph(BaseClass):
-    """_summary_
-
-    Parameters
-    ----------
-    nx : _type_
-        _description_
-    BaseGraph : _type_
-        _description_
-    """
     graph: nx.Graph
     _event_handlers: Dict[Event, Callable[[Any], None]]
 
