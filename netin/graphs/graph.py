@@ -5,7 +5,7 @@ import networkx as nx
 import numpy as np
 
 from .event import Event
-from .node_vector import NodeVector
+from .node_vector import NodeClassVector
 from ..base_class import BaseClass
 
 class Graph(BaseClass):
@@ -55,7 +55,7 @@ class Graph(BaseClass):
 
     def to_nxgraph(
             self,
-            node_attributes: Optional[Dict[str, NodeVector]] = None) -> nx.Graph:
+            node_attributes: Optional[Dict[str, NodeClassVector]] = None) -> nx.Graph:
         g_copy = self.graph.copy()
         if node_attributes is not None:
             for name, node_vector in node_attributes.items():

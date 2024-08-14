@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 from ..graphs.graph import Graph
-from ..graphs.node_vector import NodeVector
+from ..graphs.node_vector import NodeClassVector
 from ..base_class import BaseClass
 from ..filters.no_double_links import NoDoubleLinks
 from ..filters.no_self_links import NoSelfLinks
@@ -16,7 +16,7 @@ class Model(ABC, BaseClass):
     """
     N: int
     graph: Graph
-    node_attributes: Dict[str, NodeVector]
+    node_attributes: Dict[str, NodeClassVector]
     seed: int
 
     _f_no_double_links: NoDoubleLinks
@@ -27,7 +27,7 @@ class Model(ABC, BaseClass):
     def __init__(
             self, *args,
             N: int,
-            node_attributes: Optional[Dict[str, NodeVector]] = None,
+            node_attributes: Optional[Dict[str, NodeClassVector]] = None,
             graph: Optional[Graph] = None,
             seed: int = 1,
             **kwargs):
@@ -37,7 +37,7 @@ class Model(ABC, BaseClass):
         ----------
         N : int
             Number of final nodes in the network.
-        node_attributes : Dict[str, NodeVector]
+        node_attributes : Dict[str, NodeClassVector]
             A dictionary of node attributes. Each attribute must be a NodeVector with length `N`.
         graph : Optional[Graph], optional
             If present, an existing network that will be extended. In this case, `N >= graph.number_of_nodes()` as the graph will be extended by the missing nodes. If no graph is given, the model creates its own graph and initializes it with `m` fully connected nodes.

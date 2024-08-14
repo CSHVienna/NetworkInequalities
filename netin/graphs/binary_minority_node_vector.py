@@ -1,16 +1,31 @@
-from typing import Optional
+from numbers import Number
+from typing import Optional, List, Type
 
 import numpy as np
 
 from ..utils.validator import validate_float, validate_int
-from .node_vector import NodeVector
+from ..utils.constants import CLASS_ATTRIBUTE, CLASS_LABELS
+from .node_class_vector import NodeClassVector
 
-class BinaryMinorityNodeVector(NodeVector):
+class BinaryMinorityNodeVector(NodeClassVector):
+    def __init__(
+        self, N: int,
+        class_labels: Optional[List[str]] = CLASS_LABELS,
+        name: Optional[str] = CLASS_ATTRIBUTE) -> None:
+        super().__init__(N=N, n_values=2, class_labels=class_labels, name=name)
+
     @classmethod
-    def from_ndarray(cls, values: np.ndarray, **kwargs) -> 'BinaryMinorityNodeVector':
-        assert values.dtype == np.int, "values must be of type np.int"
+    def from_nd_array(cls,
+        values: np.ndarray,
+        class_labels: Optional[List[str]] = None,
+        **kwargs)\
+            -> 'BinaryMinorityNodeVector':
         assert np.all(np.isin(values, {0, 1})), "values must be binary"
-        return super().from_ndarray(values, **kwargs)
+        bmnv = BinaryMinorityNodeVector(
+            N=len(values),
+            class_labels=class_labels, **kwargs)
+        bmnv._values = values
+        return bmnv
 
     @classmethod
     def from_fraction(
