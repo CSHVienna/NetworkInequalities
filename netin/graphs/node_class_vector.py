@@ -44,3 +44,6 @@ class NodeClassVector(NodeVector):
             class_labels=class_labels, **kwargs)
 
         return ncv
+
+    def get_class_values(self, as_labels: bool=False) -> np.ndarray:
+        return np.arange(self.n_values) if not as_labels else self.class_labels
