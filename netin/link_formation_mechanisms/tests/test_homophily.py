@@ -5,7 +5,7 @@ import numpy as np
 
 from ..homophily import Homophily
 from ..two_class_homophily import TwoClassHomophily
-from ...graphs.node_attributes import NodeVector
+from ...graphs.node_vector import NodeVector
 
 class TestHomophily:
     @staticmethod

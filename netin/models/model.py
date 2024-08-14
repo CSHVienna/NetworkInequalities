@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 from ..graphs.graph import Graph
-from ..graphs.node_attributes import NodeVector
+from ..graphs.node_vector import NodeVector
 from ..base_class import BaseClass
 from ..filters.no_double_links import NoDoubleLinks
 from ..filters.no_self_links import NoSelfLinks

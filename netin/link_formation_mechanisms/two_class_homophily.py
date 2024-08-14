@@ -2,7 +2,7 @@ from typing import Tuple, Union
 
 import numpy as np
 
-from ..graphs.node_attributes import NodeVector
+from ..graphs.node_vector import NodeVector
 from ..utils.validator import validate_float
 from .homophily import Homophily
 

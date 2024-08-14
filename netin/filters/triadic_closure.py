@@ -2,7 +2,7 @@ import numpy as np
 
 from ..graphs.graph import Graph
 from ..graphs.event import Event
-from ..graphs.node_attributes import NodeVector
+from ..graphs.node_vector import NodeVector
 from .filter import Filter
 
 class TriadicClosure(Filter):

@@ -6,7 +6,7 @@ import networkx as nx
 
 from ..graphs.event import Event
 from ..graphs.directed import DiGraph
-from ..graphs.node_attributes import NodeVector
+from ..graphs.node_vector import NodeVector
 from .model import Model
 from ..utils import constants as const
 from ..utils.validator import validate_float, validate_int

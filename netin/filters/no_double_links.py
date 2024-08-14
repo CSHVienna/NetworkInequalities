@@ -2,7 +2,7 @@ import numpy as np
 
 from .filter import Filter
 from ..graphs.graph import Graph
-from ..graphs.node_attributes import NodeVector
+from ..graphs.node_vector import NodeVector
 
 class NoDoubleLinks(Filter):
     N: int

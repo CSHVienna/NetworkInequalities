@@ -1,7 +1,7 @@
 import numpy as np
 
 from .filter import Filter
-from ..graphs.node_attributes import NodeVector
+from ..graphs.node_vector import NodeVector
 
 class NoSelfLinks(Filter):
     N: int

@@ -3,7 +3,7 @@ import numpy as np
 from ..utils.constants import EPSILON
 from ..graphs.graph import Graph
 from ..graphs.event import Event
-from ..graphs.node_attributes import NodeVector
+from ..graphs.node_vector import NodeVector
 from ..utils.validator import validate_int
 from .link_formation_mechanism import LinkFormationMechanism
 

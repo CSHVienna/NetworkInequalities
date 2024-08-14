@@ -1,7 +1,7 @@
 import numpy as np
 
 from .link_formation_mechanism import LinkFormationMechanism
-from ..graphs.node_attributes import NodeVector
+from ..graphs.node_vector import NodeVector
 from ..utils.validator import validate_int
 
 class Uniform(LinkFormationMechanism):

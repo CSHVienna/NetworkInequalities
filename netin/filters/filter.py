@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 from ..base_class import BaseClass
-from ..graphs.node_attributes import NodeVector
+from ..graphs.node_vector import NodeVector
 
 class Filter(BaseClass):
     @abstractmethod
