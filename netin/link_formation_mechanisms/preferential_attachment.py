@@ -59,7 +59,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         Returns:
             NodeVector: An array of target probabilities for each node in the network.
         """
-        a_degree_const = self._a_degree.attr() + EPSILON
+        a_degree_const = self._a_degree + EPSILON
         return NodeVector.from_ndarray(
             a_degree_const / np.sum(a_degree_const))
 

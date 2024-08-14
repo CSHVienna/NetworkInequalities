@@ -29,7 +29,7 @@ class TestFilters(object):
         m0 = an.get_target_mask(-1)
         TestFilters.assert_one_zero_xor(m0)
         assert isinstance(m0, NodeVector), "Active nodes mask is not an instance of `NodeVector`."
-        assert np.all(m0.attr() == 0.), "Active nodes mask is not initialized correctly."
+        assert np.all(m0 == 0.), "Active nodes mask is not initialized correctly."
 
         dg.add_edge(0, 1)
         m1 = an.get_target_mask(-1)

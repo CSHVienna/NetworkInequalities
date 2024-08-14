@@ -39,7 +39,7 @@ class Homophily(LinkFormationMechanism):
         super().__init__()
 
         if n_class_values is None:
-            n_class_values = np.max(node_class_values.attr()) + 1
+            n_class_values = np.max(node_class_values) + 1
         else:
             _max = np.max(node_class_values)
             assert _max < n_class_values,\
@@ -47,7 +47,7 @@ class Homophily(LinkFormationMechanism):
              f"`n_class_values`. Highest class was {_max} "
              f"and `n_class_values` is {n_class_values}.")
 
-        assert node_class_values.attr().ndim == 1,\
+        assert node_class_values.vals().ndim == 1,\
             ("Node class values must be a 1D array with dimensions (n_nodes,). "
              "Multiple dimensions are not (yet) supported by this class.")
         if isinstance(homophily, float):
@@ -69,7 +69,7 @@ class Homophily(LinkFormationMechanism):
         self.node_class_values = node_class_values
 
     def get_target_probabilities(self, source: int) -> NodeVector:
-        a_node_class_values = self.node_class_values.attr()
+        a_node_class_values = self.node_class_values
         class_source = a_node_class_values[source]
         p_target = self.h[class_source, a_node_class_values]
         return NodeVector.from_ndarray(p_target / p_target.sum())

@@ -90,7 +90,7 @@ class Model(ABC, BaseClass):
         np.ndarray
             Mask of the minority class.
         """
-        return self.node_minority_class.attr() == 1
+        return self.node_minority_class == 1
 
     def get_majority_mask(self) -> np.ndarray:
         """Returns the mask of the majority class.
@@ -110,7 +110,7 @@ class Model(ABC, BaseClass):
         int
             Number of nodes in the minority class.
         """
-        return np.sum(self.node_minority_class.attr())
+        return np.sum(self.node_minority_class)
 
     def get_n_majority(self) -> int:
         return self.N - self.get_n_minority()

@@ -23,5 +23,5 @@ class ActiveNodes(Filter):
 
     def get_target_mask(self, _: int) -> NodeVector:
         target_mask = np.where(
-            self._out_degrees.attr() > 0, 1., 0.)
+            self._out_degrees > 0, 1., 0.)
         return NodeVector.from_ndarray(target_mask)

@@ -70,7 +70,7 @@ class DirectedModel(Model):
             a=np.arange(self.N),
             size=self._get_expected_number_of_edges(),
             replace=True,
-            p=self.node_activity.attr())
+            p=self.node_activity)
 
     def _get_target(self, source: int):
         # Initialize uniform probabilities
