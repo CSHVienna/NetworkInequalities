@@ -2,8 +2,10 @@ from typing import Any, Optional, Dict, Callable
 from collections import defaultdict
 
 import networkx as nx
+import numpy as np
 
 from .event import Event
+from .node_vector import NodeVector
 from ..base_class import BaseClass
 
 class Graph(BaseClass):
@@ -49,6 +51,21 @@ class Graph(BaseClass):
         g_copy.graph = g
         for event, functions in self._event_handlers.items():
             g_copy.register_event_handler(event, functions)
+        return g_copy
+
+    def to_nxgraph(
+            self,
+            node_attributes: Optional[Dict[str, NodeVector]] = None) -> nx.Graph:
+        g_copy = self.graph.copy()
+        if node_attributes is not None:
+            for name, node_vector in node_attributes.items():
+                nx.set_node_attributes(
+                    G=g_copy,
+                    name=name,
+                    # Create a dictionary with the node indices as keys
+                    # and the values of the node vector as values
+                    values=dict(zip(
+                        np.arange(len(node_vector)), node_vector.vals())))
         return g_copy
 
     ################################################
