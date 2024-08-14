@@ -4,3 +4,4 @@ from .indegree_preferential_attachment import InDegreePreferentialAttachment
 from .preferential_attachment import PreferentialAttachment
 from .triadic_closure import TriadicClosure
 from .uniform import Uniform
+from .link_formation_mechanism import LinkFormationMechanism

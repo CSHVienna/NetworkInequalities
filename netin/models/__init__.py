@@ -1,3 +1,4 @@
+from .model import Model
 from .directed_model import DirectedModel
 from .undirected_model import UndirectedModel
 
