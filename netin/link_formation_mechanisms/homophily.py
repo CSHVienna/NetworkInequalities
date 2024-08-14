@@ -2,16 +2,16 @@ from typing import Union, Optional
 import numpy as np
 
 from .link_formation_mechanism import LinkFormationMechanism
-from ..graphs.node_attributes import NodeAttributes
+from ..graphs.node_attributes import NodeVector
 from ..utils.validator import validate_float
 
 class Homophily(LinkFormationMechanism):
-    node_class_values: NodeAttributes
+    node_class_values: NodeVector
     h: np.ndarray
 
     def __init__(
             self,
-            node_class_values: NodeAttributes,
+            node_class_values: NodeVector,
             homophily: Union[float, np.ndarray],
             n_class_values: Optional[int] = None,
             ) -> None:
@@ -68,8 +68,8 @@ class Homophily(LinkFormationMechanism):
             self.h = homophily
         self.node_class_values = node_class_values
 
-    def get_target_probabilities(self, source: int) -> NodeAttributes:
+    def get_target_probabilities(self, source: int) -> NodeVector:
         a_node_class_values = self.node_class_values.attr()
         class_source = a_node_class_values[source]
         p_target = self.h[class_source, a_node_class_values]
-        return NodeAttributes.from_ndarray(p_target / p_target.sum())
+        return NodeVector.from_ndarray(p_target / p_target.sum())

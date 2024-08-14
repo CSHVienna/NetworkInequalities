@@ -3,7 +3,7 @@ import numpy as np
 from ..utils.constants import EPSILON
 from ..graphs.graph import Graph
 from ..graphs.event import Event
-from ..graphs.node_attributes import NodeAttributes
+from ..graphs.node_attributes import NodeVector
 from ..utils.validator import validate_int
 from .link_formation_mechanism import LinkFormationMechanism
 
@@ -16,7 +16,7 @@ class PreferentialAttachment(LinkFormationMechanism):
     LinkFormationMechanism : type
         The base class for link formation mechanisms.
     """
-    _a_degree: NodeAttributes
+    _a_degree: NodeVector
 
     def __init__(
             self, graph: Graph, n: int,
@@ -35,7 +35,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         validate_int(n, minimum=1)
         super().__init__()
         self.graph = graph
-        self._a_degree = NodeAttributes(
+        self._a_degree = NodeVector(
             n, dtype=int, name="degrees")
 
         if init_degrees:
@@ -49,7 +49,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         for i,k in self.graph.degree():
             self._a_degree[i] = k
 
-    def get_target_probabilities(self, _) -> NodeAttributes:
+    def get_target_probabilities(self, _) -> NodeVector:
         """
         Calculates the target probabilities for link formation based on the preferential attachment mechanism.
 
@@ -57,10 +57,10 @@ class PreferentialAttachment(LinkFormationMechanism):
             _ : Placeholder argument.
 
         Returns:
-            NodeAttributes: An array of target probabilities for each node in the network.
+            NodeVector: An array of target probabilities for each node in the network.
         """
         a_degree_const = self._a_degree.attr() + EPSILON
-        return NodeAttributes.from_ndarray(
+        return NodeVector.from_ndarray(
             a_degree_const / np.sum(a_degree_const))
 
     def _update_degree_by_link(self, source: int, target: int):

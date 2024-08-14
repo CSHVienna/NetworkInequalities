@@ -5,16 +5,16 @@ import numpy as np
 
 from ..homophily import Homophily
 from ..two_class_homophily import TwoClassHomophily
-from ...graphs.node_attributes import NodeAttributes
+from ...graphs.node_attributes import NodeVector
 
 class TestHomophily:
     @staticmethod
-    def _generate_class_values(l_n: List[int]) -> NodeAttributes:
+    def _generate_class_values(l_n: List[int]) -> NodeVector:
         l_classes = []
         for i, Ni in enumerate(l_n):
             for _ in range(Ni):
                 l_classes.append(i)
-        return NodeAttributes\
+        return NodeVector\
             .from_ndarray(np.array(l_classes))
 
     def test_homophily_mixing_matrix_dims(self):

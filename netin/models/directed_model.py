@@ -6,7 +6,7 @@ import networkx as nx
 
 from ..graphs.event import Event
 from ..graphs.directed import DiGraph
-from ..graphs.node_attributes import NodeAttributes
+from ..graphs.node_attributes import NodeVector
 from .model import Model
 from ..utils import constants as const
 from ..utils.validator import validate_float, validate_int
@@ -14,14 +14,14 @@ from ..filters.active_nodes import ActiveNodes
 from ..link_formation_mechanisms.uniform import Uniform
 
 class DirectedModel(Model):
-    node_activity: NodeAttributes
+    node_activity: NodeVector
     d: float
     plo_M: float
     plo_m: float
 
     _f_active_nodes: ActiveNodes
     _lfm_uniform: Uniform
-    _out_degrees: NodeAttributes
+    _out_degrees: NodeVector
 
     def __init__(
             self, *args,
@@ -44,7 +44,7 @@ class DirectedModel(Model):
         self.d = d
         self.plo_M = plo_M
         self.plo_m = plo_m
-        self._out_degrees = NodeAttributes(N, dtype=int, name="out_degrees")
+        self._out_degrees = NodeVector(N, dtype=int, name="out_degrees")
         self._f_active_nodes = ActiveNodes(N, self.graph)
         self._lfm_uniform = Uniform(N)
 
@@ -121,7 +121,7 @@ class DirectedModel(Model):
             a_node_activity += 1
         a_node_activity /= a_node_activity.sum()
 
-        self.node_activity = NodeAttributes.from_ndarray(a_node_activity, name="node_activity")
+        self.node_activity = NodeVector.from_ndarray(a_node_activity, name="node_activity")
 
     def get_metadata(
             self, d_meta_data: Optional[Dict[str, Any]] = None)\

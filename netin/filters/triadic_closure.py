@@ -2,7 +2,7 @@ import numpy as np
 
 from ..graphs.graph import Graph
 from ..graphs.event import Event
-from ..graphs.node_attributes import NodeAttributes
+from ..graphs.node_attributes import NodeVector
 from .filter import Filter
 
 class TriadicClosure(Filter):
@@ -72,7 +72,7 @@ class TriadicClosure(Filter):
                 and (source != fof):
                 self._a_friend_of_friends[fof] = 1.
 
-    def get_target_mask(self, source) -> NodeAttributes:
+    def get_target_mask(self, source) -> NodeVector:
         """
         Returns the probabilities of forming links to target nodes.
 
@@ -86,5 +86,5 @@ class TriadicClosure(Filter):
         """
         if source != self._source_curr:
             self._init_friends_of_friends(source=source)
-        return NodeAttributes.from_ndarray(
+        return NodeVector.from_ndarray(
             self._a_friend_of_friends)

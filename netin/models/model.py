@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 from ..graphs.graph import Graph
-from ..graphs.node_attributes import NodeAttributes
+from ..graphs.node_attributes import NodeVector
 from ..base_class import BaseClass
 from ..filters.no_double_links import NoDoubleLinks
 from ..filters.no_self_links import NoSelfLinks
@@ -17,7 +17,7 @@ class Model(ABC, BaseClass):
     N: int
     f: float
     graph: Graph
-    node_minority_class: NodeAttributes
+    node_minority_class: NodeVector
 
     _f_no_double_links: NoDoubleLinks
     _f_no_self_links: NoSelfLinks
@@ -50,7 +50,7 @@ class Model(ABC, BaseClass):
         self.f = f
         self.rng = np.random.default_rng(seed=seed)
 
-        self.node_minority_class = NodeAttributes\
+        self.node_minority_class = NodeVector\
             .from_ndarray(
                 np.where(np.random.rand(N) < f, 1, 0), name="minority_class")
 

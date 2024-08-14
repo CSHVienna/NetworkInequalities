@@ -6,61 +6,63 @@ import numpy as np
 from ..base_class import BaseClass
 from ..utils.validator import validate_int
 
-class NodeAttributes(BaseClass):
-    _attributes: np.ndarray
+class NodeVector(BaseClass):
+    _values: np.ndarray
     __array_interface__: Any
     name: str
 
-    def __init__(self, N: int, dtype: Type, fill_value: Optional[Number] = None, name: Optional[str] = None) -> None:
+    def __init__(self, N: int, dtype: Type,
+                 fill_value: Optional[Number] = None,
+                 name: Optional[str] = None) -> None:
         validate_int(N, minimum=1)
         super().__init__()
-        self.set_attributes(np.zeros(
+        self.set_values(np.zeros(
             N,
             dtype=dtype) if fill_value is None else\
                 np.full(N, fill_value, dtype=dtype))
         self.name = name
 
-    def set_attributes(self, attributes: np.ndarray) -> None:
-        """Sets the node attributes.
+    def set_values(self, values: np.ndarray) -> None:
+        """Sets the node values.
 
         Parameters
         ----------
-        attributes : np.ndarray
-            Node attributes.
+        values : np.ndarray
+            Node values.
         """
-        self._attributes = attributes
-        self.__array_interface__ = attributes.__array_interface__
+        self._values = values
+        self.__array_interface__ = values.__array_interface__
 
-    def get_attributes(self) -> Any:
-        return self._attributes
+    def get_values(self) -> Any:
+        return self._values
 
-    def attr(self) -> np.ndarray:
-        return self.get_attributes()
+    def vals(self) -> np.ndarray:
+        return self.get_values()
 
     @classmethod
     def from_ndarray(
             cls,
-            attributes: np.ndarray,
-            **kwargs) -> "NodeAttributes":
-        """Creates a new instance of the NodeAttributes class from a numpy array.
+            values: np.ndarray,
+            **kwargs) -> "NodeVector":
+        """Creates a new instance of the NodeVector class from a numpy array.
 
         Parameters
         ----------
-        attributes : np.ndarray
-            The values of the node attributes.
+        values : np.ndarray
+            The values of the node values.
         """
-        assert isinstance(attributes, np.ndarray),\
-            f"attributes must be of type np.ndarray, but is {type(attributes)}"
-        node_attributes = cls(len(attributes), attributes.dtype, **kwargs)
-        node_attributes.set_attributes(attributes)
-        return node_attributes
+        assert isinstance(values, np.ndarray),\
+            f"values must be of type np.ndarray, but is {type(values)}"
+        node_values = cls(len(values), values.dtype, **kwargs)
+        node_values.set_values(values)
+        return node_values
 
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
         name_cls = self.__class__.__name__
         d_meta_data = {
             "name": self.name,
-            "attributes": self._attributes.tolist()
+            "values": self._values.tolist()
         }
         if name_cls in d:
             if self.name in d[name_cls]:
@@ -73,16 +75,16 @@ class NodeAttributes(BaseClass):
         return d
 
     def sum(self, *args, **kwargs) -> Any:
-        return self._attributes.sum(*args, **kwargs)
+        return self._values.sum(*args, **kwargs)
 
     def __eq__(self, value: object):
-        return self._attributes.__eq__(value)
+        return self._values.__eq__(value)
 
     def __getitem__(self, key: int) -> np.ndarray:
-        return self._attributes[key]
+        return self._values[key]
 
     def __setitem__(self, key: int, value: np.ndarray) -> None:
-        self._attributes[key] = value
+        self._values[key] = value
 
     def __mul__(self, other):
         return np.multiply(self, other)
@@ -92,5 +94,5 @@ class NodeAttributes(BaseClass):
 
     def __array__(self, dtype=None, copy=None):
         # This allows the usage of numpy functions
-        # Such as np.sum(node_attributes)
-        return self._attributes.__array__(dtype=dtype, copy=copy)
+        # Such as np.sum(node_values)
+        return self._values.__array__(dtype=dtype, copy=copy)

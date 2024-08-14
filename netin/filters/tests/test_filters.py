@@ -5,7 +5,7 @@ from ..active_nodes import ActiveNodes
 from ..no_double_links import NoDoubleLinks
 from ..no_self_links import NoSelfLinks
 from ..triadic_closure import TriadicClosure
-from ...graphs.node_attributes import NodeAttributes
+from ...graphs.node_attributes import NodeVector
 from ...graphs.graph import Graph
 from ...graphs.directed import DiGraph
 
@@ -28,7 +28,7 @@ class TestFilters(object):
         an = ActiveNodes(N=self.N, graph=dg)
         m0 = an.get_target_mask(-1)
         TestFilters.assert_one_zero_xor(m0)
-        assert isinstance(m0, NodeAttributes), "Active nodes mask is not an instance of `NodeAttributes`."
+        assert isinstance(m0, NodeVector), "Active nodes mask is not an instance of `NodeVector`."
         assert np.all(m0.attr() == 0.), "Active nodes mask is not initialized correctly."
 
         dg.add_edge(0, 1)

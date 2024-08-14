@@ -2,7 +2,7 @@ import numpy as np
 
 from .filter import Filter
 from ..graphs.graph import Graph
-from ..graphs.node_attributes import NodeAttributes
+from ..graphs.node_attributes import NodeVector
 
 class NoDoubleLinks(Filter):
     N: int
@@ -13,7 +13,7 @@ class NoDoubleLinks(Filter):
         self.N = N
         self.graph = graph
 
-    def get_target_mask(self, source: int) -> NodeAttributes:
+    def get_target_mask(self, source: int) -> NodeVector:
         target_mask = np.ones(self.N)
         target_mask[self.graph[source]] = 0.
-        return NodeAttributes.from_ndarray(target_mask)
+        return NodeVector.from_ndarray(target_mask)
