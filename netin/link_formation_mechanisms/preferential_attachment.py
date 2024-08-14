@@ -49,7 +49,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         for i,k in self.graph.degree():
             self._a_degree[i] = k
 
-    def get_target_probabilities(self, _) -> NodeVector:
+    def _get_target_probabilities(self, _) -> NodeVector:
         """
         Calculates the target probabilities for link formation based on the preferential attachment mechanism.
 

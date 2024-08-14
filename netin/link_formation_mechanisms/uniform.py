@@ -12,7 +12,7 @@ class Uniform(LinkFormationMechanism):
         validate_int(N, minimum=1)
         self.N = N
 
-    def get_target_probabilities(self, _: int) -> NodeVector:
+    def _get_target_probabilities(self, _: int) -> NodeVector:
         return NodeVector.from_ndarray(
             np.full(self.N, 1 / self.N)
         )

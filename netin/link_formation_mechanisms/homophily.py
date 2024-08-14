@@ -68,7 +68,7 @@ class Homophily(LinkFormationMechanism):
             self.h = homophily
         self.node_class_values = node_class_values
 
-    def get_target_probabilities(self, source: int) -> NodeVector:
+    def _get_target_probabilities(self, source: int) -> NodeVector:
         a_node_class_values = self.node_class_values
         class_source = a_node_class_values[source]
         p_target = self.h[class_source, a_node_class_values]
