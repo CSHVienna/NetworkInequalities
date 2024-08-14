@@ -4,7 +4,7 @@ import numpy as np
 
 from .undirected_model import UndirectedModel
 from ..graphs import Graph
-from ..graphs.minority_node_vector import BinaryMinorityNodeVector
+from ..graphs.binary_minority_node_vector import BinaryMinorityNodeVector
 from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
 from ..link_formation_mechanisms.preferential_attachment import PreferentialAttachment
 from ..utils.constants import CLASS_ATTRIBUTE

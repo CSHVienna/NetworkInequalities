@@ -4,7 +4,7 @@ from netin.graphs import Graph
 import numpy as np
 
 from ..utils.constants import CLASS_ATTRIBUTE
-from ..graphs.minority_node_vector import BinaryMinorityNodeVector
+from ..graphs.binary_minority_node_vector import BinaryMinorityNodeVector
 from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
 from .undirected_model import UndirectedModel
 
