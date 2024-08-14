@@ -9,7 +9,7 @@ EMPTY = [None, np.nan]
 NO_HOMOPHILY = [0.5, None, np.nan]
 NO_TRIADIC_CLOSURE = [0, None, np.nan]
 
-CLASS_ATTRIBUTE = 'm'
+CLASS_ATTRIBUTE = 'minority'
 
 MAJORITY_LABEL = 'M'
 MINORITY_LABEL = 'm'

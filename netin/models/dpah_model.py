@@ -2,9 +2,10 @@ from typing import Optional
 
 import numpy as np
 
-from netin.graphs.directed import DiGraph
+from ..graphs.directed import DiGraph
 from .dpa_model import DPAModel
 from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
+from ..utils.constants import CLASS_ATTRIBUTE
 
 class DPAHModel(DPAModel):
     h: TwoClassHomophily
@@ -23,7 +24,7 @@ class DPAHModel(DPAModel):
             graph=graph, seed=seed,
             **kwargs)
         self.h = TwoClassHomophily.from_two_class_homophily(
-            node_class_values=self.node_minority_class,
+            node_class_values=self.node_attributes[CLASS_ATTRIBUTE],
             homophily=(h_m, h_M))
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:

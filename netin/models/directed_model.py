@@ -11,6 +11,7 @@ from ..graphs.minority_node_vector import BinaryMinorityNodeVector
 from .model import Model
 from ..utils import constants as const
 from ..utils.validator import validate_float, validate_int
+from ..utils.constants import CLASS_ATTRIBUTE
 from ..filters.active_nodes import ActiveNodes
 from ..link_formation_mechanisms.uniform import Uniform
 
@@ -40,7 +41,7 @@ class DirectedModel(Model):
         super().__init__(
             *args, N=N, f=f,
             node_attributes={
-                "minority":\
+                CLASS_ATTRIBUTE:\
                     BinaryMinorityNodeVector.from_fraction(N=N, fraction=f)
             },
             graph=graph, seed=seed,

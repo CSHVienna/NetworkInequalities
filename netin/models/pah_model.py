@@ -7,6 +7,7 @@ from ..graphs import Graph
 from ..graphs.minority_node_vector import BinaryMinorityNodeVector
 from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
 from ..link_formation_mechanisms.preferential_attachment import PreferentialAttachment
+from ..utils.constants import CLASS_ATTRIBUTE
 
 class PAHModel(UndirectedModel):
     def __init__(
@@ -20,12 +21,12 @@ class PAHModel(UndirectedModel):
         super().__init__(
             *args, N=N, m=m,
             node_attributes={
-                "minority":\
+                CLASS_ATTRIBUTE:\
                     BinaryMinorityNodeVector.from_fraction(N=N, fraction=f)
             },
             graph=graph, seed=seed, **kwargs)
         self.h = TwoClassHomophily.from_two_class_homophily(
-            node_class_values=self.node_attributes["minority"],
+            node_class_values=self.node_attributes[CLASS_ATTRIBUTE],
             homophily=(h_m, h_M))
         self.pa = PreferentialAttachment(n=N, graph=self.graph)
 
