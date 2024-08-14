@@ -77,6 +77,18 @@ class NodeVector(BaseClass):
     def __len__(self) -> int:
         return len(self._values)
 
+    def __geq__(self, value: object) -> np.ndarray:
+        return self._values.__geq__(value)
+
+    def __leq__(self, value: object) -> np.ndarray:
+        return self._values.__leq__(value)
+
+    def __gt__(self, value: object) -> np.ndarray:
+        return self._values.__gt__(value)
+
+    def __lt__(self, value: object) -> np.ndarray:
+        return self._values.__lt__(value)
+
     def sum(self, *args, **kwargs) -> Any:
         return self._values.sum(*args, **kwargs)
 
