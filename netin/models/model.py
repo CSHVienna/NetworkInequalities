@@ -15,18 +15,19 @@ class Model(ABC, BaseClass):
     Specific growing-network-model implementations should inherit from this class and implement the provided abstract methods.
     """
     N: int
-    f: float
     graph: Graph
-    node_minority_class: NodeVector
+    node_attributes: Dict[str, NodeVector]
+    seed: int
 
     _f_no_double_links: NoDoubleLinks
     _f_no_self_links: NoSelfLinks
 
-    seed: int
+    _rng: np.random.Generator
 
     def __init__(
             self, *args,
-            N: int, f: float,
+            N: int,
+            node_attributes: Optional[Dict[str, NodeVector]] = None,
             graph: Optional[Graph] = None,
             seed: int = 1,
             **kwargs):
@@ -36,8 +37,8 @@ class Model(ABC, BaseClass):
         ----------
         N : int
             Number of final nodes in the network.
-        f : float
-            Fraction of nodes that belong to the minority class.
+        node_attributes : Dict[str, NodeVector]
+            A dictionary of node attributes. Each attribute must be a NodeVector with length `N`.
         graph : Optional[Graph], optional
             If present, an existing network that will be extended. In this case, `N >= graph.number_of_nodes()` as the graph will be extended by the missing nodes. If no graph is given, the model creates its own graph and initializes it with `m` fully connected nodes.
             Calling the `simulate`-function will then add the remaining `N - m` nodes.
@@ -47,12 +48,17 @@ class Model(ABC, BaseClass):
         super().__init__(*args, **kwargs)
 
         self.N = N
-        self.f = f
-        self.rng = np.random.default_rng(seed=seed)
 
-        self.node_minority_class = NodeVector\
-            .from_ndarray(
-                np.where(np.random.rand(N) < f, 1, 0), name="minority_class")
+        if node_attributes is None:
+            node_attributes = {}
+        else:
+            for attr_name, attr in node_attributes.items():
+                assert len(attr) == N,\
+                    f"Length of attribute {attr_name} must be equal to N."
+        self.node_attributes = node_attributes
+
+        self.seed = seed
+        self._rng = np.random.default_rng(seed=seed)
 
         if graph is None:
             self._initialize_graph()
@@ -76,61 +82,29 @@ class Model(ABC, BaseClass):
         raise NotImplementedError
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(N={self.N}, f={self.f})"
+        return f"{self.__class__.__name__}(N={self.N})"
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         return self._f_no_self_links.get_target_mask(source)\
             * self._f_no_double_links.get_target_mask(source)
 
-    def get_minority_mask(self) -> np.ndarray:
-        """Returns the mask of the minority class.
-
-        Returns
-        -------
-        np.ndarray
-            Mask of the minority class.
-        """
-        return self.node_minority_class == 1
-
-    def get_majority_mask(self) -> np.ndarray:
-        """Returns the mask of the majority class.
-
-        Returns
-        -------
-        np.ndarray
-            Mask of the majority class.
-        """
-        return ~self.get_minority_mask()
-
-    def get_n_minority(self) -> int:
-        """Returns the number of nodes in the minority class.
-
-        Returns
-        -------
-        int
-            Number of nodes in the minority class.
-        """
-        return np.sum(self.node_minority_class)
-
-    def get_n_majority(self) -> int:
-        return self.N - self.get_n_minority()
-
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
             "N": self.N,
-            "f": self.f,
             "seed": self.seed
         }
         self.graph.get_metadata(
             d[self.__class__.__name__])
-        self.node_minority_class.get_metadata(
-            d[self.__class__.__name__])
+
+        for name, attr in self.node_attributes.items():
+            d[self.__class__.__name__][name] = {}
+            attr.get_metadata(d[self.__class__.__name__][name])
 
         return d
 
     def _sample_target_node(
             self, target_probabilities: np.ndarray) -> int:
-        return self.rng.choice(
+        return self._rng.choice(
             np.arange(len(target_probabilities)),
             p=target_probabilities)

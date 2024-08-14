@@ -7,6 +7,7 @@ import networkx as nx
 from ..graphs.event import Event
 from ..graphs.directed import DiGraph
 from ..graphs.node_vector import NodeVector
+from ..graphs.minority_node_vector import BinaryMinorityNodeVector
 from .model import Model
 from ..utils import constants as const
 from ..utils.validator import validate_float, validate_int
@@ -38,6 +39,10 @@ class DirectedModel(Model):
         validate_int(N, minimum=1)
         super().__init__(
             *args, N=N, f=f,
+            node_attributes={
+                "minority":\
+                    BinaryMinorityNodeVector.from_fraction(N=N, fraction=f)
+            },
             graph=graph, seed=seed,
             **kwargs)
 
@@ -60,7 +65,7 @@ class DirectedModel(Model):
         self._out_degrees[source] += 1
 
     def _populate_initial_graph(self):
-        self.graph.add_nodes_from(np.arange(self.N), minority_class=self.node_minority_class)
+        self.graph.add_nodes_from(np.arange(self.N))
 
     def _get_expected_number_of_edges(self):
         return int(round(self.d * self.N * (self.N - 1)))
@@ -100,17 +105,18 @@ class DirectedModel(Model):
         )
 
     def _initialize_node_activity(self):
+        minority_class = self.node_attributes["minority"]
         act_M = powerlaw.Power_Law(
             parameters=[self.plo_M],
             discrete=True)\
-                .generate_random(self.get_n_majority())
+                .generate_random(minority_class.get_n_majority())
         act_m = powerlaw.Power_Law(
             parameters=[self.plo_m],
             discrete=True)\
-                .generate_random(self.get_n_minority())
+                .generate_random(minority_class.get_n_minority())
 
-        mask_M = self.get_majority_mask()
-        mask_m = self.get_minority_mask()
+        mask_M = minority_class.get_majority_mask()
+        mask_m = minority_class.get_minority_mask()
 
         a_node_activity = np.zeros(self.N)
         a_node_activity[mask_M] = act_M

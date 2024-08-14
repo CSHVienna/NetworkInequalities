@@ -4,7 +4,7 @@ import pytest
 from ..active_nodes import ActiveNodes
 from ..no_double_links import NoDoubleLinks
 from ..no_self_links import NoSelfLinks
-from ..triadic_closure import TriadicClosure
+from ...link_formation_mechanisms.triadic_closure import TriadicClosure
 from ...graphs.node_vector import NodeVector
 from ...graphs.graph import Graph
 from ...graphs.directed import DiGraph
