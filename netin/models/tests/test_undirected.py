@@ -1,5 +1,4 @@
 from netin.models import BarabasiAlbertModel
-from netin.utils import constants as const
 
 
 class TestUnDiGraph(object):

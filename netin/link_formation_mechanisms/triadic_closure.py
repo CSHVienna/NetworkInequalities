@@ -3,9 +3,9 @@ import numpy as np
 from ..graphs.graph import Graph
 from ..graphs.event import Event
 from ..graphs.node_vector import NodeVector
-from .filter import Filter
+from .link_formation_mechanism import LinkFormationMechanism
 
-class TriadicClosure(Filter):
+class TriadicClosure(LinkFormationMechanism):
     """
     A filter based on triadic closure.
 
@@ -72,11 +72,11 @@ class TriadicClosure(Filter):
                 and (source != fof):
                 self._a_friend_of_friends[fof] = 1.
 
-    def get_target_mask(self, source) -> NodeVector:
+    def _get_target_probabilities(self, source: int) -> NodeVector:
         """
         Returns the probabilities of forming links to target nodes.
 
-        Target probabilities are one for nodes that are friends of friends of the source node and zero otherwise.
+        Target probabilities are uniform for nodes that are friends of friends of the source node and zero otherwise.
 
         Args:
             source: The source node.
@@ -87,4 +87,4 @@ class TriadicClosure(Filter):
         if source != self._source_curr:
             self._init_friends_of_friends(source=source)
         return NodeVector.from_ndarray(
-            self._a_friend_of_friends)
+            self._a_friend_of_friends / np.sum(self._a_friend_of_friends))
