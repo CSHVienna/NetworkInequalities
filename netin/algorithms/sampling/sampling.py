@@ -9,9 +9,10 @@ import gc
 ############################################
 # Local dependencies
 ############################################
-import netin
+from netin.models import DirectedModel
 from netin.utils import validator as val
 from netin.stats import networks as net
+from netin.utils.constants import CLASS_ATTRIBUTE
 from . import constants as const
 
 
@@ -46,9 +47,14 @@ class Sampling(object):
 
     """
 
-    def __init__(self, g: netin.Graph, pseeds: float, max_tries: int = const.MAX_TRIES,
+    def __init__(self,
+                 graph: nx.DiGraph,
+                 pseeds: float,
+                 class_attribute: str = CLASS_ATTRIBUTE,
+                 max_tries: int = const.MAX_TRIES,
                  random_seed: object = None, **kwargs):
-        self.g = g.copy()
+        self.g = graph
+        self.class_attribute = class_attribute
         self.pseeds = pseeds
         self.max_tries = max_tries
         self.random_seed = random_seed
@@ -62,6 +68,25 @@ class Sampling(object):
         self.test_nodes = None
         self.kwargs = kwargs
         np.random.seed(self.random_seed)
+
+    @classmethod
+    def from_directed_model(
+        cls,
+        model: DirectedModel, pseeds: float,
+        class_attribute: str = CLASS_ATTRIBUTE,
+        max_tries: int = const.MAX_TRIES,
+        random_seed: object = None, **kwargs) ->\
+            "Sampling":
+        graph = model.graph.to_nxgraph(node_attributes=model.node_attributes[class_attribute])
+        graph.graph['model'] = model.__class__.__name__
+        graph.graph["class_values"] = model.node_attributes[class_attribute].get_class_values()
+        return cls(
+            graph=graph,
+            class_attribute=class_attribute,
+            pseeds=pseeds,
+            max_tries=max_tries,
+            random_seed=random_seed,
+            **kwargs)
 
     def sampling(self):
         """
@@ -94,7 +119,7 @@ class Sampling(object):
         int
             number of classes
         """
-        return len(set([self.g.nodes[n][self.g.graph['class_attribute']] for n in nodes]))
+        return len(set([self.g.nodes[n][self.class_attribute] for n in nodes]))
 
     def _extract_subgraph(self):
         """
@@ -124,7 +149,7 @@ class Sampling(object):
 
             # removing nodes
             if nodes:
-                nodes_to_remove = [n for n in self.g.node_list if n not in nodes]
+                nodes_to_remove = [n for n in self.g.nodes if n not in nodes]
                 sample.remove_nodes_from(nodes_to_remove)
 
             num_edges = sample.number_of_edges()
@@ -133,8 +158,6 @@ class Sampling(object):
             raise RuntimeWarning("The sample has no edges.")
 
         self.sample = sample.copy()
-        self.sample.node_list = [n for n in self.sample.node_list if n in self.sample.node_list]
-        self.sample.node_class_values = {n: l for n, l in self.sample.node_class_values.items() if n in self.sample.node_list}
         gc.collect()
 
     def _set_graph_metadata(self):
@@ -143,7 +166,7 @@ class Sampling(object):
         """
         self.sample.graph['method'] = self.method_name
         self.sample.graph['pseeds'] = self.pseeds
-        nx.set_node_attributes(G=self.g, name='seed', values={n: int(n in self.sample) for n in self.g.node_list})
+        nx.set_node_attributes(G=self.g, name='seed', values={n: int(n in self.sample) for n in self.g.nodes})
         self.sample.graph['m'] = net.get_min_degree(self.sample)
         self.sample.graph['d'] = nx.density(self.sample)
         self.sample.graph['n'] = self.sample.number_of_nodes()
@@ -160,13 +183,15 @@ class Sampling(object):
         self.sample.model_name = f"{self.sample.model_name}\n{self.method_name}"
 
         # for LINK: working with matrices
-        self.nodes = list(self.g.node_list)
+        self.nodes = list(self.g.nodes)
         self.train_index = np.array([i for i, n in enumerate(self.nodes) if n in self.sample])
         self.test_nodes, self.test_index = zip(*[(n, i) for i, n in enumerate(self.nodes) if n not in self.sample])
         self.test_index = np.array(self.test_index)
         self.feature_x = nx.adjacency_matrix(self.g, self.nodes).toarray()
-        self.membership_y = np.array(
-            [self.g.graph['class_values'].index(self.g.nodes[n][self.g.graph['class_attribute']]) for n in self.nodes])
+        self.membership_y = np.array([
+            self.g.graph['class_values'].index(
+                self.g.nodes[n][self.class_attribute])\
+                    for n in self.nodes])
 
     def info(self):
         """
