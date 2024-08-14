@@ -74,6 +74,9 @@ class NodeVector(BaseClass):
 
         return d
 
+    def __len__(self) -> int:
+        return len(self._values)
+
     def sum(self, *args, **kwargs) -> Any:
         return self._values.sum(*args, **kwargs)
 
@@ -85,6 +88,12 @@ class NodeVector(BaseClass):
 
     def __setitem__(self, key: int, value: np.ndarray) -> None:
         self._values[key] = value
+
+    def __add__(self, other):
+        return np.add(self, other)
+
+    def __radd__(self, other):
+        return np.add(other, self)
 
     def __mul__(self, other):
         return np.multiply(self, other)
