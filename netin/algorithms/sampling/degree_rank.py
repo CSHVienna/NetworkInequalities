@@ -7,8 +7,6 @@ from typing import Union
 
 from networkx import DiGraph
 
-import netin
-from netin.algorithms.sampling.constants import MAX_TRIES
 from netin.utils.constants import CLASS_ATTRIBUTE
 from . import constants as const
 from .sampling import Sampling

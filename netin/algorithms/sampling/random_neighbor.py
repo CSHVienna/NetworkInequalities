@@ -35,10 +35,6 @@ class RandomNeighbor(Sampling):
     ######################################################
     # Constructor
     ######################################################
-    def __init__(self, g: netin.Graph, pseeds: float, max_tries: int = const.MAX_TRIES,
-                 random_seed: object = None):
-        super().__init__(g, pseeds, max_tries, random_seed)
-
     @property
     def method_name(self) -> str:
         return const.RANDOM_NEIGHBORS

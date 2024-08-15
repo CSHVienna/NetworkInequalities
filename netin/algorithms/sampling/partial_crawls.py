@@ -5,9 +5,12 @@ import operator
 from typing import List
 from typing import Tuple
 
+from networkx import DiGraph
 import numpy as np
 
 import netin
+from netin.algorithms.sampling.constants import MAX_TRIES
+from netin.utils.constants import CLASS_ATTRIBUTE
 from . import constants as const
 from .sampling import Sampling
 
@@ -43,9 +46,19 @@ class PartialCrawls(Sampling):
     ######################################################
     # Constructor
     ######################################################
-    def __init__(self, g: netin.Graph, pseeds: float, max_tries: int = const.MAX_TRIES,
-                 random_seed: object = None, **kwargs):
-        super().__init__(g, pseeds, max_tries, random_seed, **kwargs)
+    # def __init__(self, g: netin.Graph, pseeds: float, max_tries: int = const.MAX_TRIES,
+                #  random_seed: object = None, **kwargs):
+    def __init__(
+            self,
+            graph: DiGraph, pseeds: float,
+            max_tries: int = const.MAX_TRIES,
+            class_attribute: str = CLASS_ATTRIBUTE,
+            random_seed: object = None, **kwargs):
+        super().__init__(
+            graph=graph, pseeds=pseeds,
+            max_tries=max_tries,
+            class_attribute=class_attribute,
+            random_seed=random_seed, **kwargs)
         self.snsize = kwargs.get('snsize', const.SNSIZE)
 
     @property
