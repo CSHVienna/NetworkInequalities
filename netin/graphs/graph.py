@@ -1,10 +1,12 @@
 from typing import Any, Optional, Dict, Callable, Hashable
 from collections import defaultdict
 
+import numpy as np
 import networkx as nx
 
 from .event import Event
 from .node_vector import NodeVector
+from .node_class_vector import NodeClassVector
 from ..base_class import BaseClass
 
 class Graph(BaseClass):
@@ -66,6 +68,10 @@ class Graph(BaseClass):
             Graph.assign_node_attributes(g_copy, node_attributes)
         return g_copy
 
+    def assign_node_attributes(self, node_attributes: Dict[str, NodeVector]):
+
+        Graph.assign_nx_node_attributes(self.graph, node_attributes)
+
     @staticmethod
     def assign_nx_node_attributes(
         graph: nx.Graph, node_attributes: Dict[str, NodeVector]):
@@ -77,8 +83,24 @@ class Graph(BaseClass):
                 name=name,
                 values=node_vector.to_dict())
 
-    def assign_node_attributes(self, node_attributes: Dict[str, NodeVector]):
-        Graph.assign_nx_node_attributes(self.graph, node_attributes)
+    @staticmethod
+    def assign_nx_graph_class_attribute(
+        graph: nx.Graph, node_classes: NodeClassVector):
+        assert(node_classes.name is not None),\
+            "NodeClassVector must have a name"
+        graph.graph["class_attributes"] = node_classes.name
+        graph.graph["class_labels"] = node_classes.class_labels
+        graph.graph["class_values"] = list(range(node_classes.n_values))
+
+    @staticmethod
+    def get_node_attributes(
+        graph: nx.Graph, name: str) -> NodeVector:
+        nodes, values = zip(*nx.get_node_attributes(graph, name).items())
+        return NodeVector.from_ndarray(
+            N=len(graph),
+            node_labels=nodes,
+            values=np.asarray(values),
+            name=name)
 
     ################################################
     # Method forwards to networkx.Graph
