@@ -38,7 +38,7 @@ class NodeClassVector(NodeVector):
         class_labels: Optional[List[str]] = None,
         **kwargs)\
             -> 'NodeClassVector':
-        assert values.dtype == np.int, "values must be of type np.int"
+        assert values.dtype == int, "values must be of type int"
         assert 0 <= np.min(values), "values must be non-negative"
         assert n_values is None or n_values > np.max(values),\
             "n_values must be greater or equal to the maximum value in values"
