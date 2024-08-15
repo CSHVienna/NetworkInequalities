@@ -116,7 +116,19 @@ class NodeVector(BaseClass):
     def __eq__(self, value: object):
         return self._values.__eq__(value)
 
-    def __getitem__(self, key: Hashable) -> np.ndarray:
+    def __getitem__(self, key) -> np.ndarray:
+        if isinstance(key, slice):
+            # Convert custom slice indices to numeric indices
+            start = self._map_node_labels.get(key.start, 0) if key.start else None
+            stop = self._map_node_labels.get(key.stop, len(self)) if key.stop else None
+            step = key.step  # No need to convert step if it exists
+
+            numeric_slice = slice(start, stop, step)
+            return self._values[numeric_slice]
+        if isinstance(key, tuple):
+            mapped_indices = tuple(
+                self._map_node_labels[idx] for idx in key)
+            return self._values[mapped_indices]
         return self._values[self._map_node_labels[key]]
 
     def __setitem__(self, key: Hashable, value: np.ndarray) -> None:
