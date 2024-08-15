@@ -49,6 +49,7 @@ class NodeClassVector(NodeVector):
                 if n_values is not None else np.max(values) + 1,
             node_labels=node_labels,
             class_labels=class_labels, **kwargs)
+        ncv._values = values
 
         return ncv
 
