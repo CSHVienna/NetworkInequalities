@@ -5,7 +5,11 @@ import operator
 from typing import Tuple
 from typing import Union
 
+from networkx import DiGraph
+
 import netin
+from netin.algorithms.sampling.constants import MAX_TRIES
+from netin.utils.constants import CLASS_ATTRIBUTE
 from . import constants as const
 from .sampling import Sampling
 
@@ -41,8 +45,15 @@ class DegreeRank(Sampling):
     ######################################################
     # Constructor
     ######################################################
-    def __init__(self, g: netin.Graph, pseeds: float, random_seed: object = None, **kwargs):
-        super().__init__(g=g, pseeds=pseeds, max_tries=1, random_seed=random_seed, **kwargs)
+    # def __init__(self, g: netin.Graph, pseeds: float, random_seed: object = None, **kwargs):
+    def __init__(
+            self,
+            graph: DiGraph, pseeds: float,
+            class_attribute: str = CLASS_ATTRIBUTE,
+            random_seed: object = None, **kwargs):
+        super().__init__(
+            graph=graph, pseeds=pseeds, max_tries=1,
+            class_attribute=class_attribute, random_seed=random_seed, **kwargs)
         self.order = self.kwargs.get("order", const.DESC)
 
     @property

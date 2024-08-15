@@ -41,10 +41,6 @@ class DegreeGroupRank(DegreeRank):
     ######################################################
     # Constructor
     ######################################################
-    def __init__(self, g: netin.Graph, pseeds: float, random_seed: object = None, **kwargs):
-        super().__init__(g=g, pseeds=pseeds, random_seed=random_seed, **kwargs)
-        self.order = self.kwargs.get("order", const.DESC)
-
     @property
     def method_name(self) -> str:
         name = f"{const.DEGREE_GROUP_RANK} ({const.DESC if self.is_descending() else const.ASC})"
