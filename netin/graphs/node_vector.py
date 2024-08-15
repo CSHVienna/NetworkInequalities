@@ -9,7 +9,6 @@ from ..utils.validator import validate_int
 class NodeVector(BaseClass):
     _values: np.ndarray
     _map_node_labels: Dict[Hashable, int]
-    __array_interface__: Any
     name: str
 
     def __init__(self, N: int, dtype: Type,
@@ -67,7 +66,6 @@ class NodeVector(BaseClass):
             Node values.
         """
         self._values = values
-        self.__array_interface__ = values.__array_interface__
 
     def get_values(self) -> Any:
         return self._values
@@ -146,7 +144,9 @@ class NodeVector(BaseClass):
     def __rmul__(self, other):
         return np.multiply(other, self)
 
-    def __array__(self, dtype=None, copy=None):
+    def __array__(self, dtype=None):
         # This allows the usage of numpy functions
         # Such as np.sum(node_values)
-        return self._values.__array__(dtype=dtype, copy=copy)
+        if dtype is not None:
+            return self._values.astype(dtype)
+        return self._values
