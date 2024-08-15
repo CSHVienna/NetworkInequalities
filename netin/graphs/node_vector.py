@@ -127,6 +127,15 @@ class NodeVector(BaseClass):
             mapped_indices = tuple(
                 self._map_node_labels[idx] for idx in key)
             return self._values[mapped_indices]
+        if isinstance(key, np.ndarray):
+            if key.dtype == bool:
+                # Boolean indexing
+                return self._values[key]
+            if np.issubdtype(key.dtype, np.integer):
+                # Integer array indexing
+                numeric_indices = [self._map_node_labels.get(idx, idx) for idx in key]
+                return self._values[numeric_indices]
+            raise TypeError(f"Unsupported ndarray index type {key.dtype}.")
         return self._values[self._map_node_labels[key]]
 
     def __setitem__(self, key: Hashable, value: np.ndarray) -> None:
