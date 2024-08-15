@@ -6,7 +6,7 @@ from ..utils.validator import validate_int
 from ..base_class import BaseClass
 from ..graphs.node_vector import NodeVector
 
-class UniformLinkFormationMechanism(BaseClass):
+class LinkFormationMechanism(BaseClass):
     N: int
 
     def __init__(self, N: int) -> None:
