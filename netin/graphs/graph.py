@@ -1,11 +1,10 @@
-from typing import Any, Optional, Dict, Callable
+from typing import Any, Optional, Dict, Callable, Hashable
 from collections import defaultdict
 
 import networkx as nx
-import numpy as np
 
 from .event import Event
-from .node_vector import NodeClassVector
+from .node_vector import NodeVector
 from ..base_class import BaseClass
 
 class Graph(BaseClass):
@@ -17,10 +16,16 @@ class Graph(BaseClass):
         self._init_graph(*args, **attr)
         self._event_handlers = defaultdict(list)
 
+    @classmethod
+    def from_nxgraph(cls, graph: nx.Graph) -> "Graph":
+        g = Graph()
+        g.graph = graph
+        return g
+
     def _init_graph(self, *args, **kwargs):
         self.graph = nx.Graph(*args, **kwargs)
 
-    def add_edge(self, source: int, target: int, **attr) -> None:
+    def add_edge(self, source: Hashable, target: Hashable, **attr) -> None:
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
         self.graph.add_edge(
             u_of_edge=source, v_of_edge=target, **attr)
@@ -55,20 +60,25 @@ class Graph(BaseClass):
 
     def to_nxgraph(
             self,
-            node_attributes: Optional[Dict[str, NodeClassVector]] = None) -> nx.Graph:
+            node_attributes: Optional[Dict[str, NodeVector]] = None) -> nx.Graph:
         g_copy = self.graph.copy()
         if node_attributes is not None:
-            for name, node_vector in node_attributes.items():
-                assert(len(node_vector) == len(g_copy)),\
-                    f"Length of node vector `{name}` does not match the number of nodes in the graph"
-                nx.set_node_attributes(
-                    G=g_copy,
-                    name=name,
-                    # Create a dictionary with the node indices as keys
-                    # and the values of the node vector as values
-                    values=dict(zip(
-                        np.arange(len(node_vector)), node_vector.vals())))
+            Graph.assign_node_attributes(g_copy, node_attributes)
         return g_copy
+
+    @staticmethod
+    def assign_nx_node_attributes(
+        graph: nx.Graph, node_attributes: Dict[str, NodeVector]):
+        for name, node_vector in node_attributes.items():
+            assert(len(node_vector) == len(graph)),\
+                f"Length of node vector `{name}` does not match the number of nodes in the graph"
+            nx.set_node_attributes(
+                G=graph,
+                name=name,
+                values=node_vector.to_dict())
+
+    def assign_node_attributes(self, node_attributes: Dict[str, NodeVector]):
+        Graph.assign_nx_node_attributes(self.graph, node_attributes)
 
     ################################################
     # Method forwards to networkx.Graph
