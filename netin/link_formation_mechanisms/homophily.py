@@ -3,15 +3,16 @@ import numpy as np
 
 from .link_formation_mechanism import LinkFormationMechanism
 from ..graphs.node_vector import NodeVector
+from ..graphs.node_class_vector import NodeClassVector
 from ..utils.validator import validate_float
 
 class Homophily(LinkFormationMechanism):
-    node_class_values: NodeVector
+    node_class_values: NodeClassVector
     h: np.ndarray
 
     def __init__(
             self,
-            node_class_values: NodeVector,
+            node_class_values: NodeClassVector,
             homophily: Union[float, np.ndarray],
             n_class_values: Optional[int] = None,
             ) -> None:
@@ -23,9 +24,8 @@ class Homophily(LinkFormationMechanism):
 
         Parameters
         ----------
-        node_class_values : np.ndarray
+        node_class_values: NodeClassVector
             The class assignment for each node (dimensions `n_nodes`).
-            Classes must be integers in the range of [0, `n_class_values`).
         n_class_values : int
             Number of classes.
         homophily : Union[float, np.ndarray]

@@ -2,14 +2,14 @@ from typing import Tuple, Union
 
 import numpy as np
 
-from ..graphs.node_vector import NodeVector
+from ..graphs.node_class_vector import NodeClassVector
 from ..utils.validator import validate_float
 from .homophily import Homophily
 
 class TwoClassHomophily(Homophily):
     def __init__(
             self,
-            node_class_values: NodeVector,
+            node_class_values: NodeClassVector,
             homophily: Union[float, np.ndarray], n_class_values: Union[int, None] = None) -> None:
         super().__init__(node_class_values, homophily, n_class_values)
         assert self.h.shape == (2, 2),\
@@ -19,7 +19,7 @@ class TwoClassHomophily(Homophily):
     @classmethod
     def from_two_class_homophily(
             cls, homophily: Tuple[float, float],
-            node_class_values: NodeVector)\
+            node_class_values: NodeClassVector)\
             -> "TwoClassHomophily":
 
         assert(len(homophily) == 2),\
