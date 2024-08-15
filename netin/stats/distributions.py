@@ -3,12 +3,14 @@ from typing import Union, Set, List, Iterable, Tuple
 import numpy as np
 import pandas as pd
 import powerlaw
+import networkx as nx
 
-from ..graphs.graph import Graph
-from ..graphs.directed import DiGraph
+from ..graphs.binary_minority_node_vector import BinaryMinorityNodeVector
 
 def fit_powerlaw_groups(
-        g: Union[Graph, DiGraph], metric: str)\
+        g: Union[nx.Graph, nx.DiGraph],
+        node_class_values: Union[BinaryMinorityNodeVector, str],
+        metric: str)\
     -> Tuple[powerlaw.Fit, powerlaw.Fit]:
     """
     Fits a power law to the distribution given by 'metric' (the in- or out-degree of nodes in the graph).
@@ -17,6 +19,10 @@ def fit_powerlaw_groups(
     ----------
     g: Graph
         Graph to fit power law to
+
+    node_class_values: Union[BinaryMinorityNodeVector, str]
+        If a string, it must be the name of the node attribute set in `g` that contains the class labels. The values must be booleans set to one if the node belongs to the minority group.
+        If a BinaryMinorityNodeVector, it must be the node class values.
 
     metric: str
         metric to fit power law to
@@ -30,16 +36,20 @@ def fit_powerlaw_groups(
         power law fit of the minority class
     """
 
-    def _get_value_fnc(g: Graph, metric: str) -> Iterable:
+    def _get_value_fnc(
+            g: nx.Graph,
+            metric: str) -> Iterable:
         if metric not in ['in_degree', 'out_degree', 'degree']:
             raise ValueError(f"`metric` must be either 'in_degree', 'out_degree' or 'degree', not {metric}")
         return g.in_degree if metric == 'in_degree' else g.out_degree if metric == 'out_degree' else g.degree
 
-    vM = g.get_majority_value()
+    mask_min = node_class_values.get_minority_mask()\
+        if isinstance(node_class_values, BinaryMinorityNodeVector) else\
+            g.nodes[node_class_values]
     fnc = _get_value_fnc(g, metric)
 
-    dM = [d for n, d in fnc if g.node_class_values[n] == vM]
-    dm = [d for n, d in fnc if g.node_class_values[n] != vM]
+    dM = [d for n, d in fnc if mask_min[n]]
+    dm = [d for n, d in fnc if not mask_min[n]]
 
     fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM), verbose=False)
     fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm), verbose=False)
