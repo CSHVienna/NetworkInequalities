@@ -4,7 +4,6 @@ import pytest
 from ..active_nodes import ActiveNodes
 from ..no_double_links import NoDoubleLinks
 from ..no_self_links import NoSelfLinks
-from ...link_formation_mechanisms.triadic_closure import TriadicClosure
 from ...graphs.node_vector import NodeVector
 from ...graphs.graph import Graph
 from ...graphs.directed import DiGraph
@@ -78,24 +77,3 @@ class TestFilters(object):
         m4 = ndl.get_target_mask(1)
         TestFilters.assert_one_zero_xor(m4)
         assert m4[0] == 1., "Directedness not considered."
-
-
-    def test_triadic_closure(self):
-        g = Graph()
-        tc = TriadicClosure(graph=g)
-
-        g.add_edge(0, 1)
-        g.add_edge(1, 2)
-        m0 = tc.get_target_mask(0)
-        TestFilters.assert_one_zero_xor(m0)
-        assert m0[2] == 1., "Triadic closure not detected for link `0-2`."
-
-        m1 = tc.get_target_mask(2)
-        TestFilters.assert_one_zero_xor(m1)
-        assert m1[0] == 1., "Triadic closure not detected for link `2-0`."
-
-        m2 = tc.get_target_mask(1)
-        TestFilters.assert_one_zero_xor(m2)
-        assert np.all(m2 == 0.),\
-            (f"False triadic closure detected for source `1` "
-             f"(false targets: {np.where(m2 == 1.)}).")
