@@ -9,7 +9,7 @@ import gc
 ############################################
 # Local dependencies
 ############################################
-from netin.models import DirectedModel
+from netin.models import Model
 from netin.utils import validator as val
 from netin.stats import networks as net
 from netin.utils.constants import CLASS_ATTRIBUTE
@@ -48,7 +48,7 @@ class Sampling(object):
     """
 
     def __init__(self,
-                 graph: nx.DiGraph,
+                 graph: nx.Graph,
                  pseeds: float,
                  class_attribute: str = CLASS_ATTRIBUTE,
                  max_tries: int = const.MAX_TRIES,
@@ -72,7 +72,7 @@ class Sampling(object):
     @classmethod
     def from_directed_model(
         cls,
-        model: DirectedModel, pseeds: float,
+        model: Model, pseeds: float,
         class_attribute: str = CLASS_ATTRIBUTE,
         max_tries: int = const.MAX_TRIES,
         random_seed: object = None, **kwargs) ->\
