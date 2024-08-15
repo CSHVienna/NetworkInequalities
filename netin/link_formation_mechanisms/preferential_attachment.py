@@ -19,7 +19,7 @@ class PreferentialAttachment(LinkFormationMechanism):
     _a_degree: NodeVector
 
     def __init__(
-            self, graph: Graph, n: int,
+            self, graph: Graph, N: int,
             init_degrees: bool = True) -> None:
         """
         Initializes a PreferentialAttachment object.
@@ -32,8 +32,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         Returns:
             None
         """
-        validate_int(n, minimum=1)
-        super().__init__()
+        super().__init__(N=N)
         self.graph = graph
         self._a_degree = NodeVector(
             n, dtype=int, name="degrees")

@@ -36,8 +36,6 @@ class Homophily(LinkFormationMechanism):
             The matrix must be symmetric and have the shape of (`n_class_values`, `n_class_values`).
             Moreover, row values have to sum up to 1.
         """
-        super().__init__()
-
         if n_class_values is None:
             n_class_values = np.max(node_class_values) + 1
         else:
@@ -67,6 +65,7 @@ class Homophily(LinkFormationMechanism):
                  f"Matrix is {homophily}")
             self.h = homophily
         self.node_class_values = node_class_values
+        super().__init__(N=len(node_class_values))
 
     def _get_target_probabilities(self, source: int) -> NodeVector:
         a_node_class_values = self.node_class_values

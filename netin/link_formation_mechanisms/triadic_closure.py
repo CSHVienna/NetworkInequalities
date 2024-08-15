@@ -26,7 +26,7 @@ class TriadicClosure(LinkFormationMechanism):
     _source_curr: int
 
     def __init__(self, graph: Graph) -> None:
-        super().__init__()
+        super().__init__(N=len(graph))
         self._source_curr = -1
         self.graph = graph
         self.graph.register_event_handler(
