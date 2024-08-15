@@ -1,4 +1,4 @@
-from typing import Dict, Type, Optional, Any
+from typing import Dict, Type, Optional, Any, Hashable, List
 from numbers import Number
 
 import numpy as np
@@ -8,19 +8,55 @@ from ..utils.validator import validate_int
 
 class NodeVector(BaseClass):
     _values: np.ndarray
+    _map_node_labels: Dict[Hashable, int]
     __array_interface__: Any
     name: str
 
     def __init__(self, N: int, dtype: Type,
+                 node_labels: Optional[List[Hashable]] = None,
                  fill_value: Optional[Number] = None,
                  name: Optional[str] = None) -> None:
         validate_int(N, minimum=1)
-        super().__init__()
+        node_labels = np.arange(N)\
+            if node_labels is None else node_labels
+        assert len(node_labels) == N,\
+            "`node_values` must have the same length as `N`"
+        self._map_node_labels = {
+            node_label: i for i, node_label in enumerate(node_labels)}
         self.set_values(np.zeros(
             N,
             dtype=dtype) if fill_value is None else\
                 np.full(N, fill_value, dtype=dtype))
         self.name = name
+        super().__init__()
+
+    @classmethod
+    def from_ndarray(
+            cls,
+            values: np.ndarray,
+            node_labels: Optional[List[Hashable]] = None,
+            **kwargs) -> "NodeVector":
+        """Creates a new instance of the NodeVector class from a numpy array.
+
+        Parameters
+        ----------
+        values : np.ndarray
+            The values of the node values.
+        """
+        assert isinstance(values, np.ndarray),\
+            f"values must be of type np.ndarray, but is {type(values)}"
+        node_values = cls(
+            N=len(values), dtype=values.dtype,
+            node_labels=node_labels, **kwargs)
+        node_values.set_values(values)
+        return node_values
+
+    def to_dict(self)\
+        -> Dict[Hashable, int]:
+        return {
+            node_label: self[node_label]\
+                for node_label in self._map_node_labels.keys()
+        }
 
     def set_values(self, values: np.ndarray) -> None:
         """Sets the node values.
@@ -36,26 +72,11 @@ class NodeVector(BaseClass):
     def get_values(self) -> Any:
         return self._values
 
+    def get_labels(self) -> List[Hashable]:
+        return list(self._map_node_labels.keys())
+
     def vals(self) -> np.ndarray:
         return self.get_values()
-
-    @classmethod
-    def from_ndarray(
-            cls,
-            values: np.ndarray,
-            **kwargs) -> "NodeVector":
-        """Creates a new instance of the NodeVector class from a numpy array.
-
-        Parameters
-        ----------
-        values : np.ndarray
-            The values of the node values.
-        """
-        assert isinstance(values, np.ndarray),\
-            f"values must be of type np.ndarray, but is {type(values)}"
-        node_values = cls(len(values), values.dtype, **kwargs)
-        node_values.set_values(values)
-        return node_values
 
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
@@ -95,11 +116,11 @@ class NodeVector(BaseClass):
     def __eq__(self, value: object):
         return self._values.__eq__(value)
 
-    def __getitem__(self, key: int) -> np.ndarray:
-        return self._values[key]
+    def __getitem__(self, key: Hashable) -> np.ndarray:
+        return self._values[self._map_node_labels[key]]
 
-    def __setitem__(self, key: int, value: np.ndarray) -> None:
-        self._values[key] = value
+    def __setitem__(self, key: Hashable, value: np.ndarray) -> None:
+        self._values[self._map_node_labels[key]] = value
 
     def __add__(self, other):
         return np.add(self, other)

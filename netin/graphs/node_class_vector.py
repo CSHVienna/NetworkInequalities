@@ -7,11 +7,12 @@ from .node_vector import NodeVector
 
 class NodeClassVector(NodeVector):
     n_values: int
-    class_labels: Optional[List[str]] = None
+    class_labels: np.ndarray
 
     def __init__(
             self, N: int,
             n_values: int,
+            node_labels: Optional[List[str]] = None,
             class_labels: Optional[List[str]] = None,
             fill_value: Optional[Number] = None,
             name: Optional[str] = None) -> None:
@@ -20,14 +21,19 @@ class NodeClassVector(NodeVector):
             "class_labels must have the same length as n_values"
 
         self.n_values = n_values
-        self.class_labels = class_labels
+        self.class_labels = np.asarray(class_labels)\
+            if class_labels is not None else np.arange(n_values)
 
-        super().__init__(N, int, fill_value, name)
+        super().__init__(
+            N=N, dtype=int,
+            node_labels=node_labels,
+            fill_value=fill_value, name=name)
 
     @classmethod
     def from_ndarray(
         cls,
         values: np.ndarray,
+        node_labels: Optional[List[str]] = None,
         n_values: Optional[int] = None,
         class_labels: Optional[List[str]] = None,
         **kwargs)\
@@ -41,9 +47,10 @@ class NodeClassVector(NodeVector):
             N=len(values),
             n_values=n_values\
                 if n_values is not None else np.max(values) + 1,
+            node_labels=node_labels,
             class_labels=class_labels, **kwargs)
 
         return ncv
 
-    def get_class_values(self, as_labels: bool=False) -> np.ndarray:
-        return np.arange(self.n_values) if not as_labels else self.class_labels
+    def get_class_values(self) -> np.ndarray:
+        return self.class_labels[self._values]
