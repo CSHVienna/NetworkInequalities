@@ -15,7 +15,7 @@ class TestHomophily:
             for _ in range(Ni):
                 l_classes.append(i)
         return NodeClassVector\
-            .from_ndarray(np.array(l_classes))
+            .from_ndarray(np.asarray(l_classes))
 
     def test_homophily_mixing_matrix_dims(self):
         l_n = (3, 2, 1)
