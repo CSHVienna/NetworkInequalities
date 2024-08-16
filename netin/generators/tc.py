@@ -192,7 +192,7 @@ class TriadicClosure(Graph):
             # G[source] gives direct access (O(1)) to source's neighbors
             # G.neighbors(source) returns an iterator which would
             # need to be searched iteratively
-            if neighbor not in self[source]:
+            if (neighbor not in self[source]) and (neighbor != source):
                 self._tc_candidates[neighbor] += 1
         return super().on_edge_added(source, target)
 
