@@ -2,7 +2,7 @@ from typing import Dict
 
 from ..graph import Graph
 from ..directed import DiGraph
-from ..event import Event
+from ...event import Event
 
 class TestGraph(object):
     @staticmethod

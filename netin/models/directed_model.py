@@ -4,11 +4,11 @@ import powerlaw
 import numpy as np
 import networkx as nx
 
-from ..graphs.event import Event
+from .model import Model
+from ..event import Event
 from ..graphs.directed import DiGraph
 from ..graphs.node_vector import NodeVector
 from ..graphs.binary_class_node_vector import BinaryClassNodeVector
-from .model import Model
 from ..utils import constants as const
 from ..utils.validator import validate_float, validate_int
 from ..utils.constants import CLASS_ATTRIBUTE

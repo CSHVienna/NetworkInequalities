@@ -3,7 +3,7 @@ import numpy as np
 from .filter import Filter
 from ..graphs.node_vector import NodeVector
 from ..graphs.directed import DiGraph
-from ..graphs.event import Event
+from ..event import Event
 
 class ActiveNodes(Filter):
     _out_degrees: NodeVector
