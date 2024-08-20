@@ -4,9 +4,9 @@ import numpy as np
 
 from ..utils.validator import validate_float, validate_int
 from ..utils.constants import CLASS_ATTRIBUTE, CLASS_LABELS, MINORITY_VALUE, MAJORITY_VALUE
-from .node_class_vector import NodeClassVector
+from .categorical_node_vector import CategoricalNodeVector
 
-class BinaryClassNodeVector(NodeClassVector):
+class BinaryClassNodeVector(CategoricalNodeVector):
     def __init__(
         self, N: int,
         node_labels: Optional[List[str]] = None,

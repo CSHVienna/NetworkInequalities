@@ -6,7 +6,7 @@ import networkx as nx
 
 from .event import Event
 from .node_vector import NodeVector
-from .node_class_vector import NodeClassVector
+from .categorical_node_vector import CategoricalNodeVector
 from ..base_class import BaseClass
 
 class Graph(BaseClass):
@@ -85,9 +85,9 @@ class Graph(BaseClass):
 
     @staticmethod
     def assign_nx_graph_class_attribute(
-        graph: nx.Graph, node_classes: NodeClassVector):
+        graph: nx.Graph, node_classes: CategoricalNodeVector):
         assert(node_classes.name is not None),\
-            "NodeClassVector must have a name"
+            "CategoricalNodeVector must have a name"
         graph.graph["class_attributes"] = node_classes.name
         graph.graph["class_labels"] = node_classes.class_labels
         graph.graph["class_values"] = list(range(node_classes.n_values))

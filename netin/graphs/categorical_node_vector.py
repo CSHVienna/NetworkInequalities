@@ -5,7 +5,7 @@ import numpy as np
 
 from .node_vector import NodeVector
 
-class NodeClassVector(NodeVector):
+class CategoricalNodeVector(NodeVector):
     n_values: int
     class_labels: np.ndarray
 
