@@ -38,7 +38,6 @@ class BinaryClassNodeVector(CategoricalNodeVector):
     def from_fraction(
             cls,
             N: int, f_m: float,
-            node_labels: Optional[List[str]] = None,
             class_labels: Optional[List[str]] = None,
             rng: Optional[np.random.Generator] = None)\
                 -> 'BinaryClassNodeVector':
@@ -47,7 +46,6 @@ class BinaryClassNodeVector(CategoricalNodeVector):
         rng = np.random.default_rng() if rng is None else rng
         return cls.from_ndarray(
             values=np.where(rng.random(N) < f_m, MINORITY_VALUE, MAJORITY_VALUE),
-            node_labels=node_labels,
             class_labels=class_labels)
 
     def get_minority_mask(self) -> np.ndarray:

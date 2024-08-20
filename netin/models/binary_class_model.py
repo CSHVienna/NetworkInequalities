@@ -22,11 +22,11 @@ class BinaryClassModel(Model):
             N=self.get_final_number_of_nodes(),
             f_m=self.f_m,
             rng=self._rng)
-        if self.graph.has_node_attribute(CLASS_ATTRIBUTE):
-            node_class_values_pre = self.graph.get_node_attribute(CLASS_ATTRIBUTE)
+        if self.graph.has_node_class(CLASS_ATTRIBUTE):
+            node_class_values_pre = self.graph.get_node_class(CLASS_ATTRIBUTE)
             assert isinstance(node_class_values_pre, BinaryClassNodeVector),\
             "The node class values must be binary"
             node_class_values[:len(node_class_values_pre)] =\
                 node_class_values_pre.values
-        self.graph.set_node_attribute(
+        self.graph.set_node_class(
             CLASS_ATTRIBUTE, node_class_values)

@@ -27,9 +27,9 @@ class UndirectedModel(Model):
     def get_initial_graph(self) -> Graph:
         graph = Graph()
         for i in range(self.m):
-            self.graph.add_node(i)
+            graph.add_node(i)
             for j in range(i):
-                self.graph.add_edge(i, j)
+                graph.add_edge(i, j)
         return graph
 
     def _simulate(self) -> Graph:

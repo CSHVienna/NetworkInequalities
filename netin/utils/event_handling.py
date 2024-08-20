@@ -1,5 +1,5 @@
 from typing import Dict, Any, List, Callable
-
+from collections import defaultdict
 from enum import Enum
 
 class Event(Enum):
@@ -12,7 +12,7 @@ class Event(Enum):
 
 class HasEvents:
     EVENTS: List[Event] = []
-    _event_handlers: Dict[Event, Callable[[Any], None]] = {}
+    _event_handlers: Dict[Event, Callable[[Any], None]] = defaultdict(list)
 
     def trigger_event(self, *args, event: Event, **kwargs):
         assert event in self.EVENTS,\

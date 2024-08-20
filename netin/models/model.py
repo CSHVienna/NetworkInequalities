@@ -43,6 +43,7 @@ class Model(ABC, HasEvents, BaseClass):
         super().__init__(*args, **kwargs)
 
         self.N = N
+        self.graph = None
 
         self._set_seed(seed)
 
@@ -58,7 +59,8 @@ class Model(ABC, HasEvents, BaseClass):
             self._rng = np.random.default_rng(seed=seed)
         elif isinstance(seed, np.random.Generator):
             self._rng = seed
-        raise ValueError("seed must be an int or np.random.Generator")
+        else:
+            raise ValueError(f"`seed` must be an `int` or `np.random.Generator` but is {type(seed)}")
 
     def _initialize_simulation(self):
         self.log(f"Initializing simulation of {self.__class__.__name__}")
