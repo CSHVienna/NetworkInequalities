@@ -14,12 +14,10 @@ class PAHModel(UndirectedModel):
         self, *args,
         N: int, f_m: float, m:int,
         h_m: float, h_M: float,
-        graph: Optional[Graph] = None,
         seed:  Union[int, np.random.Generator] = 1,
         **kwargs):
         super().__init__(
-            *args, N=N, m=m,
-            graph=graph, seed=seed, **kwargs)
+            *args, N=N, m=m, seed=seed, **kwargs)
 
         node_class_values = BinaryClassNodeVector.from_fraction(
             N=N, f_m=f_m, rng=self._rng)

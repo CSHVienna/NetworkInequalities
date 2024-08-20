@@ -13,8 +13,6 @@ class UndirectedModel(Model):
             self, *args,
             N: int,
             m:int,
-            node_attributes: Optional[Dict[str, Any]] = None,
-            graph: Optional[Graph] = None,
             seed: Union[int, np.random.Generator] = 1,
             **kwargs):
         validate_int(N, minimum=1)
@@ -23,9 +21,7 @@ class UndirectedModel(Model):
         super().__init__(
             *args,
             N=N,
-            node_attributes=node_attributes,
-            graph=graph,
-            seed=seed
+            seed=seed,
             **kwargs)
 
     def _initialize_graph(self):
