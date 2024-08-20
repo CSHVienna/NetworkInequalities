@@ -26,28 +26,27 @@ class CategoricalNodeVector(NodeVector):
 
         super().__init__(
             N=N, dtype=int,
-            node_labels=node_labels,
             fill_value=fill_value, name=name)
 
     @classmethod
     def from_ndarray(
         cls,
         values: np.ndarray,
-        node_labels: Optional[List[str]] = None,
         n_values: Optional[int] = None,
+        name: Optional[str] = None,
         class_labels: Optional[List[str]] = None,
         **kwargs)\
-            -> 'NodeClassVector':
+            -> 'CategoricalNodeVector':
         assert values.dtype == int, "values must be of type int"
         assert 0 <= np.min(values), "values must be non-negative"
         assert n_values is None or n_values > np.max(values),\
             "n_values must be greater or equal to the maximum value in values"
 
-        ncv = NodeClassVector(
+        ncv = CategoricalNodeVector(
             N=len(values),
             n_values=n_values\
                 if n_values is not None else np.max(values) + 1,
-            node_labels=node_labels,
+            name=name,
             class_labels=class_labels, **kwargs)
         ncv._values = values
 

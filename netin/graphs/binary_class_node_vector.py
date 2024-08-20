@@ -21,15 +21,15 @@ class BinaryClassNodeVector(CategoricalNodeVector):
     @classmethod
     def from_nd_array(cls,
         values: np.ndarray,
-        node_labels: Optional[List[str]] = None,
         class_labels: Optional[List[str]] = None,
+        name: Optional[str] = None,
         **kwargs)\
             -> 'BinaryClassNodeVector':
         assert np.all(np.isin(values, {MAJORITY_VALUE, MINORITY_VALUE})),\
             "values must be binary"
         bmnv = BinaryClassNodeVector(
             N=len(values),
-            node_labels=node_labels,
+            name=name,
             class_labels=class_labels, **kwargs)
         bmnv._values = values
         return bmnv

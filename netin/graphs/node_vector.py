@@ -14,8 +14,6 @@ class NodeVector(BaseClass):
                  fill_value: Optional[Number] = None,
                  name: Optional[str] = None) -> None:
         validate_int(N, minimum=1)
-        node_labels = np.arange(N)\
-            if node_labels is None else node_labels
         self.set_values(np.zeros(
             N,
             dtype=dtype) if fill_value is None else\
