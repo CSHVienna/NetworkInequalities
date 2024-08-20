@@ -34,6 +34,12 @@ class NodeVector(BaseClass):
         node_values.set_values(values)
         return node_values
 
+    def append_other(self, other: "NodeVector")\
+            -> "NodeVector":
+        return NodeVector.from_ndarray(
+            np.append(self._values, other),
+            name=self.name)
+
     def set_values(self, values: np.ndarray) -> None:
         """Sets the node values.
 

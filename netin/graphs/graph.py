@@ -92,6 +92,9 @@ class Graph(HasEvents, BaseClass):
     def get_node_classes(self) -> Dict[int, CategoricalNodeVector]:
         return self._node_classes
 
+    def has_node_classes(self, name: str) -> bool:
+        return name in self._node_classes
+
     def add_edge(self, source: int, target: int) -> None:
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
         self._add_edge(source, target)

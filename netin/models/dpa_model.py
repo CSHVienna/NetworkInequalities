@@ -21,7 +21,6 @@ class DPAModel(DirectedModel):
             plo_M=plo_M, plo_m=plo_m,
             graph=graph, seed=seed,
             **kwargs)
-        self.pa = InDegreePreferentialAttachment(graph=self.graph, n=N)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         return\

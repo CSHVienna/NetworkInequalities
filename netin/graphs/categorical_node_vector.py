@@ -12,7 +12,6 @@ class CategoricalNodeVector(NodeVector):
     def __init__(
             self, N: int,
             n_values: int,
-            node_labels: Optional[List[str]] = None,
             class_labels: Optional[List[str]] = None,
             fill_value: Optional[Number] = None,
             name: Optional[str] = None) -> None:

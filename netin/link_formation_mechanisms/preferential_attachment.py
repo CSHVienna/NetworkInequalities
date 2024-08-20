@@ -19,7 +19,7 @@ class PreferentialAttachment(LinkFormationMechanism):
 
     def __init__(
             self, graph: Graph, N: int,
-            init_degrees: bool = False) -> None:
+            init_degrees: bool = True) -> None:
         """
         Initializes a PreferentialAttachment object.
 
