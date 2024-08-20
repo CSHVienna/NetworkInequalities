@@ -39,10 +39,11 @@ class DirectedModel(Model):
         validate_float(f, minimum=0., maximum=1.)
         validate_int(N, minimum=1)
         super().__init__(
-            *args, N=N, f=f,
+            *args, N=N,
             node_attributes={
                 CLASS_ATTRIBUTE:\
-                    BinaryMinorityNodeVector.from_fraction(N=N, fraction=f)
+                    BinaryMinorityNodeVector.from_fraction(
+                        N=N, f_m=f, seed=seed)
             },
             graph=graph, seed=seed,
             **kwargs)

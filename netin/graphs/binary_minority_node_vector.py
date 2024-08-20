@@ -1,5 +1,4 @@
-from numbers import Number
-from typing import Optional, List, Type
+from typing import Optional, List
 
 import numpy as np
 
@@ -37,15 +36,15 @@ class BinaryMinorityNodeVector(NodeClassVector):
     @classmethod
     def from_fraction(
             cls,
-            N: int, minority_fraction: float,
+            N: int, f_m: float,
             node_labels: Optional[List[str]] = None,
             class_labels: Optional[List[str]] = None,
             rng: Optional[np.random.Generator] = None) -> 'BinaryMinorityNodeVector':
-        validate_float(minority_fraction, minimum=0., maximum=0.5)
+        validate_float(f_m, minimum=0., maximum=0.5)
         validate_int(N, minimum=1)
         rng = np.random.default_rng() if rng is None else rng
         return cls.from_ndarray(
-            values=np.where(rng.rand(N) < minority_fraction, MINORITY_VALUE, MAJORITY_VALUE),
+            values=np.where(rng.rand(N) < f_m, MINORITY_VALUE, MAJORITY_VALUE),
             node_labels=node_labels,
             class_labels=class_labels)
 

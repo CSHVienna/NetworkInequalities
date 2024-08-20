@@ -22,7 +22,7 @@ class PAHModel(UndirectedModel):
             *args, N=N, m=m,
             node_attributes={
                 CLASS_ATTRIBUTE:\
-                    BinaryMinorityNodeVector.from_fraction(N=N, fraction=f)
+                    BinaryMinorityNodeVector.from_fraction(N=N, f_m=f)
             },
             graph=graph, seed=seed, **kwargs)
         self.h = TwoClassHomophily.from_two_class_homophily(
