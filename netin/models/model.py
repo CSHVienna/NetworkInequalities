@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Any
+from typing import Dict, Optional, Any, Union
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -28,7 +28,7 @@ class Model(ABC, BaseClass):
     def __init__(
             self, *args,
             N: int,
-            seed: int = 1,
+            seed: Union[int, np.random.Generator] = 1,
             **kwargs):
         """Creates a new instance of the Model class.
 
@@ -43,8 +43,12 @@ class Model(ABC, BaseClass):
 
         self.N = N
 
-        self.seed = seed
-        self._rng = np.random.default_rng(seed=seed)
+        if isinstance(seed, int):
+            self._rng = np.random.default_rng(seed=seed)
+        elif isinstance(seed, np.random.Generator):
+            self._rng = seed
+        else:
+            raise ValueError("seed must be an int or np.random.Generator")
 
         self._f_no_self_links = NoSelfLinks(N)
         self._f_no_double_links = NoDoubleLinks(N, self.graph)

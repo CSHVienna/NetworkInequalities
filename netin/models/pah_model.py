@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 
@@ -16,15 +16,16 @@ class PAHModel(UndirectedModel):
         m:int,
         h_m: float, h_M: float,
         graph: Optional[Graph] = None,
-        seed: int = 1,
+        seed:  Union[int, np.random.Generator] = 1,
         **kwargs):
+        rng = np.random.default_rng(seed)
         super().__init__(
             *args, N=N, m=m,
             node_attributes={
                 CLASS_ATTRIBUTE:\
-                    BinaryClassNodeVector.from_fraction(N=N, f_m=f_m)
+                    BinaryClassNodeVector.from_fraction(N=N, f_m=f_m, rng=rng)
             },
-            graph=graph, seed=seed, **kwargs)
+            graph=graph, rng=rng, **kwargs)
         self.h = TwoClassHomophily.from_two_class_homophily(
             node_class_values=self.node_attributes[CLASS_ATTRIBUTE],
             homophily=(h_m, h_M))

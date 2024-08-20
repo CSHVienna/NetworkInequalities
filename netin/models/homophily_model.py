@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from netin.graphs import Graph
 
 import numpy as np
@@ -15,7 +15,7 @@ class HomophilyModel(UndirectedModel):
             m:int,
             h_m: float, h_M: float,
             graph: Optional[Graph] = None,
-            seed: int = 1,
+            seed:  Union[int, np.random.Generator] = 1,
             **kwargs):
         super().__init__(
             *args, N=N, m=m,

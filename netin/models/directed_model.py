@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Any
+from typing import Dict, Optional, Any, Union
 
 import powerlaw
 import numpy as np
@@ -30,7 +30,7 @@ class DirectedModel(Model):
             N: int, f_m: float,
             d: float, plo_M: float, plo_m: float,
             graph: Optional[DiGraph] = None,
-            seed: int = 1,
+            seed:  Union[int, np.random.Generator] = 1,
             **kwargs):
         assert graph is None or isinstance(graph, DiGraph), "graph must be a DiGraph"
         validate_float(d, minimum=0., maximum=1.)

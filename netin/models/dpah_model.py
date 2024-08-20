@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 
@@ -16,7 +16,7 @@ class DPAHModel(DPAModel):
             plo_M: float, plo_m: float,
             h_m: float, h_M: float,
             graph: Optional[DiGraph] = None,
-            seed: int = 1,
+            seed:  Union[int, np.random.Generator] = 1,
             **kwargs):
         super().__init__(
             *args, N=N, f_m=f_m, d=d,

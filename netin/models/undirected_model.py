@@ -1,4 +1,6 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
+
+import numpy as np
 
 from ..graphs import Graph
 from ..utils.validator import validate_int
@@ -13,7 +15,7 @@ class UndirectedModel(Model):
             m:int,
             node_attributes: Optional[Dict[str, Any]] = None,
             graph: Optional[Graph] = None,
-            seed: int = 1,
+            seed: Union[int, np.random.Generator] = 1,
             **kwargs):
         validate_int(N, minimum=1)
         validate_int(m, minimum=1)

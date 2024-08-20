@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 
@@ -12,7 +12,7 @@ class BarabasiAlbertModel(UndirectedModel):
             N: int,
             m:int,
             graph: Optional[Graph] = None,
-            seed: int = 1,
+            seed:  Union[int, np.random.Generator] = 1,
             **kwargs):
         super().__init__(
             *args, N=N, m=m,
