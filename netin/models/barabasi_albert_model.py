@@ -17,7 +17,7 @@ class BarabasiAlbertModel(UndirectedModel):
         super().__init__(
             *args, N=N, m=m,
             graph=graph, seed=seed, **kwargs)
-        self.pa = PreferentialAttachment(n=N, graph=self.graph)
+        self.pa = PreferentialAttachment(N=N, graph=self.graph)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         return\
