@@ -1,7 +1,7 @@
 import numpy as np
 
 from ..graphs.graph import Graph
-from ..event import Event
+from ..utils.event_handling import Event
 from ..graphs.node_vector import NodeVector
 from .link_formation_mechanism import LinkFormationMechanism
 

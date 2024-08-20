@@ -5,7 +5,7 @@ import numpy as np
 import networkx as nx
 
 from .model import Model
-from ..event import Event
+from ..utils.event_handling import Event
 from ..graphs.directed import DiGraph
 from ..graphs.node_vector import NodeVector
 from ..graphs.binary_class_node_vector import BinaryClassNodeVector

@@ -1,6 +1,6 @@
 from .preferential_attachment import PreferentialAttachment
 from ..graphs.graph import Graph
-from ..event import Event
+from ..utils.event_handling import Event
 from ..graphs.node_vector import NodeVector
 
 class InDegreePreferentialAttachment(PreferentialAttachment):
