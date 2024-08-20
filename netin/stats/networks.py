@@ -9,7 +9,7 @@ from collections import Counter
 
 from netin.utils import constants as const
 from netin.utils import validator as val
-from netin.graphs import NodeClassVector
+from netin.graphs import CategoricalNodeVector
 
 def compute_node_stats(graph: nx.Graph, metric: str, **kwargs) -> list[Union[int, float]]:
     """
@@ -61,7 +61,7 @@ def compute_node_stats(graph: nx.Graph, metric: str, **kwargs) -> list[Union[int
 
 def get_node_metadata_as_dataframe(
         graph: nx.Graph,
-        node_class_values: Union[NodeClassVector, str] = const.CLASS_ATTRIBUTE,
+        node_class_values: Union[CategoricalNodeVector, str] = const.CLASS_ATTRIBUTE,
         include_graph_metadata: bool = False, n_jobs: int = 1) -> pd.DataFrame:
     """
     Returns the metadata of the nodes in the graph as a dataframe.
@@ -86,7 +86,7 @@ def get_node_metadata_as_dataframe(
     """
     cols = ['node', 'class_label', 'real_label', 'source']
 
-    class_values = node_class_values.get_class_values() if isinstance(node_class_values, NodeClassVector) else nx.get_node_attributes(graph, node_class_values)
+    class_values = node_class_values.get_class_values() if isinstance(node_class_values, CategoricalNodeVector) else nx.get_node_attributes(graph, node_class_values)
     obj = {'node': list(graph.nodes),
             'class_label': [node_class_values[n] for n in graph.nodes],
             'real_label': [class_values[n] for n in graph.nodes],
