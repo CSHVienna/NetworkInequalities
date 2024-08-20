@@ -46,7 +46,7 @@ class BinaryClassNodeVector(CategoricalNodeVector):
         validate_int(N, minimum=1)
         rng = np.random.default_rng() if rng is None else rng
         return cls.from_ndarray(
-            values=np.where(rng.rand(N) < f_m, MINORITY_VALUE, MAJORITY_VALUE),
+            values=np.where(rng.random(N) < f_m, MINORITY_VALUE, MAJORITY_VALUE),
             node_labels=node_labels,
             class_labels=class_labels)
 
