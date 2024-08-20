@@ -12,11 +12,13 @@ from ..base_class import BaseClass
 class Graph(BaseClass):
     graph: nx.Graph
     _event_handlers: Dict[Event, Callable[[Any], None]]
+    _node_attributes: Dict[str, CategoricalNodeVector]
 
     def __init__(self, *args, **attr) -> None:
         BaseClass.__init__(self)
         self._init_graph(*args, **attr)
         self._event_handlers = defaultdict(list)
+        self._node_attributes = {}
 
     @classmethod
     def from_nxgraph(cls, graph: nx.Graph) -> "Graph":
@@ -26,6 +28,14 @@ class Graph(BaseClass):
 
     def _init_graph(self, *args, **kwargs):
         self.graph = nx.Graph(*args, **kwargs)
+
+    def set_node_attribute(self, name: str, node_vector: CategoricalNodeVector):
+        assert len(node_vector) == len(self.graph),\
+            f"Length of node vector `{name}` does not match the number of nodes in the graph (N={len(self.graph)})"
+        self._node_attributes[name] = node_vector
+
+    def get_node_attribute(self, name: str) -> CategoricalNodeVector:
+        return self._node_attributes[name]
 
     def add_edge(self, source: Hashable, target: Hashable, **attr) -> None:
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
@@ -50,6 +60,9 @@ class Graph(BaseClass):
                 event: [f.__name__ for f in functions]\
                     for event, functions in self._event_handlers.items()}
         }
+        for name, attr in self._node_attributes.items():
+            d[self.__class__.__name__][name] = {}
+            attr.get_metadata(d[self.__class__.__name__][name])
         return d
 
     def copy(self, as_view=False):
