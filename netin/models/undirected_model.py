@@ -35,7 +35,7 @@ class UndirectedModel(Model):
             for j in range(i):
                 self.graph.add_edge(i, j)
 
-    def simulate(self) -> Graph:
+    def _simulate(self) -> Graph:
         for source in range(
                 self.graph.number_of_nodes(), self.N):
             self.graph.add_node(source)

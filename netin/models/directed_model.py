@@ -143,7 +143,7 @@ class DirectedModel(Model):
         self._out_degrees.get_metadata(d[self.__class__.__name__])
         return d
 
-    def simulate(self) -> DiGraph:
+    def _simulate(self) -> DiGraph:
         tries = 0
         while self.graph.number_of_edges()\
                 < self._get_expected_number_of_edges():
