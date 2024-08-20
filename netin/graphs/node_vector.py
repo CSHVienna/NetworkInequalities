@@ -27,11 +27,12 @@ class NodeVector(BaseClass):
     def from_ndarray(
             cls,
             values: np.ndarray,
+            name: Optional[str] = None,
             **kwargs) -> "NodeVector":
         assert isinstance(values, np.ndarray),\
             f"values must be of type np.ndarray, but is {type(values)}"
         node_values = cls(
-            N=len(values), dtype=values.dtype, **kwargs)
+            N=len(values), dtype=values.dtype, name=name, **kwargs)
         node_values.set_values(values)
         return node_values
 
@@ -50,6 +51,9 @@ class NodeVector(BaseClass):
 
     def vals(self) -> np.ndarray:
         return self.get_values()
+
+    def copy(self) -> "NodeVector":
+        return NodeVector.from_ndarray(self._values.copy(), name=self.name)
 
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
