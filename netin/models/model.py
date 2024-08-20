@@ -25,7 +25,6 @@ class Model(ABC, BaseClass):
     def __init__(
             self, *args,
             N: int,
-            graph: Optional[Graph] = None,
             seed: int = 1,
             **kwargs):
         """Creates a new instance of the Model class.
@@ -33,10 +32,7 @@ class Model(ABC, BaseClass):
         Parameters
         ----------
         N : int
-            Number of final nodes in the network.
-        graph : Optional[Graph], optional
-            If present, an existing network that will be extended. In this case, `N >= graph.number_of_nodes()` as the graph will be extended by the missing nodes. If no graph is given, the model creates its own graph and initializes it with `m` fully connected nodes.
-            Calling the `simulate`-function will then add the remaining `N - m` nodes.
+            Number of nodes to be added to the network.
         seed : int, optional
             A random seed for reproducibility, by default 1
         """
@@ -47,10 +43,6 @@ class Model(ABC, BaseClass):
         self.seed = seed
         self._rng = np.random.default_rng(seed=seed)
 
-        if graph is None:
-            self._initialize_graph()
-            self._populate_initial_graph()
-
         self._f_no_self_links = NoSelfLinks(N)
         self._f_no_double_links = NoDoubleLinks(N, self.graph)
 
@@ -59,6 +51,11 @@ class Model(ABC, BaseClass):
         Function can be overwritten by subclasses.
         """
         self.graph = Graph()
+
+    def _initialize_simulation(self):
+        if self.graph is None:
+            self._initialize_graph()
+            self._populate_initial_graph()
 
     @abstractmethod
     def _populate_initial_graph(self):
@@ -70,6 +67,16 @@ class Model(ABC, BaseClass):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(N={self.N})"
+
+    def preload_graph(self, graph: Graph):
+        """Preloads a graph into the model.
+
+        Parameters
+        ----------
+        graph : Graph
+            Graph to preload.
+        """
+        self.graph = graph
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         return self._f_no_self_links.get_target_mask(source)\
