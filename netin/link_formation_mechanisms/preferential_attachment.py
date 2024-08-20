@@ -34,7 +34,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         super().__init__(N=N)
         self.graph = graph
         self._a_degree = NodeVector(
-            n, dtype=int, name="degrees")
+            N, dtype=int, name="degrees")
 
         if init_degrees:
             self.initialize_degree_array()
@@ -44,8 +44,8 @@ class PreferentialAttachment(LinkFormationMechanism):
             function=self._update_degree_by_link)
 
     def initialize_degree_array(self):
-        for i,k in self.graph.degree():
-            self._a_degree[i] = k
+        for i in range(self.N):
+            self._a_degree[i] = self.graph.degree(i)
 
     def _get_target_probabilities(self, _) -> NodeVector:
         """
