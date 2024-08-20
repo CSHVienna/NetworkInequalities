@@ -44,6 +44,7 @@ class Model(ABC, HasEvents, BaseClass):
         self.N = N
 
         self._set_seed(seed)
+        self._initialize_graph()
 
         self._f_no_self_links = NoSelfLinks(N)
         self._f_no_double_links = NoDoubleLinks(N, self.graph)
