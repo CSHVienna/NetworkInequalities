@@ -70,10 +70,12 @@ class Model(ABC, BaseClass):
 
     @abstractmethod
     def simulate(self) -> Graph:
+        self.log(f"Simulating {self.__class__.__name__}")
         self.trigger_event(event=Event.SIMULATION_START)
         self._initialize_simulation()
         res = self._simulate()
         self.trigger_event(event=Event.SIMULATION_END)
+        self.log(f"Done with simulation of {self.__class__.__name__}")
         return res
 
     def preload_graph(self, graph: Graph):

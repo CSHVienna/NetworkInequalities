@@ -33,3 +33,7 @@ class BaseClass:
         assert event in self.EVENTS,\
             f"Event {event} not specified in {self.__class__.__name__}.__events."
         self._event_handlers[event].append(function)
+
+    def log(self, msg: str):
+        if self._verbose:
+            print(msg)
