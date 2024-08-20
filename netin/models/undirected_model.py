@@ -34,8 +34,9 @@ class UndirectedModel(Model):
                 self.graph.add_edge(i, j)
 
     def _simulate(self) -> Graph:
+        n_nodes = len(self.graph)
         for source in range(
-                self.graph.number_of_nodes(), self.N):
+                n_nodes, n_nodes + self.N):
             self.graph.add_node(source)
             for _ in range(self.m):
                 target_probabilities = self.compute_target_probabilities(source)[:source]
