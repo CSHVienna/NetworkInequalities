@@ -14,6 +14,9 @@ class BaseClass:
         return {
             self.__class__.__name__: {
                 'created_at': self._created_at,
+                "event_handlers" : {
+                event: [f.__name__ for f in functions]\
+                    for event, functions in self._event_handlers.items()}
             }
         } if d_meta_data is None else d_meta_data
 

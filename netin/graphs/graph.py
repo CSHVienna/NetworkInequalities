@@ -1,5 +1,5 @@
 from typing import\
-    Any, Optional, Dict, Callable,\
+    Any, Optional, Dict,\
     Set, List, Tuple
 from collections import defaultdict
 
@@ -101,9 +101,6 @@ class Graph(BaseClass):
         d[self.__class__.__name__] = {
             "n_nodes": len(self),
             "n_edges": self.number_of_edges(),
-            "event_handlers" : {
-                event: [f.__name__ for f in functions]\
-                    for event, functions in self._event_handlers.items()}
         }
         for name, attr in self._node_classes.items():
             d[self.__class__.__name__][name] = {}
