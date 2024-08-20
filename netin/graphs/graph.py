@@ -145,6 +145,9 @@ class Graph(HasEvents, BaseClass):
     def number_of_edges(self):
         return sum(len(targets) for targets in self._graph.values()) // 2
 
+    def degree(self, node: int):
+        return len(self._graph[node])
+
     def __len__(self):
         return len(self._graph)
 
