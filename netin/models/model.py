@@ -7,9 +7,9 @@ from ..graphs.graph import Graph
 from ..base_class import BaseClass
 from ..filters.no_double_links import NoDoubleLinks
 from ..filters.no_self_links import NoSelfLinks
-from ..event import Event
+from ..utils.event_handling import HasEvents, Event
 
-class Model(ABC, BaseClass):
+class Model(ABC, HasEvents, BaseClass):
     """Model class.
     Abstract class that defines a growing network model.
     Specific growing-network-model implementations should inherit from this class and implement the provided abstract methods.

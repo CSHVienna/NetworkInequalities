@@ -1,17 +1,16 @@
 from typing import\
     Any, Optional, Dict,\
     Set, List, Tuple
-from collections import defaultdict
 
 import numpy as np
 import networkx as nx
 
-from ..event import Event
 from .node_vector import NodeVector
 from .categorical_node_vector import CategoricalNodeVector
+from ..utils.event_handling import HasEvents, Event
 from ..base_class import BaseClass
 
-class Graph(BaseClass):
+class Graph(HasEvents, BaseClass):
     EVENTS = [Event.LINK_ADD_BEFORE, Event.LINK_ADD_AFTER]
     _graph: Dict[int, Set[int]]
     _node_classes: Dict[str, CategoricalNodeVector]
@@ -19,7 +18,6 @@ class Graph(BaseClass):
     def __init__(self, *args, **attr) -> None:
         BaseClass.__init__(self)
         self._init_graph(*args, **attr)
-        self._event_handlers = defaultdict(list)
         self._node_classes = {}
 
     @classmethod
