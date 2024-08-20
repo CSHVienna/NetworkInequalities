@@ -23,7 +23,7 @@ class Model(ABC, BaseClass):
 
     _rng: np.random.Generator
 
-    __events__ = [Event.SIMULATION_START, Event.SIMULATION_END]
+    EVENTS = [Event.SIMULATION_START, Event.SIMULATION_END]
 
     def __init__(
             self, *args,

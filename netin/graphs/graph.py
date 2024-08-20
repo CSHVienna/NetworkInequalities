@@ -12,7 +12,7 @@ from .categorical_node_vector import CategoricalNodeVector
 from ..base_class import BaseClass
 
 class Graph(BaseClass):
-    __events = [Event.LINK_ADD_BEFORE, Event.LINK_ADD_AFTER]
+    EVENTS = [Event.LINK_ADD_BEFORE, Event.LINK_ADD_AFTER]
     _graph: Dict[int, Set[int]]
     _node_classes: Dict[str, CategoricalNodeVector]
 
