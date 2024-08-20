@@ -27,7 +27,7 @@ class DirectedModel(Model):
 
     def __init__(
             self, *args,
-            N: int, f: float,
+            N: int, f_m: float,
             d: float, plo_M: float, plo_m: float,
             graph: Optional[DiGraph] = None,
             seed: int = 1,
@@ -36,14 +36,14 @@ class DirectedModel(Model):
         validate_float(d, minimum=0., maximum=1.)
         validate_float(plo_M, minimum=0.)
         validate_float(plo_m, minimum=0.)
-        validate_float(f, minimum=0., maximum=1.)
+        validate_float(f_m, minimum=0., maximum=1.)
         validate_int(N, minimum=1)
         super().__init__(
             *args, N=N,
             node_attributes={
                 CLASS_ATTRIBUTE:\
                     BinaryClassNodeVector.from_fraction(
-                        N=N, f_m=f, rng=rng)
+                        N=N, f_m=f_m, rng=None)
             },
             graph=graph, seed=seed,
             **kwargs)

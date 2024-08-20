@@ -12,7 +12,7 @@ from ..utils.constants import CLASS_ATTRIBUTE
 class PAHModel(UndirectedModel):
     def __init__(
         self, *args,
-        N: int, f: float,
+        N: int, f_m: float,
         m:int,
         h_m: float, h_M: float,
         graph: Optional[Graph] = None,
@@ -22,7 +22,7 @@ class PAHModel(UndirectedModel):
             *args, N=N, m=m,
             node_attributes={
                 CLASS_ATTRIBUTE:\
-                    BinaryClassNodeVector.from_fraction(N=N, f_m=f)
+                    BinaryClassNodeVector.from_fraction(N=N, f_m=f_m)
             },
             graph=graph, seed=seed, **kwargs)
         self.h = TwoClassHomophily.from_two_class_homophily(

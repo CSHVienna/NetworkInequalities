@@ -12,14 +12,14 @@ class DPAHModel(DPAModel):
 
     def __init__(
             self, *args,
-            N: int, f: float, d: float,
+            N: int, f_m: float, d: float,
             plo_M: float, plo_m: float,
             h_m: float, h_M: float,
             graph: Optional[DiGraph] = None,
             seed: int = 1,
             **kwargs):
         super().__init__(
-            *args, N=N, f=f, d=d,
+            *args, N=N, f_m=f_m, d=d,
             plo_M=plo_M, plo_m=plo_m,
             graph=graph, seed=seed,
             **kwargs)
