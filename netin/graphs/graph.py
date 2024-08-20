@@ -82,12 +82,15 @@ class Graph(HasEvents, BaseClass):
         self._graph[source].add(target)
         self._graph[target].add(source)
 
-    def set_node_attribute(
+    def set_node_class(
             self, name: str, node_vector: CategoricalNodeVector):
         self._node_classes[name] = node_vector
 
-    def get_node_attribute(self, name: str) -> CategoricalNodeVector:
+    def get_node_class(self, name: str) -> CategoricalNodeVector:
         return self._node_classes[name]
+
+    def get_node_classes(self) -> Dict[int, CategoricalNodeVector]:
+        return self._node_classes
 
     def add_edge(self, source: int, target: int) -> None:
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
