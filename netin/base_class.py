@@ -6,9 +6,11 @@ from .event import Event
 class BaseClass:
     EVENTS: List[Event] = []
     _event_handlers: Dict[Event, Callable[[Any], None]]
+    _verbose: bool
 
-    def __init__(self) -> None:
+    def __init__(self, verbose: bool = False) -> None:
         self._created_at = datetime.now()
+        self._verbose = verbose
 
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         return {
