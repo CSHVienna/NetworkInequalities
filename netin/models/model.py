@@ -82,7 +82,6 @@ class Model(ABC, HasEvents, BaseClass):
     def _simulate(self) -> Graph:
         raise NotImplementedError
 
-    @abstractmethod
     def simulate(self) -> Graph:
         self.log(f"Simulating {self.__class__.__name__}")
         self.trigger_event(event=Event.SIMULATION_START)
