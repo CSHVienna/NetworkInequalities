@@ -40,11 +40,6 @@ class DirectedModel(Model):
         validate_int(N, minimum=1)
         super().__init__(
             *args, N=N,
-            node_attributes={
-                CLASS_ATTRIBUTE:\
-                    BinaryClassNodeVector.from_fraction(
-                        N=N, f_m=f_m, rng=None)
-            },
             graph=graph, seed=seed,
             **kwargs)
 
@@ -55,6 +50,9 @@ class DirectedModel(Model):
         self._f_active_nodes = ActiveNodes(N, self.graph)
         self._lfm_uniform = Uniform(N)
 
+        self.graph.set_node_attribute(
+            CLASS_ATTRIBUTE, BinaryClassNodeVector.from_fraction(
+            N=N, f_m=f_m, rng=self._rng))
         self._initialize_node_activity()
 
     def _initialize_graph(self):

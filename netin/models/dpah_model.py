@@ -24,7 +24,7 @@ class DPAHModel(DPAModel):
             graph=graph, seed=seed,
             **kwargs)
         self.h = TwoClassHomophily.from_two_class_homophily(
-            node_class_values=self.node_attributes[CLASS_ATTRIBUTE],
+            node_class_values=self.graph.get_node_attribute(CLASS_ATTRIBUTE),
             homophily=(h_m, h_M))
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:

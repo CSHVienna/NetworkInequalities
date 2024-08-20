@@ -43,15 +43,25 @@ class Model(ABC, HasEvents, BaseClass):
 
         self.N = N
 
+        self._set_seed(seed)
+
+        self._f_no_self_links = NoSelfLinks(N)
+        self._f_no_double_links = NoDoubleLinks(N, self.graph)
+
+    def _set_seed(self, seed: Union[int, np.random.Generator]):
+        """Sets the seed for the random number generator.
+
+        Parameters
+        ----------
+        seed : int
+            Seed for the random number generator.
+        """
         if isinstance(seed, int):
             self._rng = np.random.default_rng(seed=seed)
         elif isinstance(seed, np.random.Generator):
             self._rng = seed
         else:
             raise ValueError("seed must be an int or np.random.Generator")
-
-        self._f_no_self_links = NoSelfLinks(N)
-        self._f_no_double_links = NoDoubleLinks(N, self.graph)
 
     def _initialize_graph(self):
         """Initializes an empty graph.
