@@ -12,13 +12,13 @@ from ..base_class import BaseClass
 class Graph(BaseClass):
     graph: nx.Graph
     _event_handlers: Dict[Event, Callable[[Any], None]]
-    _node_attributes: Dict[str, CategoricalNodeVector]
+    _node_classes: Dict[str, CategoricalNodeVector]
 
     def __init__(self, *args, **attr) -> None:
         BaseClass.__init__(self)
         self._init_graph(*args, **attr)
         self._event_handlers = defaultdict(list)
-        self._node_attributes = {}
+        self._node_classes = {}
 
     @classmethod
     def from_nxgraph(cls, graph: nx.Graph) -> "Graph":
@@ -32,10 +32,10 @@ class Graph(BaseClass):
     def set_node_attribute(self, name: str, node_vector: CategoricalNodeVector):
         assert len(node_vector) == len(self.graph),\
             f"Length of node vector `{name}` does not match the number of nodes in the graph (N={len(self.graph)})"
-        self._node_attributes[name] = node_vector
+        self._node_classes[name] = node_vector
 
     def get_node_attribute(self, name: str) -> CategoricalNodeVector:
-        return self._node_attributes[name]
+        return self._node_classes[name]
 
     def add_edge(self, source: Hashable, target: Hashable, **attr) -> None:
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
@@ -60,7 +60,7 @@ class Graph(BaseClass):
                 event: [f.__name__ for f in functions]\
                     for event, functions in self._event_handlers.items()}
         }
-        for name, attr in self._node_attributes.items():
+        for name, attr in self._node_classes.items():
             d[self.__class__.__name__][name] = {}
             attr.get_metadata(d[self.__class__.__name__][name])
         return d
@@ -75,20 +75,20 @@ class Graph(BaseClass):
 
     def to_nxgraph(
             self,
-            node_attributes: Optional[Dict[str, NodeVector]] = None) -> nx.Graph:
+            node_classes: Optional[Dict[str, NodeVector]] = None) -> nx.Graph:
         g_copy = self.graph.copy()
-        if node_attributes is not None:
-            Graph.assign_node_attributes(g_copy, node_attributes)
+        if node_classes is not None:
+            Graph.assign_node_classes(g_copy, node_classes)
         return g_copy
 
-    def assign_node_attributes(self, node_attributes: Dict[str, NodeVector]):
+    def assign_node_classes(self, node_classes: Dict[str, NodeVector]):
 
-        Graph.assign_nx_node_attributes(self.graph, node_attributes)
+        Graph.assign_nx_node_classes(self.graph, node_classes)
 
     @staticmethod
-    def assign_nx_node_attributes(
-        graph: nx.Graph, node_attributes: Dict[str, NodeVector]):
-        for name, node_vector in node_attributes.items():
+    def assign_nx_node_classes(
+        graph: nx.Graph, node_classes: Dict[str, NodeVector]):
+        for name, node_vector in node_classes.items():
             assert(len(node_vector) == len(graph)),\
                 f"Length of node vector `{name}` does not match the number of nodes in the graph"
             nx.set_node_attributes(
@@ -106,7 +106,7 @@ class Graph(BaseClass):
         graph.graph["class_values"] = list(range(node_classes.n_values))
 
     @staticmethod
-    def get_node_attributes(
+    def get_node_classes(
         graph: nx.Graph, name: str) -> NodeVector:
         nodes, values = zip(*nx.get_node_attributes(graph, name).items())
         return NodeVector.from_ndarray(
