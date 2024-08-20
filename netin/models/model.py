@@ -73,6 +73,7 @@ class Model(ABC, HasEvents, BaseClass):
     def _initialize_simulation(self):
         if self.graph is None:
             self._initialize_graph()
+        if len(self.graph) == 0:
             self._populate_initial_graph()
 
     @abstractmethod
