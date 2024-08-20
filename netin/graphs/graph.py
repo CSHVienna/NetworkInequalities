@@ -6,14 +6,14 @@ from collections import defaultdict
 import numpy as np
 import networkx as nx
 
-from .event import Event
+from ..event import Event
 from .node_vector import NodeVector
 from .categorical_node_vector import CategoricalNodeVector
 from ..base_class import BaseClass
 
 class Graph(BaseClass):
+    __events = [Event.LINK_ADD_BEFORE, Event.LINK_ADD_AFTER]
     _graph: Dict[int, Set[int]]
-    _event_handlers: Dict[Event, Callable[[Any], None]]
     _node_classes: Dict[str, CategoricalNodeVector]
 
     def __init__(self, *args, **attr) -> None:
@@ -95,14 +95,6 @@ class Graph(BaseClass):
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
         self._add_edge(source, target)
         self.trigger_event(source, target, event=Event.LINK_ADD_AFTER)
-
-    def register_event_handler(
-        self, event: Event, function: Callable[[Any], None]):
-        self._event_handlers[event].append(function)
-
-    def trigger_event(self, *args, event: Event, **kwargs):
-        for function in self._event_handlers[event]:
-            function(*args, **kwargs)
 
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)

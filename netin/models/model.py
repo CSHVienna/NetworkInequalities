@@ -7,6 +7,7 @@ from ..graphs.graph import Graph
 from ..base_class import BaseClass
 from ..filters.no_double_links import NoDoubleLinks
 from ..filters.no_self_links import NoSelfLinks
+from ..event import Event
 
 class Model(ABC, BaseClass):
     """Model class.
@@ -21,6 +22,8 @@ class Model(ABC, BaseClass):
     _f_no_self_links: NoSelfLinks
 
     _rng: np.random.Generator
+
+    __events__ = [Event.SIMULATION_START, Event.SIMULATION_END]
 
     def __init__(
             self, *args,
@@ -67,8 +70,11 @@ class Model(ABC, BaseClass):
 
     @abstractmethod
     def simulate(self) -> Graph:
+        self.trigger_event(event=Event.SIMULATION_START)
         self._initialize_simulation()
-        return self._simulate()
+        res = self._simulate()
+        self.trigger_event(event=Event.SIMULATION_END)
+        return res
 
     def preload_graph(self, graph: Graph):
         """Preloads a graph into the model.
