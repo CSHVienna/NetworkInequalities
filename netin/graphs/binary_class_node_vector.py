@@ -6,7 +6,7 @@ from ..utils.validator import validate_float, validate_int
 from ..utils.constants import CLASS_ATTRIBUTE, CLASS_LABELS, MINORITY_VALUE, MAJORITY_VALUE
 from .node_class_vector import NodeClassVector
 
-class BinaryMinorityNodeVector(NodeClassVector):
+class BinaryClassNodeVector(NodeClassVector):
     def __init__(
         self, N: int,
         node_labels: Optional[List[str]] = None,
@@ -24,9 +24,10 @@ class BinaryMinorityNodeVector(NodeClassVector):
         node_labels: Optional[List[str]] = None,
         class_labels: Optional[List[str]] = None,
         **kwargs)\
-            -> 'BinaryMinorityNodeVector':
-        assert np.all(np.isin(values, {MAJORITY_VALUE, MINORITY_VALUE})), "values must be binary"
-        bmnv = BinaryMinorityNodeVector(
+            -> 'BinaryClassNodeVector':
+        assert np.all(np.isin(values, {MAJORITY_VALUE, MINORITY_VALUE})),\
+            "values must be binary"
+        bmnv = BinaryClassNodeVector(
             N=len(values),
             node_labels=node_labels,
             class_labels=class_labels, **kwargs)
@@ -39,7 +40,8 @@ class BinaryMinorityNodeVector(NodeClassVector):
             N: int, f_m: float,
             node_labels: Optional[List[str]] = None,
             class_labels: Optional[List[str]] = None,
-            rng: Optional[np.random.Generator] = None) -> 'BinaryMinorityNodeVector':
+            rng: Optional[np.random.Generator] = None)\
+                -> 'BinaryClassNodeVector':
         validate_float(f_m, minimum=0., maximum=0.5)
         validate_int(N, minimum=1)
         rng = np.random.default_rng() if rng is None else rng

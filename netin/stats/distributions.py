@@ -5,11 +5,11 @@ import pandas as pd
 import powerlaw
 import networkx as nx
 
-from ..graphs.binary_minority_node_vector import BinaryMinorityNodeVector
+from ..graphs.binary_class_node_vector import BinaryClassNodeVector
 
 def fit_powerlaw_groups(
         g: Union[nx.Graph, nx.DiGraph],
-        node_class_values: Union[BinaryMinorityNodeVector, str],
+        node_class_values: Union[BinaryClassNodeVector, str],
         metric: str)\
     -> Tuple[powerlaw.Fit, powerlaw.Fit]:
     """
@@ -20,9 +20,9 @@ def fit_powerlaw_groups(
     g: Graph
         Graph to fit power law to
 
-    node_class_values: Union[BinaryMinorityNodeVector, str]
+    node_class_values: Union[BinaryClassNodeVector, str]
         If a string, it must be the name of the node attribute set in `g` that contains the class labels. The values must be booleans set to one if the node belongs to the minority group.
-        If a BinaryMinorityNodeVector, it must be the node class values.
+        If a BinaryClassNodeVector, it must be the node class values.
 
     metric: str
         metric to fit power law to
@@ -44,7 +44,7 @@ def fit_powerlaw_groups(
         return g.in_degree if metric == 'in_degree' else g.out_degree if metric == 'out_degree' else g.degree
 
     mask_min = node_class_values.get_minority_mask()\
-        if isinstance(node_class_values, BinaryMinorityNodeVector) else\
+        if isinstance(node_class_values, BinaryClassNodeVector) else\
             g.nodes[node_class_values]
     fnc = _get_value_fnc(g, metric)
 

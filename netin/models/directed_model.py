@@ -7,7 +7,7 @@ import networkx as nx
 from ..graphs.event import Event
 from ..graphs.directed import DiGraph
 from ..graphs.node_vector import NodeVector
-from ..graphs.binary_minority_node_vector import BinaryMinorityNodeVector
+from ..graphs.binary_class_node_vector import BinaryClassNodeVector
 from .model import Model
 from ..utils import constants as const
 from ..utils.validator import validate_float, validate_int
@@ -42,8 +42,8 @@ class DirectedModel(Model):
             *args, N=N,
             node_attributes={
                 CLASS_ATTRIBUTE:\
-                    BinaryMinorityNodeVector.from_fraction(
-                        N=N, f_m=f, seed=seed)
+                    BinaryClassNodeVector.from_fraction(
+                        N=N, f_m=f, rng=rng)
             },
             graph=graph, seed=seed,
             **kwargs)
