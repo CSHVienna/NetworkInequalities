@@ -62,11 +62,13 @@ class Model(ABC, BaseClass):
         raise NotImplementedError
 
     @abstractmethod
-    def simulate(self) -> Graph:
+    def _simulate(self) -> Graph:
         raise NotImplementedError
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(N={self.N})"
+    @abstractmethod
+    def simulate(self) -> Graph:
+        self._initialize_simulation()
+        return self._simulate()
 
     def preload_graph(self, graph: Graph):
         """Preloads a graph into the model.
@@ -98,3 +100,6 @@ class Model(ABC, BaseClass):
         return self._rng.choice(
             np.arange(len(target_probabilities)),
             p=target_probabilities)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(N={self.N})"
