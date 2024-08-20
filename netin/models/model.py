@@ -61,8 +61,7 @@ class Model(ABC, HasEvents, BaseClass):
             self._rng = np.random.default_rng(seed=seed)
         elif isinstance(seed, np.random.Generator):
             self._rng = seed
-        else:
-            raise ValueError("seed must be an int or np.random.Generator")
+        raise ValueError("seed must be an int or np.random.Generator")
 
     def _initialize_graph(self):
         """Initializes an empty graph.
