@@ -1,4 +1,6 @@
-from typing import Any, Optional, Dict, Callable, Hashable
+from typing import\
+    Any, Optional, Dict, Callable,\
+    Set, List, Tuple
 from collections import defaultdict
 
 import numpy as np
@@ -10,7 +12,7 @@ from .categorical_node_vector import CategoricalNodeVector
 from ..base_class import BaseClass
 
 class Graph(BaseClass):
-    graph: nx.Graph
+    _graph: Dict[int, Set[int]]
     _event_handlers: Dict[Event, Callable[[Any], None]]
     _node_classes: Dict[str, CategoricalNodeVector]
 
@@ -21,26 +23,77 @@ class Graph(BaseClass):
         self._node_classes = {}
 
     @classmethod
-    def from_nxgraph(cls, graph: nx.Graph) -> "Graph":
+    def from_nxgraph(
+            cls, graph: nx.Graph,
+            node_attributes_names: List[str] = None,
+            sort_node_labels: bool = True) -> Tuple[NodeVector, "Graph"]:
+        """Take a `networkx.Graph` and return a `Graph` object and mapping of the nodes.
+        NetworkX graphs uses custom node labels while `Graph` uses identifies nodes
+        by integer indices.
+        This method translates the node labels to integer indices and returns the
+        mapping as a `NodeVector` where the value `v_i` at index `i` is the node
+        label of node `i`.
+
+        Parameters
+        ----------
+        graph : nx.Graph
+            The `networkx.Graph` object to be converted.
+        node_attributes_names : List[str], optional
+            List of node attributes to be included in the `Graph` object.
+            Each element is the name of `node` attribute in the `networkx.Graph`,
+            retrievable by `nx.get_node_attributes(graph, name)`.
+            Values must be integers.
+        sort_node_labels : bool, optional
+            Whether to sort the node labels in ascending order. Default is `True`.
+            If the node labels of the `nx_Graph` are a full integer range, the node
+            mapping will be identical (the returned `NodeVector` will be identical
+            to `np.arange(len(graph))`).
+
+        Returns
+        -------
+        Tuple[NodeVector, Graph]
+            A tuple containing the node labels and the Graph object.
+        """
         g = Graph()
-        g.graph = graph
-        return g
+        nx_node_labels = sorted(list(graph.nodes)) if sort_node_labels else list(graph.nodes)
+        for node in nx_node_labels:
+            g.add_node(node)
+        for source, targets in graph.edges:
+            g.add_edge(source, targets)
+        if node_attributes_names is not None:
+            for name in node_attributes_names:
+                nx_node_attr = nx.get_node_attributes(graph, name)
+                g.set_node_attribute(
+                    name=name,
+                    node_vector=CategoricalNodeVector.from_ndarray(
+                        values=np.asarray([nx_node_attr[node] for node in nx_node_labels]),
+                        name=name))
+        nv_node_labels = NodeVector.from_ndarray(
+            values=np.asarray(nx_node_labels),
+            name="node_labels")
+        return nv_node_labels, g
 
-    def _init_graph(self, *args, **kwargs):
-        self.graph = nx.Graph(*args, **kwargs)
+    def _init_graph(self):
+        self._graph = {}
 
-    def set_node_attribute(self, name: str, node_vector: CategoricalNodeVector):
-        assert len(node_vector) == len(self.graph),\
-            f"Length of node vector `{name}` does not match the number of nodes in the graph (N={len(self.graph)})"
+    def _add_edge(self, source: int, target: int):
+        assert source in self._graph, f"Node {source} does not exist"
+        assert target in self._graph, f"Node {target} does not exist"
+        assert target not in self._graph[source],\
+            f"Edge `({source},{target})` already exists"
+        self._graph[source].add(target)
+        self._graph[target].add(source)
+
+    def set_node_attribute(
+            self, name: str, node_vector: CategoricalNodeVector):
         self._node_classes[name] = node_vector
 
     def get_node_attribute(self, name: str) -> CategoricalNodeVector:
         return self._node_classes[name]
 
-    def add_edge(self, source: Hashable, target: Hashable, **attr) -> None:
+    def add_edge(self, source: int, target: int) -> None:
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
-        self.graph.add_edge(
-            u_of_edge=source, v_of_edge=target, **attr)
+        self._add_edge(source, target)
         self.trigger_event(source, target, event=Event.LINK_ADD_AFTER)
 
     def register_event_handler(
@@ -55,7 +108,7 @@ class Graph(BaseClass):
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
             "n_nodes": len(self),
-            "n_edges": self.graph.number_of_edges(),
+            "n_edges": self.number_of_edges(),
             "event_handlers" : {
                 event: [f.__name__ for f in functions]\
                     for event, functions in self._event_handlers.items()}
@@ -65,85 +118,48 @@ class Graph(BaseClass):
             attr.get_metadata(d[self.__class__.__name__][name])
         return d
 
-    def copy(self, as_view=False):
-        g = self.graph.copy(as_view)
+    def copy(self):
         g_copy = Graph()
-        g_copy.graph = g
+        for node in range(len(self)):
+            g_copy.add_node(node)
+        for source, targets in self._graph.items():
+            for target in targets:
+                g_copy.add_edge(source, target)
         for event, functions in self._event_handlers.items():
             g_copy.register_event_handler(event, functions)
+        for name, attr in self._node_classes.items():
+            g_copy.set_node_attribute(name, attr.copy())
         return g_copy
 
-    def to_nxgraph(
-            self,
-            node_classes: Optional[Dict[str, NodeVector]] = None) -> nx.Graph:
-        g_copy = self.graph.copy()
-        if node_classes is not None:
-            Graph.assign_node_classes(g_copy, node_classes)
-        return g_copy
+    def to_nxgraph(self) -> nx.Graph:
+        g = nx.Graph() if not self.is_directed() else nx.DiGraph()
+        for i in range(len(self)):
+            g.add_node(i)
+        for source, targets in self._graph.items():
+            for target in targets:
+                g.add_edge(source, target)
 
-    def assign_node_classes(self, node_classes: Dict[str, NodeVector]):
+        for name, node_vector in self._node_classes.items():
+            nx.set_node_attributes(G=g, name=name, values={
+                i: node_vector[i] for i in range(len(self))})
+        return g
 
-        Graph.assign_nx_node_classes(self.graph, node_classes)
+    def add_node(self, node: int):
+        assert node not in self._graph, f"Node {node} already exists"
+        self._graph[node] = set()
 
-    @staticmethod
-    def assign_nx_node_classes(
-        graph: nx.Graph, node_classes: Dict[str, NodeVector]):
-        for name, node_vector in node_classes.items():
-            assert(len(node_vector) == len(graph)),\
-                f"Length of node vector `{name}` does not match the number of nodes in the graph"
-            nx.set_node_attributes(
-                G=graph,
-                name=name,
-                values=node_vector.to_dict())
-
-    @staticmethod
-    def assign_nx_graph_class_attribute(
-        graph: nx.Graph, node_classes: CategoricalNodeVector):
-        assert(node_classes.name is not None),\
-            "CategoricalNodeVector must have a name"
-        graph.graph["class_attributes"] = node_classes.name
-        graph.graph["class_labels"] = node_classes.class_labels
-        graph.graph["class_values"] = list(range(node_classes.n_values))
-
-    @staticmethod
-    def get_node_classes(
-        graph: nx.Graph, name: str) -> NodeVector:
-        nodes, values = zip(*nx.get_node_attributes(graph, name).items())
-        return NodeVector.from_ndarray(
-            N=len(graph),
-            node_labels=nodes,
-            values=np.asarray(values),
-            name=name)
-
-    ################################################
-    # Method forwards to networkx.Graph
-    ################################################
-    def add_node(self, node: int, **attr):
-        return self.graph.add_node(node, **attr)
-
-    def add_nodes_from(self, *args, **kwargs):
-        return self.graph.add_nodes_from(*args, **kwargs)
-
-    def is_directed(self):
-        return self.graph.is_directed()
+    def is_directed(self) -> bool:
+        return False
 
     def has_edge(self, source: int, target: int):
-        return self.graph.has_edge(source, target)
-
-    def number_of_nodes(self):
-        return self.graph.number_of_nodes()
+        assert target in self._graph, f"Node {target} does not exist"
+        return target in self._graph[source]
 
     def number_of_edges(self):
-        return self.graph.number_of_edges()
-
-    def degree(self):
-        return self.graph.degree()
-
-    def neighbors(self, node: int):
-        return self.graph.neighbors(node)
+        return sum(len(targets) for targets in self._graph.values()) // 2
 
     def __len__(self):
-        return len(self.graph)
+        return len(self._graph)
 
-    def __getitem__(self, name: str) -> Any:
-        return self.graph.__getitem__(name)
+    def __getitem__(self, node: int) -> Any:
+        return self._graph.__getitem__(node)
