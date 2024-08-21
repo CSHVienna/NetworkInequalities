@@ -151,6 +151,9 @@ class DirectedModel(BinaryClassModel):
         self._out_degrees.get_metadata(d[self.__class__.__name__])
         return d
 
+    def preload_graph(self, _: Graph):
+        raise NotImplementedError("Preloading is not supported for this model")
+
     def _simulate(self) -> DiGraph:
         tries = 0
         while self.graph.number_of_edges()\
