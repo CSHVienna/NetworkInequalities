@@ -2,7 +2,7 @@ from typing import Dict
 
 from ..graph import Graph
 from ..directed import DiGraph
-from ...event import Event
+from ...utils.event_handling import Event
 
 class TestGraph(object):
     @staticmethod
@@ -39,7 +39,7 @@ class TestGraph(object):
         for i in range(1,n):
             for j in range(i):
                 g.add_edge(i, j)
-        assert(g.number_of_nodes() == n), "Incorrect number of nodes."
+        assert(len(g) == n), "Incorrect number of nodes."
         assert(g.number_of_edges() == n*(n-1)//2), "Incorrect number of edges."
 
     def test_inheritance(self):
