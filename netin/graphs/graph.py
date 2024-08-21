@@ -61,7 +61,7 @@ class Graph(HasEvents, BaseClass):
         if node_attributes_names is not None:
             for name in node_attributes_names:
                 nx_node_attr = nx.get_node_attributes(graph, name)
-                g.set_node_attribute(
+                g.set_node_class(
                     name=name,
                     node_vector=CategoricalNodeVector.from_ndarray(
                         values=np.asarray([nx_node_attr[node] for node in nx_node_labels]),
@@ -121,7 +121,7 @@ class Graph(HasEvents, BaseClass):
         for event, functions in self._event_handlers.items():
             g_copy.register_event_handler(event, functions)
         for name, attr in self._node_classes.items():
-            g_copy.set_node_attribute(name, attr.copy())
+            g_copy.set_node_class(name, attr.copy())
         return g_copy
 
     def to_nxgraph(self) -> nx.Graph:
@@ -153,6 +153,11 @@ class Graph(HasEvents, BaseClass):
 
     def degree(self, node: int):
         return len(self._graph[node])
+
+    def degrees(self) -> NodeVector:
+        return NodeVector.from_ndarray(
+            np.array([len(targets) for targets in self._graph.values()]),
+            name="degrees")
 
     def nodes(self) -> List[int]:
         return list(self._graph.keys())
