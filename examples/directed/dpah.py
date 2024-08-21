@@ -10,12 +10,11 @@ def run():
     h_mm = 0.9
     seed = 1234
     m = DPAHModel(
-        N=n, d=d, f=f_m,
+        N=n, d=d, f_m=f_m,
         plo_M=plo_M, plo_m=plo_m,
         h_m=h_mm, h_M=h_MM,
         seed=seed)
     m.simulate()
-    # g.info()
 
 if __name__ == '__main__':
     run()
