@@ -54,24 +54,25 @@ class DirectedModel(BinaryClassModel):
 
     def _initialize_lfms(self):
         self._out_degrees = NodeVector(
-            self.get_final_number_of_nodes(),
+            self.N,
             dtype=int, name="out_degrees")
         self.graph.register_event_handler(
             event=Event.LINK_ADD_AFTER,
             function=self._update_out_degrees)
 
         self._lfm_uniform = Uniform(
-            self.get_final_number_of_nodes())
+            self.N)
 
         self._initialize_node_activity()
 
     def _initialize_filters(self):
+        super()._initialize_filters()
         self._f_active_nodes = ActiveNodes(
-            N=self.get_final_number_of_nodes(),
+            N=self.N,
             graph=self.graph)
 
     def _initialize_node_activity(self):
-        minority_class = self.graph.get_node_attribute(CLASS_ATTRIBUTE)
+        minority_class = self.graph.get_node_class(CLASS_ATTRIBUTE)
         act_M = powerlaw.Power_Law(
             parameters=[self.plo_M],
             discrete=True)\

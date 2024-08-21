@@ -9,23 +9,21 @@ from .categorical_node_vector import CategoricalNodeVector
 class BinaryClassNodeVector(CategoricalNodeVector):
     def __init__(
         self, N: int,
-        node_labels: Optional[List[str]] = None,
         class_labels: Optional[List[str]] = CLASS_LABELS,
         name: Optional[str] = CLASS_ATTRIBUTE) -> None:
         super().__init__(
             N=N, n_values=2,
             class_labels=class_labels,
-            node_labels=node_labels,
             name=name)
 
     @classmethod
-    def from_nd_array(cls,
+    def from_ndarray(cls,
         values: np.ndarray,
         class_labels: Optional[List[str]] = None,
         name: Optional[str] = None,
         **kwargs)\
             -> 'BinaryClassNodeVector':
-        assert np.all(np.isin(values, {MAJORITY_VALUE, MINORITY_VALUE})),\
+        assert np.all((values == MINORITY_VALUE) | (values == MAJORITY_VALUE)),\
             "values must be binary"
         bmnv = BinaryClassNodeVector(
             N=len(values),

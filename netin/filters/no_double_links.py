@@ -15,5 +15,5 @@ class NoDoubleLinks(Filter):
 
     def get_target_mask(self, source: int) -> NodeVector:
         target_mask = np.ones(self.N)
-        target_mask[self.graph[source]] = 0.
+        target_mask[list(self.graph[source])] = 0.
         return NodeVector.from_ndarray(target_mask)

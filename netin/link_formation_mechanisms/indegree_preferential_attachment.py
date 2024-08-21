@@ -29,8 +29,13 @@ class InDegreePreferentialAttachment(PreferentialAttachment):
         """Initializes the degree array.
         This is useful for when an existing graph is loaded and the degrees need to be computed.
         """
-        for i,k in self.graph.in_degree():
-            self._a_degree[i] = k
+        # @TODO: This is slow. One could optimize this by storing incoming links in the graph object.
+        for i in self.graph.nodes():
+            _in_degree = 0
+            for j in self.graph.nodes():
+                if i != j and self.graph.has_edge(j, i):
+                    _in_degree += 1
+            self._a_degree[i] = _in_degree
 
     def _update_degree_by_link(self, _: int, target: int):
         """

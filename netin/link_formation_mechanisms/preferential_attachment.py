@@ -44,7 +44,7 @@ class PreferentialAttachment(LinkFormationMechanism):
             function=self._update_degree_by_link)
 
     def initialize_degree_array(self):
-        for i in range(self.N):
+        for i in self.graph.nodes():
             self._a_degree[i] = self.graph.degree(i)
 
     def _get_target_probabilities(self, _) -> NodeVector:

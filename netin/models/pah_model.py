@@ -33,5 +33,5 @@ class PAHModel(HomophilyModel):
         """
         super()._initialize_lfms()
         self.pa = PreferentialAttachment(
-            N=self.get_final_number_of_nodes(),
+            N=self.N,
             graph=self.graph)

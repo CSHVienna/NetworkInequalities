@@ -97,9 +97,9 @@ class Model(ABC, HasEvents, BaseClass):
 
     def _initialize_filters(self):
         self._f_no_self_links = NoSelfLinks(
-            N=self.get_final_number_of_nodes())
+            N=self.N)
         self._f_no_double_links = NoDoubleLinks(
-            N=self.get_final_number_of_nodes(),
+            N=self.N,
             graph=self.graph)
 
     def simulate(self) -> Graph:
@@ -119,14 +119,13 @@ class Model(ABC, HasEvents, BaseClass):
         graph : Graph
             Graph to preload.
         """
+        assert len(graph) <= self.N,\
+            "The graph has more nodes than the final number of nodes."
         self.graph = graph
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         return self._f_no_self_links.get_target_mask(source)\
             * self._f_no_double_links.get_target_mask(source)
-
-    def get_final_number_of_nodes(self) -> int:
-        return len(self.graph) + self.N
 
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         d = super().get_metadata(d_meta_data)
@@ -142,7 +141,7 @@ class Model(ABC, HasEvents, BaseClass):
     def _sample_target_node(
             self, target_probabilities: np.ndarray) -> int:
         return self._rng.choice(
-            np.arange(len(target_probabilities)),
+            len(target_probabilities),
             p=target_probabilities)
 
     def __repr__(self) -> str:

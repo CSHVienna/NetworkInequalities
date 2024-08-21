@@ -154,6 +154,9 @@ class Graph(HasEvents, BaseClass):
     def degree(self, node: int):
         return len(self._graph[node])
 
+    def nodes(self) -> List[int]:
+        return list(self._graph.keys())
+
     def __len__(self):
         return len(self._graph)
 

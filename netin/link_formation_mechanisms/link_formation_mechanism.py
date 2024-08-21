@@ -3,6 +3,7 @@ from abc import abstractmethod
 import numpy as np
 
 from ..utils.validator import validate_int
+from ..utils.constants import EPSILON
 from ..base_class import BaseClass
 from ..graphs.node_vector import NodeVector
 
@@ -18,7 +19,7 @@ class LinkFormationMechanism(BaseClass):
         probs = self._get_target_probabilities(source)
         if not np.any(probs != 0.):
             probs = self._get_uniform_target_probabilities(source)
-        assert probs.sum() == 1., "Probabilities do not sum to 1."
+        assert np.abs(probs.sum() - 1.) <= EPSILON, "Probabilities do not sum to 1."
         return probs
 
     @abstractmethod

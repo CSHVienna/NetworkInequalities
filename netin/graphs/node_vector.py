@@ -97,6 +97,9 @@ class NodeVector(BaseClass):
     def __eq__(self, value: object):
         return self._values.__eq__(value)
 
+    def __ne__(self, value: object):
+        return self._values.__ne__(value)
+
     def __getitem__(self, key) -> np.ndarray:
         return self._values[key]
 
