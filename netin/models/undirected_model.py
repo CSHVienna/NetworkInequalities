@@ -28,8 +28,6 @@ class UndirectedModel(Model):
         graph = Graph()
         for i in range(self.m):
             graph.add_node(i)
-            for j in range(i):
-                graph.add_edge(i, j)
         return graph
 
     def _simulate(self) -> Graph:
@@ -53,3 +51,8 @@ class UndirectedModel(Model):
             "m": self.m,
         }
         return d
+
+    def preload_graph(self, graph: Graph):
+        assert not graph.is_directed(),\
+            "The graph must not be directed."
+        return super().preload_graph(graph)
