@@ -13,7 +13,9 @@ import seaborn as sns
 from matplotlib import rc
 from collections import Counter
 
-from netin.generators.graph import Graph
+from netin.graphs import Graph
+from netin.models import Model
+# from netin.generators.graph import Graph
 from netin.stats.distributions import fit_power_law
 from netin.stats.distributions import get_disparity
 from netin.stats.distributions import get_fraction_of_minority
@@ -50,7 +52,7 @@ def set_paper_style(font_scale: float = 1.0):
     rc('ytick.major', width=0.5)
 
 
-def _get_edge_color(s: int, t: int, g: Graph, maj_val: object = None, min_val: object = None) -> str:
+def _get_edge_color(s: int, t: int, nxg: Union[nx.Graph, nx.DiGraph], maj_val: object = None, min_val: object = None) -> str:
     """
     Returns the color of the edge between s and t in the graph g.
     If the edge is homophilic (same attribute value for s and t), the color is the color of the attribute class.
@@ -63,21 +65,23 @@ def _get_edge_color(s: int, t: int, g: Graph, maj_val: object = None, min_val: o
     t: int
         target node
     g:
-        graph netin.Graph
+        graph networkx.Graph
 
     Returns
     -------
     color: str
         color of the edge
     """
-    maj_val = const.MAJORITY_VALUE if maj_val is None else maj_val
-    min_val = const.MINORITY_VALUE if min_val is None else min_val
 
-    if g.get_class_value_by_node(s) == g.get_class_value_by_node(t):
-        if g.get_class_value_by_node(s) == maj_val:
+    node_atts = nx.get_node_attributes(nxg, const.CLASS_ATTRIBUTE)
+    s_class = node_atts[s]
+    t_class = node_atts[t]
+
+    if s_class == t_class:
+        if s_class == const.MAJORITY_VALUE:
             return COLOR_MAJORITY
 
-        if g.get_class_value_by_node(s) == min_val:
+        if s_class == const.MINORITY_VALUE:
             return COLOR_MINORITY
 
         return COLOR_UNKNOWN
@@ -291,8 +295,6 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
     arrow_style = kwargs.get('arrow_style', '-|>')
     arrow_size = kwargs.get('arrow_size', 2)
 
-
-
     pos = None
     for cell in np.arange(nc * nr):
         row = cell // nc
@@ -300,33 +302,37 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
         ax = axes if nr == nc == 1 else axes[cell] if nr == 1 else axes[row, col]
 
         if cell < len(iter_graph):
-            g = iter_graph[cell].copy()
+            g = iter_graph[cell] #.copy()
+            nx_graph = g.to_nxgraph()
 
             if ignore_singletons:
-                to_remove = [n for n in g.nodes() if g.degree(n) == 0]
+                to_remove = [n for n in nx_graph.nodes() if nx_graph.degree(n) == 0]
                 if len(to_remove) > 0:
-                    g.remove_nodes_from(to_remove)
+                    nx_graph.remove_nodes_from(to_remove)
 
             if pos is None or not share_pos:
-                pos = nx.spring_layout(g)
+                pos = nx.spring_layout(nx_graph)
 
             # title
-            ax.set_title(g.model_name)
+            #ax.set_title(nx_graph.model_name)
+            ax.set_title("SOON")
 
             # nodes
-            maj_val = g.graph['class_values'][0]
-            min_val = g.graph['class_values'][1]
-            nodes, node_colors = zip(
-                *[(node, COLOR_MAJORITY if data[g.graph['class_attribute']] == maj_val else
-                COLOR_MINORITY if data[g.graph['class_attribute']] == min_val else
-                COLOR_UNKNOWN)
-                  for node, data in g.nodes(data=True)])
-            nx.draw_networkx_nodes(g, pos, nodelist=nodes, node_size=node_size, node_color=node_colors,
+            if g.has_node_class(const.CLASS_ATTRIBUTE):
+                nodes, node_colors = zip(
+                    *[(node, COLOR_MAJORITY if data[const.CLASS_ATTRIBUTE] == const.MAJORITY_VALUE else
+                    COLOR_MINORITY if data[const.CLASS_ATTRIBUTE] == const.MINORITY_VALUE else
+                    COLOR_UNKNOWN)
+                      for node, data in nx_graph.nodes(data=True)])
+            else:
+                node_colors = 'blue'
+                nodes = nx_graph.nodes()
+            nx.draw_networkx_nodes(nx_graph, pos, nodelist=nodes, node_size=node_size, node_color=node_colors,
                                    node_shape=node_shape, ax=ax)
 
             # edges
-            edges = g.edges()
-            edges, edge_colors = zip(*[((s, t), _get_edge_color(s, t, g, maj_val=maj_val, min_val=min_val)) for s, t in edges])
+            edges = nx_graph.edges()
+            edges, edge_colors = zip(*[((s, t), _get_edge_color(s, t, nx_graph, maj_val=const.MAJORITY_VALUE, min_val=const.MINORITY_VALUE)) for s, t in edges])
             nx.draw_networkx_edges(g, pos, ax=ax, edgelist=edges, edge_color=edge_colors,
                                    width=edge_width, style=edge_style, arrows=edge_arrows, arrowstyle=arrow_style,
                                    arrowsize=arrow_size)
