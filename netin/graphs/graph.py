@@ -17,6 +17,7 @@ class Graph(HasEvents, BaseClass):
 
     def __init__(self, *args, **attr) -> None:
         BaseClass.__init__(self)
+        HasEvents.__init__(self)
         self._init_graph(*args, **attr)
         self._node_classes = {}
 

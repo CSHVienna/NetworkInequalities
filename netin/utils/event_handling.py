@@ -12,7 +12,11 @@ class Event(Enum):
 
 class HasEvents:
     EVENTS: List[Event] = []
-    _event_handlers: Dict[Event, Callable[[Any], None]] = defaultdict(list)
+    _event_handlers: Dict[Event, Callable[[Any], None]]
+
+    def __init__(self, *args, **kwargs):
+        self._event_handlers = defaultdict(list)
+        super().__init__(*args, **kwargs)
 
     def trigger_event(self, *args, event: Event, **kwargs):
         assert event in self.EVENTS,\
