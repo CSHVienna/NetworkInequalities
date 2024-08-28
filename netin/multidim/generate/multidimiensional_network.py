@@ -6,6 +6,7 @@ from netin.multidim.generate.validators import is_pop_frac_consistent
 from netin.multidim.generate.utils import make_composite_index
 from netin.multidim.generate.utils import get_num_multi_groups
 from netin.multidim.generate.utils import comp_index_to_integer
+from netin.multidim.theory.multidimensional_preferences import composite_H_ij_hierarchy
 
 def multidimensional_network_fix_av_degree(
     h_mtrx_lst,
