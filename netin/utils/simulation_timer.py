@@ -1,8 +1,8 @@
 import time
 from typing import Optional
 
+from .event_handling import Event
 from ..models.model import Model
-from ..event import Event
 
 class SimulationTimer:
     _start_time: float
