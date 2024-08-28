@@ -1,4 +1,5 @@
 import numpy as np
+from statsmodels.stats.proportion import proportion_confint
 
 from netin.multidim.generate.utils import make_composite_index
 from netin.multidim.generate.utils import comp_index_to_integer
