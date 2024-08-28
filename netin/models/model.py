@@ -19,6 +19,8 @@ class Model(ABC, HasEvents, BaseClass):
     graph: Graph
     seed: int
 
+    _n_nodes_total: int
+
     _f_no_double_links: NoDoubleLinks
     _f_no_self_links: NoSelfLinks
 
@@ -94,12 +96,13 @@ class Model(ABC, HasEvents, BaseClass):
 
     def _initialize_graph(self):
         self.graph = self.get_initial_graph()
+        self._n_nodes_total = self.N
 
     def _initialize_filters(self):
         self._f_no_self_links = NoSelfLinks(
-            N=self.N)
+            N=self._n_nodes_total)
         self._f_no_double_links = NoDoubleLinks(
-            N=self.N,
+            N=self._n_nodes_total,
             graph=self.graph)
 
     def simulate(self) -> Graph:
@@ -122,6 +125,7 @@ class Model(ABC, HasEvents, BaseClass):
         assert len(graph) <= self.N,\
             "The graph has more nodes than the final number of nodes."
         self.graph = graph
+        self._n_nodes_total = self.N + len(graph)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         return self._f_no_self_links.get_target_mask(source)\

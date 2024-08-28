@@ -35,7 +35,7 @@ class DPAHModel(DPAModel):
             node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE),
             homophily=(self.h_m, self.h_M))
         self.pa = InDegreePreferentialAttachment(
-            graph=self.graph, N=self.N)
+            graph=self.graph, N=self._n_nodes_total)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         return\

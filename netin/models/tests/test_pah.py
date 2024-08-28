@@ -53,22 +53,16 @@ class TestPAHModel:
             model.preload_graph(DiGraph())
 
         g_pre = Graph()
-        for i in range(N + 5):
-            g_pre.add_node(i)
-        with pytest.raises(AssertionError):
-            model.preload_graph(g_pre)
-
-        g_pre = Graph()
         for i in range(N_pre):
             g_pre.add_node(i)
         g_pre.add_edge(0, 1)
         model.preload_graph(g_pre)
         model.simulate()
 
-        assert len(model.graph) == N
+        assert len(model.graph) == (N + N_pre)
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes()) // 2
-        assert _sum_links == (1 + (N - N_pre) * m)
+        assert _sum_links == (1 + (N * m))
         for u in range(N_pre):
             for v in range(u):
                 if u == v:
@@ -79,7 +73,7 @@ class TestPAHModel:
                     assert not model.graph.has_edge(u, v)
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
         assert node_classes is not None
-        assert len(node_classes) == N
+        assert len(node_classes) == (N + N_pre)
         assert np.isclose(np.mean(node_classes), f_m, atol=0.05)
 
         model = TestPAHModel._create_model(N=N, f_m=f_m)

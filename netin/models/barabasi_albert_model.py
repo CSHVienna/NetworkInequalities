@@ -15,4 +15,4 @@ class BarabasiAlbertModel(UndirectedModel):
 
     def _initialize_lfms(self):
         self.pa = PreferentialAttachment(
-            N=self.compute_final_number_of_nodes(), graph=self.graph)
+            N=self._n_nodes_total, graph=self.graph)

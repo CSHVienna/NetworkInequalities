@@ -54,21 +54,21 @@ class DirectedModel(BinaryClassModel):
 
     def _initialize_lfms(self):
         self._out_degrees = NodeVector(
-            self.N,
+            self._n_nodes_total,
             dtype=int, name="out_degrees")
         self.graph.register_event_handler(
             event=Event.LINK_ADD_AFTER,
             function=self._update_out_degrees)
 
         self._lfm_uniform = Uniform(
-            self.N)
+            self._n_nodes_total)
 
         self._initialize_node_activity()
 
     def _initialize_filters(self):
         super()._initialize_filters()
         self._f_active_nodes = ActiveNodes(
-            N=self.N,
+            N=self._n_nodes_total,
             graph=self.graph)
 
     def _initialize_node_activity(self):
@@ -85,7 +85,7 @@ class DirectedModel(BinaryClassModel):
         mask_M = minority_class.get_majority_mask()
         mask_m = minority_class.get_minority_mask()
 
-        a_node_activity = np.zeros(self.N)
+        a_node_activity = np.zeros(self._n_nodes_total)
         a_node_activity[mask_M] = act_M
         a_node_activity[mask_m] = act_m
 
@@ -101,11 +101,11 @@ class DirectedModel(BinaryClassModel):
         self._out_degrees[source] += 1
 
     def _get_expected_number_of_edges(self):
-        return int(round(self.d * self.N * (self.N - 1)))
+        return int(round(self.d * self._n_nodes_total * (self._n_nodes_total - 1)))
 
     def _get_sources(self):
         return np.random.choice(
-            a=np.arange(self.N),
+            a=np.arange(self._n_nodes_total),
             size=self._get_expected_number_of_edges(),
             replace=True,
             p=self._node_activity)
@@ -115,7 +115,7 @@ class DirectedModel(BinaryClassModel):
         target_probabilities = self._lfm_uniform.get_target_probabilities(source)
 
         # Check if there are enough edges to consider only nodes with out_degree > 0
-        one_percent = self.N * 1 / 100.
+        one_percent = self._n_nodes_total * 1 / 100.
         if np.count_nonzero(self._out_degrees) > one_percent:
             # if there are enough edges, then select only nodes
             # with out_degree > 0 that are not already

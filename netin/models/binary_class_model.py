@@ -19,7 +19,7 @@ class BinaryClassModel(Model):
 
     def _initialize_node_classes(self):
         node_class_values = BinaryClassNodeVector.from_fraction(
-            N=self.N,
+            N=self._n_nodes_total,
             f_m=self.f_m,
             rng=self._rng)
         if self.graph.has_node_class(CLASS_ATTRIBUTE):
