@@ -163,6 +163,9 @@ class Graph(HasEvents, BaseClass):
     def nodes(self) -> List[int]:
         return list(self._graph.keys())
 
+    def neighbors(self, node: int) -> Set[int]:
+        return self._graph[node]
+
     def __len__(self):
         return len(self._graph)
 
