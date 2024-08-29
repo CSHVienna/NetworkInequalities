@@ -11,6 +11,7 @@ from ..utils.validator import validate_float
 from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
 from ..link_formation_mechanisms.preferential_attachment import PreferentialAttachment
 from ..link_formation_mechanisms.triadic_closure import TriadicClosure
+from ..link_formation_mechanisms.uniform import Uniform
 
 class CompositeLFM(enum.Enum):
     UNIFORM="UNIFORM"
@@ -18,7 +19,7 @@ class CompositeLFM(enum.Enum):
     PAH="PAH"
 
 class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
-    EVENTS = [Event.SIMULATION_START, Event.SIMULATION_END, Event.LOCAL_TARGET_SELECTED, Event.GLOBAL_TARGET_SELECTED]
+    EVENTS = [Event.SIMULATION_START, Event.SIMULATION_END, Event.LOCAL_TARGET_SELECTION, Event.GLOBAL_TARGET_SELECTION]
 
     lfm_local: CompositeLFM
     lfm_global: CompositeLFM
@@ -26,6 +27,7 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
     p_tc: float
 
     lfm_params: Optional[Dict[str, float]]
+    uniform: Uniform
     tc: TriadicClosure
     h: Optional[TwoClassHomophily]
     pa: Optional[PreferentialAttachment]
@@ -58,10 +60,13 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
             N=self._n_nodes_total,
             graph=self.graph)
 
+        self.uniform = Uniform(N=self._n_nodes_total)
         if (self.lfm_local in (CompositeLFM.HOMOPHILY, CompositeLFM.PAH))\
             or (self.lfm_global in (CompositeLFM.HOMOPHILY, CompositeLFM.PAH)):
-            assert self.lfm_params is not None and "h_m" in self.lfm_params and "h_M" in self.lfm_params, \
-                "Homophily parameters must be provided"
+            assert (self.lfm_params is not None)\
+                and ("h_m" in self.lfm_params)\
+                and ("h_M" in self.lfm_params),\
+                    "Homophily parameters must be provided"
             self.h = TwoClassHomophily.from_two_class_homophily(
                 homophily=(self.lfm_params["h_M"], self.lfm_params["h_m"]),
                 node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE)
@@ -71,20 +76,23 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
                 N=self._n_nodes_total,
                 graph=self.graph)
 
+    def _get_target_probabilities(self, lfm: CompositeLFM, source: int) -> np.ndarray:
+        p_target = self.uniform.get_target_probabilities(source)
+        if lfm == CompositeLFM.HOMOPHILY:
+            p_target *= self.h.get_target_probabilities(source)
+        elif lfm == CompositeLFM.PAH:
+            p_target *= self.pa.get_target_probabilities(source)
+            p_target *= self.h.get_target_probabilities(source)
+        return p_target
+
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         p_target = super().compute_target_probabilities(source)
         if self._rng.uniform() < self.p_tc:
             p_target *= self.tc.get_target_probabilities(source)
-            if self.lfm_local == CompositeLFM.HOMOPHILY:
-                p_target *= self.h.get_target_probabilities(source)
-            elif self.lfm_local == CompositeLFM.PAH:
-                p_target *= self.pa.get_target_probabilities(source)
-                p_target *= self.h.get_target_probabilities(source)
+            p_target *= self._get_target_probabilities(source=source, lfm=self.lfm_local)
+            self.trigger_event(event=Event.LOCAL_TARGET_SELECTION)
         else:
-            if self.lfm_global == CompositeLFM.HOMOPHILY:
-                p_target *= self.h.get_target_probabilities(source)
-            elif self.lfm_global == CompositeLFM.PAH:
-                p_target *= self.pa.get_target_probabilities(source)
-                p_target *= self.h.get_target_probabilities(source)
+            p_target *= self._get_target_probabilities(source=source, lfm=self.lfm_global)
+            self.trigger_event(event=Event.GLOBAL_TARGET_SELECTION)
 
         return p_target / p_target.sum()
