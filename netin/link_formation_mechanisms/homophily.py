@@ -71,4 +71,4 @@ class Homophily(LinkFormationMechanism):
         a_node_class_values = self.node_class_values
         class_source = a_node_class_values[source]
         p_target = self.h[class_source, a_node_class_values]
-        return NodeVector.from_ndarray(p_target / p_target.sum())
+        return NodeVector.from_ndarray(p_target)

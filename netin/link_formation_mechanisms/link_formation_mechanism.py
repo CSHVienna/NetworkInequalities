@@ -19,8 +19,8 @@ class LinkFormationMechanism(BaseClass):
         probs = self._get_target_probabilities(source)
         if not np.any(probs != 0.):
             probs = self._get_uniform_target_probabilities(source)
-        assert np.abs(probs.sum() - 1.) <= EPSILON, "Probabilities do not sum to 1."
-        return probs
+        assert not np.any(np.isnan(probs)), "Probabilities contain NaN values."
+        return probs / np.sum(probs)
 
     @abstractmethod
     def _get_target_probabilities(self, source: int) -> NodeVector:

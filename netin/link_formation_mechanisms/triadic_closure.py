@@ -75,4 +75,4 @@ class TriadicClosure(LinkFormationMechanism):
         if not np.any(self._a_friend_of_friends != 0.):
             return self._get_uniform_target_probabilities(source)
         return NodeVector.from_ndarray(
-            self._a_friend_of_friends / np.sum(self._a_friend_of_friends))
+            self._a_friend_of_friends)

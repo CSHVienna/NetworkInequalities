@@ -57,7 +57,7 @@ class PreferentialAttachment(LinkFormationMechanism):
         """
         a_degree_const = self._a_degree + EPSILON
         return NodeVector.from_ndarray(
-            a_degree_const / np.sum(a_degree_const))
+            a_degree_const)
 
     def _update_degree_by_link(self, source: int, target: int):
         """
