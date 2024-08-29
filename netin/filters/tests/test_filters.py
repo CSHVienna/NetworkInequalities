@@ -24,12 +24,15 @@ class TestFilters(object):
             _ = ActiveNodes(N=self.N, graph=ug)
 
         dg = DiGraph()
+
         an = ActiveNodes(N=self.N, graph=dg)
         m0 = an.get_target_mask(-1)
         TestFilters.assert_one_zero_xor(m0)
         assert isinstance(m0, NodeVector), "Active nodes mask is not an instance of `NodeVector`."
         assert np.all(m0 == 0.), "Active nodes mask is not initialized correctly."
 
+        dg.add_node(0)
+        dg.add_node(1)
         dg.add_edge(0, 1)
         m1 = an.get_target_mask(-1)
         TestFilters.assert_one_zero_xor(m1)
@@ -61,6 +64,7 @@ class TestFilters(object):
         TestFilters.assert_one_zero_xor(m1)
         assert np.all(m1 == 1.), "No double links mask is not initialized correctly."
 
+        ug.add_node(1)
         ug.add_edge(0, 1)
         m2 = ndl.get_target_mask(0)
         TestFilters.assert_one_zero_xor(m2)
@@ -69,6 +73,8 @@ class TestFilters(object):
 
         dg = DiGraph()
         ndl = NoDoubleLinks(N=self.N, graph=dg)
+        dg.add_node(0)
+        dg.add_node(1)
         dg.add_edge(0, 1)
         m3 = ndl.get_target_mask(0)
         TestFilters.assert_one_zero_xor(m3)
