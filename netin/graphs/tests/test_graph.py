@@ -95,3 +95,18 @@ class TestGraph(object):
 
         assert(("assert_link_add_before" in d) and d["assert_link_add_before"]), "Function `assert_link_add_before` not called"
         assert(("assert_link_add_after" in d) and d["assert_link_add_after"]), "Function `assert_link_add_after` not called"
+
+    def test_n_edges(self):
+        g = Graph()
+        n = 10
+        for i in range(n):
+            g.add_node(i)
+            for j in range(i):
+                g.add_edge(i, j)
+        number_of_edges = g.number_of_edges()
+        degree_sum = sum(g.degree(v) for v in g.nodes()) // 2
+        edges_theory = n*(n-1)//2
+        edges_iterator = sum(1 for edge in g.edges())
+        assert number_of_edges == degree_sum, "Incorrect number of edges."
+        assert degree_sum == edges_theory, "Incorrect number of edges."
+        assert edges_theory == edges_iterator, "Incorrect number of edges."
