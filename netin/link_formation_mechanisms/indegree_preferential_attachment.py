@@ -14,7 +14,7 @@ class InDegreePreferentialAttachment(PreferentialAttachment):
                  N: int,
                  init_degrees: bool = True) -> None:
         assert graph.is_directed(), "The graph must be directed."
-        super().__init__(N=len(graph), graph=graph)
+        super().__init__(N=N, graph=graph)
 
         self._a_degree = NodeVector(
             N, dtype=int, name="in_degrees")

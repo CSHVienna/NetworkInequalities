@@ -18,7 +18,7 @@ class PreferentialAttachment(LinkFormationMechanism):
     _a_degree: NodeVector
 
     def __init__(
-            self, graph: Graph, N: int,
+            self, N: int, graph: Graph,
             init_degrees: bool = True) -> None:
         """
         Initializes a PreferentialAttachment object.
@@ -31,6 +31,8 @@ class PreferentialAttachment(LinkFormationMechanism):
         Returns:
             None
         """
+        assert N >= len(graph),\
+            "The number of nodes must be greater or equals to the number of nodes in the graph"
         super().__init__(N=N)
         self.graph = graph
         self._a_degree = NodeVector(
@@ -38,10 +40,6 @@ class PreferentialAttachment(LinkFormationMechanism):
 
         if init_degrees:
             self.initialize_degree_array()
-
-        self.graph.register_event_handler(
-            event=Event.LINK_ADD_AFTER,
-            function=self._update_degree_by_link)
 
     def initialize_degree_array(self):
         for i in self.graph.nodes():

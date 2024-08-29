@@ -6,27 +6,13 @@ from ..graphs.node_vector import NodeVector
 from .link_formation_mechanism import LinkFormationMechanism
 
 class TriadicClosure(LinkFormationMechanism):
-    """
-    A filter based on triadic closure.
-
-    This filter assigns a zero probability to nodes who are not friend of friends of the source node.
-
-    Attributes:
-        _a_friend_of_friends (np.ndarray): Array representing the presence of friends of friends.
-        _source_curr (int): Current source node.
-
-    Methods:
-        __init__(self, graph: Graph): Initializes the TriadicClosure object.
-        _init_friends_of_friends(self, source: int): Initializes the array of friends of friends.
-        _update_friends_of_friends(self, source: int, target: int): Updates the array of friends of friends.
-        get_target_probabilities(self, source): Returns the probabilities of forming links to target nodes.
-    """
-
     _a_friend_of_friends: np.ndarray
     _source_curr: int
 
-    def __init__(self, graph: Graph) -> None:
-        super().__init__(N=len(graph))
+    def __init__(self, N: int, graph: Graph) -> None:
+        super().__init__(N=N)
+        assert N >= len(graph),\
+            "The number of nodes must be greater or equals to the number of nodes in the graph."
         self._source_curr = -1
         self.graph = graph
         self.graph.register_event_handler(
@@ -45,7 +31,7 @@ class TriadicClosure(LinkFormationMechanism):
         """
         self._source_curr = source
 
-        self._a_friend_of_friends = np.zeros(len(self.graph))
+        self._a_friend_of_friends = np.zeros(self.N)
         fof = [
             f_o_f\
                 for friend in self.graph.neighbors(source)\
@@ -67,8 +53,8 @@ class TriadicClosure(LinkFormationMechanism):
         """
         if source != self._source_curr:
             return
-        for fof in self.graph.neighbors[target]:
-            if (fof not in self.graph.neighbors[source])\
+        for fof in self.graph.neighbors(target):
+            if (fof not in self.graph.neighbors(source))\
                 and (source != fof):
                 self._a_friend_of_friends[fof] = 1.
 
@@ -86,5 +72,7 @@ class TriadicClosure(LinkFormationMechanism):
         """
         if source != self._source_curr:
             self._init_friends_of_friends(source=source)
+        if not np.any(self._a_friend_of_friends != 0.):
+            return self._get_uniform_target_probabilities(source)
         return NodeVector.from_ndarray(
             self._a_friend_of_friends / np.sum(self._a_friend_of_friends))
