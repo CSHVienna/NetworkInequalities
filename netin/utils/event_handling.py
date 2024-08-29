@@ -10,6 +10,9 @@ class Event(Enum):
     SIMULATION_START = "SIMULATION_START"
     SIMULATION_END = "SIMULATION_END"
 
+    LOCAL_TARGET_SELECTION = "LOCAL_TARGET_SELECTED"
+    GLOBAL_TARGET_SELECTION = "GLOBAL_TARGET_SELECTED"
+
 class HasEvents:
     EVENTS: List[Event] = []
     _event_handlers: Dict[Event, Callable[[Any], None]]
