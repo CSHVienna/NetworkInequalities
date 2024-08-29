@@ -38,6 +38,20 @@ def comp_inter_group_ties(
     return count_mtrx, I_to_ivec
 
 ##############################################################################
+## Composite groups population counts (population abundance tensor)
+##############################################################################
+
+def comp_group_cnt_tnsr_from_G(G,g_vec):
+    pop_cnt_tnsr = np.zeros(g_vec)
+    pop_cnt_lst = [np.zeros(g) for g in g_vec]
+    for n in G:
+        ivec = G.nodes[n]["attr"]
+        pop_cnt_tnsr[tuple(ivec)] += 1
+        for d, i_d in enumerate(ivec):
+            pop_cnt_lst[d][i_d] += 1
+    return pop_cnt_tnsr, pop_cnt_lst
+
+##############################################################################
 ## Simple inter-group link metrics
 ##############################################################################
 
