@@ -35,8 +35,10 @@ class TestGraph(object):
 
     def test_nodes_and_edge_addition(self):
         g = Graph()
+        g.add_node(0)
         n = 10
         for i in range(1,n):
+            g.add_node(i)
             for j in range(i):
                 g.add_edge(i, j)
         assert(len(g) == n), "Incorrect number of nodes."
@@ -54,6 +56,10 @@ class TestGraph(object):
         d = {}
         source, target = 0, 1
 
+        for node in source, target:
+            ug.add_node(node)
+            dg.add_node(node)
+
         assert not ug.is_directed(), "Undirected graph is directed."
         assert dg.is_directed(), "Directed graph is undirected."
 
@@ -68,6 +74,9 @@ class TestGraph(object):
     def test_events(self):
         g = Graph()
         node_u, node_v = 1, 2
+        for node in node_u, node_v:
+            g.add_node(node)
+
         d = {}
 
         g.register_event_handler(
