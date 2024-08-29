@@ -4,7 +4,7 @@ import pytest
 
 from netin.models import DPAHModel
 
-class TestDPAH(object):
+class TestDPAHModel(object):
     @staticmethod
     def _create_model(
         N=1000, d=0.005, f_m=0.1,
@@ -14,7 +14,7 @@ class TestDPAH(object):
             N=N, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, h_M=h_M, h_m=h_m, seed=seed)
 
     def test_simulation(self):
-        model = TestDPAH._create_model()
+        model = TestDPAHModel._create_model()
         model.simulate()
         graph = model.graph
 
@@ -30,7 +30,7 @@ class TestDPAH(object):
         pass
 
     def test_no_invalid_links(self):
-        model = TestDPAH._create_model()
+        model = TestDPAHModel._create_model()
         model.simulate()
         graph = model.graph
         for node in graph.nodes():
