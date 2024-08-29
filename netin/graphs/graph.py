@@ -1,6 +1,6 @@
 from typing import\
     Any, Optional, Dict,\
-    Set, List, Tuple
+    Set, List, Tuple, Generator
 
 import numpy as np
 import networkx as nx
@@ -162,6 +162,13 @@ class Graph(HasEvents, BaseClass):
 
     def nodes(self) -> List[int]:
         return list(self._graph.keys())
+
+    def edges(self) -> Generator[Tuple[int, int], None, None]:
+        for source, targets in self._graph.items():
+            for target in targets:
+                if target > source:
+                    continue
+                yield source, target
 
     def neighbors(self, node: int) -> Set[int]:
         return self._graph[node]
