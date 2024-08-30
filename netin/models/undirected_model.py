@@ -38,7 +38,7 @@ class UndirectedModel(Model):
             for _ in range(self.m):
                 target_probabilities = self.compute_target_probabilities(source)[:source]
                 target_probabilities /= target_probabilities.sum()
-                target = self._sample_target_node(target_probabilities[:source])
+                target = self._sample_target_node(target_probabilities)
                 self.graph.add_edge(source, target)
         return self.graph
 
