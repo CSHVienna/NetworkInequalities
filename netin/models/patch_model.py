@@ -19,7 +19,9 @@ class CompositeLFM(enum.Enum):
     PAH="PAH"
 
 class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
-    EVENTS = [Event.SIMULATION_START, Event.SIMULATION_END, Event.LOCAL_TARGET_SELECTION, Event.GLOBAL_TARGET_SELECTION]
+    EVENTS = [
+        Event.SIMULATION_START, Event.SIMULATION_END,
+        Event.LOCAL_TARGET_SELECTION, Event.GLOBAL_TARGET_SELECTION]
 
     lfm_local: CompositeLFM
     lfm_global: CompositeLFM
@@ -89,10 +91,12 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
         p_target = super().compute_target_probabilities(source)
         if self._rng.uniform() < self.p_tc:
             p_target *= self.tc.get_target_probabilities(source)
-            p_target *= self._get_target_probabilities(source=source, lfm=self.lfm_local)
+            p_target *= self._get_target_probabilities(
+                source=source, lfm=self.lfm_local)
             self.trigger_event(event=Event.LOCAL_TARGET_SELECTION)
         else:
-            p_target *= self._get_target_probabilities(source=source, lfm=self.lfm_global)
+            p_target *= self._get_target_probabilities(
+                source=source, lfm=self.lfm_global)
             self.trigger_event(event=Event.GLOBAL_TARGET_SELECTION)
 
         return p_target / p_target.sum()
