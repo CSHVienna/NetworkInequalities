@@ -21,10 +21,6 @@ class InDegreePreferentialAttachment(PreferentialAttachment):
         if init_degrees:
             self.initialize_degree_array()
 
-        self.graph.register_event_handler(
-            event=Event.LINK_ADD_AFTER,
-            function=self._update_degree_by_link)
-
     def initialize_degree_array(self):
         """Initializes the degree array.
         This is useful for when an existing graph is loaded and the degrees need to be computed.

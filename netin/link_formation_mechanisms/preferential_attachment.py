@@ -41,6 +41,10 @@ class PreferentialAttachment(LinkFormationMechanism):
         if init_degrees:
             self.initialize_degree_array()
 
+        self.graph.register_event_handler(
+            event=Event.LINK_ADD_AFTER,
+            function=self._update_degree_by_link)
+
     def initialize_degree_array(self):
         for i in self.graph.nodes():
             self._a_degree[i] = self.graph.degree(i)
