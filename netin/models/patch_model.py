@@ -13,7 +13,7 @@ from ..link_formation_mechanisms.preferential_attachment import PreferentialAtta
 from ..link_formation_mechanisms.triadic_closure import TriadicClosure
 from ..link_formation_mechanisms.uniform import Uniform
 
-class CompositeLFM(enum.Enum):
+class CompoundLFM(enum.Enum):
     UNIFORM="UNIFORM"
     HOMOPHILY="HOMOPHILY"
     PAH="PAH"
@@ -24,8 +24,8 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
         Event.LOCAL_TARGET_SELECTION, Event.GLOBAL_TARGET_SELECTION]
     SHORT = "PATCH"
 
-    lfm_local: CompositeLFM
-    lfm_global: CompositeLFM
+    lfm_local: CompoundLFM
+    lfm_global: CompoundLFM
 
     p_tc: float
 
@@ -39,8 +39,8 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
             self, *args,
             N: int, f_m: float, m:int,
             p_tc: float,
-            lfm_local: CompositeLFM,
-            lfm_global: CompositeLFM,
+            lfm_local: CompoundLFM,
+            lfm_global: CompoundLFM,
             lfm_params: Optional[Dict[str, float]] = None,
             seed:  Union[int, np.random.Generator] = 1,
             **kwargs):
@@ -50,9 +50,9 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
             seed=seed, **kwargs)
         self.p_tc = p_tc
 
-        assert lfm_local in CompositeLFM.__members__.values(),\
+        assert lfm_local in CompoundLFM.__members__.values(),\
             f"Invalid local link formation mechanism `{lfm_local}`"
-        assert lfm_global in CompositeLFM.__members__.values(),\
+        assert lfm_global in CompoundLFM.__members__.values(),\
             f"Invalid global link formation mechanism `{lfm_global}`"
         self.lfm_local = lfm_local
         self.lfm_global = lfm_global
@@ -64,8 +64,8 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
             graph=self.graph)
 
         self.uniform = Uniform(N=self._n_nodes_total)
-        if (self.lfm_local in (CompositeLFM.HOMOPHILY, CompositeLFM.PAH))\
-            or (self.lfm_global in (CompositeLFM.HOMOPHILY, CompositeLFM.PAH)):
+        if (self.lfm_local in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH))\
+            or (self.lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)):
             assert (self.lfm_params is not None)\
                 and ("h_m" in self.lfm_params)\
                 and ("h_M" in self.lfm_params),\
@@ -74,16 +74,16 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
                 homophily=(self.lfm_params["h_M"], self.lfm_params["h_m"]),
                 node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE)
             )
-        if CompositeLFM.PAH in (self.lfm_local, self.lfm_global):
+        if CompoundLFM.PAH in (self.lfm_local, self.lfm_global):
             self.pa = PreferentialAttachment(
                 N=self._n_nodes_total,
                 graph=self.graph)
 
-    def _get_composite_target_probabilities(self, lfm: CompositeLFM, source: int) -> np.ndarray:
+    def _get_composite_target_probabilities(self, lfm: CompoundLFM, source: int) -> np.ndarray:
         p_target = self.uniform.get_target_probabilities(source)
-        if lfm == CompositeLFM.HOMOPHILY:
+        if lfm == CompoundLFM.HOMOPHILY:
             p_target *= self.h.get_target_probabilities(source)
-        elif lfm == CompositeLFM.PAH:
+        elif lfm == CompoundLFM.PAH:
             p_target *= self.pa.get_target_probabilities(source)
             p_target *= self.h.get_target_probabilities(source)
         return p_target

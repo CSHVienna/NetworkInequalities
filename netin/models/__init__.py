@@ -5,7 +5,7 @@ from .undirected_model import UndirectedModel
 from .barabasi_albert_model import BarabasiAlbertModel
 from .homophily_model import HomophilyModel
 from .pah_model import PAHModel
-from .patch_model import PATCHModel, CompositeLFM
+from .patch_model import PATCHModel, CompoundLFM
 
 from .dpa_model import DPAModel
 from .dpah_model import DPAHModel

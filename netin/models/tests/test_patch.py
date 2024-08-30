@@ -5,7 +5,7 @@ import numpy as np
 from collections import Counter
 from itertools import product
 
-from ..patch_model import PATCHModel, CompositeLFM
+from ..patch_model import PATCHModel, CompoundLFM
 from ..pah_model import PAHModel
 from ...graphs.graph import Graph
 from ...graphs.directed import DiGraph
@@ -17,8 +17,8 @@ class TestPATCHModel:
     def create_model(
             N=5, f_m=.3, m=2,
             p_tc=.8,
-            lfm_local=CompositeLFM.PAH,
-            lfm_global=CompositeLFM.PAH,
+            lfm_local=CompoundLFM.PAH,
+            lfm_global=CompoundLFM.PAH,
             lfm_params={"h_m": .8, "h_M": .8},
             seed=123) -> PATCHModel:
         model = PATCHModel(
@@ -40,7 +40,7 @@ class TestPATCHModel:
 
     def test_lfm_assignments(self):
         h_params = dict(h_m = .8, h_M = .8)
-        for lfm_l, lfm_g in product((CompositeLFM.UNIFORM, CompositeLFM.HOMOPHILY, CompositeLFM.PAH), repeat=2):
+        for lfm_l, lfm_g in product((CompoundLFM.UNIFORM, CompoundLFM.HOMOPHILY, CompoundLFM.PAH), repeat=2):
             model = TestPATCHModel.create_model(
                 lfm_local=lfm_l, lfm_global=lfm_g,
             lfm_params=h_params)
@@ -49,7 +49,7 @@ class TestPATCHModel:
 
             model.simulate()
 
-            if lfm_l != CompositeLFM.UNIFORM or lfm_g != CompositeLFM.UNIFORM:
+            if lfm_l != CompoundLFM.UNIFORM or lfm_g != CompoundLFM.UNIFORM:
                 assert model.h is not None
                 with pytest.raises(AssertionError):
                     m_fail = TestPATCHModel.create_model(
@@ -57,7 +57,7 @@ class TestPATCHModel:
                         lfm_global=lfm_g,
                         lfm_params=None)
                     m_fail.simulate()
-            if CompositeLFM.PAH in (lfm_l, lfm_g):
+            if CompoundLFM.PAH in (lfm_l, lfm_g):
                 assert model.pa is not None
 
 
@@ -142,8 +142,8 @@ class TestPATCHModel:
 
         patch = TestPATCHModel.create_model(
             N=N,
-            lfm_local=CompositeLFM.PAH,
-            lfm_global=CompositeLFM.PAH,
+            lfm_local=CompoundLFM.PAH,
+            lfm_global=CompoundLFM.PAH,
             p_tc=0.0,
             seed=100)
         g_patch = patch.simulate()
