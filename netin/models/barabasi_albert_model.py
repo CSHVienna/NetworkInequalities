@@ -6,6 +6,7 @@ from .undirected_model import UndirectedModel
 from ..link_formation_mechanisms.preferential_attachment import PreferentialAttachment
 
 class BarabasiAlbertModel(UndirectedModel):
+    SHORT = "BA"
     pa: PreferentialAttachment
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:

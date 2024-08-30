@@ -8,6 +8,7 @@ from .undirected_model import UndirectedModel
 from .binary_class_model import BinaryClassModel
 
 class HomophilyModel(UndirectedModel, BinaryClassModel):
+    SHORT = "HOMOPHILY"
     h_m: float
     h_M: float
 

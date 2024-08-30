@@ -4,6 +4,7 @@ from .homophily_model import HomophilyModel
 from ..link_formation_mechanisms.preferential_attachment import PreferentialAttachment
 
 class PAHModel(HomophilyModel):
+    SHORT = "PAH"
     pa: PreferentialAttachment
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:

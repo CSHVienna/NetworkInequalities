@@ -15,6 +15,8 @@ class Model(ABC, HasEvents, BaseClass):
     Specific growing-network-model implementations should inherit
     from this class and implement the provided abstract methods.
     """
+    SHORT = "MODEL"
+
     N: int
     graph: Graph
     seed: int
@@ -109,10 +111,10 @@ class Model(ABC, HasEvents, BaseClass):
         self.log(f"Simulating {self.__class__.__name__}")
         self.trigger_event(event=Event.SIMULATION_START)
         self._initialize_simulation()
-        res = self._simulate()
+        graph = self._simulate()
         self.trigger_event(event=Event.SIMULATION_END)
         self.log(f"Done with simulation of {self.__class__.__name__}")
-        return res
+        return graph
 
     def preload_graph(self, graph: Graph):
         """Preloads a graph into the model.

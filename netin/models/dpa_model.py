@@ -4,6 +4,7 @@ from .directed_model import DirectedModel
 from ..link_formation_mechanisms.indegree_preferential_attachment import InDegreePreferentialAttachment
 
 class DPAModel(DirectedModel):
+    SHORT = "DPA"
     pa: InDegreePreferentialAttachment
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:

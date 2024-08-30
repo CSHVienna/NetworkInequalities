@@ -7,6 +7,8 @@ from ..utils.validator import validate_int
 from .model import Model
 
 class UndirectedModel(Model):
+    SHORT = "UNDIRECTED"
+
     m: int
 
     def __init__(

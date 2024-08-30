@@ -8,6 +8,7 @@ from ..link_formation_mechanisms.indegree_preferential_attachment import InDegre
 from ..utils.constants import CLASS_ATTRIBUTE
 
 class DPAHModel(DPAModel):
+    SHORT = "DPAH"
     h_m: float
     h_M: float
 

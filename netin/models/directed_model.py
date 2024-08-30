@@ -17,6 +17,7 @@ from ..filters.active_nodes import ActiveNodes
 from ..link_formation_mechanisms.uniform import Uniform
 
 class DirectedModel(BinaryClassModel):
+    SHORT = "DIRECTED"
     d: float
     plo_M: float
     plo_m: float
