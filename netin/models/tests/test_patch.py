@@ -6,9 +6,11 @@ from collections import Counter
 from itertools import product
 
 from ..patch_model import PATCHModel, CompositeLFM
+from ..pah_model import PAHModel
 from ...graphs.graph import Graph
 from ...graphs.directed import DiGraph
 from ...utils.event_handling import Event
+from ...utils.constants import CLASS_ATTRIBUTE
 
 class TestPATCHModel:
     @staticmethod
@@ -17,12 +19,24 @@ class TestPATCHModel:
             p_tc=.8,
             lfm_local=CompositeLFM.PAH,
             lfm_global=CompositeLFM.PAH,
-            lfm_params={"h_m": .8, "h_M": .8}) -> PATCHModel:
+            lfm_params={"h_m": .8, "h_M": .8},
+            seed=123) -> PATCHModel:
         model = PATCHModel(
             N=N, f_m=f_m, m=m, p_tc=p_tc,
             lfm_local=lfm_local, lfm_global=lfm_global,
-            lfm_params=lfm_params)
+            lfm_params=lfm_params,
+            seed=seed)
         return model
+
+    @staticmethod
+    def count_edge_types(g: Graph) -> Counter:
+        counter = Counter()
+        for source, target in g.edges():
+            if g.get_node_class(CLASS_ATTRIBUTE)[source] == g.get_node_class(CLASS_ATTRIBUTE)[target]:
+                counter["in_group"] += 1
+            else:
+                counter["out_group"] += 1
+        return counter
 
     def test_lfm_assignments(self):
         h_params = dict(h_m = .8, h_M = .8)
@@ -122,3 +136,45 @@ class TestPATCHModel:
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes()) // 2
         assert _sum_links == (1 + (N * model.m))
+
+    def test_pah_reduction(self):
+        N = 1000
+
+        patch = TestPATCHModel.create_model(
+            N=N,
+            lfm_local=CompositeLFM.PAH,
+            lfm_global=CompositeLFM.PAH,
+            p_tc=0.0,
+            seed=100)
+        g_patch = patch.simulate()
+        min_patch = g_patch.get_node_class(CLASS_ATTRIBUTE)
+
+        pah = PAHModel(
+            N=N,
+            f_m=patch.f_m,
+            m=patch.m,
+            h_m=patch.lfm_params["h_m"],
+            h_M=patch.lfm_params["h_M"])
+        g_pah = pah.simulate()
+        min_pah = g_pah.get_node_class(CLASS_ATTRIBUTE)
+
+        assert g_patch.number_of_edges() == g_pah.number_of_edges()
+        assert len(g_patch) == len(g_pah)
+        assert np.isclose(
+            np.mean(min_patch), np.mean(min_pah), atol=0.05)
+
+        deg_patch = np.sort([g_patch.degree(v) for v in g_patch.nodes()])
+        deg_pah = np.sort([g_pah.degree(v) for v in g_pah.nodes()])
+        deg_diff = deg_patch - deg_pah
+        assert np.mean(deg_diff) == 0.0
+        assert np.isclose(
+            np.mean(deg_diff[:len(deg_diff) // 2]), 0, atol=0.05)
+        assert np.isclose(
+            np.mean(deg_diff[len(deg_diff) // 2:]), 0, atol=0.05)
+
+        edge_types_patch = TestPATCHModel.count_edge_types(g_patch)
+        edge_types_pah = TestPATCHModel.count_edge_types(g_pah)
+        assert np.isclose(
+            edge_types_patch["in_group"], edge_types_pah["in_group"], rtol=0.05)
+        assert np.isclose(
+            edge_types_patch["out_group"], edge_types_pah["out_group"], rtol=0.05)
