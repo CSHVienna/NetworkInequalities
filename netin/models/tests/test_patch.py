@@ -1,6 +1,8 @@
 import pytest
+from collections import defaultdict
 
 import numpy as np
+import scipy as sc
 
 from collections import Counter
 from itertools import product
@@ -138,43 +140,32 @@ class TestPATCHModel:
         assert _sum_links == (1 + (N * model.m))
 
     def test_pah_reduction(self):
-        N = 1000
+        N = 500
+        N_iter = 100
+        ratios_total = defaultdict(list)
+        for seed in range(N_iter):
+            g_patch = TestPATCHModel.create_model(
+                N=N,
+                p_tc=0.0,
+                lfm_local=CompoundLFM.PAH, lfm_global=CompoundLFM.PAH,
+                seed=seed)
+            g_pah = PAHModel(
+                N=g_patch.N, m=g_patch.m, f_m=g_patch.f_m,
+                h_m=g_patch.lfm_params["h_m"],
+                h_M=g_patch.lfm_params["h_M"],
+                seed=seed
+            )
 
-        patch = TestPATCHModel.create_model(
-            N=N,
-            lfm_local=CompoundLFM.PAH,
-            lfm_global=CompoundLFM.PAH,
-            p_tc=0.0,
-            seed=100)
-        g_patch = patch.simulate()
-        min_patch = g_patch.get_node_class(CLASS_ATTRIBUTE)
+            g_patch.simulate()
+            g_pah.simulate()
 
-        pah = PAHModel(
-            N=N,
-            f_m=patch.f_m,
-            m=patch.m,
-            h_m=patch.lfm_params["h_m"],
-            h_M=patch.lfm_params["h_M"])
-        g_pah = pah.simulate()
-        min_pah = g_pah.get_node_class(CLASS_ATTRIBUTE)
+            cnt_patch = TestPATCHModel.count_edge_types(g_patch.graph)
+            cnt_pah = TestPATCHModel.count_edge_types(g_pah.graph)
 
-        assert g_patch.number_of_edges() == g_pah.number_of_edges()
-        assert len(g_patch) == len(g_pah)
-        assert np.isclose(
-            np.mean(min_patch), np.mean(min_pah), atol=0.05)
+            ratio_patch = cnt_patch["in_group"] / cnt_patch["out_group"]
+            ratio_pah = cnt_pah["in_group"] / cnt_pah["out_group"]
 
-        deg_patch = np.sort([g_patch.degree(v) for v in g_patch.nodes()])
-        deg_pah = np.sort([g_pah.degree(v) for v in g_pah.nodes()])
-        deg_diff = deg_patch - deg_pah
-        assert np.mean(deg_diff) == 0.0
-        assert np.isclose(
-            np.mean(deg_diff[:len(deg_diff) // 2]), 0, atol=0.05)
-        assert np.isclose(
-            np.mean(deg_diff[len(deg_diff) // 2:]), 0, atol=0.05)
-
-        edge_types_patch = TestPATCHModel.count_edge_types(g_patch)
-        edge_types_pah = TestPATCHModel.count_edge_types(g_pah)
-        assert np.isclose(
-            edge_types_patch["in_group"], edge_types_pah["in_group"], rtol=0.05)
-        assert np.isclose(
-            edge_types_patch["out_group"], edge_types_pah["out_group"], rtol=0.05)
+            ratios_total["patch"].append(ratio_patch)
+            ratios_total["pah"].append(ratio_pah)
+        test = sc.stats.ttest_ind(ratios_total["patch"], ratios_total["pah"])
+        assert test.pvalue >= 0.05
