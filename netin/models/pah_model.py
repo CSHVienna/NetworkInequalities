@@ -25,8 +25,7 @@ class PAHModel(HomophilyModel):
         """
         p_target =\
             super().compute_target_probabilities(source)\
-            * self.pa.get_target_probabilities(source)\
-            * self.h.get_target_probabilities(source)
+            * self.pa.get_target_probabilities(source)
         return p_target / p_target.sum()
 
     def _initialize_lfms(self):
