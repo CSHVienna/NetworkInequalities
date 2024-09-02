@@ -62,8 +62,8 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
         self.tc = TriadicClosure(
             N=self._n_nodes_total,
             graph=self.graph)
-
         self.uniform = Uniform(N=self._n_nodes_total)
+
         if (self.lfm_local in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH))\
             or (self.lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)):
             assert (self.lfm_params is not None)\
@@ -80,13 +80,12 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
                 graph=self.graph)
 
     def _get_composite_target_probabilities(self, lfm: CompoundLFM, source: int) -> np.ndarray:
-        p_target = self.uniform.get_target_probabilities(source)
         if lfm == CompoundLFM.HOMOPHILY:
-            p_target *= self.h.get_target_probabilities(source)
-        elif lfm == CompoundLFM.PAH:
-            p_target *= self.pa.get_target_probabilities(source)
-            p_target *= self.h.get_target_probabilities(source)
-        return p_target
+            return self.h.get_target_probabilities(source)
+        if lfm == CompoundLFM.PAH:
+            return self.pa.get_target_probabilities(source)\
+                * self.h.get_target_probabilities(source)
+        return self.uniform.get_target_probabilities(source)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         p_target = super().compute_target_probabilities(source)
