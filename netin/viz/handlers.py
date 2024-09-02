@@ -229,15 +229,18 @@ def _add_class_legend(fig: matplotlib.figure.Figure, **kwargs):
     fig.legend(handles=[maj_patch, min_patch], bbox_to_anchor=bbox, loc=loc)
 
 
-def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = False, ignore_singletons: bool = False,
-               fn: str = None, **kwargs):
+def plot_graph(
+        model: Union[Model, Set[Model], List[Model]],
+        share_pos: bool = False,
+        ignore_singletons: bool = False,
+        fn: str = None, **kwargs):
     """
     Plots one or multiple (netin.Graph) graphs as matplotlib figures.
 
     Parameters
     ----------
-    data: Union[netin.Graph, Set[netin.Graph]]
-        graph or set of graphs to plot
+    data: Union[Model, Set[Model], List[Model]]
+        model or set of models to plot
 
     share_pos: bool
         if True, the positions of the nodes are shared between the graphs
@@ -280,9 +283,9 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
 
         Additional arguments for the ``subplots_adjust`` and ``savefig`` functions of the figure.
     """
-    iter_graph = [data] if isinstance(data, Graph) else data
+    iter_model = [model] if isinstance(model, Graph) else model
     nc = kwargs.pop('nc', None)
-    nc, nr = _get_grid_info(len(iter_graph), nc=nc)
+    nc, nr = _get_grid_info(len(iter_model), nc=nc)
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
 
     sharex, sharey = (share_pos, share_pos)
@@ -301,8 +304,9 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
         col = cell % nc
         ax = axes if nr == nc == 1 else axes[cell] if nr == 1 else axes[row, col]
 
-        if cell < len(iter_graph):
-            g = iter_graph[cell] #.copy()
+        if cell < len(iter_model):
+            m = iter_model[cell] #.copy()
+            g = m.graph
             nx_graph = g.to_nxgraph()
 
             if ignore_singletons:
@@ -314,8 +318,7 @@ def plot_graph(data: Union[Graph, Set[Graph], List[Graph]], share_pos: bool = Fa
                 pos = nx.spring_layout(nx_graph)
 
             # title
-            #ax.set_title(nx_graph.model_name)
-            ax.set_title("SOON")
+            ax.set_title(m.SHORT)
 
             # nodes
             if g.has_node_class(const.CLASS_ATTRIBUTE):
