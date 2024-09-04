@@ -1,5 +1,4 @@
-from typing import Union
-from typing import Tuple
+from typing import Union, Tuple, List, Optional
 import warnings
 
 import numpy as np
@@ -9,9 +8,14 @@ from collections import Counter
 
 from netin.utils import constants as const
 from netin.utils import validator as val
-from netin.graphs import CategoricalNodeVector
+from netin.graphs import (
+    CategoricalNodeVector, Graph,
+    BinaryClassGraph, BinaryClassDiGraph)
 
-def compute_node_stats(graph: nx.Graph, metric: str, **kwargs) -> list[Union[int, float]]:
+def compute_node_stats(
+        graph: nx.Graph,
+        metric: str,
+        **kwargs) -> List[Union[int, float]]:
     """
     Returns the property of each node in the graph based on the metric.
 
@@ -60,9 +64,10 @@ def compute_node_stats(graph: nx.Graph, metric: str, **kwargs) -> list[Union[int
     return [values[n] for n in graph.nodes] if values is not None else np.nan
 
 def get_node_metadata_as_dataframe(
-        graph: nx.Graph,
-        node_class_values: Union[CategoricalNodeVector, str] = const.CLASS_ATTRIBUTE,
-        include_graph_metadata: bool = False, n_jobs: int = 1) -> pd.DataFrame:
+        graph: Graph,
+        node_class_values: Optional[Union[CategoricalNodeVector, str]] = const.CLASS_ATTRIBUTE,
+        include_graph_metadata: bool = False,
+        n_jobs: int = 1) -> pd.DataFrame:
     """
     Returns the metadata of the nodes in the graph as a dataframe.
     Every row represents a node, and the columns are the metadata of the node.
@@ -86,21 +91,37 @@ def get_node_metadata_as_dataframe(
     """
     cols = ['node', 'class_label', 'real_label', 'source']
 
-    class_values = node_class_values.get_class_values() if isinstance(node_class_values, CategoricalNodeVector) else nx.get_node_attributes(graph, node_class_values)
-    obj = {'node': list(graph.nodes),
-            'class_label': [node_class_values[n] for n in graph.nodes],
-            'real_label': [class_values[n] for n in graph.nodes],
+    class_values = None
+    if isinstance(node_class_values, CategoricalNodeVector):
+        class_values = node_class_values.get_class_values()
+    elif isinstance(node_class_values, str):
+        assert graph.has_node_class(node_class_values),\
+        f"`graph` should have the specified `node_class_values={node_class_values}`"
+        class_values = graph\
+            .get_node_class(node_class_values)\
+            .get_class_values()
+    else:
+        assert isinstance(graph, (BinaryClassGraph, BinaryClassDiGraph)),\
+        ("If `node_class_values` is not a `CategoricalNodeVector` "
+         "and no node class of `graph`, the graph should be a `BinaryClassGraph` "
+         "or `BinaryClassDiGraph`")
+        class_values = graph.get_minority_class()
+
+    obj = {'node': list(graph.nodes()),
+            'class_label': [node_class_values[n] for n in graph.nodes()],
+            'real_label': [class_values[n] for n in graph.nodes()],
             'source': 'model' if 'empirical' not in graph.graph else 'data'}
 
     # include graph metadata
     if include_graph_metadata:
-        # n = graph.number_of_nodes()
-        new_cols = [c for c in graph.graph.keys() if c not in ['class_attribute', 'class_values', 'class_labels']]
+        new_cols = [c for c in graph.graph.keys()\
+            if c not in ['class_attribute', 'class_values', 'class_labels']]
         obj.update({c: graph.graph[c] for c in new_cols})
         cols.extend(new_cols)
 
     # include metrics
-    column_values = pqdm(const.VALID_METRICS, graph.compute_node_stats, n_jobs=n_jobs)
+    column_values = pqdm(
+        const.VALID_METRICS, compute_node_stats, n_jobs=n_jobs)
     obj.update({col: values for col, values in zip(const.VALID_METRICS, column_values)})
     cols.extend(const.VALID_METRICS)
 
@@ -112,18 +133,6 @@ def get_node_metadata_as_dataframe(
     for metric in const.VALID_METRICS:
         ncol = f'{metric}_rank'
         df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
-
-        # # compute ranking values and retry for ARPACK error.
-        # done = False
-        # tries = 10
-        # while not done:
-        #     try:
-        #         df.loc[:, ncol] = df.loc[:, metric].rank(ascending=False, pct=True, method='dense')
-        #         done = True
-        #     except Exception as ex:
-        #         tries -= 1
-        #         if tries <= 0:
-        #             raise UserWarning(f"An error occurred while computing the ranking values: {ex}")
 
     return df
 
@@ -163,8 +172,10 @@ def get_minority_fraction(g: Union[nx.Graph, nx.DiGraph], class_attribute: str =
     return f_m
 
 
-def get_edge_type_counts(g: Union[nx.Graph, nx.DiGraph], fractions: bool = False,
-                         class_attribute: str = None) -> Counter:
+def get_edge_type_counts(
+        g: Union[nx.Graph, nx.DiGraph],
+        fractions: bool = False,
+        class_attribute: str = None) -> Counter:
     """
     Computes the edge type counts of the graph using the `class_attribute` of each node.
 
@@ -222,7 +233,9 @@ def get_average_degree(g: Union[nx.Graph, nx.DiGraph]) -> float:
     return k
 
 
-def get_average_degrees(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = None) -> Tuple[float, float, float]:
+def get_average_degrees(
+        g: Union[nx.Graph, nx.DiGraph],
+        class_attribute: str = None) -> Tuple[float, float, float]:
     """
     Computes and returns the average degree of the graph, the average degree of the majority and the minority class.
 
@@ -248,7 +261,9 @@ def get_average_degrees(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = N
     return k, kM, km
 
 
-def get_similitude(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = None) -> float:
+def get_similitude(
+        g: Union[nx.Graph, nx.DiGraph],
+        class_attribute: str = None) -> float:
     """
     Computes and returns the fraction of same-class edges in the graph.
 
@@ -298,12 +313,17 @@ def get_node_attributes(
     return l
 
 
-def _get_graph_metadata_value(g: Union[nx.Graph, nx.DiGraph], key: str, default: object = None) -> Union[object, iter]:
+def _get_graph_metadata_value(
+        g: Union[nx.Graph, nx.DiGraph],
+        key: str,
+        default: object = None) -> Union[object, iter]:
     value = default if key not in g.graph or g.graph[key] is None else g.graph[key]
     return value
 
 
-def _get_class_labels(g: Union[nx.Graph, nx.DiGraph], class_attribute: str = None) -> Tuple[str, str, str]:
+def _get_class_labels(
+        g: Union[nx.Graph, nx.DiGraph],
+        class_attribute: str = None) -> Tuple[str, str, str]:
     if class_attribute:
         counter = Counter([obj[class_attribute] for n, obj in g.nodes(data=True)])
     else:
