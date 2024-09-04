@@ -7,7 +7,8 @@ class PAHModel(HomophilyModel):
     SHORT = "PAH"
     pa: PreferentialAttachment
 
-    def compute_target_probabilities(self, source: int) -> np.ndarray:
+    def compute_target_probabilities(self, source: int)\
+            -> np.ndarray:
         """Computes the target probabilities for the source node.
         The probability to connect to a target node is computed as the
         product of the probabilities of the preferential attachment
