@@ -6,7 +6,6 @@ import networkx as nx
 
 from .binary_class_model import BinaryClassModel
 from ..graphs.directed import DiGraph
-from ..graphs.binary_class_graph import BinaryClassDiGraph
 from ..graphs.node_vector import NodeVector
 from ..utils.event_handling import Event
 from ..utils import constants as const
@@ -45,9 +44,6 @@ class DirectedModel(BinaryClassModel):
         self.d = d
         self.plo_M = plo_M
         self.plo_m = plo_m
-
-    def _initialize_empty_graph(self) -> BinaryClassDiGraph:
-        return BinaryClassDiGraph()
 
     def _populate_initial_graph(self):
         for i in range(self.N):

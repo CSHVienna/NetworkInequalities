@@ -11,7 +11,6 @@ from ..patch_model import PATCHModel, CompoundLFM
 from ..pah_model import PAHModel
 from ...graphs.graph import Graph
 from ...graphs.directed import DiGraph
-from ...graphs.binary_class_graph import BinaryClassGraph
 from ...utils.event_handling import Event
 from ...utils.constants import CLASS_ATTRIBUTE
 
@@ -127,7 +126,7 @@ class TestPATCHModel:
         with pytest.raises(AssertionError):
             model.preload_graph(DiGraph())
 
-        g_pre = BinaryClassGraph()
+        g_pre = Graph()
         for i in range(N_g):
             g_pre.add_node(i)
         g_pre.add_edge(0, 1)

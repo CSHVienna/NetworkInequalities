@@ -7,7 +7,6 @@ from netin.graphs import Graph
 
 from .undirected_model import UndirectedModel
 from .binary_class_model import BinaryClassModel
-from ..graphs.binary_class_graph import BinaryClassGraph
 from ..utils.event_handling import Event, HasEvents
 from ..utils.constants import CLASS_ATTRIBUTE
 from ..utils.validator import validate_float
@@ -81,9 +80,6 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
             self.pa = PreferentialAttachment(
                 N=self._n_nodes_total,
                 graph=self.graph)
-
-    def _initialize_empty_graph(self) -> Graph:
-        return BinaryClassGraph()
 
     def _get_composite_target_probabilities(self, lfm: CompoundLFM, source: int) -> np.ndarray:
         if lfm == CompoundLFM.HOMOPHILY:

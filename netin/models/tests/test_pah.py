@@ -3,7 +3,7 @@ import pytest
 from netin.models import PAHModel
 from netin.utils.constants import CLASS_ATTRIBUTE
 from netin.graphs.binary_class_node_vector import BinaryClassNodeVector
-from netin.graphs import Graph, DiGraph, BinaryClassGraph
+from netin.graphs import Graph, DiGraph
 
 import numpy as np
 
@@ -56,21 +56,12 @@ class TestPAHModel:
         for i in range(N_pre):
             g_pre.add_node(i)
         g_pre.add_edge(0, 1)
-        model.preload_graph(g_pre)
-        with pytest.raises(ValueError):
-            model.simulate()
-
         g_pre.set_node_class(
             CLASS_ATTRIBUTE,
             BinaryClassNodeVector.from_fraction(N=N_pre, f_m=f_m_pre))
-        model.simulate()
-
-        model = TestPAHModel._create_model(N=N, f_m=f_m)
-        g_pre = BinaryClassGraph()
-        for i in range(N_pre):
-            g_pre.add_node(i)
-        g_pre.add_edge(0, 1)
         model.preload_graph(g_pre)
+        assert len(g_pre.get_node_class(CLASS_ATTRIBUTE)) == (N_pre + N),\
+            "Node class not set correctly."
         model.simulate()
 
         assert len(model.graph) == (N + N_pre)
