@@ -4,8 +4,7 @@ import powerlaw
 import numpy as np
 import networkx as nx
 
-from .model import Model
-from .binary_class_model import BinaryClassModelMixin
+from .binary_class_model import BinaryClassModel
 from ..graphs.directed import DiGraph
 from ..graphs.binary_class_graph import BinaryClassDiGraph
 from ..graphs.node_vector import NodeVector
@@ -16,7 +15,7 @@ from ..utils.constants import CLASS_ATTRIBUTE
 from ..filters.active_nodes import ActiveNodes
 from ..link_formation_mechanisms.uniform import Uniform
 
-class DirectedModel(Model, BinaryClassModelMixin):
+class DirectedModel(BinaryClassModel):
     SHORT = "DIRECTED"
     d: float
     plo_M: float

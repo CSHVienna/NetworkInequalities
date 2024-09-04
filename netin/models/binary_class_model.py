@@ -1,14 +1,14 @@
-from abc import abstractmethod
 from typing import Union
 
 import numpy as np
 
+from .model import Model
 from ..utils.constants import CLASS_ATTRIBUTE
 from ..graphs.binary_class_node_vector import BinaryClassNodeVector
 from ..graphs.binary_class_graph import\
     BinaryClassGraph, BinaryClassDiGraph
 
-class BinaryClassModelMixin:
+class BinaryClassModel(Model):
     f_m: float
     graph: Union[BinaryClassGraph, BinaryClassDiGraph]
 
@@ -31,7 +31,7 @@ class BinaryClassModelMixin:
                     f_m=self.f_m,
                     rng=self._rng)
                 ncv_post[:len(node_class_values_pre)] =\
-                node_class_values_pre.values
+                node_class_values_pre.vals()
                 self.graph.set_node_class(CLASS_ATTRIBUTE, ncv_post)
         elif isinstance(self.graph, (BinaryClassGraph, BinaryClassDiGraph)):
             self.graph.initialize_node_classes(
@@ -40,4 +40,8 @@ class BinaryClassModelMixin:
                 rng=self._rng)
         else:
             raise ValueError(
-                f"The graph must be a BinaryClassGraph or a BinaryClassDiGraph or have node classes `{CLASS_ATTRIBUTE}`")
+                ("The graph must be a BinaryClassGraph or a BinaryClassDiGraph "
+                 f"or have node classes `{CLASS_ATTRIBUTE}`. "
+                 "You may have forgotten to re-implement the "
+                 "`Model._initialize_empty_graph` method to "
+                 "return a graph with `BinaryClassGraphMixin`."))

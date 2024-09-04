@@ -6,9 +6,9 @@ from ..graphs.binary_class_graph import BinaryClassGraph
 from ..utils.constants import CLASS_ATTRIBUTE
 from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
 from .undirected_model import UndirectedModel
-from .binary_class_model import BinaryClassModelMixin
+from .binary_class_model import BinaryClassModel
 
-class HomophilyModel(UndirectedModel, BinaryClassModelMixin):
+class HomophilyModel(UndirectedModel, BinaryClassModel):
     SHORT = "HOMOPHILY"
     h_m: float
     h_M: float
