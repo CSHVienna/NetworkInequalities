@@ -1,23 +1,23 @@
+from abc import abstractmethod
 from typing import Union
 
 import numpy as np
 
-from .model import Model
 from ..utils.constants import CLASS_ATTRIBUTE
 from ..graphs.binary_class_node_vector import BinaryClassNodeVector
 from ..graphs.binary_class_graph import\
     BinaryClassGraph, BinaryClassDiGraph
 
-class BinaryClassModel(Model):
+class BinaryClassModelMixin:
     f_m: float
     graph: Union[BinaryClassGraph, BinaryClassDiGraph]
 
     def __init__(
             self, *args,
-            N: int, f_m: float,
+            f_m: float,
             seed: Union[int, np.random.Generator] = 1,
             **kwargs):
-        super().__init__(*args, N=N, seed=seed, **kwargs)
+        super().__init__(*args, seed=seed, **kwargs)
         self.f_m = f_m
 
     def _initialize_node_classes(self):

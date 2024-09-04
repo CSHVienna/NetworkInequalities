@@ -26,11 +26,13 @@ class UndirectedModel(Model):
             seed=seed,
             **kwargs)
 
-    def get_initial_graph(self) -> Graph:
-        graph = Graph()
+    def _initialize_empty_graph(self) -> Graph:
+        return Graph()
+
+    def _populate_initial_graph(self) -> Graph:
         for i in range(self.m):
-            graph.add_node(i)
-        return graph
+            self.graph.add_node(i)
+        return self.graph
 
     def _simulate(self) -> Graph:
         n_nodes = len(self.graph)

@@ -2,12 +2,13 @@ from typing import Union
 
 import numpy as np
 
+from ..graphs.binary_class_graph import BinaryClassGraph
 from ..utils.constants import CLASS_ATTRIBUTE
 from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
 from .undirected_model import UndirectedModel
-from .binary_class_model import BinaryClassModel
+from .binary_class_model import BinaryClassModelMixin
 
-class HomophilyModel(UndirectedModel, BinaryClassModel):
+class HomophilyModel(UndirectedModel, BinaryClassModelMixin):
     SHORT = "HOMOPHILY"
     h_m: float
     h_M: float
@@ -34,3 +35,6 @@ class HomophilyModel(UndirectedModel, BinaryClassModel):
         self.h = TwoClassHomophily.from_two_class_homophily(
             node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE),
             homophily=(self.h_m, self.h_M))
+
+    def _initialize_empty_graph(self) -> BinaryClassGraph:
+        return BinaryClassGraph()

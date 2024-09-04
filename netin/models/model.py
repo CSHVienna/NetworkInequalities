@@ -93,11 +93,16 @@ class Model(ABC, HasEvents, BaseClass):
         raise NotImplementedError
 
     @abstractmethod
-    def get_initial_graph(self) -> Graph:
+    def _initialize_empty_graph(self) -> Graph:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _populate_initial_graph(self) -> Graph:
         raise NotImplementedError
 
     def _initialize_graph(self):
-        self.graph = self.get_initial_graph()
+        self.graph = self._initialize_empty_graph()
+        self._populate_initial_graph()
         self._n_nodes_total = self.N
 
     def _initialize_filters(self):

@@ -4,19 +4,19 @@ import powerlaw
 import numpy as np
 import networkx as nx
 
-from netin.graphs.graph import Graph
-
-from .binary_class_model import BinaryClassModel
-from ..utils.event_handling import Event
+from .model import Model
+from .binary_class_model import BinaryClassModelMixin
 from ..graphs.directed import DiGraph
+from ..graphs.binary_class_graph import BinaryClassDiGraph
 from ..graphs.node_vector import NodeVector
+from ..utils.event_handling import Event
 from ..utils import constants as const
 from ..utils.validator import validate_float, validate_int
 from ..utils.constants import CLASS_ATTRIBUTE
 from ..filters.active_nodes import ActiveNodes
 from ..link_formation_mechanisms.uniform import Uniform
 
-class DirectedModel(BinaryClassModel):
+class DirectedModel(Model, BinaryClassModelMixin):
     SHORT = "DIRECTED"
     d: float
     plo_M: float
@@ -47,11 +47,13 @@ class DirectedModel(BinaryClassModel):
         self.plo_M = plo_M
         self.plo_m = plo_m
 
-    def get_initial_graph(self) -> Graph:
-        g = DiGraph()
+    def _initialize_empty_graph(self) -> BinaryClassDiGraph:
+        return BinaryClassDiGraph()
+
+    def _populate_initial_graph(self):
         for i in range(self.N):
-            g.add_node(i)
-        return g
+            self.graph.add_node(i)
+        return self.graph
 
     def _initialize_lfms(self):
         self._out_degrees = NodeVector(
@@ -152,7 +154,7 @@ class DirectedModel(BinaryClassModel):
         self._out_degrees.get_metadata(d[self.__class__.__name__])
         return d
 
-    def preload_graph(self, _: Graph):
+    def preload_graph(self, _: DiGraph):
         raise NotImplementedError("Preloading is not supported for this model")
 
     def _simulate(self) -> DiGraph:
