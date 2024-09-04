@@ -283,7 +283,7 @@ def plot_graph(
 
         Additional arguments for the ``subplots_adjust`` and ``savefig`` functions of the figure.
     """
-    iter_model = [model] if isinstance(model, Graph) else model
+    iter_model = [model] if isinstance(model, Model) else model
     nc = kwargs.pop('nc', None)
     nc, nr = _get_grid_info(len(iter_model), nc=nc)
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
