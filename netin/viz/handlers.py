@@ -1,7 +1,5 @@
 import logging
-from typing import List
-from typing import Set
-from typing import Union
+from typing import List, Set, Tuple, Union
 
 import matplotlib
 import matplotlib.patches as mpatches
@@ -11,9 +9,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import rc
-from collections import Counter
 
-from netin.graphs import Graph
 from netin.models import Model
 # from netin.generators.graph import Graph
 from netin.stats.distributions import fit_power_law
@@ -174,13 +170,14 @@ def _save_plot(fig: matplotlib.figure.Figure, fn=None, **kwargs):
     fig.tight_layout()
     fig.subplots_adjust(left=left, right=right, bottom=bottom, top=top, wspace=wspace, hspace=hspace)
     if fn is not None and fig is not None:
-        fig.savefig(fn, dpi=dpi, bbox_inches=bbox_inches, **kwargs)
-        logging.info("%s saved" % fn)
+        fig.savefig(
+            fn, dpi=dpi, bbox_inches=bbox_inches, **kwargs)
+        logging.info(f"{fn} saved")
     plt.show()
     plt.close()
 
-
-def _get_grid_info(total_subplots: int, nc: int = None) -> (int, int):
+def _get_grid_info(total_subplots: int, nc: int = None)\
+    -> Tuple[int, int]:
     """
     Returns the number of columns and rows to be plotted
     based on the total number of subplots and the number of columns.
@@ -199,8 +196,8 @@ def _get_grid_info(total_subplots: int, nc: int = None) -> (int, int):
     nr: int
         number of rows
     """
-    nc = total_subplots if nc is None else nc  # min(MAX_PLOTS_PER_ROW, total_subplots) if nc is None else nc
-    nr = int(np.ceil(total_subplots / nc))  # int(np.ceil(nc / MAX_PLOTS_PER_ROW))
+    nc = total_subplots if nc is None else nc
+    nr = int(np.ceil(total_subplots / nc))
     return nc, nr
 
 
@@ -289,7 +286,11 @@ def plot_graph(
     cell_size = kwargs.pop('cell_size', DEFAULT_CELL_SIZE)
 
     sharex, sharey = (share_pos, share_pos)
-    fig, axes = plt.subplots(nr, nc, figsize=(nc * cell_size, nr * cell_size), sharex=sharex, sharey=sharey)
+    fig, axes = plt.subplots(
+        nr, nc,
+        figsize=(nc * cell_size, nr * cell_size),
+        sharex=sharex,
+        sharey=sharey)
     node_size = kwargs.get('node_size', 1)
     node_shape = kwargs.get('node_shape', 'o')
     edge_width = kwargs.get('edge_width', 0.02)
@@ -323,22 +324,40 @@ def plot_graph(
             # nodes
             if g.has_node_class(const.CLASS_ATTRIBUTE):
                 nodes, node_colors = zip(
-                    *[(node, COLOR_MAJORITY if data[const.CLASS_ATTRIBUTE] == const.MAJORITY_VALUE else
-                    COLOR_MINORITY if data[const.CLASS_ATTRIBUTE] == const.MINORITY_VALUE else
+                    *[(node, COLOR_MAJORITY\
+                       if data[const.CLASS_ATTRIBUTE] == const.MAJORITY_VALUE else
+                    COLOR_MINORITY\
+                        if data[const.CLASS_ATTRIBUTE] == const.MINORITY_VALUE else
                     COLOR_UNKNOWN)
                       for node, data in nx_graph.nodes(data=True)])
             else:
                 node_colors = 'blue'
                 nodes = nx_graph.nodes()
-            nx.draw_networkx_nodes(nx_graph, pos, nodelist=nodes, node_size=node_size, node_color=node_colors,
-                                   node_shape=node_shape, ax=ax)
+            nx.draw_networkx_nodes(
+                nx_graph, pos,
+                nodelist=nodes,
+                node_size=node_size,
+                node_color=node_colors,
+                node_shape=node_shape,
+                ax=ax)
 
             # edges
             edges = nx_graph.edges()
-            edges, edge_colors = zip(*[((s, t), _get_edge_color(s, t, nx_graph, maj_val=const.MAJORITY_VALUE, min_val=const.MINORITY_VALUE)) for s, t in edges])
-            nx.draw_networkx_edges(g, pos, ax=ax, edgelist=edges, edge_color=edge_colors,
-                                   width=edge_width, style=edge_style, arrows=edge_arrows, arrowstyle=arrow_style,
-                                   arrowsize=arrow_size)
+            edges, edge_colors = zip(
+                *[((s, t), _get_edge_color(
+                    s, t, nx_graph,
+                    maj_val=const.MAJORITY_VALUE,
+                    min_val=const.MINORITY_VALUE))\
+                        for s, t in edges])
+            nx.draw_networkx_edges(
+                g, pos, ax=ax,
+                edgelist=edges,
+                edge_color=edge_colors,
+                width=edge_width,
+                style=edge_style,
+                arrows=edge_arrows,
+                arrowstyle=arrow_style,
+                arrowsize=arrow_size)
 
         # final touch
         ax.set_axis_off()
@@ -346,7 +365,6 @@ def plot_graph(
     # legend
     _add_class_legend(fig, **kwargs)
     _save_plot(fig, fn, **kwargs)
-
 
 def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]],
                       col_name: Union[str, List],
@@ -478,11 +496,17 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]],
         iter_groups = df.groupby(hue) if hue is not None else [(None, df)]
         f_m = df.query("class_label == @const.MINORITY_LABEL").shape[0] / df.shape[0]
         for class_label, group in iter_groups:
-            total = df[_col_name].sum() if common_norm else group[_col_name].sum()
+            total = df[_col_name].sum()\
+                if common_norm else group[_col_name].sum()
             xs, ys = get_x_y_from_df_fnc(group, _col_name, total)
             plot = ax.scatter if scatter else ax.plot
-            plot(xs, ys, label=class_label, color=_get_class_label_color(class_label=class_label,
-                                                                         ylabel=xy_fnc_name), **kwargs)
+            plot(
+                xs, ys,
+                label=class_label,
+                color=_get_class_label_color(
+                    class_label=class_label,
+                    ylabel=xy_fnc_name),
+                    **kwargs)
 
             if hline_fnc:
                 hline_fnc(ax.axhline, group)
@@ -532,7 +556,10 @@ def _show_beta(axline, data):
     axline(-const.INEQUITY_BETA, ls='--', color='grey', alpha=0.5)
 
 
-def plot_disparity(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List], fn: str = None, **kwargs):
+def plot_disparity(
+        data: Union[pd.DataFrame, List[pd.DataFrame]],
+        col_name: Union[str, List],
+        fn: str = None, **kwargs):
     """Plots the disparity of the ranking of the minority group.
 
     Parameters
@@ -565,8 +592,10 @@ def plot_disparity(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Unio
                       fn=fn, **kwargs)
 
 
-def plot_gini_coefficient(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List],
-                          fn: str = None, **kwargs):
+def plot_gini_coefficient(
+        data: Union[pd.DataFrame, List[pd.DataFrame]],
+        col_name: Union[str, List],
+        fn: str = None, **kwargs):
     """
     Plots the Gini coefficient of the ranking of the minority group.
 
@@ -593,7 +622,7 @@ def plot_gini_coefficient(data: Union[pd.DataFrame, List[pd.DataFrame]], col_nam
                 transform=ax.transAxes,
                 ha=ha, va=va)
 
-    def get_gini_label(ys, cuts=None) -> (str, float, str):
+    def get_gini_label(ys, cuts=None) -> Tuple[str, float, str]:
         from netin.stats import ranking
         # value
         gini_global = ys[-1]
@@ -624,8 +653,10 @@ def plot_gini_coefficient(data: Union[pd.DataFrame, List[pd.DataFrame]], col_nam
                       fn=fn, **kwargs)
 
 
-def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List],
-                              fn: str = None, **kwargs):
+def plot_fraction_of_minority(
+        data: Union[pd.DataFrame, List[pd.DataFrame]],
+        col_name: Union[str, List],
+        fn: str = None, **kwargs):
     """
     Plots the fraction of minority nodes in each top-k of the rank.
 
@@ -653,7 +684,7 @@ def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col
                 transform=ax.transAxes,
                 ha=ha, va=va)
 
-    def get_me_label(f_m, ys, beta=None) -> (str, float, str):
+    def get_me_label(f_m, ys, beta=None) -> Tuple[str, float, str]:
         from netin.stats import ranking
         # value
         me = ranking.get_ranking_inequity(f_m, ys)
@@ -685,7 +716,10 @@ def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col
         return f"ME={me:.3f}\n{ineq}", x, y, va, ha, c
 
     def show_minority(axline, data):
-        axline(data.query("class_label==@const.MINORITY_LABEL").shape[0] / data.shape[0], color="black", linestyle='--')
+        axline(
+            data.query("class_label==@const.MINORITY_LABEL")\
+               .shape[0] / data.shape[0],
+            color="black", linestyle='--')
 
     beta = kwargs.get('beta', None)
     kwargs['beta'] = beta if beta is not None else const.INEQUITY_BETA
@@ -705,8 +739,11 @@ def plot_fraction_of_minority(data: Union[pd.DataFrame, List[pd.DataFrame]], col
                       fn=fn, **kwargs)
 
 
-def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: Union[str, List], kind: str,
-                      fn=None, **kwargs):
+def plot_powerlaw_fit(
+        data: Union[pd.DataFrame, List[pd.DataFrame]],
+        col_name: Union[str, List],
+        kind: str,
+        fn=None, **kwargs):
     """
     Plots the powerlaw fit of the data. It shows the empirical and fitted distributions
 
@@ -823,7 +860,7 @@ def plot_powerlaw_fit(data: Union[pd.DataFrame, List[pd.DataFrame]], col_name: U
                 ax = efnc(label=r"Empirical", ax=ax, color=color, **kwargs)
                 ax = fnc(label=f'Powerlaw $\gamma={fit.alpha:.2f}$', linestyle='--', ax=ax, color=color, **kwargs)
             except Exception as ex:
-                logging.warning("%s saved" % fn)
+                logging.warning(f"{fn} saved")
 
             # legend inside: empirical vs powerlaw
             handles, labels = ax.get_legend_handles_labels()
