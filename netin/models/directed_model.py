@@ -4,6 +4,8 @@ import powerlaw
 import numpy as np
 import networkx as nx
 
+from netin.graphs.graph import Graph
+
 from .binary_class_model import BinaryClassModel
 from ..graphs.directed import DiGraph
 from ..graphs.node_vector import NodeVector
@@ -95,6 +97,9 @@ class DirectedModel(BinaryClassModel):
         self._node_activity = NodeVector.from_ndarray(
             a_node_activity, name="node_activity")
 
+    def _initialize_empty_graph(self) -> Graph:
+        return DiGraph()
+
     def _update_out_degrees(self, source: int, _: int):
         self._out_degrees[source] += 1
 
@@ -176,3 +181,4 @@ class DirectedModel(BinaryClassModel):
                     f">> Edge density ({nx.density(self.graph)}) "
                     f"might differ from {self.d:.5f} ({self})"))
                 break
+        return self.graph
