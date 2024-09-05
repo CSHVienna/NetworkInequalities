@@ -8,9 +8,8 @@ from collections import Counter
 
 from netin.utils import constants as const
 from netin.utils import validator as val
-from netin.graphs import (
-    CategoricalNodeVector, Graph,
-    BinaryClassGraph, BinaryClassDiGraph)
+from netin.graphs import\
+    CategoricalNodeVector, Graph
 
 def compute_node_stats(
         graph: nx.Graph,
@@ -100,12 +99,6 @@ def get_node_metadata_as_dataframe(
         class_values = graph\
             .get_node_class(node_class_values)\
             .get_class_values()
-    else:
-        assert isinstance(graph, (BinaryClassGraph, BinaryClassDiGraph)),\
-        ("If `node_class_values` is not a `CategoricalNodeVector` "
-         "and no node class of `graph`, the graph should be a `BinaryClassGraph` "
-         "or `BinaryClassDiGraph`")
-        class_values = graph.get_minority_class()
 
     obj = {'node': list(graph.nodes()),
             'class_label': [node_class_values[n] for n in graph.nodes()],
