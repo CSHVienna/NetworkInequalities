@@ -11,3 +11,8 @@ class DPAModel(DirectedModel):
         return\
             super().compute_target_probabilities(source)\
             * self.pa.get_target_probabilities(source)
+
+    def _initialize_lfms(self):
+        super()._initialize_lfms()
+        self.pa = InDegreePreferentialAttachment(
+            graph=self.graph, N=self._n_nodes_total)
