@@ -66,7 +66,7 @@ class Model(ABC, HasEvents, BaseClass):
         else:
             raise ValueError(f"`seed` must be an `int` or `np.random.Generator` but is {type(seed)}")
 
-    def _initialize_simulation(self):
+    def initialize_simulation(self):
         self.log(f"Initializing simulation of {self.__class__.__name__}")
         if self.graph is None:
             self.log("Initializing graph")
@@ -115,7 +115,7 @@ class Model(ABC, HasEvents, BaseClass):
     def simulate(self) -> Graph:
         self.log(f"Simulating {self.__class__.__name__}")
         self.trigger_event(event=Event.SIMULATION_START)
-        self._initialize_simulation()
+        self.initialize_simulation()
         graph = self._simulate()
         self.trigger_event(event=Event.SIMULATION_END)
         self.log(f"Done with simulation of {self.__class__.__name__}")
