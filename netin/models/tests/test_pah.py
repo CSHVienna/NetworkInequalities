@@ -60,6 +60,7 @@ class TestPAHModel:
             CLASS_ATTRIBUTE,
             BinaryClassNodeVector.from_fraction(N=N_pre, f_m=f_m_pre))
         model.preload_graph(g_pre)
+        model.initialize_simulation()
         assert len(g_pre.get_node_class(CLASS_ATTRIBUTE)) == (N_pre + N),\
             "Node class not set correctly."
         model.simulate()
