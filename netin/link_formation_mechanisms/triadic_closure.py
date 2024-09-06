@@ -6,6 +6,17 @@ from ..graphs.node_vector import NodeVector
 from .link_formation_mechanism import LinkFormationMechanism
 
 class TriadicClosure(LinkFormationMechanism):
+    """The Triadic Closure link formation mechanism.
+    Friends of friends are assigned a uniform probability
+    of forming a link, while other nodes have zero probability.
+
+    Parameters
+    ----------
+    N : int
+        Number of nodes.
+    graph : Graph
+        The graph used to keep track of friends of friends.
+    """
     _a_friend_of_friends: np.ndarray
     _source_curr: int
 
@@ -20,14 +31,12 @@ class TriadicClosure(LinkFormationMechanism):
             function=self._update_friends_of_friends)
 
     def _init_friends_of_friends(self, source: int):
-        """
-        Initializes the array of friends of friends.
+        """Initializes the array of friends of friends.
 
-        Args:
-            source (int): The source node.
-
-        Returns:
-            None
+        Parameters
+        ----------
+        source : int
+            The source node.
         """
         self._source_curr = source
 
@@ -41,15 +50,15 @@ class TriadicClosure(LinkFormationMechanism):
         self._a_friend_of_friends[fof] = 1.
 
     def _update_friends_of_friends(self, source: int, target: int):
-        """
-        Updates the array of friends of friends after a link was formed between `source` and `target`.
+        """Updates the array of friends of friends after a link
+        was formed between `source` and `target`.
 
-        Args:
-            source (int): The source node.
-            target (int): The target node.
-
-        Returns:
-            None
+        Parameters
+        ----------
+        source : int
+            The source node.
+        target : int
+            The target node.
         """
         if source != self._source_curr:
             return
@@ -59,16 +68,20 @@ class TriadicClosure(LinkFormationMechanism):
                 self._a_friend_of_friends[fof] = 1.
 
     def _get_target_probabilities(self, source: int) -> NodeVector:
-        """
-        Returns the probabilities of forming links to target nodes.
+        """Returns the probabilities of forming links to target nodes.
 
-        Target probabilities are uniform for nodes that are friends of friends of the source node and zero otherwise.
+        Target probabilities are uniform for nodes that are
+        friends of friends of the source node and zero otherwise.
 
-        Args:
-            source: The source node.
+        Parameters
+        ----------
+        source : int
+            The source node.
 
-        Returns:
-            np.ndarray: Array representing the probabilities of forming links to target nodes.
+        Returns
+        -------
+        NodeVector
+            Array representing the probabilities of forming links to target nodes.
         """
         if source != self._source_curr:
             self._init_friends_of_friends(source=source)
