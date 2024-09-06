@@ -10,8 +10,11 @@ class TwoClassHomophily(Homophily):
     def __init__(
             self,
             node_class_values: CategoricalNodeVector,
-            homophily: Union[float, np.ndarray], n_class_values: Union[int, None] = None) -> None:
-        super().__init__(node_class_values, homophily, n_class_values)
+            homophily: Union[float, np.ndarray]) -> None:
+        super().__init__(node_class_values=node_class_values, homophily=homophily)
+        assert node_class_values.n_values == 2,\
+            ("TwoClassHomophily can only be used for two classes. "
+             f"Received {node_class_values.n_values} classes")
         assert self.h.shape == (2, 2),\
             ("Homophily matrix must be 2x2. Use "
              "`Homophily` to define homophily for more than two classes.")
@@ -31,6 +34,4 @@ class TwoClassHomophily(Homophily):
             node_class_values=node_class_values,
             homophily=np.asarray(
                 [[homophily[0], 1 - homophily[0]],
-                 [1 - homophily[1], homophily[1]]]),
-            n_class_values=2
-        )
+                 [1 - homophily[1], homophily[1]]]))

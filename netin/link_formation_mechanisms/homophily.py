@@ -40,12 +40,12 @@ class Homophily(LinkFormationMechanism):
         _max = np.max(node_class_values)
         assert _max < n_class_values,\
         ("Classes must be numbered form 0 to "
-            f"`n_class_values`. Highest class was {_max} "
-            f"and `n_class_values` is {n_class_values}.")
+            f"`node_class_values.n_values`. Highest class was {_max} "
+            f"and `n_values` is {n_class_values}.")
 
         assert node_class_values.vals().ndim == 1,\
             ("Node class values must be a 1D array with dimensions (n_nodes,). "
-             "Multiple dimensions are not (yet) supported by this class.")
+             "Multiple dimensions are not supported by this class.")
         if isinstance(homophily, float):
             validate_float(homophily, minimum=0., maximum=1.)
             self.h = np.full(
