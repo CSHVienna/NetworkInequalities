@@ -17,6 +17,31 @@ from ..filters.active_nodes import ActiveNodes
 from ..link_formation_mechanisms.uniform import Uniform
 
 class DirectedModel(BinaryClassModel):
+    """The DirectedModel defines a network growth model which selects source nodes
+    based on their activity and parameterized by power law exponents `plo_m/M`.
+    Edges are created until a total network density `d` is reached.
+    Subclasses should implement the way in which target nodes are chosen.
+
+    Parameters
+    ----------
+    N : int
+        _description_
+    f_m : float
+        _description_
+    d : float
+        _description_
+    plo_M : float
+        _description_
+    plo_m : float
+        _description_
+    seed : Union[int, np.random.Generator], optional
+        _description_, by default 1
+
+    References
+    ----------
+    .. [Espin-Noboa2022] L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi
+    "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
+    """
     SHORT = "DIRECTED"
     d: float
     plo_M: float
@@ -48,11 +73,13 @@ class DirectedModel(BinaryClassModel):
         self.plo_m = plo_m
 
     def _populate_initial_graph(self):
+        # Add nodes without links
         for i in range(self.N):
             self.graph.add_node(i)
         return self.graph
 
     def _initialize_lfms(self):
+        # Initialize out-degrees for activity-based node selection
         self._out_degrees = NodeVector(
             self._n_nodes_total,
             dtype=int, name="out_degrees")
@@ -67,11 +94,13 @@ class DirectedModel(BinaryClassModel):
 
     def _initialize_filters(self):
         super()._initialize_filters()
+        # Add filter for active nodes
         self._f_active_nodes = ActiveNodes(
             N=self._n_nodes_total,
             graph=self.graph)
 
     def _initialize_node_activity(self):
+        # Generate node activity based on power law distributions
         minority_class = self.graph.get_node_class(CLASS_ATTRIBUTE)
         act_M = powerlaw.Power_Law(
             parameters=[self.plo_M],
@@ -104,9 +133,15 @@ class DirectedModel(BinaryClassModel):
         self._out_degrees[source] += 1
 
     def _get_expected_number_of_edges(self):
-        return int(round(self.d * self._n_nodes_total * (self._n_nodes_total - 1)))
+        # Compute the expected number of edges to reach the desired density
+        return int(
+            round(
+                self.d\
+                * self._n_nodes_total\
+                * (self._n_nodes_total - 1)))
 
     def _get_sources(self):
+        # Choose source nodes based on their activity
         return np.random.choice(
             a=np.arange(self._n_nodes_total),
             size=self._get_expected_number_of_edges(),
@@ -145,6 +180,14 @@ class DirectedModel(BinaryClassModel):
     def get_metadata(
             self, d_meta_data: Optional[Dict[str, Any]] = None)\
                 -> Dict[str, Any]:
+        """Returns the metadata of the model.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Metadata of the model.
+            It includes the density `d`, the activity power law exponents `plo_M` and `plo_m`.
+        """
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
             "d": self.d,
@@ -155,13 +198,24 @@ class DirectedModel(BinaryClassModel):
         return d
 
     def preload_graph(self, _: DiGraph):
+        """Preloads a graph into the model.
+        This is currently not supported for the directed models.
+
+        Parameters
+        ----------
+        _ : DiGraph
+            The graph to preload.
+        """
         raise NotImplementedError("Preloading is not supported for this model")
 
     def _simulate(self) -> DiGraph:
         tries = 0
+        # Run until desired density is reached
         while self.graph.number_of_edges()\
                 < self._get_expected_number_of_edges():
             tries += 1
+
+            # Iterate through sources (based on activity)
             for source in self._get_sources():
                 target = self._get_target(source)
 

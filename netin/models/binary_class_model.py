@@ -7,6 +7,15 @@ from ..utils.constants import CLASS_ATTRIBUTE, MAJORITY_LABEL, MINORITY_LABEL
 from ..graphs.binary_class_node_vector import BinaryClassNodeVector
 
 class BinaryClassModel(Model):
+    """An abstract class for models with binary class node values.
+
+    Parameters
+    ----------
+    f_m : float
+        The fraction of minority nodes.
+    seed : Union[int, np.random.Generator], optional
+        The random seed or generator, by default 1
+    """
     f_m: float
 
     def __init__(
@@ -18,6 +27,11 @@ class BinaryClassModel(Model):
         self.f_m = f_m
 
     def _initialize_node_classes(self):
+        """Initializes the node classes.
+        If the attributes are present already (for instance, for pre-loaded graphs),
+        they are kept and extended to the total number of nodes.
+        Otherwise, a new binary class node vector is created.
+        """
         if self.graph.has_node_class(CLASS_ATTRIBUTE):
             node_class_values_pre = self.graph.get_node_class(CLASS_ATTRIBUTE)
             assert isinstance(node_class_values_pre, BinaryClassNodeVector),\
