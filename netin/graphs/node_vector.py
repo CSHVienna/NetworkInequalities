@@ -7,6 +7,21 @@ from ..base_class import BaseClass
 from ..utils.validator import validate_int
 
 class NodeVector(BaseClass):
+    """Wrapper for numpy arrays that represents node values.
+    The number of nodes does not necessarily correspond to the number of nodes in the graph.
+    It implements an interface with numpy to allow the usage of numpy functions.
+
+    Parameters
+    ----------
+    N : int
+        The number of nodes. Does not necessarily correspond to the number of nodes in the graph.
+    dtype : Type
+        The data type of the values, must be a valid numpy data type.
+    fill_value : Optional[Number], optional
+        If the NodeVector should be initialized with an arbitrary value, by default None
+    name : Optional[str], optional
+        Name of the NodeVector, by default None
+    """
     _values: np.ndarray
     name: str
 
@@ -27,6 +42,15 @@ class NodeVector(BaseClass):
             values: np.ndarray,
             name: Optional[str] = None,
             **kwargs) -> "NodeVector":
+        """Creates a NodeVector from a numpy array.
+
+        Parameters
+        ----------
+        values : np.ndarray
+            The values to be set.
+        name : Optional[str], optional
+            The NodeVector's name, by default None
+        """
         assert isinstance(values, np.ndarray),\
             f"values must be of type np.ndarray, but is {type(values)}"
         node_values = cls(
@@ -36,6 +60,8 @@ class NodeVector(BaseClass):
 
     def append_other(self, other: "NodeVector")\
             -> "NodeVector":
+        """Append another NodeVector to the current NodeVector.
+        """
         return NodeVector.from_ndarray(
             np.append(self._values, other),
             name=self.name)
@@ -50,16 +76,41 @@ class NodeVector(BaseClass):
         """
         self._values = values
 
-    def get_values(self) -> Any:
+    def get_values(self) -> np.ndarray:
+        """Returns the `np.ndarray` of values.
+
+        Returns
+        -------
+        np.ndarray
+            Node values.
+        """
         return self._values
 
     def vals(self) -> np.ndarray:
+        """Returns the `np.ndarray` of values.
+        Shortcut for `get_values`.
+
+        Returns
+        -------
+        np.ndarray
+            Node values.
+        """
         return self.get_values()
 
     def copy(self) -> "NodeVector":
+        """Returns a copy of the NodeVector."""
         return NodeVector.from_ndarray(self._values.copy(), name=self.name)
 
-    def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def get_metadata(
+            self, d_meta_data: Optional[Dict[str, Any]] = None)\
+                -> Dict[str, Any]:
+        """Returns the metadata of the NodeVector.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Description of the metadata, including the name and values.
+        """
         d = super().get_metadata(d_meta_data)
         name_cls = self.__class__.__name__
         d_meta_data = {
@@ -76,6 +127,16 @@ class NodeVector(BaseClass):
 
         return d
 
+    def sum(self, *args, **kwargs) -> Any:
+        """Forward function to `numpy.sum`.
+
+        Returns
+        -------
+        Any
+            The result of `numpy.sum`.
+        """
+        return self._values.sum(*args, **kwargs)
+
     def __len__(self) -> int:
         return len(self._values)
 
@@ -90,9 +151,6 @@ class NodeVector(BaseClass):
 
     def __lt__(self, value: object) -> np.ndarray:
         return self._values.__lt__(value)
-
-    def sum(self, *args, **kwargs) -> Any:
-        return self._values.sum(*args, **kwargs)
 
     def __eq__(self, value: object):
         return self._values.__eq__(value)
