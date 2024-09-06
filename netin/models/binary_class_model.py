@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 
 from .model import Model
-from ..utils.constants import CLASS_ATTRIBUTE
+from ..utils.constants import CLASS_ATTRIBUTE, MAJORITY_LABEL, MINORITY_LABEL
 from ..graphs.binary_class_node_vector import BinaryClassNodeVector
 
 class BinaryClassModel(Model):
@@ -26,6 +26,7 @@ class BinaryClassModel(Model):
                 ncv_post = BinaryClassNodeVector.from_fraction(
                     N=self._n_nodes_total,
                     f_m=self.f_m,
+                    class_labels=[MAJORITY_LABEL, MINORITY_LABEL],
                     rng=self._rng)
                 ncv_post[:len(node_class_values_pre)] =\
                 node_class_values_pre.vals()
@@ -36,4 +37,5 @@ class BinaryClassModel(Model):
                 BinaryClassNodeVector.from_fraction(
                     N=self._n_nodes_total,
                     f_m=self.f_m,
+                    class_labels=[MAJORITY_LABEL, MINORITY_LABEL],
                     rng=self._rng))
