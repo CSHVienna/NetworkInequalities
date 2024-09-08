@@ -45,9 +45,6 @@ class DPAHModel(DPAModel):
             h_m: float, h_M: float,
             seed:  Union[int, np.random.Generator] = 1,
             **kwargs):
-        """
-
-        """
         super().__init__(
             *args, N=N, f_m=f_m, d=d,
             plo_M=plo_M, plo_m=plo_m,
@@ -65,6 +62,18 @@ class DPAHModel(DPAModel):
             graph=self.graph, N=self._n_nodes_total)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
+        """Compute the target probabilities as the homophily probabilities  times preferential attachment.
+
+        Parameters
+        ----------
+        source : int
+            The source node.
+
+        Returns
+        -------
+        np.ndarray
+            The target probabilities.
+        """
         return\
             super().compute_target_probabilities(source)\
             * self.h.get_target_probabilities(source)

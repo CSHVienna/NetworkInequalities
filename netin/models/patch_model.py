@@ -3,8 +3,6 @@ import enum
 
 import numpy as np
 
-from netin.graphs import Graph
-
 from .undirected_model import UndirectedModel
 from .binary_class_model import BinaryClassModel
 from ..utils.event_handling import Event, HasEvents
@@ -16,11 +14,67 @@ from ..link_formation_mechanisms.triadic_closure import TriadicClosure
 from ..link_formation_mechanisms.uniform import Uniform
 
 class CompoundLFM(enum.Enum):
+    """A combination of link formation mechanism.
+    This class is used to define how local or global links should be formed in the `PATCHModel`.
+    """
     UNIFORM="UNIFORM"
     HOMOPHILY="HOMOPHILY"
     PAH="PAH"
 
-class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
+class PATCHModel(
+    UndirectedModel, BinaryClassModel, HasEvents):
+    """The PATCHModel joins nodes to the network based on a combination of
+    [P]referential [A]ttachment, [T]riadic [C]losure and [H]omophily.
+    Based on the triadic closure probability `p_tc`, links are formed either locally or globally.
+    For local links, nodes can connect only to neighbors of existing neighbors.
+    Globally, nodes can connect to any other node in the network.
+
+    How a target node is selected from the set of available nodes then
+    depends on the other link formation mechanisms of preferential attachment and/or homophily.
+    See `lfm_local` and `lfm_global` for details.
+
+    Parameters
+    ----------
+    N : int
+        The number of nodes to be added.
+    f_m : float
+        The fraction of the minority group.
+    m : int
+        The number of new edges per node.
+    p_tc : float
+        The probability for triadic closure, meaning that an edge will
+        be formed locally among the neighbors of existing neighbors.
+        With the complementary probability (1 - `p_tc`), all existing
+        nodes are available for connection.
+        See `lfm_local` and `lfm_global` for a specification of how
+        targets are chosen from either set.
+    lfm_local : CompoundLFM
+        Defines how local targets are chosen.
+        Both `lfm_local` and `lfm_global` can be set to any value defined in `CompoundLFM`:
+        1. `UNIFORM`: the target nodes are chosen randomly
+        2. `HOMOPHILY`: the target nodes are chosen based on homophily
+        3. `PAH`: the target nodes are chosen based on
+        preferential attachment and homophily
+        (choose `h_m = h_M = 0.5` to neutralize the effect of homophily;
+        see `PAHModel` for details).
+        For options 2. and 3. the `lfm_params` dictionary has
+        to contain the homophily values of the minority and
+        majority group (for instance by setting `lfm_params={"h_m": 0.2, "h_M": 0.8}`).
+    lfm_global : CompoundLFM
+        Defines how global targets are chosen.
+        See `lfm_local` for details.
+    lfm_params : Optional[Dict[str, float]], optional
+        Dictionary containing additional parameterization of link
+        formation mechanisms, by default None.
+        If either local or global link formation mechanisms contains
+        homophily (`CompoundLFM.Homophily` or 'CompoundLFM.PAH`), the
+        dictionary should contain the keys `h_m` and `h_M`, containing
+        the desired homophily parameters.
+        See `HomophilyModel` for details on the homophily parameters.
+    seed : Union[int, np.random.Generator], optional
+        _description_, by default 1
+    """
+
     EVENTS = [
         Event.SIMULATION_START, Event.SIMULATION_END,
         Event.LOCAL_TARGET_SELECTION, Event.GLOBAL_TARGET_SELECTION]
@@ -61,6 +115,10 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
         self.lfm_params = lfm_params
 
     def _initialize_lfms(self):
+        """Initializes and configures the link formation mechanisms.
+        This depends on the choice of `lfm_local` and `lfm_global`.
+        The parameters are given by `lfm_params`.
+        """
         self.tc = TriadicClosure(
             N=self._n_nodes_total,
             graph=self.graph)
@@ -81,7 +139,15 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
                 N=self._n_nodes_total,
                 graph=self.graph)
 
-    def _get_composite_target_probabilities(self, lfm: CompoundLFM, source: int) -> np.ndarray:
+    def _get_compound_target_probabilities(self, lfm: CompoundLFM, source: int)\
+        -> np.ndarray:
+        """Return the compound link formation mechanism probability.
+
+        Returns
+        -------
+        numpy.ndarray
+            The target probabilities depending on the chosen `CompoundLFM`.
+        """
         if lfm == CompoundLFM.HOMOPHILY:
             return self.h.get_target_probabilities(source)
         if lfm == CompoundLFM.PAH:
@@ -90,14 +156,28 @@ class PATCHModel(UndirectedModel, BinaryClassModel, HasEvents):
         return self.uniform.get_target_probabilities(source)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
+        """Compute the target probabilities based on triadic closure and
+        the specified compound link formation mechanisms for global and
+        local links.
+
+        Parameters
+        ----------
+        source : int
+            The source node.
+
+        Returns
+        -------
+        np.ndarray
+            Target probabilities for all nodes in the network.
+        """
         p_target = super().compute_target_probabilities(source)
         if self._rng.uniform() < self.p_tc:
             p_target *= self.tc.get_target_probabilities(source)
-            p_target *= self._get_composite_target_probabilities(
+            p_target *= self._get_compound_target_probabilities(
                 source=source, lfm=self.lfm_local)
             self.trigger_event(event=Event.LOCAL_TARGET_SELECTION)
         else:
-            p_target *= self._get_composite_target_probabilities(
+            p_target *= self._get_compound_target_probabilities(
                 source=source, lfm=self.lfm_global)
             self.trigger_event(event=Event.GLOBAL_TARGET_SELECTION)
 

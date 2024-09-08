@@ -20,6 +20,29 @@ class HomophilyModel(UndirectedModel, BinaryClassModel):
             h_m: float, h_M: float,
             seed:  Union[int, np.random.Generator] = 1,
             **kwargs):
+        """A simple homophily model which connects nodes with a probability proportional to homophily, the tendency of individuals to associate with others who are similar to themselves.
+
+        Parameters
+        ----------
+        N : int
+            Number of nodes.
+        f_m : float
+            Fraction of minority nodes.
+        m : int
+            Number of edges to attach from a new node to existing nodes.
+        h_m : float
+            Homophily of the minority nodes.
+            If a minority node joins the network, it connects to other
+            minority nodes with probability `h_m` and to the majority
+              group with the complementary probability 1-`h_m`.
+        h_M : float
+            Homophily of the majority nodes.
+            If a majority node joins the network, it connects to other
+            majority nodes with probability `h_M` and to the minority
+            group with the complementary probability 1-`h_M`.
+        seed : Union[int, np.random.Generator], optional
+            Randomization seed or random number generator, by default 1
+        """
         super().__init__(
             *args, N=N, m=m, f_m=f_m,
             seed=seed, **kwargs)
@@ -27,6 +50,8 @@ class HomophilyModel(UndirectedModel, BinaryClassModel):
         self.h_M = h_M
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
+        """Compute the target probabilities for the HomophilyModel
+        based on the Homophily link formation mechanism."""
         return super().compute_target_probabilities(source) * \
             self.h.get_target_probabilities(source)
 

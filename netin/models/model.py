@@ -67,6 +67,13 @@ class Model(ABC, HasEvents, BaseClass):
             raise ValueError(f"`seed` must be an `int` or `np.random.Generator` but is {type(seed)}")
 
     def initialize_simulation(self):
+        """Initializes the simulation of the model.
+        The order of initialization is:
+        [0.] Graph initialization if not preloaded.
+        1. Node classes initialization.
+        2. Filters initialization.
+        3. Link formation mechanisms initialization.
+        """
         self.log(f"Initializing simulation of {self.__class__.__name__}")
         if self.graph is None:
             self.log("Initializing graph")
@@ -82,30 +89,65 @@ class Model(ABC, HasEvents, BaseClass):
 
     @abstractmethod
     def _simulate(self) -> Graph:
+        """Abstract simulation method.
+        This method should contain the actual simulation logic of the model.
+        Should be overwritten by the specific model implementation.
+
+        Returns
+        -------
+        Graph
+            The simulated graph.
+        """
         raise NotImplementedError
 
     @abstractmethod
     def _initialize_lfms(self):
+        """Initialize the link formation mechanisms.
+        This should be overwritten by the actual model implementations.
+        See `Model._simulate` for the initialization order.
+        """
         raise NotImplementedError
 
     @abstractmethod
     def _initialize_node_classes(self):
+        """Initializes the node classes.
+        This should be overwritten by the actual model implementations.
+        See `Model._simulate` for the initialization order.
+        """
         raise NotImplementedError
 
     @abstractmethod
     def _initialize_empty_graph(self) -> Graph:
+        """Initializes an empty graph.
+        This should be overwritten by the actual model implementations.
+        See `Model._simulate` for the initialization order.
+        """
         raise NotImplementedError
 
     @abstractmethod
     def _populate_initial_graph(self) -> Graph:
+        """Populates the initial graph.
+        This should be overwritten by the actual model implementations.
+        See `Model._simulate` for the initialization order.
+
+        Returns
+        -------
+        Graph
+            The populated graph.
+        """
         raise NotImplementedError
 
     def _initialize_graph(self):
+        """Initializes the empty graph, populates it and set the number of total nodes.
+        """
         self.graph = self._initialize_empty_graph()
         self._populate_initial_graph()
         self._n_nodes_total = self.N
 
     def _initialize_filters(self):
+        """Initializes the filters.
+        Default filters are no self loops and no double links.
+        """
         self._f_no_self_links = NoSelfLinks(
             N=self._n_nodes_total)
         self._f_no_double_links = NoDoubleLinks(
@@ -113,6 +155,16 @@ class Model(ABC, HasEvents, BaseClass):
             graph=self.graph)
 
     def simulate(self) -> Graph:
+        """Runs the simulation.
+        This calls `Model.initialize_simulation` and `Model._simulate`.
+        Check these functions in case you want to extend `Model`.
+        Triggers the `Event.SIMULATION_START` and `Event.SIMULATION_END` events.
+
+        Returns
+        -------
+        Graph
+            The simulated graph.
+        """
         self.log(f"Simulating {self.__class__.__name__}")
         self.trigger_event(event=Event.SIMULATION_START)
         self.initialize_simulation()
@@ -135,10 +187,37 @@ class Model(ABC, HasEvents, BaseClass):
         self._n_nodes_total = self.N + len(graph)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
+        """Computes the target probabilities.
+        This function applies the default filters to avoid self loops and no double links.
+
+        Parameters
+        ----------
+        source : int
+            The source node.
+
+        Returns
+        -------
+        np.ndarray
+            Array of target probabilities.
+        """
         return self._f_no_self_links.get_target_mask(source)\
             * self._f_no_double_links.get_target_mask(source)
 
     def get_metadata(self, d_meta_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Returns or updates the metadata.
+        This sets the number of nodes and random seed.
+        Model implementations should update this to add other model parameters.
+
+        Parameters
+        ----------
+        d_meta_data : Optional[Dict[str, Any]], optional
+            Dictionary containing object metadata, by default None
+
+        Returns
+        -------
+        Dict[str, Any]
+            Metadata dictionary.
+        """
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
             "N": self.N,
@@ -150,7 +229,15 @@ class Model(ABC, HasEvents, BaseClass):
         return d
 
     def _sample_target_node(
-            self, target_probabilities: np.ndarray) -> int:
+            self, target_probabilities: np.ndarray)\
+                -> int:
+        """Picks a target node.
+
+        Returns
+        -------
+        int
+            Target node.
+        """
         return self._rng.choice(
             len(target_probabilities),
             p=target_probabilities)

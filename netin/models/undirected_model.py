@@ -7,6 +7,7 @@ from ..utils.validator import validate_int
 from .model import Model
 
 class UndirectedModel(Model):
+
     SHORT = "UNDIRECTED"
 
     m: int
@@ -17,6 +18,21 @@ class UndirectedModel(Model):
             m:int,
             seed: Union[int, np.random.Generator] = 1,
             **kwargs):
+        """The base class for all undirected models.
+        Based on [BarabasiAlbert1999]_, this model grows a network by adding a total of `N` nodes to the network.
+        Each node that is added connects to the previously added nodes with `m` links.
+        How the target nodes are chosen depends on link formation mechanisms.
+        The implementation of these mechanisms is handled by subclasses (see, for instance, `PAHModel`).
+
+        Parameters
+        ----------
+        N : int
+            Number of nodes to be added.
+        m : int
+            Number of links for each new node.
+        seed : Union[int, np.random.Generator], optional
+            The randomization seed or random number generator, by default 1
+        """
         validate_int(N, minimum=1)
         validate_int(m, minimum=1)
         self.m = m
@@ -35,6 +51,17 @@ class UndirectedModel(Model):
         return self.graph
 
     def _simulate(self) -> Graph:
+        """Simulates the undirected model.
+        After adding `m` initial nodes, `N-m` nodes are added one after the other.
+        Each new node connects to previously added nodes with `m` links.
+        The choice of target nodes depends on the implementation of `LinkFormationMechanism`s and `Filter`s.
+        This should be implemented in respective subclasses.
+
+        Returns
+        -------
+        Graph
+            The simulated network.
+        """
         n_nodes = len(self.graph)
         for source in range(
                 n_nodes, self._n_nodes_total):
@@ -50,6 +77,13 @@ class UndirectedModel(Model):
             self,
             d_meta_data: Optional[Dict[str, Any]] = None)\
                 -> Dict[str, Any]:
+        """Adds the number of links per new node `m` to the metadata dictionary.
+
+        Returns
+        -------
+        Dict[str, Any]
+            The (updated or created) metadata dictionary.
+        """
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
             "m": self.m,
@@ -57,6 +91,13 @@ class UndirectedModel(Model):
         return d
 
     def preload_graph(self, graph: Graph):
+        """Preloads a graph.
+
+        Parameters
+        ----------
+        graph : Graph
+            Graph to be preloaded.
+        """
         assert not graph.is_directed(),\
             "The graph must not be directed."
         return super().preload_graph(graph)

@@ -4,6 +4,13 @@ from .homophily_model import HomophilyModel
 from ..link_formation_mechanisms.preferential_attachment import PreferentialAttachment
 
 class PAHModel(HomophilyModel):
+    """The PAHModel implements the [P]referential [A]ttachment and [H]omophily model.
+
+    Nodes join the network by connecting to existing
+    nodes proportional to their degree and group assignment.
+    See `HomophilyModel` for how to parameterize the homophily values.
+
+    This model is based on [Karimi2018]_"""
     SHORT = "PAH"
     pa: PreferentialAttachment
 
