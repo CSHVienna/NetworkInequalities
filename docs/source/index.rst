@@ -11,13 +11,13 @@ Network Inequality
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
-   :glob:
 
-   graphs
-   algorithms
-   mechanisms
+   models/index
+   graphs/index
+   algorithms/index
    statistics
    visualizations
+   extensions/index
 
 Indices and tables
 ==================

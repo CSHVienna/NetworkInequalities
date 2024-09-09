@@ -8,4 +8,4 @@ Algorithms
    :caption: Contents:
    :glob:
 
-   algorithms/*
+   sampling
