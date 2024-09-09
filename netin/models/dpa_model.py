@@ -7,7 +7,7 @@ class DPAModel(DirectedModel):
     """The DPAModel is a directed model that joins new nodes to the existing nodes
     with a probability proportional to the in-degree of the existing nodes.
 
-    For the simulation logic of this model, see the base `DirectedModel`.
+    For the simulation logic of this model, see the base :class:`.DirectedModel`.
     """
     SHORT = "DPA"
     pa: InDegreePreferentialAttachment

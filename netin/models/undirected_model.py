@@ -7,6 +7,21 @@ from ..utils.validator import validate_int
 from .model import Model
 
 class UndirectedModel(Model):
+    """The base class for all undirected models.
+    Based on [BarabasiAlbert1999]_, this model grows a network by adding a total of `N` nodes to the network.
+    Each node that is added connects to the previously added nodes with `m` links.
+    How the target nodes are chosen depends on link formation mechanisms.
+    The implementation of these mechanisms is handled by subclasses (see, for instance, :class:`.PAHModel`).
+
+    Parameters
+    ----------
+    N : int
+        Number of nodes to be added.
+    m : int
+        Number of links for each new node.
+    seed : Union[int, np.random.Generator], optional
+        The randomization seed or random number generator, by default 1
+    """
 
     SHORT = "UNDIRECTED"
 
@@ -18,21 +33,6 @@ class UndirectedModel(Model):
             m:int,
             seed: Union[int, np.random.Generator] = 1,
             **kwargs):
-        """The base class for all undirected models.
-        Based on [BarabasiAlbert1999]_, this model grows a network by adding a total of `N` nodes to the network.
-        Each node that is added connects to the previously added nodes with `m` links.
-        How the target nodes are chosen depends on link formation mechanisms.
-        The implementation of these mechanisms is handled by subclasses (see, for instance, `PAHModel`).
-
-        Parameters
-        ----------
-        N : int
-            Number of nodes to be added.
-        m : int
-            Number of links for each new node.
-        seed : Union[int, np.random.Generator], optional
-            The randomization seed or random number generator, by default 1
-        """
         validate_int(N, minimum=1)
         validate_int(m, minimum=1)
         self.m = m

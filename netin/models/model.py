@@ -104,7 +104,7 @@ class Model(ABC, HasEvents, BaseClass):
     def _initialize_lfms(self):
         """Initialize the link formation mechanisms.
         This should be overwritten by the actual model implementations.
-        See `Model._simulate` for the initialization order.
+        See :func:`._simulate` for the initialization order.
         """
         raise NotImplementedError
 
@@ -112,7 +112,7 @@ class Model(ABC, HasEvents, BaseClass):
     def _initialize_node_classes(self):
         """Initializes the node classes.
         This should be overwritten by the actual model implementations.
-        See `Model._simulate` for the initialization order.
+        See :func:`._simulate` for the initialization order.
         """
         raise NotImplementedError
 

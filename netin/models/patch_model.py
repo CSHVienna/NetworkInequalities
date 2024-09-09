@@ -18,8 +18,21 @@ class CompoundLFM(enum.Enum):
     This class is used to define how local or global links should be formed in the `PATCHModel`.
     """
     UNIFORM="UNIFORM"
+    """Targets are chosen uniformly at random.
+
+    :meta hide-value:"""
+
     HOMOPHILY="HOMOPHILY"
+    """Targets are chosen based on homophily (see :class:`.Homophily`
+       and :class:`.HomophilyModel` for details).
+
+    :meta hide-value:"""
+
     PAH="PAH"
+    """Targets are chosen based on homophily and preferential attachment
+       (see :class:`.PAHModel` for details).
+
+    :meta hide-value:"""
 
 class PATCHModel(
     UndirectedModel, BinaryClassModel, HasEvents):
@@ -31,7 +44,7 @@ class PATCHModel(
 
     How a target node is selected from the set of available nodes then
     depends on the other link formation mechanisms of preferential attachment and/or homophily.
-    See `lfm_local` and `lfm_global` for details.
+    See :attr:`.lfm_local` and :attr:`lfm_global` for details.
 
     Parameters
     ----------
@@ -50,13 +63,12 @@ class PATCHModel(
         targets are chosen from either set.
     lfm_local : CompoundLFM
         Defines how local targets are chosen.
-        Both `lfm_local` and `lfm_global` can be set to any value defined in `CompoundLFM`:
-        1. `UNIFORM`: the target nodes are chosen randomly
-        2. `HOMOPHILY`: the target nodes are chosen based on homophily
-        3. `PAH`: the target nodes are chosen based on
-        preferential attachment and homophily
-        (choose `h_m = h_M = 0.5` to neutralize the effect of homophily;
-        see `PAHModel` for details).
+        Both :attr:`lfm_local` and :attr:`lfm_global` can be set to any value defined in :class:`.CompoundLFM`:
+
+        1. :attr:`.CompoundLFM.UNIFORM`: the target nodes are chosen randomly
+        2. :attr:`.CompoundLFM.HOMOPHILY`: the target nodes are chosen based on homophily
+        3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on preferential attachment and homophily (choose `h_m = h_M = 0.5` to neutralize the effect of homophily; see :class:`.PAHModel` for details).
+
         For options 2. and 3. the `lfm_params` dictionary has
         to contain the homophily values of the minority and
         majority group (for instance by setting `lfm_params={"h_m": 0.2, "h_M": 0.8}`).
@@ -70,14 +82,14 @@ class PATCHModel(
         homophily (`CompoundLFM.Homophily` or 'CompoundLFM.PAH`), the
         dictionary should contain the keys `h_m` and `h_M`, containing
         the desired homophily parameters.
-        See `HomophilyModel` for details on the homophily parameters.
+        See :class:`.HomophilyModel` for details on the homophily parameters.
     seed : Union[int, np.random.Generator], optional
         _description_, by default 1
     """
 
     EVENTS = [
         Event.SIMULATION_START, Event.SIMULATION_END,
-        Event.LOCAL_TARGET_SELECTION, Event.GLOBAL_TARGET_SELECTION]
+        Event.TARGET_SELECTION_LOCAL, Event.TARGET_SELECTION_GLOBAL]
     SHORT = "PATCH"
 
     lfm_local: CompoundLFM
@@ -175,10 +187,10 @@ class PATCHModel(
             p_target *= self.tc.get_target_probabilities(source)
             p_target *= self._get_compound_target_probabilities(
                 source=source, lfm=self.lfm_local)
-            self.trigger_event(event=Event.LOCAL_TARGET_SELECTION)
+            self.trigger_event(event=Event.TARGET_SELECTION_LOCAL)
         else:
             p_target *= self._get_compound_target_probabilities(
                 source=source, lfm=self.lfm_global)
-            self.trigger_event(event=Event.GLOBAL_TARGET_SELECTION)
+            self.trigger_event(event=Event.TARGET_SELECTION_GLOBAL)
 
         return p_target / p_target.sum()

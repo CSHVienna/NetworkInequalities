@@ -78,10 +78,10 @@ class TestPATCHModel:
             counter[lfm] += 1
 
         model.register_event_handler(
-            event=Event.LOCAL_TARGET_SELECTION,
+            event=Event.TARGET_SELECTION_LOCAL,
             function=lambda: _inc_counter("local"))
         model.register_event_handler(
-            event=Event.GLOBAL_TARGET_SELECTION,
+            event=Event.TARGET_SELECTION_GLOBAL,
             function=lambda: _inc_counter("global"))
 
         model.simulate()
