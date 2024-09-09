@@ -1,4 +1,5 @@
 from .model import Model
+from .binary_class_model import BinaryClassModel
 from .directed_model import DirectedModel
 from .undirected_model import UndirectedModel
 
