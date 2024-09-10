@@ -5,6 +5,13 @@ from .event_handling import Event
 from ..models.model import Model
 
 class SimulationTimer:
+    """Measures the simulation time of a :class:`.Model` execution.
+
+    Parameters
+    ----------
+    model : Model
+        The model to measure the time for.
+    """
     _start_time: float
     time: Optional[float] = None
 
@@ -19,3 +26,15 @@ class SimulationTimer:
 
     def _end_timer(self):
         self.time = time.time() - self._start_time
+
+    def get_time(self) -> float:
+        """Returns the passed simulation time in second.
+
+        Returns
+        -------
+        float
+            Simulation time in seconds.
+        """
+        assert self.time is not None,\
+            "The simulation has not run yet."
+        return self.time
