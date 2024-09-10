@@ -68,12 +68,14 @@ class Model(ABC, HasEvents, BaseClass):
 
     def initialize_simulation(self):
         """Initializes the simulation of the model.
-        The order of initialization is:
-        [0.] Graph initialization if not preloaded.
+        The order of initialization is
+
+        0. (Optional) Graph initialization if not preloaded.
         1. Node classes initialization.
         2. Filters initialization.
         3. Link formation mechanisms initialization.
         """
+
         self.log(f"Initializing simulation of {self.__class__.__name__}")
         if self.graph is None:
             self.log("Initializing graph")

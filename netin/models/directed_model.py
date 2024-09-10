@@ -25,17 +25,17 @@ class DirectedModel(BinaryClassModel):
     Parameters
     ----------
     N : int
-        _description_
+        The number of nodes to be added.
     f_m : float
-        _description_
+        The fraction of minority nodes.
     d : float
-        _description_
+        Edge density to be reached.
     plo_M : float
-        _description_
+        Power law exponent for the majority activity.
     plo_m : float
-        _description_
+        Power law exponent for the minority activity.
     seed : Union[int, np.random.Generator], optional
-        _description_, by default 1
+        Randomization seed or random number generator, by default 1
 
     References
     ----------

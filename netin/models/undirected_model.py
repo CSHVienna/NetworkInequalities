@@ -11,7 +11,7 @@ class UndirectedModel(Model):
     Based on [BarabasiAlbert1999]_, this model grows a network by adding a total of `N` nodes to the network.
     Each node that is added connects to the previously added nodes with `m` links.
     How the target nodes are chosen depends on link formation mechanisms.
-    The implementation of these mechanisms is handled by subclasses (see, for instance, :class:`.PAHModel`).
+    The implementation of these mechanisms is handled by subclasses (see for instance, :class:`.PAHModel`).
 
     Parameters
     ----------

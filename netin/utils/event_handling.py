@@ -38,7 +38,13 @@ class Event(Enum):
 class HasEvents:
     """Interface to be implemented when a class triggers events.
     """
+
     EVENTS: List[Event] = []
+    """List of implemented events.
+    Should be overwritten by classes that use this interface.
+
+    :meta hide-value:"""
+
     _event_handlers: Dict[Event, Callable[[Any], None]]
 
     def __init__(self, *args, **kwargs):

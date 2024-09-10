@@ -7,7 +7,8 @@ from ..utils.constants import CLASS_ATTRIBUTE, MAJORITY_LABEL, MINORITY_LABEL
 from ..graphs.binary_class_node_vector import BinaryClassNodeVector
 
 class BinaryClassModel(Model):
-    """An abstract class for models with binary class node values.
+    """An abstract class for models with binary class node values,
+    grouping nodes into a single minority or majority group.
 
     Parameters
     ----------
