@@ -4,6 +4,7 @@ import warnings
 import numpy as np
 import networkx as nx
 import pandas as pd
+from pqdm.threads import pqdm
 from collections import Counter
 
 from netin.utils import constants as const
