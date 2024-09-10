@@ -1,4 +1,4 @@
-from typing import Dict, Any, List, Callable
+from typing import Dict, Any, List, Callable, Optional
 from collections import defaultdict
 from enum import Enum
 
@@ -45,7 +45,7 @@ class HasEvents:
 
     :meta hide-value:"""
 
-    _event_handlers: Dict[Event, Callable[[Any], None]]
+    _event_handlers: Dict[Event, List[Callable[[Any], None]]]
 
     def __init__(self, *args, **kwargs):
         self._event_handlers = defaultdict(list)
