@@ -50,7 +50,7 @@ def get_ranking_inequity_class(me: float, beta: float = None) -> str:
     -----
     See :func:`get_ranking_inequity` for more details on `me`.
 
-    By default, `beta=0.05`, see [Espin-Noboa2022].
+    By default, `beta=0.05`, see [Espin-Noboa2022]_.
     """
     beta = const.INEQUITY_BETA if beta is None else beta
     label = const.INEQUITY_OVER if me > beta else const.INEQUITY_UNDER if me < -beta else const.INEQUITY_FAIR
@@ -128,7 +128,7 @@ def get_ranking_inequality_class(gini_global: float, cuts: Set[float] = const.IN
 
     Notes
     -----
-    By default, `cuts={0.3, 0.6}`, see [Espin-Noboa2022].
+    By default, `cuts={0.3, 0.6}`, see [Espin-Noboa2022]_.
     """
     cuts = const.INEQUALITY_CUTS if cuts is None else cuts
     if len(cuts) != 2 or len(set(cuts)) == 1:
@@ -171,7 +171,7 @@ def get_gini_in_ranking(df: pd.DataFrame, x: str) -> Union[Tuple[np.ndarray, np.
 
 def gini(data: np.array) -> float:
     """
-    Calculates the Gini coefficient of a distribution.
+    Calculates the Gini coefficient ([Gini]_) of a distribution.
 
     Parameters
     ----------
@@ -183,10 +183,6 @@ def gini(data: np.array) -> float:
     float
         The Gini coefficient of the distribution.
 
-    References
-    ----------
-    `Gini coefficient <http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm>`_
-    `Implementation <https://github.com/oliviaguest/gini/blob/master/gini.py>`_
     """
     # https://github.com/oliviaguest/gini/blob/master/gini.py
     # based on bottom eq:

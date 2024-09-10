@@ -19,7 +19,7 @@ from .sampling import Sampling
 # Class
 ############################################
 class PartialCrawls(Sampling):
-    """Sampling by partial crawls.
+    """Sampling by partial crawls (see [Yang2017]_).
 
     Parameters
     ----------
@@ -37,10 +37,6 @@ class PartialCrawls(Sampling):
 
     kwargs: dict
         additional parameters for the sampling method
-
-    References
-    ----------
-    .. [Yang2017] J. Yang, B. Ribeiro, & J. Neville "Should We Be Confident in Peer Effects Estimated From Social Network Crawls?" ICWSM (Vol. 11, No. 1, pp. 708-711), 2017.
     """
 
     ######################################################

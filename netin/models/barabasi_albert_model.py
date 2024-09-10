@@ -5,11 +5,7 @@ from ..link_formation_mechanisms.preferential_attachment import PreferentialAtta
 
 class BarabasiAlbertModel(UndirectedModel):
     """The BarabasiAlbertModel join new nodes to the existing nodes with a
-    probability proportional to the degree of the existing nodes.
-
-    References
-    ----------
-    .. [BarabasiAlbert1999] A. L. Barabasi and R. Albert "Emergence of scaling in random networks", Science 286, pp 509-512, 1999.
+    probability proportional to the degree of the existing nodes (see [BarabasiAlbert1999]_).
     """
     SHORT = "BA"
     pa: PreferentialAttachment

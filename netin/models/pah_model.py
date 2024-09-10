@@ -11,10 +11,6 @@ class PAHModel(HomophilyModel):
     See :class:`.HomophilyModel` for how to parameterize the homophily values.
 
     This model is based on [Karimi2018]_.
-
-    References
-    ----------
-    .. [Karimi2018] F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
     """
     SHORT = "PAH"
     pa: PreferentialAttachment

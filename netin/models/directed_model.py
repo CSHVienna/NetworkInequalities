@@ -21,6 +21,7 @@ class DirectedModel(BinaryClassModel):
     based on their activity and parameterized by power law exponents `plo_m/M`.
     Edges are created until a total network density `d` is reached.
     Subclasses should implement the way in which target nodes are chosen.
+    See [Espin-Noboa2022]_ for details.
 
     Parameters
     ----------
@@ -36,12 +37,8 @@ class DirectedModel(BinaryClassModel):
         Power law exponent for the minority activity.
     seed : Union[int, np.random.Generator], optional
         Randomization seed or random number generator, by default 1
-
-    References
-    ----------
-    .. [Espin-Noboa2022] L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi
-    "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
     """
+
     SHORT = "DIRECTED"
     d: float
     plo_M: float

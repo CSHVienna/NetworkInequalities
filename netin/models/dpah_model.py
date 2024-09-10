@@ -11,6 +11,7 @@ class DPAHModel(DPAModel):
     """The DPAHModel is a directed model that joins new nodes to the existing nodes
     with a probability proportional to the in-degree of the existing nodes
     and the homophily of the nodes.
+    See [Espin-Noboa2022]_ for details.
 
     Parameters
     ----------

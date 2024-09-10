@@ -8,10 +8,12 @@ from .model import Model
 
 class UndirectedModel(Model):
     """The base class for all undirected models.
-    Based on [BarabasiAlbert1999]_, this model grows a network by adding a total of `N` nodes to the network.
+    Based on [BarabasiAlbert1999]_,
+    this model grows a network by adding a total of `N` nodes to the network.
     Each node that is added connects to the previously added nodes with `m` links.
     How the target nodes are chosen depends on link formation mechanisms.
-    The implementation of these mechanisms is handled by subclasses (see for instance, :class:`.PAHModel`).
+    The implementation of these mechanisms is handled
+    by subclasses (see for instance, :class:`PAHModel`).
 
     Parameters
     ----------
@@ -54,7 +56,8 @@ class UndirectedModel(Model):
         """Simulates the undirected model.
         After adding `m` initial nodes, `N-m` nodes are added one after the other.
         Each new node connects to previously added nodes with `m` links.
-        The choice of target nodes depends on the implementation of `LinkFormationMechanism`s and `Filter`s.
+        The choice of target nodes depends on the implementation of
+        :class:`.LinkFormationMechanism` and :class:`.Filter`.
         This should be implemented in respective subclasses.
 
         Returns
