@@ -110,7 +110,7 @@ class PATCHModel(
             lfm_local: CompoundLFM,
             lfm_global: CompoundLFM,
             lfm_params: Optional[Dict[str, float]] = None,
-            seed:  Union[int, np.random.Generator] = 1,
+            seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         validate_float(p_tc, 0, 1)
         super().__init__(

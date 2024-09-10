@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 import numpy as np
 
@@ -44,7 +44,7 @@ class DPAHModel(DPAModel):
             N: int, f_m: float, d: float,
             plo_M: float, plo_m: float,
             h_m: float, h_M: float,
-            seed:  Union[int, np.random.Generator] = 1,
+            seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         super().__init__(
             *args, N=N, f_m=f_m, d=d,
