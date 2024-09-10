@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 import numpy as np
 
@@ -18,7 +18,7 @@ class HomophilyModel(UndirectedModel, BinaryClassModel):
             self, *args,
             N: int, f_m: float, m:int,
             h_m: float, h_M: float,
-            seed:  Union[int, np.random.Generator] = 1,
+            seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         """A simple homophily model which connects nodes with a probability proportional to homophily, the tendency of individuals to associate with others who are similar to themselves.
 
