@@ -33,7 +33,7 @@ class UndirectedModel(Model):
             self, *args,
             N: int,
             m:int,
-            seed: Union[int, np.random.Generator] = 1,
+            seed: Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         validate_int(N, minimum=1)
         validate_int(m, minimum=1)

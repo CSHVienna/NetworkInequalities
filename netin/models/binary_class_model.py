@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 import numpy as np
 
@@ -22,7 +22,7 @@ class BinaryClassModel(Model):
     def __init__(
             self, *args,
             f_m: float,
-            seed: Union[int, np.random.Generator] = 1,
+            seed: Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         super().__init__(*args, seed=seed, **kwargs)
         self.f_m = f_m

@@ -53,7 +53,7 @@ class DirectedModel(BinaryClassModel):
             self, *args,
             N: int, f_m: float,
             d: float, plo_M: float, plo_m: float,
-            seed: Union[int, np.random.Generator] = 1,
+            seed: Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         validate_float(d, minimum=0., maximum=1.)
         validate_float(plo_M, minimum=0.)

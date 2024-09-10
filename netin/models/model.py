@@ -38,7 +38,7 @@ class Model(ABC, HasEvents, BaseClass):
     def __init__(
             self, *args,
             N: int,
-            seed: Union[int, np.random.Generator] = 1,
+            seed: Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         """Creates a new instance of the Model class.
 
@@ -64,7 +64,7 @@ class Model(ABC, HasEvents, BaseClass):
         seed : int
             Seed for the random number generator.
         """
-        if isinstance(seed, int):
+        if isinstance(seed, int) or (seed is None):
             self._rng = np.random.default_rng(seed=seed)
         elif isinstance(seed, np.random.Generator):
             self._rng = seed
