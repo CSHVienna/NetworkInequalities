@@ -4,7 +4,7 @@ from datetime import datetime
 class BaseClass:
     _verbose: bool
 
-    def __init__(self, verbose: bool = False) -> None:
+    def __init__(self, verbose: bool = False, **attr) -> None:
         self._created_at = datetime.now()
         self._verbose = verbose
 
