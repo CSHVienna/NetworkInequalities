@@ -30,6 +30,8 @@ class SimulationTimer:
     def get_time(self) -> float:
         """Returns the passed simulation time in second.
 
+        Raises an `AssertionError` if the simulation has not run yet.
+
         Returns
         -------
         float
