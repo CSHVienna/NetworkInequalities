@@ -51,7 +51,7 @@ class TriadicClosure(LinkFormationMechanism):
 
     def _update_friends_of_friends(self, source: int, target: int):
         """Updates the array of friends of friends after a link
-        was formed between `source` and `target`.
+        was formed between ``source`` and ``target``.
 
         Parameters
         ----------

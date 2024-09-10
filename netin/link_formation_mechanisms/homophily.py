@@ -16,15 +16,15 @@ class Homophily(LinkFormationMechanism):
     Parameters
     ----------
     node_class_values: CategoricalNodeVector
-        The class assignment for each node (dimensions `n_nodes`).
+        The class assignment for each node (dimensions ``n_nodes``).
         This is also used to infer the number of classes.
     homophily : Union[float, np.ndarray]
         The homophily value(s).
         If a single value is provided, the in-group links have a probability of
-        `homophily` and out-group links have a uniform
-        probability of `1 - homophily / n_class_values - 1`.
+        ``homophily`` and out-group links have a uniform
+        probability of ``1 - homophily / n_class_values - 1``.
         If a matrix is provided, the probabilities are determined by the matrix values.
-        The matrix must be symmetric and have the shape of (`n_class_values`, `n_class_values`).
+        The matrix must be symmetric and have the shape of (``n_class_values``, ``n_class_values``).
         Moreover, row values have to sum up to 1.
     """
     node_class_values: CategoricalNodeVector

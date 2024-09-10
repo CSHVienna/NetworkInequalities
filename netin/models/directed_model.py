@@ -18,8 +18,8 @@ from ..link_formation_mechanisms.uniform import Uniform
 
 class DirectedModel(BinaryClassModel):
     """The DirectedModel defines a network growth model which selects source nodes
-    based on their activity and parameterized by power law exponents `plo_m/M`.
-    Edges are created until a total network density `d` is reached.
+    based on their activity and parameterized by power law exponents ``plo_m/M``.
+    Edges are created until a total network density ``d`` is reached.
     Subclasses should implement the way in which target nodes are chosen.
     See [Espin-Noboa2022]_ for details.
 
@@ -183,7 +183,7 @@ class DirectedModel(BinaryClassModel):
         -------
         Dict[str, Any]
             Metadata of the model.
-            It includes the density `d`, the activity power law exponents `plo_M` and `plo_m`.
+            It includes the density ``d``, the activity power law exponents ``plo_M`` and ``plo_m``.
         """
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {

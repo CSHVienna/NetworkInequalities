@@ -77,7 +77,7 @@ class NodeVector(BaseClass):
         self._values = values
 
     def get_values(self) -> np.ndarray:
-        """Returns the `np.ndarray` of values.
+        """Returns the ``np.ndarray`` of values.
 
         Returns
         -------
@@ -87,8 +87,8 @@ class NodeVector(BaseClass):
         return self._values
 
     def vals(self) -> np.ndarray:
-        """Returns the `np.ndarray` of values.
-        Shortcut for `get_values`.
+        """Returns the ``np.ndarray`` of values.
+        Shortcut for :meth:`.get_values`.
 
         Returns
         -------
@@ -128,12 +128,12 @@ class NodeVector(BaseClass):
         return d
 
     def sum(self, *args, **kwargs) -> Any:
-        """Forward function to `numpy.sum`.
+        """Forward function to ``numpy.sum``.
 
         Returns
         -------
         Any
-            The result of `numpy.sum`.
+            The result of ``numpy.sum``.
         """
         return self._values.sum(*args, **kwargs)
 

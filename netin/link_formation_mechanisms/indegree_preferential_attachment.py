@@ -12,7 +12,7 @@ class InDegreePreferentialAttachment(PreferentialAttachment):
     N : int
         Number of nodes.
     init_degrees : bool, optional
-        Whether to initialize the in-degrees from the provided `graph`, by default True
+        Whether to initialize the in-degrees from the provided ``graph``, by default True
     """
     _a_degree: NodeVector
 

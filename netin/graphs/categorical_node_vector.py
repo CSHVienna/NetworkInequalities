@@ -18,7 +18,7 @@ class CategoricalNodeVector(NodeVector):
         Number of possible values.
     class_labels : Optional[List[str]], optional
         Labels for the classes.
-        If provided, its size must match `n_values`, by default None
+        If provided, its size must match ``n_values``, by default None
     fill_value : Optional[Number], optional
         The filling value, by default None
     name : Optional[str], optional

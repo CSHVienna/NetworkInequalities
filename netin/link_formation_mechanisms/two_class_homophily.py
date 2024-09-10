@@ -9,12 +9,12 @@ from .homophily import Homophily
 class TwoClassHomophily(Homophily):
     """Two class homophily link formation mechanism.
 
-    This is a convenience class for the `Homophily` link formation mechanism with two classes.
+    This is a convenience class for the :class:`.Homophily` link formation mechanism with two classes.
 
     Parameters
     ----------
     node_class_values : CategoricalNodeVector
-        The class assignment for each node (dimensions `n_nodes`).
+        The class assignment for each node (dimensions ``n_nodes``).
     homophily : Union[float, np.ndarray]
         The homophily value(s).
     """

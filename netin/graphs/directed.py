@@ -22,17 +22,17 @@ class DiGraph(Graph):
     def from_nxgraph(cls, graph: nx.DiGraph,
             node_attributes_names: List[str] = None,
             sort_node_labels: bool = True) -> Tuple[NodeVector, "Graph"]:
-        """Creates a DiGraph from a `nx.DiGraph`.
+        """Creates a DiGraph from a ``nx.DiGraph``.
 
         Returns
         -------
         Tuple[NodeVector, DiGraph]
-            A NodeVector with the original node labels and the DiGraph.
+            A :class:`.NodeVector` with the original node labels and the DiGraph.
             Because NetworkX supports custom indexing, the node labels
             may not be the same as the original ones.
             For this reason, the original node labels are returned, mapped
             to the new ones.
-            The original label of node `i` can be accessed by `node_labels[i]`.
+            The original label of node ``i`` can be accessed by ``node_labels[i]``.
         """
         return super().from_nxgraph(
             graph=graph,

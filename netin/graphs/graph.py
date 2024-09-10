@@ -43,7 +43,7 @@ class Graph(HasEvents, BaseClass):
             The ``networkx.Graph`` object to be converted.
         node_attributes_names : List[str], optional
             List of node attributes to be included in the ``Graph`` object.
-            Each element is the name of `node` attribute in the ``networkx.Graph``,
+            Each element is the name of ``node`` attribute in the ``networkx.Graph``,
             retrievable by ``nx.get_node_attributes(graph, name)``.
             Values must be integers.
         sort_node_labels : bool, optional

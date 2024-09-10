@@ -9,8 +9,8 @@ from netin.utils import constants as const
 ### Inequity (fraction of minority in ranking) ###
 
 def get_ranking_inequity(f_m: float, ys: np.array) -> float:
-    """Computes ME: mean error distance between the fraction of minority in each top-k rank `f_m^k` and
-    the fraction of minority of the entire graph `f_m`. ME is the ranking inequity of the rank.
+    """Computes ME: mean error distance between the fraction of minority in each top-k rank ``f_m^k`` and
+    the fraction of minority of the entire graph ``f_m``. ME is the ranking inequity of the rank.
 
     Parameters
     ----------
@@ -48,9 +48,9 @@ def get_ranking_inequity_class(me: float, beta: float = None) -> str:
 
     Notes
     -----
-    See :func:`get_ranking_inequity` for more details on `me`.
+    See :func:`get_ranking_inequity` for more details on ``me``.
 
-    By default, `beta=0.05`, see [Espin-Noboa2022]_.
+    By default, ``beta=0.05``, see [Espin-Noboa2022]_.
     """
     beta = const.INEQUITY_BETA if beta is None else beta
     label = const.INEQUITY_OVER if me > beta else const.INEQUITY_UNDER if me < -beta else const.INEQUITY_FAIR
@@ -128,7 +128,7 @@ def get_ranking_inequality_class(gini_global: float, cuts: Set[float] = const.IN
 
     Notes
     -----
-    By default, `cuts={0.3, 0.6}`, see [Espin-Noboa2022]_.
+    By default, ``cuts={0.3, 0.6}``, see [Espin-Noboa2022]_.
     """
     cuts = const.INEQUALITY_CUTS if cuts is None else cuts
     if len(cuts) != 2 or len(set(cuts)) == 1:
@@ -142,7 +142,7 @@ def get_ranking_inequality_class(gini_global: float, cuts: Set[float] = const.IN
 
 def get_gini_in_ranking(df: pd.DataFrame, x: str) -> Union[Tuple[np.ndarray, np.ndarray], Tuple[list, list]]:
     """
-    Computes the Gini coefficient of a distribution `df[x]` in each top-k rank.
+    Computes the Gini coefficient of a distribution ``df[x]`` in each top-k rank.
 
     Parameters
     ----------

@@ -15,7 +15,7 @@ from ..link_formation_mechanisms.uniform import Uniform
 
 class CompoundLFM(enum.Enum):
     """A combination of link formation mechanism.
-    This class is used to define how local or global links should be formed in the `PATCHModel`.
+    This class is used to define how local or global links should be formed in the :class:`.PATCHModel`.
     """
     UNIFORM="UNIFORM"
     """Targets are chosen uniformly at random.
@@ -38,7 +38,7 @@ class PATCHModel(
     UndirectedModel, BinaryClassModel, HasEvents):
     """The PATCHModel joins nodes to the network based on a combination of
     [P]referential [A]ttachment, [T]riadic [C]losure and [H]omophily.
-    Based on the triadic closure probability `p_tc`, links are formed either locally or globally.
+    Based on the triadic closure probability :attr:`p_tc`, links are formed either locally or globally.
     For local links, nodes can connect only to neighbors of existing neighbors.
     Globally, nodes can connect to any other node in the network.
 
@@ -57,9 +57,9 @@ class PATCHModel(
     p_tc : float
         The probability for triadic closure, meaning that an edge will
         be formed locally among the neighbors of existing neighbors.
-        With the complementary probability (1 - `p_tc`), all existing
+        With the complementary probability (``1 - p_tc``), all existing
         nodes are available for connection.
-        See `lfm_local` and `lfm_global` for a specification of how
+        See :attr:`lfm_local` and :attr:`lfm_global` for a specification of how
         targets are chosen from either set.
     lfm_local : CompoundLFM
         Defines how local targets are chosen.
@@ -67,20 +67,20 @@ class PATCHModel(
 
         1. :attr:`.CompoundLFM.UNIFORM`: the target nodes are chosen randomly
         2. :attr:`.CompoundLFM.HOMOPHILY`: the target nodes are chosen based on homophily
-        3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on preferential attachment and homophily (choose `h_m = h_M = 0.5` to neutralize the effect of homophily; see :class:`.PAHModel` for details).
+        3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on preferential attachment and homophily (choose ``h_m = h_M = 0.5`` to neutralize the effect of homophily; see :class:`.PAHModel` for details).
 
-        For options 2. and 3. the `lfm_params` dictionary has
+        For options 2. and 3. the ``lfm_params`` dictionary has
         to contain the homophily values of the minority and
-        majority group (for instance by setting `lfm_params={"h_m": 0.2, "h_M": 0.8}`).
+        majority group (for instance by setting ``lfm_params={"h_m": 0.2, "h_M": 0.8}``).
     lfm_global : CompoundLFM
         Defines how global targets are chosen.
-        See `lfm_local` for details.
+        See :attr:`lfm_local` for details.
     lfm_params : Optional[Dict[str, float]], optional
         Dictionary containing additional parameterization of link
         formation mechanisms, by default None.
         If either local or global link formation mechanisms contains
-        homophily (`CompoundLFM.Homophily` or 'CompoundLFM.PAH`), the
-        dictionary should contain the keys `h_m` and `h_M`, containing
+        homophily (:attr:`.CompoundLFM.Homophily` or :attr:'.CompoundLFM.PAH`), the
+        dictionary should contain the keys :attr:`h_m` and :attr:`h_M`, containing
         the desired homophily parameters.
         See :class:`.HomophilyModel` for details on the homophily parameters.
     seed : Union[int, np.random.Generator], optional
@@ -128,8 +128,8 @@ class PATCHModel(
 
     def _initialize_lfms(self):
         """Initializes and configures the link formation mechanisms.
-        This depends on the choice of `lfm_local` and `lfm_global`.
-        The parameters are given by `lfm_params`.
+        This depends on the choice of :attr:`lfm_local` and :attr:`lfm_global`.
+        The parameters are given by ``lfm_params``.
         """
         self.tc = TriadicClosure(
             N=self._n_nodes_total,
@@ -158,7 +158,7 @@ class PATCHModel(
         Returns
         -------
         numpy.ndarray
-            The target probabilities depending on the chosen `CompoundLFM`.
+            The target probabilities depending on the chosen :class:`.CompoundLFM`.
         """
         if lfm == CompoundLFM.HOMOPHILY:
             return self.h.get_target_probabilities(source)

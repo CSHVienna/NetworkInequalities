@@ -127,7 +127,7 @@ class Model(ABC, HasEvents, BaseClass):
     def _initialize_empty_graph(self) -> Graph:
         """Initializes an empty graph.
         This should be overwritten by the actual model implementations.
-        See `Model._simulate` for the initialization order.
+        See :meth:`.Model._simulate` for the initialization order.
         """
         raise NotImplementedError
 
@@ -135,7 +135,7 @@ class Model(ABC, HasEvents, BaseClass):
     def _populate_initial_graph(self) -> Graph:
         """Populates the initial graph.
         This should be overwritten by the actual model implementations.
-        See `Model._simulate` for the initialization order.
+        See :meth:`.Model._simulate` for the initialization order.
 
         Returns
         -------

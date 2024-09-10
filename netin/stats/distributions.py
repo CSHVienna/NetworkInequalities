@@ -21,7 +21,7 @@ def fit_powerlaw_groups(
         Graph to fit power law to
 
     node_class_values: Union[BinaryClassNodeVector, str]
-        If a string, it must be the name of the node attribute set in `g` that contains the class labels. The values must be booleans set to one if the node belongs to the minority group.
+        If a string, it must be the name of the node attribute set in ``g`` that contains the class labels. The values must be booleans set to one if the node belongs to the minority group.
         If a BinaryClassNodeVector, it must be the node class values.
 
     metric: str
@@ -123,7 +123,7 @@ def get_ccdf(df: pd.DataFrame, x: str, total: float = None) -> (np.ndarray, np.n
 
 
 def get_disparity(df: pd.DataFrame, x: str, total: float = None) -> (np.ndarray, np.ndarray):
-    """Computes the disparity of the input data given by the column `x`.
+    """Computes the disparity of the input data given by the column ``x``.
 
     Parameters
     ----------

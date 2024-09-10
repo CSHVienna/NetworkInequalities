@@ -9,11 +9,11 @@ from .model import Model
 class UndirectedModel(Model):
     """The base class for all undirected models.
     Based on [BarabasiAlbert1999]_,
-    this model grows a network by adding a total of `N` nodes to the network.
-    Each node that is added connects to the previously added nodes with `m` links.
+    this model grows a network by adding a total of :attr:`N` nodes to the network.
+    Each node that is added connects to the previously added nodes with :attr:`m` links.
     How the target nodes are chosen depends on link formation mechanisms.
     The implementation of these mechanisms is handled
-    by subclasses (see for instance, :class:`PAHModel`).
+    by subclasses (see for instance, :class:`.PAHModel`).
 
     Parameters
     ----------
@@ -54,8 +54,8 @@ class UndirectedModel(Model):
 
     def _simulate(self) -> Graph:
         """Simulates the undirected model.
-        After adding `m` initial nodes, `N-m` nodes are added one after the other.
-        Each new node connects to previously added nodes with `m` links.
+        After adding :attr:`m` initial nodes, ``N-m`` nodes are added one after the other.
+        Each new node connects to previously added nodes with :attr:`m` links.
         The choice of target nodes depends on the implementation of
         :class:`.LinkFormationMechanism` and :class:`.Filter`.
         This should be implemented in respective subclasses.
@@ -80,7 +80,7 @@ class UndirectedModel(Model):
             self,
             d_meta_data: Optional[Dict[str, Any]] = None)\
                 -> Dict[str, Any]:
-        """Adds the number of links per new node `m` to the metadata dictionary.
+        """Adds the number of links per new node :attr:`m` to the metadata dictionary.
 
         Returns
         -------

@@ -81,7 +81,7 @@ class PartialCrawls(Sampling):
 
     def _get_super_node(self) -> List[int]:
         """
-        Randomly selects (sn * N) nodes from the graph `g`.
+        Randomly selects (sn * N) nodes from the graph ``g``.
 
         Returns
         -------

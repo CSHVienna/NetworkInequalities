@@ -86,7 +86,7 @@ def get_node_metadata_as_dataframe(
 
     Notes
     -----
-    Column `class_label` is a binary column indicating whether the node belongs to the minority class.
+    Column ``class_label`` is a binary column indicating whether the node belongs to the minority class.
     """
     cols = ['node', 'class_label', 'real_label', 'source']
 
@@ -170,7 +170,7 @@ def get_edge_type_counts(
         fractions: bool = False,
         class_attribute: str = None) -> Counter:
     """
-    Computes the edge type counts of the graph using the `class_attribute` of each node.
+    Computes the edge type counts of the graph using the ``class_attribute`` of each node.
 
     Parameters
     ----------

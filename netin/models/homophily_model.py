@@ -33,13 +33,13 @@ class HomophilyModel(UndirectedModel, BinaryClassModel):
         h_m : float
             Homophily of the minority nodes.
             If a minority node joins the network, it connects to other
-            minority nodes with probability `h_m` and to the majority
-              group with the complementary probability 1-`h_m`.
+            minority nodes with probability ``h_m`` and to the majority
+              group with the complementary probability ``1-h_m``.
         h_M : float
             Homophily of the majority nodes.
             If a majority node joins the network, it connects to other
-            majority nodes with probability `h_M` and to the minority
-            group with the complementary probability 1-`h_M`.
+            majority nodes with probability ``h_M`` and to the minority
+            group with the complementary probability ``1-h_M``.
         seed : Union[int, np.random.Generator], optional
             Randomization seed or random number generator, by default 1
         """
