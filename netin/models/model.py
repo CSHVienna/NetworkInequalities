@@ -10,12 +10,14 @@ from ..filters.no_self_links import NoSelfLinks
 from ..utils.event_handling import HasEvents, Event
 
 class Model(ABC, HasEvents, BaseClass):
-    """Model class.
-    Abstract class that defines a growing network model.
+    """Abstract modelling class.
+    This class defines a growing network model.
     Specific growing-network-model implementations should inherit
     from this class and implement the provided abstract methods.
     """
+
     SHORT = "MODEL"
+    """A shorthand for the model name"""
 
     N: int
     graph: Graph
@@ -29,6 +31,9 @@ class Model(ABC, HasEvents, BaseClass):
     _rng: np.random.Generator
 
     EVENTS = [Event.SIMULATION_START, Event.SIMULATION_END]
+    """Evokes :attr:`.Event.SIMULATION_START` and :attr:`.Event.SIMULATION_END`.
+
+    :meta hide-value:"""
 
     def __init__(
             self, *args,
@@ -158,13 +163,20 @@ class Model(ABC, HasEvents, BaseClass):
 
     def simulate(self) -> Graph:
         """Runs the simulation.
-        This calls `Model.initialize_simulation` and `Model._simulate`.
-        Check these functions in case you want to extend `Model`.
-        Triggers the `Event.SIMULATION_START` and `Event.SIMULATION_END` events.
+        This calls :meth:`.Model.initialize_simulation` and :meth:`.Model._simulate`.
+        Check these functions in case you want to extend :class:`Model`.
+        Triggers the :attr:`.Event.SIMULATION_START` and :attr:`.Event.SIMULATION_END` events.
+
+        Events
+        ------
+        :attr:`.Event.SIMULATION_START`
+            When the simulation starts.
+        :attr:`.Event.SIMULATION_END`
+            When the simulation ends.
 
         Returns
         -------
-        Graph
+        :class:`.Graph`
             The simulated graph.
         """
         self.log(f"Simulating {self.__class__.__name__}")
@@ -199,7 +211,7 @@ class Model(ABC, HasEvents, BaseClass):
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             Array of target probabilities.
         """
         return self._f_no_self_links.get_target_mask(source)\
