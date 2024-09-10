@@ -60,12 +60,14 @@ classifiers = [
 
 packages = [
     "netin",
-    "netin.generators",
+    "netin.models",
+    "netin.graphs",
+    "netin.algorithms.sampling",
+    "netin.filters",
+    "netin.link_formation_mechanisms",
     "netin.utils",
     "netin.stats",
     "netin.viz",
-    "netin.algorithms.sampling",
-    "netin.generators.tests",
 ]
 
 docdirbase = "share/doc/netin-%s" % version
