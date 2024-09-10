@@ -18,6 +18,7 @@ Network Inequality
    statistics
    visualizations
    extensions/index
+   utilities
 
 Indices and tables
 ==================
