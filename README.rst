@@ -86,3 +86,7 @@ Released under Creative Commons by-nc-sa 4.0 (see `LICENSE`)::
    Lisette Espin-Noboa <espin@csh.ac.at>
    Jan Bachmann <bachmann@csh.ac.at>
 
+<span style="color:red">*Note on multidimensional interactions*</span>
+----------
+Provisionally, the code to simulate and analyze networks with multidimensional interactions is hosted in the [repository](https://github.com/CSHVienna/multidimensional_social_interactions_paper) associated with the [paper](https://arxiv.org/abs/2406.17043).
+
