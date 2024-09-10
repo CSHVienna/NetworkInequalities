@@ -80,3 +80,31 @@ class HasEvents:
         assert event in self.EVENTS,\
             f"Event {event} not specified in {self.__class__.__name__}.__events."
         self._event_handlers[event].append(function)
+
+    def remove_event_handler(
+            self, event: Event,
+            function: Optional[Callable[[Any], None]] = None):
+        """De-registers an event handler.
+
+        If ``function`` is provided, only the specific function is removed.
+        Otherwise, all functions are deleted.
+
+        Parameters
+        ----------
+        event : Event
+            The :class:`.Event` to remove the handling function from.
+        function : Optional[Callable[[Any], None]], optional
+            The function to be removed, by default ``None``.
+            If ``None``, all functions are removed.
+            Otherwise, only the specified ones will be deleted.
+        """
+        assert event in self.EVENTS,\
+            f"Event {event} not specified in {self.__class__.__name__}.__events."
+        assert event in self._event_handlers,\
+            f"Event {event} was not registered."
+        if function is None:
+            self._event_handlers[event] = []
+        else:
+            assert function in self._event_handlers,\
+            f"Function {function} not registered for event {event}."
+            self._event_handlers[event].remove(function)
