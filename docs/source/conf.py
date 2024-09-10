@@ -25,6 +25,7 @@ extensions = [
     # https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html
     # Make numpy style docstrings interpretable by sphinx
     # 'sphinx.ext.napoleon',
+    'numpydoc'
 ]
 
 templates_path = ['_templates']
@@ -44,3 +45,5 @@ html_theme_options = {
 html_css_files = [
     'style.css',
 ]
+
+numpydoc_show_class_members = False
