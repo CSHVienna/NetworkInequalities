@@ -30,27 +30,27 @@ class Graph(HasEvents, BaseClass):
             cls, graph: nx.Graph,
             node_attributes_names: List[str] = None,
             sort_node_labels: bool = True) -> Tuple[NodeVector, "Graph"]:
-        """Take a `networkx.Graph` and return a `Graph` object and mapping of the nodes.
-        NetworkX graphs uses custom node labels while `Graph` identifies nodes
+        """Take a ``networkx.Graph`` and return a ``Graph`` object and mapping of the nodes.
+        NetworkX graphs uses custom node labels while ``Graph`` identifies nodes
         by integer indices.
         This method translates the node labels to integer indices and returns the
-        mapping as a `NodeVector` where the value `v_i` at index `i` is the node
-        label of node `i`.
+        mapping as a ``NodeVector`` where the value ``v_i`` at index ``i`` is the node
+        label of node ``i``.
 
         Parameters
         ----------
         graph : nx.Graph
-            The `networkx.Graph` object to be converted.
+            The ``networkx.Graph`` object to be converted.
         node_attributes_names : List[str], optional
-            List of node attributes to be included in the `Graph` object.
-            Each element is the name of `node` attribute in the `networkx.Graph`,
-            retrievable by `nx.get_node_attributes(graph, name)`.
+            List of node attributes to be included in the ``Graph`` object.
+            Each element is the name of `node` attribute in the ``networkx.Graph``,
+            retrievable by ``nx.get_node_attributes(graph, name)``.
             Values must be integers.
         sort_node_labels : bool, optional
-            Whether to sort the node labels in ascending order. Default is `True`.
-            If the node labels of the `nx_Graph` are a full integer range, the node
-            mapping will be identical (the returned `NodeVector` will be identical
-            to `np.arange(len(graph))`).
+            Whether to sort the node labels in ascending order. Default is ``True``.
+            If the node labels of the ``nx_Graph`` are a full integer range, the node
+            mapping will be identical (the returned :class:`.NodeVector` will be identical
+            to ``np.arange(len(graph))``).
 
         Returns
         -------
@@ -128,7 +128,7 @@ class Graph(HasEvents, BaseClass):
 
     def has_node_class(self, name: str) -> bool:
         """Check if a node class exists.
-        Identical to `name in self.get_node_classes()`.
+        Identical to ``name in self.get_node_classes()``.
 
         Parameters
         ----------
@@ -144,7 +144,7 @@ class Graph(HasEvents, BaseClass):
 
     def add_edge(self, source: int, target: int) -> None:
         """Add an edge to the graph..
-        This will trigger the `Event.LINK_ADD_BEFORE` and `Event.LINK_ADD_AFTER` events.
+        This will trigger the :attr:`.Event.LINK_ADD_BEFORE` and :attr:`.Event.LINK_ADD_AFTER` events.
 
         Parameters
         ----------
@@ -200,12 +200,12 @@ class Graph(HasEvents, BaseClass):
         return g_copy
 
     def to_nxgraph(self) -> nx.Graph:
-        """Convert the Graph to a `networkx.Graph`.
+        """Convert the Graph to a ``networkx.Graph``.
 
         Returns
         -------
         nx.Graph
-            The `networkx.Graph` representation of the graph.
+            The ``networkx.Graph`` representation of the graph.
         """
         g = nx.Graph() if not self.is_directed() else nx.DiGraph()
         for i in range(len(self)):
@@ -231,12 +231,12 @@ class Graph(HasEvents, BaseClass):
         self._graph[node] = set()
 
     def is_directed(self) -> bool:
-        """Returns whether the graph is directed (always `False`).
+        """Returns whether the graph is directed (always ``False``).
 
         Returns
         -------
         bool
-            Returns False.
+            Returns ``False``.
         """
         return False
 
@@ -300,7 +300,7 @@ class Graph(HasEvents, BaseClass):
         Returns
         -------
         NodeVector
-            A NodeVector containing the degrees of all nodes.
+            A :class:`.NodeVector` containing the degrees of all nodes.
         """
         return NodeVector.from_ndarray(
             np.array([self.degree(node) for node in range(len(self))]),
@@ -322,7 +322,7 @@ class Graph(HasEvents, BaseClass):
         Yields
         ------
         Generator[Tuple[int, int], None, None]
-            A generator of all edges. Yields tuples of the form `(source, target)`.
+            A generator of all edges. Yields tuples of the form ``(source, target)``.
         """
         for source, targets in self._graph.items():
             for target in targets:
