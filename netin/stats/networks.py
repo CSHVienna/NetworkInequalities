@@ -89,7 +89,7 @@ def get_node_metadata_as_dataframe(
     -----
     Column ``class_label`` is a binary column indicating whether the node belongs to the minority class.
     """
-    cols = ['node', 'class_label', 'real_label', 'source']
+    cols = ['node', 'class_label', 'real_label']
 
     class_values = None
     if isinstance(node_class_values, CategoricalNodeVector):
@@ -97,14 +97,13 @@ def get_node_metadata_as_dataframe(
     elif isinstance(node_class_values, str):
         assert graph.has_node_class(node_class_values),\
         f"`graph` should have the specified `node_class_values={node_class_values}`"
-        class_values = graph\
-            .get_node_class(node_class_values)\
-            .get_class_values()
+        node_class_values = graph\
+            .get_node_class(node_class_values)
+        class_values = node_class_values.get_class_values()
 
     obj = {'node': list(graph.nodes()),
             'class_label': [node_class_values[n] for n in graph.nodes()],
-            'real_label': [class_values[n] for n in graph.nodes()],
-            'source': 'model' if 'empirical' not in graph.graph else 'data'}
+            'real_label': [class_values[n] for n in graph.nodes()]}
 
     # include graph metadata
     if include_graph_metadata:
@@ -114,14 +113,19 @@ def get_node_metadata_as_dataframe(
         cols.extend(new_cols)
 
     # include metrics
+    nxg = graph.to_nxgraph()
     column_values = pqdm(
-        const.VALID_METRICS, compute_node_stats, n_jobs=n_jobs)
+        [{"graph": nxg,
+         "metric": metric}\
+            for metric in const.VALID_METRICS],
+        compute_node_stats,
+        n_jobs=n_jobs,
+        argument_type='kwargs')
     obj.update({col: values for col, values in zip(const.VALID_METRICS, column_values)})
     cols.extend(const.VALID_METRICS)
 
     # create dataframe
-    df = pd.DataFrame(obj, columns=cols, index=graph.node_list)
-    df.name = graph.model_name
+    df = pd.DataFrame(obj, columns=cols, index=list(graph.nodes()))
 
     # add ranking values
     for metric in const.VALID_METRICS:
