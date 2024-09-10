@@ -1,3 +1,6 @@
+References
+==========
+
 .. Please follow alphabetical ordering
 
 .. [BarabasiAlbert1999]

@@ -56,7 +56,4 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-References
-==========
-
 .. include:: references.rst
