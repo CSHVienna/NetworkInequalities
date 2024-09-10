@@ -4,6 +4,7 @@ from typing import\
 
 import numpy as np
 import networkx as nx
+from scipy.sparse import csr_matrix
 
 from .node_vector import NodeVector
 from .categorical_node_vector import CategoricalNodeVector
@@ -19,7 +20,7 @@ class Graph(HasEvents, BaseClass):
     _node_classes: Dict[str, CategoricalNodeVector]
 
     def __init__(self, *args, **attr):
-        BaseClass.__init__(self)
+        BaseClass.__init__(self, **attr)
         HasEvents.__init__(self)
         self._init_graph(*args, **attr)
         self._node_classes = {}
@@ -250,6 +251,16 @@ class Graph(HasEvents, BaseClass):
         assert target in self._graph, f"Node {target} does not exist"
         return target in self._graph[source]
 
+    def number_of_nodes(self) -> int:
+        """Returns the number of nodes in the graph.
+
+        Returns
+        -------
+        int
+            The number of nodes in the graph.
+        """
+        return len(self)
+
     def number_of_edges(self) -> int:
         """Returns the number of edges in the graph.
 
@@ -326,6 +337,23 @@ class Graph(HasEvents, BaseClass):
             A set of neighbors.
         """
         return self._graph[node]
+
+    def get_adjacency_matrix(self) -> csr_matrix:
+        rows = []
+        cols = []
+        data = []
+
+        for node, neighbors in self._graph.items():
+            for neighbor in neighbors:
+                rows.append(node)
+                cols.append(neighbor)
+                data.append(1)  # Assuming an unweighted adjacency matrix, use 1 for each edge
+
+        # Create a sparse CSR matrix
+        n_nodes = max(max(self._graph.keys()),
+                      max(max(neighbors) for neighbors in self._graph.values())) + 1  # Get the size of the matrix
+        adj_matrix = csr_matrix((data, (rows, cols)), shape=(n_nodes, n_nodes))
+        return adj_matrix
 
     def __len__(self):
         return len(self._graph)
