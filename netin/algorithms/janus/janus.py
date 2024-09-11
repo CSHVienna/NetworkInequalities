@@ -131,7 +131,7 @@ class Janus(BaseClass):
             plot(xx, yy, label=hypothesis_name)  # marker, color
 
         k_rank = max([e[0] for e in sorted_evidences_by_k])
-        ax.set_xlabel("concentration parameter $\kappa$")
+        ax.set_xlabel(r"concentration parameter $\kappa$")
         ax.set_ylabel("log(evidence)" if not bayes_factors else "log(Bayes factor)")
         plt.grid(False)
         ax.xaxis.grid(True)
