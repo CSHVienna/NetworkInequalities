@@ -36,7 +36,6 @@ Besides the implementation of models, `NetIn` offers functionality to analyze ex
 .. toctree::
    :maxdepth: 1
 
-   algorithms/index
    statistics
 
 If you want to create your own custom models or inject your own code during simulation of existing models, `NetIn` is highly extendible.
