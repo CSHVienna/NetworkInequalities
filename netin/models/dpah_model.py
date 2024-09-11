@@ -58,7 +58,7 @@ class DPAHModel(DPAModel):
         super()._initialize_lfms()
         self.h = TwoClassHomophily.from_two_class_homophily(
             node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE),
-            homophily=(self.h_m, self.h_M))
+            homophily=(self.h_M, self.h_m))
         self.pa = InDegreePreferentialAttachment(
             graph=self.graph, N=self._n_nodes_total)
 
