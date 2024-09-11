@@ -1,10 +1,17 @@
 name: Documentation
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - main
+      - alpha
 permissions:
     contents: write
 jobs:
   docs:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [stable, alpha]
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
@@ -22,13 +29,20 @@ jobs:
       - name: Install netin
         run: |
           pip install ./
-      - name: Sphinx build
+
+      - name: Build documentation
         run: |
-          sphinx-build docs/source/ docs/build/html/
-      - name: Deploy
+          if [ "${{ matrix.version }}" == "main" ]; then
+            sphinx-build -b html docs/source/main build/stable
+          elif [ "${{ matrix.version }}" == "alpha" ]; then
+            sphinx-build -b html docs/source/alpha build/alpha
+          fi
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/alpha'
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
         with:
-          publish_branch: documentation
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/build/html/
+          publish_dir: ./build/${{ matrix.version }}
+          publish_branch: documentation
+
