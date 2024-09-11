@@ -167,8 +167,9 @@ class Model(ABC, HasEvents, BaseClass):
         Check these functions in case you want to extend :class:`Model`.
         Triggers the :attr:`.Event.SIMULATION_START` and :attr:`.Event.SIMULATION_END` events.
 
-        Events
+        Notes
         ------
+        Triggers the following events.
         :attr:`.Event.SIMULATION_START`
             When the simulation starts.
         :attr:`.Event.SIMULATION_END`

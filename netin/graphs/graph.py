@@ -143,8 +143,9 @@ class Graph(HasEvents, BaseClass):
         return name in self._node_classes
 
     def add_edge(self, source: int, target: int) -> None:
-        """Add an edge to the graph..
-        This will trigger the :attr:`.Event.LINK_ADD_BEFORE` and :attr:`.Event.LINK_ADD_AFTER` events.
+        """Add an edge to the graph.
+        This will trigger the :attr:`.Event.LINK_ADD_BEFORE` and
+        :attr:`.Event.LINK_ADD_AFTER` events.
 
         Parameters
         ----------
@@ -153,8 +154,9 @@ class Graph(HasEvents, BaseClass):
         target : int
             The target node.
 
-        Events
+        Notes
         ------
+        Triggers the following events.
         :attr:`.Event.LINK_ADD_BEFORE`
             Before a link is added to the graph.
         :attr:`.Event.LINK_ADD_AFTER`
