@@ -9,6 +9,9 @@ References
 .. [Espin-Noboa2022]
     | L. Espín-Noboa, C. Wagner, M. Strohmaier, & F. Karimi "Inequality and inequity in network-based ranking and recommendation algorithms" Scientific reports 12(1), 1-14, 2022.
 
+.. [Espin-Noboa2017]
+    | L. Espín-Noboa, F. Lemmerich, M. Strohmaier, & P. Singer, P. "JANUS: A hypothesis-driven Bayesian approach for understanding edge formation in attributed multigraphs" Applied Network Science, 2, 1-20.
+
 .. [Karimi2018]
     | F. Karimi, M. Génois, C. Wagner, P. Singer, & M. Strohmaier, M "Homophily influences ranking of minorities in social networks", Scientific reports 8(1), 11077, 2018.
 

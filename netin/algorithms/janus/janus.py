@@ -13,6 +13,11 @@ from ...utils import io
 
 
 class Janus(BaseClass):
+    """
+    
+    [Espin-Noboa2017]_
+    
+    """
 
     def __init__(self, graph: Graph, is_global: bool = True, k_max: int = 10, k_log_scale: bool = True, **attr):
         BaseClass.__init__(self, **attr)
