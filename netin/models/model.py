@@ -168,12 +168,11 @@ class Model(ABC, HasEvents, BaseClass):
         Triggers the :attr:`.Event.SIMULATION_START` and :attr:`.Event.SIMULATION_END` events.
 
         Notes
-        ------
+        -----
         Triggers the following events.
-        :attr:`.Event.SIMULATION_START`
-            When the simulation starts.
-        :attr:`.Event.SIMULATION_END`
-            When the simulation ends.
+
+        - :attr:`.Event.SIMULATION_START`: When the simulation starts.
+        - :attr:`.Event.SIMULATION_END`: When the simulation ends.
 
         Returns
         -------

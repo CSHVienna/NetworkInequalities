@@ -155,12 +155,11 @@ class Graph(HasEvents, BaseClass):
             The target node.
 
         Notes
-        ------
+        -----
         Triggers the following events.
-        :attr:`.Event.LINK_ADD_BEFORE`
-            Before a link is added to the graph.
-        :attr:`.Event.LINK_ADD_AFTER`
-            After a link is added to the graph.
+
+        - :attr:`.Event.LINK_ADD_BEFORE`: Before a link is added to the graph.
+        - :attr:`.Event.LINK_ADD_AFTER`: After a link is added to the graph.
         """
         self.trigger_event(source, target, event=Event.LINK_ADD_BEFORE)
         self._add_edge(source, target)
