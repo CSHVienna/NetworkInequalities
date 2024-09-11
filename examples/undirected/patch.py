@@ -1,5 +1,5 @@
 from netin.models import PATCHModel, CompoundLFM
-
+from netin.utils import SimulationTimer
 
 def run():
     n = 100
@@ -12,14 +12,15 @@ def run():
     lfm_g = CompoundLFM.PAH
     seed = 1234
 
-    g_patch = PATCHModel(
-        N=n, m=k, f_m=f_m,
-        p_tc=p_tc,
-        lfm_local=lfm_l, lfm_global=lfm_g,
-        lfm_params={'h_m': h_mm, 'h_M': h_MM},
-        seed=seed)
+    model = PATCHModel(N=n, m=k, f_m=f_m,
+                       p_tc=p_tc,
+                       lfm_local=lfm_l, lfm_global=lfm_g,
+                       lfm_params={'h_m': h_mm, 'h_M': h_MM},
+                       seed=seed)
 
-    g_patch.simulate()
+    timer = SimulationTimer(model)
+    model.simulate()
+    print(f"Simulated model {model} in {timer.time:.2f} seconds.")
 
 
 if __name__ == '__main__':
