@@ -84,7 +84,7 @@ def get_fraction_of_minority_in_ranking(df: pd.DataFrame, x: str) -> \
         column = f"{x}_rank"
         tmp = df.query(f"{column} <= @rank").copy()
         total = tmp.shape[0]
-        efm = np.nan if total == 0 else tmp.query("class_label == @const.MINORITY_LABEL").shape[0] / total
+        efm = np.nan if total == 0 else tmp.query("real_label == @const.MINORITY_LABEL").shape[0] / total
         ys.append(efm)
     return xs, ys
 

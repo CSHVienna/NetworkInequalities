@@ -494,7 +494,7 @@ def plot_distribution(data: Union[pd.DataFrame, List[pd.DataFrame]],
 
         class_label: str
         iter_groups = df.groupby(hue) if hue is not None else [(None, df)]
-        f_m = df.query("class_label == @const.MINORITY_LABEL").shape[0] / df.shape[0]
+        f_m = df.query("real_label == @const.MINORITY_LABEL").shape[0] / df.shape[0]
         for class_label, group in iter_groups:
             total = df[_col_name].sum()\
                 if common_norm else group[_col_name].sum()
@@ -717,7 +717,7 @@ def plot_fraction_of_minority(
 
     def show_minority(axline, data):
         axline(
-            data.query("class_label==@const.MINORITY_LABEL")\
+            data.query("real_label==@const.MINORITY_LABEL")\
                .shape[0] / data.shape[0],
             color="black", linestyle='--')
 

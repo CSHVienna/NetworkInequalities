@@ -146,7 +146,7 @@ def get_disparity(df: pd.DataFrame, x: str, total: float = None) -> (np.ndarray,
 
     gx, gy = get_gini_coefficient(df, x, total)
     fx, fy = get_fraction_of_minority(df, x, total)
-    f_m = df.query("class_label == @const.MINORITY_LABEL").shape[0] / df.shape[0]
+    f_m = df.query("real_label == @const.MINORITY_LABEL").shape[0] / df.shape[0]
 
     inequality_y = ranking.get_ranking_inequality(gy)
     inequity_x = ranking.get_ranking_inequity(f_m, fy)

@@ -101,9 +101,10 @@ def get_node_metadata_as_dataframe(
             .get_node_class(node_class_values)
         class_values = node_class_values.get_class_values()
 
-    obj = {'node': list(graph.nodes()),
-            'class_label': [node_class_values[n] for n in graph.nodes()],
-            'real_label': [class_values[n] for n in graph.nodes()]}
+    l_nodes = list(graph.nodes())
+    obj = {'node': l_nodes,
+            'class_label': [node_class_values[n] for n in l_nodes],
+            'real_label': [class_values[n] for n in l_nodes]}
 
     # include graph metadata
     if include_graph_metadata:
