@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Graphs &#8212; NetIn 1.0.8 documentation</title>
+    <title>Algorithms &#8212; NetIn 1.0.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
     <script src="_static/documentation_options.js?v=aec50437"></script>
@@ -14,8 +14,8 @@
     <link rel="icon" href="_static/netin-logo.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Directed Graphs" href="generators/directed.html" />
-    <link rel="prev" title="Network Inequality" href="index.html" />
+    <link rel="next" title="Sampling" href="algorithms/sampling.html" />
+    <link rel="prev" title="Undirected Graphs" href="generators/undirected.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,25 +33,19 @@
 
           <div class="body" role="main">
             
-  <section id="graphs">
-<h1>Graphs<a class="headerlink" href="#graphs" title="Link to this heading">¶</a></h1>
+  <section id="module-netin.sampling">
+<span id="algorithms"></span><h1>Algorithms<a class="headerlink" href="#module-netin.sampling" title="Link to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="generators/directed.html">Directed Graphs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generators/directed.html#netin.DiGraph"><code class="docutils literal notranslate"><span class="pre">DiGraph</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="generators/directed.html#netin.DH"><code class="docutils literal notranslate"><span class="pre">DH</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="generators/directed.html#netin.DPA"><code class="docutils literal notranslate"><span class="pre">DPA</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="generators/directed.html#netin.DPAH"><code class="docutils literal notranslate"><span class="pre">DPAH</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="generators/undirected.html">Undirected Graphs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.UnDiGraph"><code class="docutils literal notranslate"><span class="pre">UnDiGraph</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.PA"><code class="docutils literal notranslate"><span class="pre">PA</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.PATC"><code class="docutils literal notranslate"><span class="pre">PATC</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.PAH"><code class="docutils literal notranslate"><span class="pre">PAH</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.PATCH"><code class="docutils literal notranslate"><span class="pre">PATCH</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html#netin.TCH"><code class="docutils literal notranslate"><span class="pre">TCH</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms/sampling.html">Sampling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="algorithms/sampling.html#netin.sampling.Sampling"><code class="docutils literal notranslate"><span class="pre">Sampling</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms/sampling.html#netin.sampling.RandomNodes"><code class="docutils literal notranslate"><span class="pre">RandomNodes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms/sampling.html#netin.sampling.RandomEdges"><code class="docutils literal notranslate"><span class="pre">RandomEdges</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms/sampling.html#netin.sampling.RandomNeighbor"><code class="docutils literal notranslate"><span class="pre">RandomNeighbor</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms/sampling.html#netin.sampling.DegreeRank"><code class="docutils literal notranslate"><span class="pre">DegreeRank</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms/sampling.html#netin.sampling.DegreeGroupRank"><code class="docutils literal notranslate"><span class="pre">DegreeGroupRank</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms/sampling.html#netin.sampling.PartialCrawls"><code class="docutils literal notranslate"><span class="pre">PartialCrawls</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -80,12 +74,11 @@
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Graphs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generators/directed.html">Directed Graphs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generators/undirected.html">Undirected Graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphs.html">Graphs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="algorithms/sampling.html">Sampling</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mechanisms.html">Mechanisms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistics.html">Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualizations.html">Visualization</a></li>
@@ -95,8 +88,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Network Inequality</a></li>
-      <li>Next: <a href="generators/directed.html" title="next chapter">Directed Graphs</a></li>
+      <li>Previous: <a href="generators/undirected.html" title="previous chapter">Undirected Graphs</a></li>
+      <li>Next: <a href="algorithms/sampling.html" title="next chapter">Sampling</a></li>
   </ul></li>
 </ul>
 </div>
@@ -130,7 +123,7 @@
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
-      <a href="_sources/graphs.rst.txt"
+      <a href="_sources/algorithms.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
