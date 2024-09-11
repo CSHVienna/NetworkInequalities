@@ -10,7 +10,6 @@ from netin import utils
 from netin.utils import *
 
 from netin import algorithms
-from netin.algorithms import sampling
 from netin.algorithms import janus
 
 from netin import graphs
