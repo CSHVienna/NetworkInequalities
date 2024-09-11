@@ -23,7 +23,7 @@ The package is currently under development and will be updated regularly.
 
 .. image:: https://static.pepy.tech/personalized-badge/netin?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads
  :target: https://pepy.tech/project/netin
- 
+
 - **Website:** https://www.networkinequality.com
 - **Documentation:** https://cshvienna.github.io/NetworkInequalities
 - **Source:** https://github.com/CSHVienna/NetworkInequalities
@@ -84,7 +84,7 @@ Released under Creative Commons by-nc-sa 4.0 (see `LICENSE`)::
    Lisette Espin-Noboa <espin@csh.ac.at>
    Jan Bachmann <bachmann@csh.ac.at>
 
-<span style="color:red">*Note on multidimensional interactions*</span>
-----------
+Note on multidimensional interactions
+-------------------------------------
 Provisionally, the code to simulate and analyze networks with multidimensional interactions is hosted in the [repository](https://github.com/CSHVienna/multidimensional_social_interactions_paper) associated with the [paper](https://arxiv.org/abs/2406.17043).
 
