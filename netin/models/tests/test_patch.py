@@ -99,19 +99,24 @@ class TestPATCHModel:
         assert len(model.graph) == model.N
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes())
-        assert (_sum_links // 2) == ((model.N - model.m) * model.m)
+        assert (_sum_links // 2) == ((model.N - model.m) * model.m)\
+            + ((model.m * (model.m - 1)) // 2)
 
         degrees = sorted(
             [model.graph.degree(v) for v in model.graph.nodes()])
         assert degrees[0] == model.m
         assert degrees[-1] >= 3 * model.m
 
-        nodes_min = set(node for node in model.graph.nodes() if model.graph.get_node_class("minority")[node])
+        nodes_min = set(
+            node\
+                for node in model.graph.nodes()\
+                    if model.graph.get_node_class("minority")[node])
         assert np.isclose(
             len(nodes_min), model.f_m * model.N, rtol=0.05)
         n_in_group, n_out_group = 0, 0
         for source, target in model.graph.edges():
-            if model.graph.get_node_class("minority")[source] == model.graph.get_node_class("minority")[target]:
+            if model.graph.get_node_class("minority")[source]\
+                == model.graph.get_node_class("minority")[target]:
                 n_in_group += 1
             else:
                 n_out_group += 1

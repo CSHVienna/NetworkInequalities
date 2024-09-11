@@ -29,7 +29,7 @@ class TestPAHModel:
         assert len(model.graph) == N
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes())
-        assert (_sum_links // 2) == ((N - m) * m)
+        assert (_sum_links // 2) == (((N - m) * m) + (m * (m - 1)) // 2)
 
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
         assert node_classes is not None
@@ -112,7 +112,7 @@ class TestPAHModel:
         for u in graph.nodes():
             assert not graph.has_edge(u, u)
         n_links = graph.number_of_edges()
-        assert n_links == (N - m) * m
+        assert n_links == ((N - m) * m) + ((m * (m - 1)) // 2)
 
     def test_heterophily_min_advantage(self):
         h = 0.1

@@ -50,6 +50,8 @@ class UndirectedModel(Model):
     def _populate_initial_graph(self) -> Graph:
         for i in range(self.m):
             self.graph.add_node(i)
+            for j in range(i):
+                self.graph.add_edge(i, j)
         return self.graph
 
     def _simulate(self) -> Graph:
