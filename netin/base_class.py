@@ -18,3 +18,9 @@ class BaseClass:
     def log(self, msg: str):
         if self._verbose:
             print(msg)
+
+    def set_verbose(self, verbose:bool):
+        self._verbose = verbose
+
+    def get_verbose(self) -> bool:
+        return self._verbose

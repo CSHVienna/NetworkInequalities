@@ -63,6 +63,7 @@ packages = [
     "netin.models",
     "netin.graphs",
     "netin.algorithms.sampling",
+    "netin.algorithms.hypothesis_testing",
     "netin.filters",
     "netin.link_formation_mechanisms",
     "netin.utils",
