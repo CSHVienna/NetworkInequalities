@@ -8,5 +8,6 @@ from .homophily_model import HomophilyModel
 from .pah_model import PAHModel
 from .patch_model import PATCHModel, CompoundLFM
 
+from .dh_model import DHModel
 from .dpa_model import DPAModel
 from .dpah_model import DPAHModel
