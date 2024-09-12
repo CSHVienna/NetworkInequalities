@@ -4,6 +4,9 @@ on:
     branches:
       - main
       - alpha
+
+  workflow_dispatch: # For run from Github Actions
+
 permissions:
     contents: write
 jobs:
@@ -16,33 +19,40 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-python@v3
         with:
           python-version: '3.9'
+
       - name: Upgrade pip
         run: |
           # install pip=>20.1 to use "pip cache dir"
           python3 -m pip install --upgrade pip
+
       - name: Install dependencies
         run: |
           pip install -r requirements/docs.txt
+
       - name: Install netin
         run: |
           pip install ./
 
       - name: Build documentation
         run: |
-          if [ "${{ matrix.version }}" == "main" ]; then
-            sphinx-build -b html docs/source/main build/stable
-          elif [ "${{ matrix.version }}" == "alpha" ]; then
-            sphinx-build -b html docs/source/alpha build/alpha
-          fi
+          sphinx-build -b html docs/source/main build/stable
 
-      - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/alpha'
+      - name: Deploy stable documentation
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/${{ matrix.version }}
-          publish_branch: documentation
-          destination_dir: ./${{ matrix.version }}
+          publish_dir: ./docs/build/html
+          destination_dir: /  # Root folder for stable version
+
+      - name: Deploy alpha documentation
+        if: github.ref == 'refs/heads/alpha'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/build/html
+          destination_dir: alpha  # Deploy to 'alpha/' subfolder
