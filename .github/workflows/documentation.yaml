@@ -36,7 +36,7 @@ jobs:
 
       - name: Build documentation
         run: |
-          sphinx-build -b html docs/source/main build/stable
+          sphinx-build -b html docs/source/ docs/build/html/
 
       - name: Deploy stable documentation
         if: github.ref == 'refs/heads/main'
