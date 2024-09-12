@@ -1,0 +1,1172 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Node vectors" href="node_vectors/index.html" /><link rel="prev" title="Undirected Graph Models" href="models/undirected.html" />
+
+    <link rel="shortcut icon" href="_static/netin-logo.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2024.08.06 -->
+        <title>Graphs - NetIn 2.0.0a1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=04c057b233f3c8d71940eee6080f658a04e2027d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=cf727022eb7470bc603c08d2e55c3247faec75c9" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">NetIn 2.0.0a1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/netin-logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">NetIn 2.0.0a1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="models/index.html">Models</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="models/directed.html">Directed Graph Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models/undirected.html">Undirected Graph Models</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Graphs</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="node_vectors/index.html">Node vectors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">Statistics</a></li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="extensions/index.html">Extending NetIn</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Extending NetIn</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="extensions/events.html">Event Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions/filters.html">Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions/mechanisms.html">Link Formation Mechanisms (LFM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions/models.html">Model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualizations.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utility Functions</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/graphs.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="graphs">
+<h1>Graphs<a class="headerlink" href="#graphs" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="netin.graphs.Graph">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.graphs.</span></span><span class="sig-name descname"><span class="pre">Graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.Graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Graph representation that allows simple manipulation.
+It supports event handling and import/export functionality to other popular Graph libraries.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.graphs.Graph.EVENTS">
+<span class="sig-name descname"><span class="pre">EVENTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.Event"><span class="pre">Event</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#netin.graphs.Graph.EVENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of implemented events.
+Should be overwritten by classes that use this interface.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.add_edge">
+<span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#netin.graphs.Graph.add_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an edge to the graph.
+This will trigger the <a class="reference internal" href="extensions/events.html#netin.utils.Event.LINK_ADD_BEFORE" title="netin.utils.Event.LINK_ADD_BEFORE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.LINK_ADD_BEFORE</span></code></a> and
+<a class="reference internal" href="extensions/events.html#netin.utils.Event.LINK_ADD_AFTER" title="netin.utils.Event.LINK_ADD_AFTER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.LINK_ADD_AFTER</span></code></a> events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source</strong><span class="classifier">int</span></dt><dd><p>The source node.</p>
+</dd>
+<dt><strong>target</strong><span class="classifier">int</span></dt><dd><p>The target node.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Triggers the following events.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="extensions/events.html#netin.utils.Event.LINK_ADD_BEFORE" title="netin.utils.Event.LINK_ADD_BEFORE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.LINK_ADD_BEFORE</span></code></a>: Before a link is added to the graph.</p></li>
+<li><p><a class="reference internal" href="extensions/events.html#netin.utils.Event.LINK_ADD_AFTER" title="netin.utils.Event.LINK_ADD_AFTER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.LINK_ADD_AFTER</span></code></a>: After a link is added to the graph.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.add_node">
+<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.Graph.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a node to the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>node</strong><span class="classifier">int</span></dt><dd><p>The node to be added.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></span><a class="headerlink" href="#netin.graphs.Graph.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of the Graph.
+This will copy the graph structure, node classes and event handlers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.degree">
+<span class="sig-name descname"><span class="pre">degree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.graphs.Graph.degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the degree of a node.
+The degree is defined by the number of neighbors of a node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>node</strong><span class="classifier">int</span></dt><dd><p>The node to calculate the degree for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>The degree of the node.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.degrees">
+<span class="sig-name descname"><span class="pre">degrees</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="node_vectors/index.html#netin.graphs.NodeVector" title="netin.graphs.node_vector.NodeVector"><span class="pre">NodeVector</span></a></span></span><a class="headerlink" href="#netin.graphs.Graph.degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the degrees of all nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>NodeVector</dt><dd><p>A <a class="reference internal" href="node_vectors/index.html#netin.graphs.NodeVector" title="netin.graphs.NodeVector"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeVector</span></code></a> containing the degrees of all nodes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.edges">
+<span class="sig-name descname"><span class="pre">edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.Graph.edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator of all edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Generator[Tuple[int, int], None, None]</dt><dd><p>A generator of all edges. Yields tuples of the form <code class="docutils literal notranslate"><span class="pre">(source,</span> <span class="pre">target)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.from_nxgraph">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_nxgraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_attributes_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_node_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="node_vectors/index.html#netin.graphs.NodeVector" title="netin.graphs.node_vector.NodeVector"><span class="pre">NodeVector</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.Graph.from_nxgraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take a <code class="docutils literal notranslate"><span class="pre">networkx.Graph</span></code> and return a <code class="docutils literal notranslate"><span class="pre">Graph</span></code> object and mapping of the nodes.
+NetworkX graphs uses custom node labels while <code class="docutils literal notranslate"><span class="pre">Graph</span></code> identifies nodes
+by integer indices.
+This method translates the node labels to integer indices and returns the
+mapping as a <code class="docutils literal notranslate"><span class="pre">NodeVector</span></code> where the value <code class="docutils literal notranslate"><span class="pre">v_i</span></code> at index <code class="docutils literal notranslate"><span class="pre">i</span></code> is the node
+label of node <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>graph</strong><span class="classifier">nx.Graph</span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">networkx.Graph</span></code> object to be converted.</p>
+</dd>
+<dt><strong>node_attributes_names</strong><span class="classifier">List[str], optional</span></dt><dd><p>List of node attributes to be included in the <code class="docutils literal notranslate"><span class="pre">Graph</span></code> object.
+Each element is the name of <code class="docutils literal notranslate"><span class="pre">node</span></code> attribute in the <code class="docutils literal notranslate"><span class="pre">networkx.Graph</span></code>,
+retrievable by <code class="docutils literal notranslate"><span class="pre">nx.get_node_attributes(graph,</span> <span class="pre">name)</span></code>.
+Values must be integers.</p>
+</dd>
+<dt><strong>sort_node_labels</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to sort the node labels in ascending order. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.
+If the node labels of the <code class="docutils literal notranslate"><span class="pre">nx_Graph</span></code> are a full integer range, the node
+mapping will be identical (the returned <a class="reference internal" href="node_vectors/index.html#netin.graphs.NodeVector" title="netin.graphs.NodeVector"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeVector</span></code></a> will be identical
+to <code class="docutils literal notranslate"><span class="pre">np.arange(len(graph))</span></code>).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tuple[NodeVector, Graph]</dt><dd><p>A tuple containing the node labels and the Graph object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_meta_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.Graph.get_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the metadata of the Graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Dict[str, Any]</dt><dd><p>Description of the metadata, including the number of nodes and edges.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.get_node_class">
+<span class="sig-name descname"><span class="pre">get_node_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="node_vectors/index.html#netin.graphs.CategoricalNodeVector" title="netin.graphs.categorical_node_vector.CategoricalNodeVector"><span class="pre">CategoricalNodeVector</span></a></span></span><a class="headerlink" href="#netin.graphs.Graph.get_node_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a node class by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>The name of the node class.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>CategoricalNodeVector</dt><dd><p>The node class.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.get_node_classes">
+<span class="sig-name descname"><span class="pre">get_node_classes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="node_vectors/index.html#netin.graphs.CategoricalNodeVector" title="netin.graphs.categorical_node_vector.CategoricalNodeVector"><span class="pre">CategoricalNodeVector</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.Graph.get_node_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all node classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Dict[str, CategoricalNodeVector]</dt><dd><p>The original dictionary containing the node classes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.has_edge">
+<span class="sig-name descname"><span class="pre">has_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#netin.graphs.Graph.has_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if an edge exists between two nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source</strong><span class="classifier">int</span></dt><dd><p>The source node.</p>
+</dd>
+<dt><strong>target</strong><span class="classifier">int</span></dt><dd><p>The target node.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd><p>True if the edge exists, False otherwise.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.has_node_class">
+<span class="sig-name descname"><span class="pre">has_node_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#netin.graphs.Graph.has_node_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a node class exists.
+Identical to <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">in</span> <span class="pre">self.get_node_classes()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>The name of the node class.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd><p>True if the node class exists, False otherwise.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.is_directed">
+<span class="sig-name descname"><span class="pre">is_directed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#netin.graphs.Graph.is_directed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether the graph is directed (always <code class="docutils literal notranslate"><span class="pre">False</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>Returns <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.neighbors">
+<span class="sig-name descname"><span class="pre">neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.Graph.neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the neighbors of a node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>node</strong><span class="classifier">int</span></dt><dd><p>The node to get the neighbors for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Set[int]</dt><dd><p>A set of neighbors.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.nodes">
+<span class="sig-name descname"><span class="pre">nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.Graph.nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List[int]</dt><dd><p>A list of all nodes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.number_of_edges">
+<span class="sig-name descname"><span class="pre">number_of_edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.graphs.Graph.number_of_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of edges in the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>int</dt><dd><p>The number of edges in the graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.number_of_nodes">
+<span class="sig-name descname"><span class="pre">number_of_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.graphs.Graph.number_of_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of nodes in the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>int</dt><dd><p>The number of nodes in the graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.register_event_handler">
+<span class="sig-name descname"><span class="pre">register_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.Graph.register_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a new callback function for a given event.
+This can be used to inject code which will be executed when the respective event is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to register the callback for.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Callable[[Any], None]</span></dt><dd><p>The function to be called when the event is triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.remove_event_handler">
+<span class="sig-name descname"><span class="pre">remove_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.Graph.remove_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>De-registers an event handler.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">function</span></code> is provided, only the specific function is removed.
+Otherwise, all functions are deleted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The <a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a> to remove the handling function from.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Optional[Callable[[Any], None]], optional</span></dt><dd><p>The function to be removed, by default <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all functions are removed.
+Otherwise, only the specified ones will be deleted.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.set_node_class">
+<span class="sig-name descname"><span class="pre">set_node_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="node_vectors/index.html#netin.graphs.CategoricalNodeVector" title="netin.graphs.categorical_node_vector.CategoricalNodeVector"><span class="pre">CategoricalNodeVector</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.Graph.set_node_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a node class.
+If the class already exists, it will be overwritten.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Key under which the node class will be stored.</p>
+</dd>
+<dt><strong>node_vector</strong><span class="classifier">CategoricalNodeVector</span></dt><dd><p>The node class.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.to_nxgraph">
+<span class="sig-name descname"><span class="pre">to_nxgraph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Graph</span></span></span><a class="headerlink" href="#netin.graphs.Graph.to_nxgraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the Graph to a <code class="docutils literal notranslate"><span class="pre">networkx.Graph</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>nx.Graph</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">networkx.Graph</span></code> representation of the graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.Graph.trigger_event">
+<span class="sig-name descname"><span class="pre">trigger_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.Graph.trigger_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triggers an event and calls all registered callback functions.
+This function should be called by the class implementing classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to be triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.graphs.</span></span><span class="sig-name descname"><span class="pre">DiGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.DiGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a directed graph.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.EVENTS">
+<span class="sig-name descname"><span class="pre">EVENTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.Event"><span class="pre">Event</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#netin.graphs.DiGraph.EVENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of implemented events.
+Should be overwritten by classes that use this interface.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.add_edge">
+<span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.add_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an edge to the graph.
+This will trigger the <a class="reference internal" href="extensions/events.html#netin.utils.Event.LINK_ADD_BEFORE" title="netin.utils.Event.LINK_ADD_BEFORE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.LINK_ADD_BEFORE</span></code></a> and
+<a class="reference internal" href="extensions/events.html#netin.utils.Event.LINK_ADD_AFTER" title="netin.utils.Event.LINK_ADD_AFTER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.LINK_ADD_AFTER</span></code></a> events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source</strong><span class="classifier">int</span></dt><dd><p>The source node.</p>
+</dd>
+<dt><strong>target</strong><span class="classifier">int</span></dt><dd><p>The target node.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Triggers the following events.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="extensions/events.html#netin.utils.Event.LINK_ADD_BEFORE" title="netin.utils.Event.LINK_ADD_BEFORE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.LINK_ADD_BEFORE</span></code></a>: Before a link is added to the graph.</p></li>
+<li><p><a class="reference internal" href="extensions/events.html#netin.utils.Event.LINK_ADD_AFTER" title="netin.utils.Event.LINK_ADD_AFTER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.LINK_ADD_AFTER</span></code></a>: After a link is added to the graph.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.add_node">
+<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.DiGraph.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a node to the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>node</strong><span class="classifier">int</span></dt><dd><p>The node to be added.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></span><a class="headerlink" href="#netin.graphs.DiGraph.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of the Graph.
+This will copy the graph structure, node classes and event handlers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.degree">
+<span class="sig-name descname"><span class="pre">degree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the degree of a node.
+The degree is defined by the number of neighbors of a node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>node</strong><span class="classifier">int</span></dt><dd><p>The node to calculate the degree for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>The degree of the node.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.degrees">
+<span class="sig-name descname"><span class="pre">degrees</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="node_vectors/index.html#netin.graphs.NodeVector" title="netin.graphs.node_vector.NodeVector"><span class="pre">NodeVector</span></a></span></span><a class="headerlink" href="#netin.graphs.DiGraph.degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the degrees of all nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>NodeVector</dt><dd><p>A <a class="reference internal" href="node_vectors/index.html#netin.graphs.NodeVector" title="netin.graphs.NodeVector"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeVector</span></code></a> containing the degrees of all nodes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.edges">
+<span class="sig-name descname"><span class="pre">edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator of all edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Generator[Tuple[int, int], None, None]</dt><dd><p>A generator of all edges. Yields tuples of the form <code class="docutils literal notranslate"><span class="pre">(source,</span> <span class="pre">target)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.from_nxgraph">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_nxgraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DiGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_attributes_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_node_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="node_vectors/index.html#netin.graphs.NodeVector" title="netin.graphs.node_vector.NodeVector"><span class="pre">NodeVector</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.from_nxgraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a DiGraph from a <code class="docutils literal notranslate"><span class="pre">nx.DiGraph</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Tuple[NodeVector, DiGraph]</dt><dd><p>A <a class="reference internal" href="node_vectors/index.html#netin.graphs.NodeVector" title="netin.graphs.NodeVector"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeVector</span></code></a> with the original node labels and the DiGraph.
+Because NetworkX supports custom indexing, the node labels
+may not be the same as the original ones.
+For this reason, the original node labels are returned, mapped
+to the new ones.
+The original label of node <code class="docutils literal notranslate"><span class="pre">i</span></code> can be accessed by <code class="docutils literal notranslate"><span class="pre">node_labels[i]</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_meta_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.get_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the metadata of the Graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Dict[str, Any]</dt><dd><p>Description of the metadata, including the number of nodes and edges.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.get_node_class">
+<span class="sig-name descname"><span class="pre">get_node_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="node_vectors/index.html#netin.graphs.CategoricalNodeVector" title="netin.graphs.categorical_node_vector.CategoricalNodeVector"><span class="pre">CategoricalNodeVector</span></a></span></span><a class="headerlink" href="#netin.graphs.DiGraph.get_node_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a node class by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>The name of the node class.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>CategoricalNodeVector</dt><dd><p>The node class.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.get_node_classes">
+<span class="sig-name descname"><span class="pre">get_node_classes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="node_vectors/index.html#netin.graphs.CategoricalNodeVector" title="netin.graphs.categorical_node_vector.CategoricalNodeVector"><span class="pre">CategoricalNodeVector</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.get_node_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all node classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Dict[str, CategoricalNodeVector]</dt><dd><p>The original dictionary containing the node classes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.has_edge">
+<span class="sig-name descname"><span class="pre">has_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.has_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if an edge exists between two nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source</strong><span class="classifier">int</span></dt><dd><p>The source node.</p>
+</dd>
+<dt><strong>target</strong><span class="classifier">int</span></dt><dd><p>The target node.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd><p>True if the edge exists, False otherwise.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.has_node_class">
+<span class="sig-name descname"><span class="pre">has_node_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.has_node_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a node class exists.
+Identical to <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">in</span> <span class="pre">self.get_node_classes()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>The name of the node class.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd><p>True if the node class exists, False otherwise.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.is_directed">
+<span class="sig-name descname"><span class="pre">is_directed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.is_directed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>Always True.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.neighbors">
+<span class="sig-name descname"><span class="pre">neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the neighbors of a node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>node</strong><span class="classifier">int</span></dt><dd><p>The node to get the neighbors for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Set[int]</dt><dd><p>A set of neighbors.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.nodes">
+<span class="sig-name descname"><span class="pre">nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List[int]</dt><dd><p>A list of all nodes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.number_of_edges">
+<span class="sig-name descname"><span class="pre">number_of_edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.number_of_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of edges in the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>int</dt><dd><p>The number of edges in the graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.number_of_nodes">
+<span class="sig-name descname"><span class="pre">number_of_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.number_of_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of nodes in the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>int</dt><dd><p>The number of nodes in the graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.register_event_handler">
+<span class="sig-name descname"><span class="pre">register_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.DiGraph.register_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a new callback function for a given event.
+This can be used to inject code which will be executed when the respective event is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to register the callback for.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Callable[[Any], None]</span></dt><dd><p>The function to be called when the event is triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.remove_event_handler">
+<span class="sig-name descname"><span class="pre">remove_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.DiGraph.remove_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>De-registers an event handler.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">function</span></code> is provided, only the specific function is removed.
+Otherwise, all functions are deleted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The <a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a> to remove the handling function from.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Optional[Callable[[Any], None]], optional</span></dt><dd><p>The function to be removed, by default <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all functions are removed.
+Otherwise, only the specified ones will be deleted.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.set_node_class">
+<span class="sig-name descname"><span class="pre">set_node_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="node_vectors/index.html#netin.graphs.CategoricalNodeVector" title="netin.graphs.categorical_node_vector.CategoricalNodeVector"><span class="pre">CategoricalNodeVector</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.DiGraph.set_node_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a node class.
+If the class already exists, it will be overwritten.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Key under which the node class will be stored.</p>
+</dd>
+<dt><strong>node_vector</strong><span class="classifier">CategoricalNodeVector</span></dt><dd><p>The node class.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.to_nxgraph">
+<span class="sig-name descname"><span class="pre">to_nxgraph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Graph</span></span></span><a class="headerlink" href="#netin.graphs.DiGraph.to_nxgraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the Graph to a <code class="docutils literal notranslate"><span class="pre">networkx.Graph</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>nx.Graph</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">networkx.Graph</span></code> representation of the graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.graphs.DiGraph.trigger_event">
+<span class="sig-name descname"><span class="pre">trigger_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.graphs.DiGraph.trigger_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triggers an event and calls all registered callback functions.
+This function should be called by the class implementing classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to be triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="node_vectors/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Node vectors</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="models/undirected.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Undirected Graph Models</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Fariba Karimi, Lisette Espin-Noboa, Jan Bachmann
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Graphs</a><ul>
+<li><a class="reference internal" href="#netin.graphs.Graph"><code class="docutils literal notranslate"><span class="pre">Graph</span></code></a><ul>
+<li><a class="reference internal" href="#netin.graphs.Graph.EVENTS"><code class="docutils literal notranslate"><span class="pre">Graph.EVENTS</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.add_edge"><code class="docutils literal notranslate"><span class="pre">Graph.add_edge()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.add_node"><code class="docutils literal notranslate"><span class="pre">Graph.add_node()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.copy"><code class="docutils literal notranslate"><span class="pre">Graph.copy()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.degree"><code class="docutils literal notranslate"><span class="pre">Graph.degree()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.degrees"><code class="docutils literal notranslate"><span class="pre">Graph.degrees()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.edges"><code class="docutils literal notranslate"><span class="pre">Graph.edges()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.from_nxgraph"><code class="docutils literal notranslate"><span class="pre">Graph.from_nxgraph()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.get_metadata"><code class="docutils literal notranslate"><span class="pre">Graph.get_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.get_node_class"><code class="docutils literal notranslate"><span class="pre">Graph.get_node_class()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.get_node_classes"><code class="docutils literal notranslate"><span class="pre">Graph.get_node_classes()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.has_edge"><code class="docutils literal notranslate"><span class="pre">Graph.has_edge()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.has_node_class"><code class="docutils literal notranslate"><span class="pre">Graph.has_node_class()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.is_directed"><code class="docutils literal notranslate"><span class="pre">Graph.is_directed()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.neighbors"><code class="docutils literal notranslate"><span class="pre">Graph.neighbors()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.nodes"><code class="docutils literal notranslate"><span class="pre">Graph.nodes()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.number_of_edges"><code class="docutils literal notranslate"><span class="pre">Graph.number_of_edges()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.number_of_nodes"><code class="docutils literal notranslate"><span class="pre">Graph.number_of_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.register_event_handler"><code class="docutils literal notranslate"><span class="pre">Graph.register_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.remove_event_handler"><code class="docutils literal notranslate"><span class="pre">Graph.remove_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.set_node_class"><code class="docutils literal notranslate"><span class="pre">Graph.set_node_class()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.to_nxgraph"><code class="docutils literal notranslate"><span class="pre">Graph.to_nxgraph()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.Graph.trigger_event"><code class="docutils literal notranslate"><span class="pre">Graph.trigger_event()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph"><code class="docutils literal notranslate"><span class="pre">DiGraph</span></code></a><ul>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.EVENTS"><code class="docutils literal notranslate"><span class="pre">DiGraph.EVENTS</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.add_edge"><code class="docutils literal notranslate"><span class="pre">DiGraph.add_edge()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.add_node"><code class="docutils literal notranslate"><span class="pre">DiGraph.add_node()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.copy"><code class="docutils literal notranslate"><span class="pre">DiGraph.copy()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.degree"><code class="docutils literal notranslate"><span class="pre">DiGraph.degree()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.degrees"><code class="docutils literal notranslate"><span class="pre">DiGraph.degrees()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.edges"><code class="docutils literal notranslate"><span class="pre">DiGraph.edges()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.from_nxgraph"><code class="docutils literal notranslate"><span class="pre">DiGraph.from_nxgraph()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.get_metadata"><code class="docutils literal notranslate"><span class="pre">DiGraph.get_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.get_node_class"><code class="docutils literal notranslate"><span class="pre">DiGraph.get_node_class()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.get_node_classes"><code class="docutils literal notranslate"><span class="pre">DiGraph.get_node_classes()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.has_edge"><code class="docutils literal notranslate"><span class="pre">DiGraph.has_edge()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.has_node_class"><code class="docutils literal notranslate"><span class="pre">DiGraph.has_node_class()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.is_directed"><code class="docutils literal notranslate"><span class="pre">DiGraph.is_directed()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.neighbors"><code class="docutils literal notranslate"><span class="pre">DiGraph.neighbors()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.nodes"><code class="docutils literal notranslate"><span class="pre">DiGraph.nodes()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.number_of_edges"><code class="docutils literal notranslate"><span class="pre">DiGraph.number_of_edges()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.number_of_nodes"><code class="docutils literal notranslate"><span class="pre">DiGraph.number_of_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.register_event_handler"><code class="docutils literal notranslate"><span class="pre">DiGraph.register_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.remove_event_handler"><code class="docutils literal notranslate"><span class="pre">DiGraph.remove_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.set_node_class"><code class="docutils literal notranslate"><span class="pre">DiGraph.set_node_class()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.to_nxgraph"><code class="docutils literal notranslate"><span class="pre">DiGraph.to_nxgraph()</span></code></a></li>
+<li><a class="reference internal" href="#netin.graphs.DiGraph.trigger_event"><code class="docutils literal notranslate"><span class="pre">DiGraph.trigger_event()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    </body>
+</html>
