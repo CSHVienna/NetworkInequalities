@@ -12,9 +12,6 @@ permissions:
 jobs:
   docs:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        version: [stable, alpha]
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
