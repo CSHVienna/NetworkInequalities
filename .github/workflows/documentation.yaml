@@ -44,6 +44,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/build/html
+          publish_branch: documentation
           destination_dir: /  # Root folder for stable version
 
       - name: Deploy alpha documentation
@@ -52,4 +53,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/build/html
+          publish_branch: documentation
           destination_dir: alpha  # Deploy to 'alpha/' subfolder
