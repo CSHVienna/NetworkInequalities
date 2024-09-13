@@ -23,7 +23,7 @@ The package is currently under development and will be updated regularly.
 
 .. image:: https://static.pepy.tech/personalized-badge/netin?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads
  :target: https://pepy.tech/project/netin
- 
+
 - **Website:** https://www.networkinequality.com
 - **Documentation:** https://cshvienna.github.io/NetworkInequalities
 - **Source:** https://github.com/CSHVienna/NetworkInequalities
@@ -63,7 +63,7 @@ Install the latest version of NetIn::
 
 Install from source::
 
-        $ git clone
+        $ git clone https://github.com/CSHVienna/NetworkInequalities
         $ cd NetworkInequalities
         $ pip install -e .
 
