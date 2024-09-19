@@ -4,9 +4,10 @@ import numpy as np
 
 from ..graphs import Graph
 from ..utils.validator import validate_int
-from .model import Model
+from ..utils.event_handling import HasEvents
+from .model import Model, Event
 
-class UndirectedModel(Model):
+class UndirectedModel(Model, HasEvents):
     """The base class for all undirected models.
     Based on [BarabasiAlbert1999]_,
     this model grows a network by adding a total of :attr:`N` nodes to the network.
@@ -26,6 +27,7 @@ class UndirectedModel(Model):
     """
 
     SHORT = "UNDIRECTED"
+    EVENTS = [Event.LINK_ADD_BEFORE, Event.LINK_ADD_AFTER] + Model.EVENTS
 
     m: int
 
@@ -75,7 +77,9 @@ class UndirectedModel(Model):
                 target_probabilities = self.compute_target_probabilities(source)[:source]
                 target_probabilities /= target_probabilities.sum()
                 target = self._sample_target_node(target_probabilities)
+                self.trigger_event(event=Event.LINK_ADD_BEFORE, source=source, target=target)
                 self.graph.add_edge(source, target)
+                self.trigger_event(event=Event.LINK_ADD_AFTER, source=source, target=target)
         return self.graph
 
     def get_metadata(

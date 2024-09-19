@@ -35,7 +35,7 @@ class CompoundLFM(enum.Enum):
     :meta hide-value:"""
 
 class PATCHModel(
-    UndirectedModel, BinaryClassModel, HasEvents):
+    UndirectedModel, BinaryClassModel):
     """The PATCHModel joins nodes to the network based on a combination of
     [P]referential [A]ttachment, [T]riadic [C]losure and [H]omophily.
     Based on the triadic closure probability :attr:`p_tc`, links are formed either locally or globally.
@@ -88,8 +88,7 @@ class PATCHModel(
     """
 
     EVENTS = [
-        Event.SIMULATION_START, Event.SIMULATION_END,
-        Event.TARGET_SELECTION_LOCAL, Event.TARGET_SELECTION_GLOBAL]
+        Event.TARGET_SELECTION_LOCAL, Event.TARGET_SELECTION_GLOBAL] + UndirectedModel.EVENTS
     SHORT = "PATCH"
 
     lfm_local: CompoundLFM
@@ -187,10 +186,10 @@ class PATCHModel(
             p_target *= self.tc.get_target_probabilities(source)
             p_target *= self._get_compound_target_probabilities(
                 source=source, lfm=self.lfm_local)
-            self.trigger_event(event=Event.TARGET_SELECTION_LOCAL)
+            self.trigger_event(event=Event.TARGET_SELECTION_LOCAL, source=source)
         else:
             p_target *= self._get_compound_target_probabilities(
                 source=source, lfm=self.lfm_global)
-            self.trigger_event(event=Event.TARGET_SELECTION_GLOBAL)
+            self.trigger_event(event=Event.TARGET_SELECTION_GLOBAL, source=source)
 
         return p_target / p_target.sum()
