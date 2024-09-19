@@ -78,7 +78,7 @@ class HasEvents:
             The function to be called when the event is triggered.
         """
         assert event in self.EVENTS,\
-            f"Event {event} not specified in {self.__class__.__name__}.__events."
+            f"Event {event} not specified in `{self.__class__.__name__}.EVENTS`."
         self._event_handlers[event].append(function)
 
     def remove_event_handler(
