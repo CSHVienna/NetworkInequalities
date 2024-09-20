@@ -53,7 +53,8 @@ class UndirectedModel(Model, HasEvents):
         for i in range(self.m):
             self.graph.add_node(i)
             for j in range(i):
-                self.graph.add_edge(i, j)
+                # Add edges between the initial nodes
+                self._add_edge_to_graph(i, j)
         return self.graph
 
     def _simulate(self) -> Graph:
@@ -77,9 +78,7 @@ class UndirectedModel(Model, HasEvents):
                 target_probabilities = self.compute_target_probabilities(source)[:source]
                 target_probabilities /= target_probabilities.sum()
                 target = self._sample_target_node(target_probabilities)
-                self.trigger_event(event=Event.LINK_ADD_BEFORE, source=source, target=target)
-                self.graph.add_edge(source, target)
-                self.trigger_event(event=Event.LINK_ADD_AFTER, source=source, target=target)
+                self._add_edge_to_graph(source, target)
         return self.graph
 
     def get_metadata(
