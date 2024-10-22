@@ -5,7 +5,7 @@ import numpy as np
 
 from .undirected_model import UndirectedModel
 from .binary_class_model import BinaryClassModel
-from ..utils.event_handling import Event, HasEvents
+from ..utils.event_handling import Event
 from ..utils.constants import CLASS_ATTRIBUTE
 from ..utils.validator import validate_float
 from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
@@ -15,7 +15,8 @@ from ..link_formation_mechanisms.uniform import Uniform
 
 class CompoundLFM(enum.Enum):
     """A combination of link formation mechanism.
-    This class is used to define how local or global links should be formed in the :class:`.PATCHModel`.
+    This class is used to define how local or global links
+    should be formed in the :class:`.PATCHModel`.
     """
     UNIFORM="UNIFORM"
     """Targets are chosen uniformly at random.
@@ -38,8 +39,8 @@ class PATCHModel(
     UndirectedModel, BinaryClassModel):
     """The PATCHModel joins nodes to the network based on a combination of
     [P]referential [A]ttachment, [T]riadic [C]losure and [H]omophily.
-    Based on the triadic closure probability :attr:`tau`, links are formed either locally or globally.
-    For local links, nodes can connect only to neighbors of existing neighbors.
+    Based on the triadic closure probability :attr:`tau`, links are formed either
+    globally (1-:attr:`tau`) or among neighbors of existing neighbors (:attr:`tau`).
     Globally, nodes can connect to any other node in the network.
 
     How a target node is selected from the set of available nodes then
@@ -63,11 +64,14 @@ class PATCHModel(
         targets are chosen from either set.
     lfm_local : CompoundLFM
         Defines how local targets are chosen.
-        Both :attr:`lfm_local` and :attr:`lfm_global` can be set to any value defined in :class:`.CompoundLFM`:
+        Both :attr:`lfm_local` and :attr:`lfm_global` can be set to any value
+        defined in :class:`.CompoundLFM`:
 
         1. :attr:`.CompoundLFM.UNIFORM`: the target nodes are chosen randomly
         2. :attr:`.CompoundLFM.HOMOPHILY`: the target nodes are chosen based on homophily
-        3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on preferential attachment and homophily (choose ``h_m = h_M = 0.5`` to neutralize the effect of homophily; see :class:`.PAHModel` for details).
+        3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on preferential attachment
+        and homophily (choose ``h_m = h_M = 0.5`` to neutralize the effect of homophily;
+        see :class:`.PAHModel` for details).
 
         For options 2. and 3. the ``lfm_params`` dictionary has
         to contain the homophily values of the minority and
