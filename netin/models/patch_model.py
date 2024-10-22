@@ -174,6 +174,16 @@ class PATCHModel(
                 * self.h.get_target_probabilities(source)
         return self.uniform.get_target_probabilities(source)
 
+    def _get_tc_target_probabilities(self, source: int) -> np.ndarray:
+        self.trigger_event(event=Event.TARGET_SELECTION_LOCAL, source=source)
+        return self._get_compound_target_probabilities(
+            source=source, lfm=self.lfm_local)
+
+    def _get_global_target_probabilities(self, source: int) -> np.ndarray:
+        self.trigger_event(event=Event.TARGET_SELECTION_LOCAL, source=source)
+        return self._get_compound_target_probabilities(
+            source=source, lfm=self.lfm_local)
+
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         """Compute the target probabilities based on triadic closure and
         the specified compound link formation mechanisms for global and
@@ -192,12 +202,11 @@ class PATCHModel(
         p_target = super().compute_target_probabilities(source)
         if self._rng.uniform() < self.tau:
             p_target *= self.tc.get_target_probabilities(source)
-            p_target *= self._get_compound_target_probabilities(
-                source=source, lfm=self.lfm_local)
-            self.trigger_event(event=Event.TARGET_SELECTION_LOCAL, source=source)
+            if not np.any(p_target):
+                p_target *= self._get_global_target_probabilities(source)
+            else:
+                p_target *= self._get_tc_target_probabilities(source)
         else:
-            p_target *= self._get_compound_target_probabilities(
-                source=source, lfm=self.lfm_global)
-            self.trigger_event(event=Event.TARGET_SELECTION_GLOBAL, source=source)
+            p_target *= self._get_global_target_probabilities(source)
 
         return p_target / p_target.sum()
