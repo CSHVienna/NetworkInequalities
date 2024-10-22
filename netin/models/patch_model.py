@@ -38,7 +38,7 @@ class PATCHModel(
     UndirectedModel, BinaryClassModel):
     """The PATCHModel joins nodes to the network based on a combination of
     [P]referential [A]ttachment, [T]riadic [C]losure and [H]omophily.
-    Based on the triadic closure probability :attr:`p_tc`, links are formed either locally or globally.
+    Based on the triadic closure probability :attr:`tau`, links are formed either locally or globally.
     For local links, nodes can connect only to neighbors of existing neighbors.
     Globally, nodes can connect to any other node in the network.
 
@@ -54,10 +54,10 @@ class PATCHModel(
         The fraction of the minority group.
     m : int
         The number of new edges per node.
-    p_tc : float
+    tau : float
         The probability for triadic closure, meaning that an edge will
         be formed locally among the neighbors of existing neighbors.
-        With the complementary probability (``1 - p_tc``), all existing
+        With the complementary probability (``1 - tau``), all existing
         nodes are available for connection.
         See :attr:`lfm_local` and :attr:`lfm_global` for a specification of how
         targets are chosen from either set.
@@ -94,7 +94,7 @@ class PATCHModel(
     lfm_local: CompoundLFM
     lfm_global: CompoundLFM
 
-    p_tc: float
+    tau: float
 
     lfm_params: Optional[Dict[str, float]]
     uniform: Uniform
@@ -105,17 +105,17 @@ class PATCHModel(
     def __init__(
             self, *args,
             N: int, f_m: float, m:int,
-            p_tc: float,
+            tau: float,
             lfm_local: CompoundLFM,
             lfm_global: CompoundLFM,
             lfm_params: Optional[Dict[str, float]] = None,
             seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
-        validate_float(p_tc, 0, 1)
+        validate_float(tau, 0, 1)
         super().__init__(
             *args, N=N, m=m, f_m=f_m,
             seed=seed, **kwargs)
-        self.p_tc = p_tc
+        self.tau = tau
 
         assert lfm_local in CompoundLFM.__members__.values(),\
             f"Invalid local link formation mechanism `{lfm_local}`"
@@ -182,7 +182,7 @@ class PATCHModel(
             Target probabilities for all nodes in the network.
         """
         p_target = super().compute_target_probabilities(source)
-        if self._rng.uniform() < self.p_tc:
+        if self._rng.uniform() < self.tau:
             p_target *= self.tc.get_target_probabilities(source)
             p_target *= self._get_compound_target_probabilities(
                 source=source, lfm=self.lfm_local)

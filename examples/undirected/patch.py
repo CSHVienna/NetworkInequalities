@@ -7,13 +7,13 @@ def run():
     f_m = 0.1
     h_MM = 0.9
     h_mm = 0.9
-    p_tc = 0.8
+    tau = 0.8
     lfm_l = CompoundLFM.PAH
     lfm_g = CompoundLFM.PAH
     seed = 1234
 
     model = PATCHModel(N=n, m=k, f_m=f_m,
-                       p_tc=p_tc,
+                       tau=tau,
                        lfm_local=lfm_l, lfm_global=lfm_g,
                        lfm_params={'h_m': h_mm, 'h_M': h_MM},
                        seed=seed)

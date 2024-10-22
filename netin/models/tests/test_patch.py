@@ -18,13 +18,13 @@ class TestPATCHModel:
     @staticmethod
     def create_model(
             N=5, f_m=.3, m=2,
-            p_tc=.8,
+            tau=.8,
             lfm_local=CompoundLFM.PAH,
             lfm_global=CompoundLFM.PAH,
             lfm_params={"h_m": .8, "h_M": .8},
             seed=123) -> PATCHModel:
         model = PATCHModel(
-            N=N, f_m=f_m, m=m, p_tc=p_tc,
+            N=N, f_m=f_m, m=m, tau=tau,
             lfm_local=lfm_local, lfm_global=lfm_global,
             lfm_params=lfm_params,
             seed=seed)
@@ -151,7 +151,7 @@ class TestPATCHModel:
         for seed in range(N_iter):
             g_patch = TestPATCHModel.create_model(
                 N=N,
-                p_tc=0.0,
+                tau=0.0,
                 lfm_local=CompoundLFM.PAH, lfm_global=CompoundLFM.PAH,
                 seed=seed)
             g_pah = PAHModel(
