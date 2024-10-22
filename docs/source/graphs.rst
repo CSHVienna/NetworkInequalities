@@ -1,9 +1,10 @@
 Graphs
 =======
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-   :glob:
+.. autoclass:: netin.graphs.Graph
+   :members:
+   :inherited-members:
 
-   generators/*
+.. autoclass:: netin.graphs.DiGraph
+   :members:
+   :inherited-members:

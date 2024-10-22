@@ -1,9 +1,59 @@
-from typing import Union, Set, List, Tuple
+from typing import Union, Set, List, Iterable, Tuple
 
 import numpy as np
 import pandas as pd
 import powerlaw
+import networkx as nx
 
+from ..graphs.binary_class_node_vector import BinaryClassNodeVector
+
+def fit_powerlaw_groups(
+        g: Union[nx.Graph, nx.DiGraph],
+        node_class_values: Union[BinaryClassNodeVector, str],
+        metric: str)\
+    -> Tuple[powerlaw.Fit, powerlaw.Fit]:
+    """
+    Fits a power law to the distribution given by 'metric' (the in- or out-degree of nodes in the graph).
+
+    Parameters
+    ----------
+    g: Graph
+        Graph to fit power law to
+
+    node_class_values: Union[BinaryClassNodeVector, str]
+        If a string, it must be the name of the node attribute set in ``g`` that contains the class labels. The values must be booleans set to one if the node belongs to the minority group.
+        If a BinaryClassNodeVector, it must be the node class values.
+
+    metric: str
+        metric to fit power law to
+
+    Returns
+    -------
+    powerlaw.Fit
+        power law fit of the majority class
+
+    powerlaw.Fit
+        power law fit of the minority class
+    """
+
+    def _get_value_fnc(
+            g: nx.Graph,
+            metric: str) -> Iterable:
+        if metric not in ['in_degree', 'out_degree', 'degree']:
+            raise ValueError(f"`metric` must be either 'in_degree', 'out_degree' or 'degree', not {metric}")
+        return g.in_degree if metric == 'in_degree' else g.out_degree if metric == 'out_degree' else g.degree
+
+    mask_min = node_class_values.get_minority_mask()\
+        if isinstance(node_class_values, BinaryClassNodeVector) else\
+            g.nodes[node_class_values]
+    fnc = _get_value_fnc(g, metric)
+
+    dM = [d for n, d in fnc if mask_min[n]]
+    dm = [d for n, d in fnc if not mask_min[n]]
+
+    fit_M = powerlaw.Fit(data=dM, discrete=True, xmin=min(dM), xmax=max(dM), verbose=False)
+    fit_m = powerlaw.Fit(data=dm, discrete=True, xmin=min(dm), xmax=max(dm), verbose=False)
+    return fit_M, fit_m
 
 def get_pdf(df: pd.DataFrame, x: str, total: float) -> Tuple[np.ndarray, np.ndarray]:
     """Computes the probability density of the input data.
@@ -73,7 +123,7 @@ def get_ccdf(df: pd.DataFrame, x: str, total: float = None) -> (np.ndarray, np.n
 
 
 def get_disparity(df: pd.DataFrame, x: str, total: float = None) -> (np.ndarray, np.ndarray):
-    """Computes the disparity of the input data given by the column `x`.
+    """Computes the disparity of the input data given by the column ``x``.
 
     Parameters
     ----------
@@ -96,7 +146,7 @@ def get_disparity(df: pd.DataFrame, x: str, total: float = None) -> (np.ndarray,
 
     gx, gy = get_gini_coefficient(df, x, total)
     fx, fy = get_fraction_of_minority(df, x, total)
-    f_m = df.query("class_label == @const.MINORITY_LABEL").shape[0] / df.shape[0]
+    f_m = df.query("real_label == @const.MINORITY_LABEL").shape[0] / df.shape[0]
 
     inequality_y = ranking.get_ranking_inequality(gy)
     inequity_x = ranking.get_ranking_inequity(f_m, fy)

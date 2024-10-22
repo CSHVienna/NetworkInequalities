@@ -25,6 +25,7 @@ extensions = [
     # https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html
     # Make numpy style docstrings interpretable by sphinx
     # 'sphinx.ext.napoleon',
+    'numpydoc'
 ]
 
 templates_path = ['_templates']
@@ -35,9 +36,14 @@ suppress_warnings = ["ref.citation", "ref.footnote"]
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
+html_theme = 'furo'
 html_static_path = ['_static']
 html_logo = 'netin-logo.png'
 html_favicon = 'netin-logo.png'
 html_theme_options = {
 }
+html_css_files = [
+    'style.css',
+]
+
+numpydoc_show_class_members = False

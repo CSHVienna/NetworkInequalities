@@ -1,18 +1,20 @@
 """
 NetIn is a Python package for the analysis of network inequalities.
-It is based on the NetworkX package and provides a set of functions to study inequalities (e.g., in ranking, inference)
-in social networks.
+It provides models to simulate social networks and functions
+to study inequalities (e.g., in ranking, inference) in them.
 """
 
-__version__ = '1.0.8'
-
-from netin import generators
-from netin.generators import *
+__version__ = '2.0.0a1'
 
 from netin import utils
 from netin.utils import *
 
 from netin import algorithms
-from netin.algorithms import sampling
+from netin.algorithms import janus
 
-from netin.generators import convert_networkx_to_netin
+from netin import graphs
+from netin.graphs import *
+
+from netin import link_formation_mechanisms
+from netin import models
+from netin import filters

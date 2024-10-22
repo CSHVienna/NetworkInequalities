@@ -12,3 +12,4 @@ from .networks import get_average_degree
 from .networks import get_average_degrees
 from .networks import get_similitude
 from .networks import get_node_attributes
+from .networks import get_node_metadata_as_dataframe

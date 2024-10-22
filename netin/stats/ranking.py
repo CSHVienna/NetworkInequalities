@@ -9,8 +9,8 @@ from netin.utils import constants as const
 ### Inequity (fraction of minority in ranking) ###
 
 def get_ranking_inequity(f_m: float, ys: np.array) -> float:
-    """Computes ME: mean error distance between the fraction of minority in each top-k rank `f_m^k` and
-    the fraction of minority of the entire graph `f_m`. ME is the ranking inequity of the rank.
+    """Computes ME: mean error distance between the fraction of minority in each top-k rank ``f_m^k`` and
+    the fraction of minority of the entire graph ``f_m``. ME is the ranking inequity of the rank.
 
     Parameters
     ----------
@@ -48,9 +48,9 @@ def get_ranking_inequity_class(me: float, beta: float = None) -> str:
 
     Notes
     -----
-    See :func:`get_ranking_inequity` for more details on `me`.
+    See :func:`get_ranking_inequity` for more details on ``me``.
 
-    By default, `beta=0.05`, see [Espin-Noboa2022].
+    By default, ``beta=0.05``, see [Espin-Noboa2022]_.
     """
     beta = const.INEQUITY_BETA if beta is None else beta
     label = const.INEQUITY_OVER if me > beta else const.INEQUITY_UNDER if me < -beta else const.INEQUITY_FAIR
@@ -84,7 +84,7 @@ def get_fraction_of_minority_in_ranking(df: pd.DataFrame, x: str) -> \
         column = f"{x}_rank"
         tmp = df.query(f"{column} <= @rank").copy()
         total = tmp.shape[0]
-        efm = np.nan if total == 0 else tmp.query("class_label == @const.MINORITY_LABEL").shape[0] / total
+        efm = np.nan if total == 0 else tmp.query("real_label == @const.MINORITY_LABEL").shape[0] / total
         ys.append(efm)
     return xs, ys
 
@@ -128,7 +128,7 @@ def get_ranking_inequality_class(gini_global: float, cuts: Set[float] = const.IN
 
     Notes
     -----
-    By default, `cuts={0.3, 0.6}`, see [Espin-Noboa2022].
+    By default, ``cuts={0.3, 0.6}``, see [Espin-Noboa2022]_.
     """
     cuts = const.INEQUALITY_CUTS if cuts is None else cuts
     if len(cuts) != 2 or len(set(cuts)) == 1:
@@ -142,7 +142,7 @@ def get_ranking_inequality_class(gini_global: float, cuts: Set[float] = const.IN
 
 def get_gini_in_ranking(df: pd.DataFrame, x: str) -> Union[Tuple[np.ndarray, np.ndarray], Tuple[list, list]]:
     """
-    Computes the Gini coefficient of a distribution `df[x]` in each top-k rank.
+    Computes the Gini coefficient of a distribution ``df[x]`` in each top-k rank.
 
     Parameters
     ----------
@@ -171,7 +171,7 @@ def get_gini_in_ranking(df: pd.DataFrame, x: str) -> Union[Tuple[np.ndarray, np.
 
 def gini(data: np.array) -> float:
     """
-    Calculates the Gini coefficient of a distribution.
+    Calculates the Gini coefficient ([Gini]_) of a distribution.
 
     Parameters
     ----------
@@ -183,10 +183,6 @@ def gini(data: np.array) -> float:
     float
         The Gini coefficient of the distribution.
 
-    References
-    ----------
-    `Gini coefficient <http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm>`_
-    `Implementation <https://github.com/oliviaguest/gini/blob/master/gini.py>`_
     """
     # https://github.com/oliviaguest/gini/blob/master/gini.py
     # based on bottom eq:

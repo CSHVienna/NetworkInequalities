@@ -1,14 +1,20 @@
-from netin import PA
+from netin.models import PAModel
+from netin.utils import SimulationTimer
 
 
 def run():
-    n = 200
-    k = 2
+    N = 4000
+    m = 2
     f_m = 0.1
     seed = 1234
-    g = PA(n=n, k=k, f_m=f_m, seed=seed)
-    g.generate()
-    g.info()
+
+    model = PAModel(N=N,
+                    m=m,
+                    f_m=f_m,
+                    seed=seed)
+    timer = SimulationTimer(model)
+    model.simulate()
+    print(f"Simulated model {model} in {timer.time:.2f} seconds.")
 
 
 if __name__ == '__main__':

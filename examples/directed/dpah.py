@@ -1,18 +1,25 @@
-from netin import DPAH
+from netin.models import DPAHModel
+from netin.utils import SimulationTimer
 
 
 def run():
-    n = 1000
+    N = 1000
     d = 0.005
     f_m = 0.1
     plo_M = 2.0
     plo_m = 2.0
-    h_MM = 0.5
+    h_MM = 0.2
     h_mm = 0.9
     seed = 1234
-    g = DPAH(n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
-    g.generate()
-    g.info()
+
+    model = DPAHModel(N=N, d=d, f_m=f_m,
+                      plo_M=plo_M, plo_m=plo_m,
+                      h_m=h_mm, h_M=h_MM,
+                      seed=seed)
+
+    timer = SimulationTimer(model)
+    model.simulate()
+    print(f"Simulated model {model} in {timer.time:.2f} seconds.")
 
 
 if __name__ == '__main__':

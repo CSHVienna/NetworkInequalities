@@ -1,17 +1,26 @@
-from netin import PATCH
-
+from netin.models import PATCHModel, CompoundLFM
+from netin.utils import SimulationTimer
 
 def run():
-    n = 200
+    n = 100
     k = 2
     f_m = 0.1
-    h_MM = 0.1
+    h_MM = 0.9
     h_mm = 0.9
-    tc = 0.5
+    tau = 0.8
+    lfm_l = CompoundLFM.PAH
+    lfm_g = CompoundLFM.PAH
     seed = 1234
-    g = PATCH(n=n, k=k, f_m=f_m, h_MM=h_MM, h_mm=h_mm, tc=tc, seed=seed)
-    g.generate()
-    g.info()
+
+    model = PATCHModel(N=n, m=k, f_m=f_m,
+                       tau=tau,
+                       lfm_tc=lfm_l, lfm_global=lfm_g,
+                       lfm_params={'h_m': h_mm, 'h_M': h_MM},
+                       seed=seed)
+
+    timer = SimulationTimer(model)
+    model.simulate()
+    print(f"Simulated model {model} in {timer.time:.2f} seconds.")
 
 
 if __name__ == '__main__':

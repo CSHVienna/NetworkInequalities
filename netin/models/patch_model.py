@@ -1,0 +1,212 @@
+from typing import Union, Optional
+import enum
+
+import numpy as np
+
+from .undirected_model import UndirectedModel
+from .binary_class_model import BinaryClassModel
+from ..utils.event_handling import Event
+from ..utils.constants import CLASS_ATTRIBUTE
+from ..utils.validator import validate_float
+from ..link_formation_mechanisms.two_class_homophily import TwoClassHomophily
+from ..link_formation_mechanisms.preferential_attachment import PreferentialAttachment
+from ..link_formation_mechanisms.triadic_closure import TriadicClosure
+from ..link_formation_mechanisms.uniform import Uniform
+
+class CompoundLFM(enum.Enum):
+    """A combination of link formation mechanism.
+    This class is used to define how triadic closure or global links
+    should be formed in the :class:`.PATCHModel`.
+    """
+    UNIFORM="UNIFORM"
+    """Targets are chosen uniformly at random.
+
+    :meta hide-value:"""
+
+    HOMOPHILY="HOMOPHILY"
+    """Targets are chosen based on homophily (see :class:`.Homophily`
+       and :class:`.HomophilyModel` for details).
+
+    :meta hide-value:"""
+
+    PAH="PAH"
+    """Targets are chosen based on homophily and preferential attachment
+       (see :class:`.PAHModel` for details).
+
+    :meta hide-value:"""
+
+class PATCHModel(
+    UndirectedModel, BinaryClassModel):
+    """The PATCHModel joins nodes to the network based on a combination of
+    [P]referential [A]ttachment, [T]riadic [C]losure and [H]omophily.
+    Based on the triadic closure probability :attr:`tau`, links are formed either
+    globally (1-:attr:`tau`) or among neighbors of existing neighbors (:attr:`tau`).
+    Globally, nodes can connect to any other node in the network.
+
+    How a target node is selected from the set of available nodes then
+    depends on the other link formation mechanisms of preferential attachment and/or homophily.
+    See :attr:`.lfm_tc` and :attr:`lfm_global` for details.
+
+    Parameters
+    ----------
+    N : int
+        The number of nodes to be added.
+    f_m : float
+        The fraction of the minority group.
+    m : int
+        The number of new edges per node.
+    tau : float
+        The probability for triadic closure, meaning that an edge will
+        be formed locally among the neighbors of existing neighbors.
+        With the complementary probability (``1 - tau``), all existing
+        nodes are available for connection.
+        See :attr:`lfm_tc` and :attr:`lfm_global` for a specification of how
+        targets are chosen from either set.
+    lfm_tc : CompoundLFM
+        Defines how triadic closure targets are chosen.
+        Both :attr:`lfm_tc` and :attr:`lfm_global` can be set to any value
+        defined in :class:`.CompoundLFM`:
+
+        1. :attr:`.CompoundLFM.UNIFORM`: the target nodes are chosen randomly
+        2. :attr:`.CompoundLFM.HOMOPHILY`: the target nodes are chosen based on homophily
+        3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on preferential attachment
+        and homophily (choose ``h_m = h_M = 0.5`` to neutralize the effect of homophily;
+        see :class:`.PAHModel` for details).
+
+        For options 2. and 3. the ``lfm_params`` dictionary has
+        to contain the homophily values of the minority and
+        majority group (for instance by setting ``lfm_params={"h_m": 0.2, "h_M": 0.8}``).
+    lfm_global : CompoundLFM
+        Defines how global targets are chosen.
+        See :attr:`lfm_tc` for details.
+    lfm_params : Optional[Dict[str, float]], optional
+        Dictionary containing additional parameterization of link
+        formation mechanisms, by default None.
+        If either triadic closure or global link formation mechanisms contains
+        homophily (:attr:`.CompoundLFM.Homophily` or :attr:'.CompoundLFM.PAH`), the
+        dictionary should contain the keys :attr:`h_m` and :attr:`h_M`, containing
+        the desired homophily parameters.
+        See :class:`.HomophilyModel` for details on the homophily parameters.
+    seed : Union[int, np.random.Generator], optional
+        _description_, by default 1
+    """
+
+    EVENTS = [
+        Event.TARGET_SELECTION_LOCAL, Event.TARGET_SELECTION_GLOBAL] + UndirectedModel.EVENTS
+    SHORT = "PATCH"
+
+    lfm_tc: CompoundLFM
+    lfm_global: CompoundLFM
+
+    tau: float
+    h_M: float
+    h_m: float
+
+    uniform: Uniform
+    tc: TriadicClosure
+    h: Optional[TwoClassHomophily]
+    pa: Optional[PreferentialAttachment]
+
+    def __init__(
+            self, *args,
+            N: int, f_m: float, m:int,
+            tau: float,
+            lfm_tc: CompoundLFM,
+            lfm_global: CompoundLFM,
+            h_M: Optional[float] = None,
+            h_m: Optional[float] = None,
+            seed:  Optional[Union[int, np.random.Generator]] = None,
+            **kwargs):
+        validate_float(tau, 0, 1)
+        super().__init__(
+            *args, N=N, m=m, f_m=f_m,
+            seed=seed, **kwargs)
+        self.tau = tau
+
+        assert lfm_tc in CompoundLFM.__members__.values(),\
+            f"Invalid triadic closure link formation mechanism `{lfm_tc}`"
+        assert lfm_global in CompoundLFM.__members__.values(),\
+            f"Invalid global link formation mechanism `{lfm_global}`"
+        self.lfm_tc = lfm_tc
+        self.lfm_global = lfm_global
+
+        if lfm_tc in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)\
+            or lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH):
+            assert None not in (h_M, h_m), "Homophily parameters must be provided"
+            self.h_m = h_m
+            self.h_M = h_M
+
+    def _initialize_lfms(self):
+        """Initializes and configures the link formation mechanisms.
+        This depends on the choice of :attr:`lfm_tc` and :attr:`lfm_global`.
+        The parameters are given by ``lfm_params``.
+        """
+        self.tc = TriadicClosure(
+            N=self._n_nodes_total,
+            graph=self.graph)
+        self.uniform = Uniform(N=self._n_nodes_total)
+
+        if (self.lfm_tc in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH))\
+            or (self.lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)):
+
+            self.h = TwoClassHomophily.from_two_class_homophily(
+                homophily=(self.h_M, self.h_m),
+                node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE)
+            )
+        if CompoundLFM.PAH in (self.lfm_tc, self.lfm_global):
+            self.pa = PreferentialAttachment(
+                N=self._n_nodes_total,
+                graph=self.graph)
+
+    def _get_compound_target_probabilities(self, lfm: CompoundLFM, source: int)\
+        -> np.ndarray:
+        """Return the compound link formation mechanism probability.
+
+        Returns
+        -------
+        numpy.ndarray
+            The target probabilities depending on the chosen :class:`.CompoundLFM`.
+        """
+        if lfm == CompoundLFM.HOMOPHILY:
+            return self.h.get_target_probabilities(source)
+        if lfm == CompoundLFM.PAH:
+            return self.pa.get_target_probabilities(source)\
+                * self.h.get_target_probabilities(source)
+        return self.uniform.get_target_probabilities(source)
+
+    def _get_tc_target_probabilities(self, source: int) -> np.ndarray:
+        self.trigger_event(event=Event.TARGET_SELECTION_LOCAL, source=source)
+        return self._get_compound_target_probabilities(
+            source=source, lfm=self.lfm_tc)
+
+    def _get_global_target_probabilities(self, source: int) -> np.ndarray:
+        self.trigger_event(event=Event.TARGET_SELECTION_LOCAL, source=source)
+        return self._get_compound_target_probabilities(
+            source=source, lfm=self.lfm_tc)
+
+    def compute_target_probabilities(self, source: int) -> np.ndarray:
+        """Compute the target probabilities based on triadic closure and
+        the specified compound link formation mechanisms for global and
+        triadic closure links.
+
+        Parameters
+        ----------
+        source : int
+            The source node.
+
+        Returns
+        -------
+        np.ndarray
+            Target probabilities for all nodes in the network.
+        """
+        p_target = super().compute_target_probabilities(source)
+        if self._rng.uniform() < self.tau:
+            p_target *= self.tc.get_target_probabilities(source)
+            if not np.any(p_target):
+                p_target *= self._get_global_target_probabilities(source)
+            else:
+                p_target *= self._get_tc_target_probabilities(source)
+        else:
+            p_target *= self._get_global_target_probabilities(source)
+
+        return p_target / p_target.sum()

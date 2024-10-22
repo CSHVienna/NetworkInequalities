@@ -60,12 +60,14 @@ classifiers = [
 
 packages = [
     "netin",
-    "netin.generators",
+    "netin.models",
+    "netin.graphs",
+    "netin.algorithms.janus",
+    "netin.filters",
+    "netin.link_formation_mechanisms",
     "netin.utils",
     "netin.stats",
     "netin.viz",
-    "netin.algorithms.sampling",
-    "netin.generators.tests",
 ]
 
 docdirbase = "share/doc/netin-%s" % version
@@ -79,11 +81,6 @@ for d in [
     "directed",
     "undirected",
     "notebooks",
-    "advanced",
-    "algorithms",
-    "basic",
-    "drawing",
-    "subclass",
 ]:
     dd = os.path.join(docdirbase, "examples", d)
     pp = os.path.join("examples", d)
@@ -101,7 +98,10 @@ data.append((dd, glob(os.path.join(pp, "*"))))
 # add the tests subpackage(s)
 package_data = {
     "netin": ["tests/*.py"],
-    "netin.generators": ["tests/*.py"],
+    "netin.filters": ["tests/*.py"],
+    "netin.graphs": ["tests/*.py"],
+    "netin.link_formation_mechanisms": ["tests/*.py"],
+    "netin.models": ["tests/*.py"],
 }
 
 
