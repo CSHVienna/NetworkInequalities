@@ -99,8 +99,9 @@ class PATCHModel(
     lfm_global: CompoundLFM
 
     tau: float
+    h_M: float
+    h_m: float
 
-    lfm_params: Optional[Dict[str, float]]
     uniform: Uniform
     tc: TriadicClosure
     h: Optional[TwoClassHomophily]
@@ -112,7 +113,8 @@ class PATCHModel(
             tau: float,
             lfm_local: CompoundLFM,
             lfm_global: CompoundLFM,
-            lfm_params: Optional[Dict[str, float]] = None,
+            h_M: Optional[float] = None,
+            h_m: Optional[float] = None,
             seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         validate_float(tau, 0, 1)
@@ -127,7 +129,12 @@ class PATCHModel(
             f"Invalid global link formation mechanism `{lfm_global}`"
         self.lfm_local = lfm_local
         self.lfm_global = lfm_global
-        self.lfm_params = lfm_params
+
+        if lfm_local in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)\
+            or lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH):
+            assert None not in (h_M, h_m), "Homophily parameters must be provided"
+            self.h_m = h_m
+            self.h_M = h_M
 
     def _initialize_lfms(self):
         """Initializes and configures the link formation mechanisms.
@@ -141,12 +148,9 @@ class PATCHModel(
 
         if (self.lfm_local in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH))\
             or (self.lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)):
-            assert (self.lfm_params is not None)\
-                and ("h_m" in self.lfm_params)\
-                and ("h_M" in self.lfm_params),\
-                    "Homophily parameters must be provided"
+
             self.h = TwoClassHomophily.from_two_class_homophily(
-                homophily=(self.lfm_params["h_M"], self.lfm_params["h_m"]),
+                homophily=(self.h_M, self.h_m),
                 node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE)
             )
         if CompoundLFM.PAH in (self.lfm_local, self.lfm_global):
