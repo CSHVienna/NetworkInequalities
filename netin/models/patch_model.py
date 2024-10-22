@@ -15,7 +15,7 @@ from ..link_formation_mechanisms.uniform import Uniform
 
 class CompoundLFM(enum.Enum):
     """A combination of link formation mechanism.
-    This class is used to define how local or global links
+    This class is used to define how triadic closure or global links
     should be formed in the :class:`.PATCHModel`.
     """
     UNIFORM="UNIFORM"
@@ -63,7 +63,7 @@ class PATCHModel(
         See :attr:`lfm_tc` and :attr:`lfm_global` for a specification of how
         targets are chosen from either set.
     lfm_tc : CompoundLFM
-        Defines how local targets are chosen.
+        Defines how triadic closure targets are chosen.
         Both :attr:`lfm_tc` and :attr:`lfm_global` can be set to any value
         defined in :class:`.CompoundLFM`:
 
@@ -82,7 +82,7 @@ class PATCHModel(
     lfm_params : Optional[Dict[str, float]], optional
         Dictionary containing additional parameterization of link
         formation mechanisms, by default None.
-        If either local or global link formation mechanisms contains
+        If either triadic closure or global link formation mechanisms contains
         homophily (:attr:`.CompoundLFM.Homophily` or :attr:'.CompoundLFM.PAH`), the
         dictionary should contain the keys :attr:`h_m` and :attr:`h_M`, containing
         the desired homophily parameters.
@@ -124,7 +124,7 @@ class PATCHModel(
         self.tau = tau
 
         assert lfm_tc in CompoundLFM.__members__.values(),\
-            f"Invalid local link formation mechanism `{lfm_tc}`"
+            f"Invalid triadic closure link formation mechanism `{lfm_tc}`"
         assert lfm_global in CompoundLFM.__members__.values(),\
             f"Invalid global link formation mechanism `{lfm_global}`"
         self.lfm_tc = lfm_tc
@@ -187,7 +187,7 @@ class PATCHModel(
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         """Compute the target probabilities based on triadic closure and
         the specified compound link formation mechanisms for global and
-        local links.
+        triadic closure links.
 
         Parameters
         ----------

@@ -79,16 +79,16 @@ class TestPATCHModel:
 
         model.register_event_handler(
             event=Event.TARGET_SELECTION_LOCAL,
-            function=lambda: _inc_counter("local"))
+            function=lambda: _inc_counter("tc"))
         model.register_event_handler(
             event=Event.TARGET_SELECTION_GLOBAL,
             function=lambda: _inc_counter("global"))
 
         model.simulate()
 
-        assert counter["local"] > 0
+        assert counter["tc"] > 0
         assert counter["global"] > 0
-        assert counter["local"] + counter["global"] == (model.N - model.m) * model.m
+        assert counter["tc"] + counter["global"] == (model.N - model.m) * model.m
 
     def test_simulation(self):
         model = TestPATCHModel.create_model(N=750)
