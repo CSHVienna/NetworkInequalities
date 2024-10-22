@@ -14,7 +14,7 @@ def run():
 
     model = PATCHModel(N=n, m=k, f_m=f_m,
                        tau=tau,
-                       lfm_local=lfm_l, lfm_global=lfm_g,
+                       lfm_tc=lfm_l, lfm_global=lfm_g,
                        lfm_params={'h_m': h_mm, 'h_M': h_MM},
                        seed=seed)
 

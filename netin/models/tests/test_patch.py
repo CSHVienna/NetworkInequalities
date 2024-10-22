@@ -19,13 +19,13 @@ class TestPATCHModel:
     def create_model(
             N=5, f_m=.3, m=2,
             tau=.8,
-            lfm_local=CompoundLFM.PAH,
+            lfm_tc=CompoundLFM.PAH,
             lfm_global=CompoundLFM.PAH,
             lfm_params={"h_m": .8, "h_M": .8},
             seed=123) -> PATCHModel:
         model = PATCHModel(
             N=N, f_m=f_m, m=m, tau=tau,
-            lfm_local=lfm_local, lfm_global=lfm_global,
+            lfm_tc=lfm_tc, lfm_global=lfm_global,
             lfm_params=lfm_params,
             seed=seed)
         return model
@@ -44,9 +44,9 @@ class TestPATCHModel:
         h_params = dict(h_m = .8, h_M = .8)
         for lfm_l, lfm_g in product((CompoundLFM.UNIFORM, CompoundLFM.HOMOPHILY, CompoundLFM.PAH), repeat=2):
             model = TestPATCHModel.create_model(
-                lfm_local=lfm_l, lfm_global=lfm_g,
+                lfm_tc=lfm_l, lfm_global=lfm_g,
             lfm_params=h_params)
-            assert model.lfm_local == lfm_l
+            assert model.lfm_tc == lfm_l
             assert model.lfm_global == lfm_g
 
             model.simulate()
@@ -55,7 +55,7 @@ class TestPATCHModel:
                 assert model.h is not None
                 with pytest.raises(AssertionError):
                     m_fail = TestPATCHModel.create_model(
-                        lfm_local=lfm_l,
+                        lfm_tc=lfm_l,
                         lfm_global=lfm_g,
                         lfm_params=None)
                     m_fail.simulate()
@@ -65,7 +65,7 @@ class TestPATCHModel:
 
         with pytest.raises(AssertionError):
             _ = TestPATCHModel.create_model(
-                lfm_local="test")
+                lfm_tc="test")
         with pytest.raises(AssertionError):
             _ = TestPATCHModel.create_model(
                 lfm_global="test")
@@ -152,7 +152,7 @@ class TestPATCHModel:
             g_patch = TestPATCHModel.create_model(
                 N=N,
                 tau=0.0,
-                lfm_local=CompoundLFM.PAH, lfm_global=CompoundLFM.PAH,
+                lfm_tc=CompoundLFM.PAH, lfm_global=CompoundLFM.PAH,
                 seed=seed)
             g_pah = PAHModel(
                 N=g_patch.N, m=g_patch.m, f_m=g_patch.f_m,
