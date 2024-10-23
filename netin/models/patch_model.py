@@ -180,9 +180,9 @@ class PATCHModel(
             source=source, lfm=self.lfm_tc)
 
     def _get_global_target_probabilities(self, source: int) -> np.ndarray:
-        self.trigger_event(event=Event.TARGET_SELECTION_LOCAL, source=source)
+        self.trigger_event(event=Event.TARGET_SELECTION_GLOBAL, source=source)
         return self._get_compound_target_probabilities(
-            source=source, lfm=self.lfm_tc)
+            source=source, lfm=self.lfm_global)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         """Compute the target probabilities based on triadic closure and
