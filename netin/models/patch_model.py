@@ -107,6 +107,8 @@ class PATCHModel(
     h: Optional[TwoClassHomophily]
     pa: Optional[PreferentialAttachment]
 
+    _node_curr: int
+
     def __init__(
             self, *args,
             N: int, f_m: float, m:int,
@@ -129,6 +131,7 @@ class PATCHModel(
             f"Invalid global link formation mechanism `{lfm_global}`"
         self.lfm_tc = lfm_tc
         self.lfm_global = lfm_global
+        self._node_curr = -1
 
         if lfm_tc in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)\
             or lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH):
@@ -200,13 +203,15 @@ class PATCHModel(
             Target probabilities for all nodes in the network.
         """
         p_target = super().compute_target_probabilities(source)
-        if self._rng.uniform() < self.tau:
-            p_target *= self.tc.get_target_probabilities(source)
-            if not np.any(p_target):
-                p_target *= self._get_global_target_probabilities(source)
-            else:
-                p_target *= self._get_tc_target_probabilities(source)
-        else:
+
+        if self._node_curr != source:
+            self._node_curr = source
             p_target *= self._get_global_target_probabilities(source)
+        else:
+            if self._rng.uniform() < self.tau:
+                p_target *= self.tc.get_target_probabilities(source)
+                p_target *= self._get_tc_target_probabilities(source)
+            else:
+                p_target *= self._get_global_target_probabilities(source)
 
         return p_target / p_target.sum()
