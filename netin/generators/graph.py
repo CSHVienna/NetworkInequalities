@@ -84,7 +84,7 @@ class Graph(nx.Graph):
         """
         val.validate_int(self.n, minimum=2)
         val.validate_float(self.f_m, minimum=1 / self.n, maximum=(self.n - 1) / self.n)
-        self.seed = self.seed if self.seed is not None else np.random.randint(0, 2 ** 32)
+        self.seed = self.seed if self.seed is not None else np.random.randint(0, 2 ** 10)
 
     def set_class_info(self, class_attribute: str = const.CLASS_ATTRIBUTE,
                        class_values: list = None,
