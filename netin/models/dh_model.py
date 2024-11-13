@@ -25,7 +25,7 @@ class DHModel(DirectedModel):
         The power law exponent for the minority activity.
     h_mm : float
         The homophily of the minority nodes.
-    h_M : float
+    h_MM : float
         The homophily of the majority nodes.
     seed : Union[int, np.random.Generator, None], optional
         Randomization seed or generator, by default None.
@@ -34,7 +34,7 @@ class DHModel(DirectedModel):
     SHORT = "DH"
 
     h_mm: float
-    h_M: float
+    h_MM: float
 
     h: TwoClassHomophily
 
@@ -42,11 +42,11 @@ class DHModel(DirectedModel):
             self, *args,
             N: int, f_m: float, d: float,
             plo_M: float, plo_m: float,
-            h_mm: float, h_M: float,
+            h_mm: float, h_MM: float,
             seed: Union[int, np.random.Generator, None] = None, **kwargs):
         super().__init__(*args, N=N, f_m=f_m, d=d, plo_M=plo_M, plo_m=plo_m, seed=seed, **kwargs)
         self.h_mm = h_mm
-        self.h_M = h_M
+        self.h_MM = h_MM
 
     def _initialize_lfms(self):
         """Initializes the link formation mechanisms for the DHModel.
@@ -54,7 +54,7 @@ class DHModel(DirectedModel):
         super()._initialize_lfms()
         self.h = TwoClassHomophily.from_two_class_homophily(
             node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE),
-            homophily=(self.h_M, self.h_mm))
+            homophily=(self.h_MM, self.h_mm))
 
     def compute_target_probabilities(self, source: int)\
         -> np.ndarray:
