@@ -12,7 +12,7 @@ class TriadicClosure(LinkFormationMechanism):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes.
     graph : Graph
         The graph used to keep track of friends of friends.
@@ -20,9 +20,9 @@ class TriadicClosure(LinkFormationMechanism):
     _a_friend_of_friends: np.ndarray
     _source_curr: int
 
-    def __init__(self, N: int, graph: Graph) -> None:
-        super().__init__(N=N)
-        assert N >= len(graph),\
+    def __init__(self, n: int, graph: Graph) -> None:
+        super().__init__(n=n)
+        assert n >= len(graph),\
             "The number of nodes must be greater or equals to the number of nodes in the graph."
         self._source_curr = -1
         self.graph = graph
@@ -40,7 +40,7 @@ class TriadicClosure(LinkFormationMechanism):
         """
         self._source_curr = source
 
-        self._a_friend_of_friends = np.zeros(self.N)
+        self._a_friend_of_friends = np.zeros(self.n)
         fof = [
             f_o_f\
                 for friend in self.graph.neighbors(source)\

@@ -42,17 +42,17 @@ class JanusModelFitting(Janus):
 
     def _H_fitting(self, first_mover_bias: bool = False) -> Dict[str, Dict[float, float]]:
         evidences = {}
-        for h_m in np.linspace(0., 1., 10):
-            for h_M in np.linspace(0., 1., 10):
-                h = self.get_H_hypothesis(round(h_m, 1), round(h_M, 1), first_mover_bias)
+        for h_mm in np.linspace(0., 1., 10):
+            for h_MM in np.linspace(0., 1., 10):
+                h = self.get_H_hypothesis(round(h_mm, 1), round(h_MM, 1), first_mover_bias)
                 e = self.generate_evidences(h)
                 evidences[h.name] = e
 
         return self._get_best_evidence(evidences)
 
-    def get_H_hypothesis(self, h_m: float = 1.0, h_M: float = 1.0, first_mover_bias: bool = False) -> Hypothesis:
-        assert h_m >= 0 and h_m <= 1.0 and h_M >= 0.0 and h_M <= 1.0
-        name = f"H_hm{h_m}_hM{h_M}"
+    def get_H_hypothesis(self, h_mm: float = 1.0, h_MM: float = 1.0, first_mover_bias: bool = False) -> Hypothesis:
+        assert h_mm >= 0 and h_mm <= 1.0 and h_MM >= 0.0 and h_MM <= 1.0
+        name = f"H_hmm{h_mm}_hMM{h_MM}"
 
         indices_m = np.where(self.graph.get_node_class().get_minority_mask())[0]
         indices_M = np.where(self.graph.get_node_class().get_majority_mask())[0]
@@ -68,10 +68,10 @@ class JanusModelFitting(Janus):
         bias_M = 1.0 if not first_mover_bias else 1 / (indices_M + 1)
 
         # Set values for elements in indices_m and indices_M
-        belief_matrix[np.ix_(indices_m, indices_m)] = h_m * bias_m
-        belief_matrix[np.ix_(indices_M, indices_M)] = h_M * bias_M
-        belief_matrix[np.ix_(indices_m, indices_M)] = (1 - h_m) * bias_M
-        belief_matrix[np.ix_(indices_M, indices_m)] = (1 - h_M) * bias_m
+        belief_matrix[np.ix_(indices_m, indices_m)] = h_mm * bias_m
+        belief_matrix[np.ix_(indices_M, indices_M)] = h_MM * bias_M
+        belief_matrix[np.ix_(indices_m, indices_M)] = (1 - h_mm) * bias_M
+        belief_matrix[np.ix_(indices_M, indices_m)] = (1 - h_MM) * bias_m
 
         # setting diagonal to 0
         belief_matrix.setdiag(np.zeros(belief_matrix.shape[0]))
@@ -123,17 +123,17 @@ class JanusModelFitting(Janus):
 
     def _PAH_fitting(self, first_mover_bias: bool = False) -> Dict[str, Dict[float, float]]:
         evidences = {}
-        for h_m in np.linspace(0, 1, 10):
-            for h_M in np.linspace(0, 1, 10):
-                h = self.get_PAH_hypothesis(round(h_m, 1), round(h_M, 1), first_mover_bias)
+        for h_mm in np.linspace(0, 1, 10):
+            for h_MM in np.linspace(0, 1, 10):
+                h = self.get_PAH_hypothesis(round(h_mm, 1), round(h_MM, 1), first_mover_bias)
                 e = self.generate_evidences(h)
                 evidences[h.name] = e
 
         return self._get_best_evidence(evidences)
 
-    def get_PAH_hypothesis(self, h_m: float = 1.0, h_M: float = 1.0, first_mover_bias: bool = False) -> Hypothesis:
-        assert h_m >= 0 and h_m <= 1.0 and h_M >= 0.0 and h_M <= 1.0
-        name = f"PAH_hm{h_m}_hM{h_M}"
+    def get_PAH_hypothesis(self, h_mm: float = 1.0, h_MM: float = 1.0, first_mover_bias: bool = False) -> Hypothesis:
+        assert h_mm >= 0 and h_mm <= 1.0 and h_MM >= 0.0 and h_MM <= 1.0
+        name = f"PAH_hmm{h_mm}_hMM{h_MM}"
 
         indices_m = np.where(self.graph.get_node_class().get_minority_mask())[0]
         indices_M = np.where(self.graph.get_node_class().get_majority_mask())[0]
@@ -150,10 +150,10 @@ class JanusModelFitting(Janus):
         bias_M = 1.0 if not first_mover_bias else (1 / (indices_M + 1)).reshape(1, -1)
 
         # Set values for elements in indices_m and indices_M
-        belief_matrix[np.ix_(indices_m, indices_m)] = h_m * degree[0, indices_m] * bias_m
-        belief_matrix[np.ix_(indices_M, indices_M)] = h_M * degree[0, indices_M] * bias_M
-        belief_matrix[np.ix_(indices_m, indices_M)] = (1 - h_m) * degree[0, indices_M] * bias_M
-        belief_matrix[np.ix_(indices_M, indices_m)] = (1 - h_M) * degree[0, indices_m] * bias_m
+        belief_matrix[np.ix_(indices_m, indices_m)] = h_mm * degree[0, indices_m] * bias_m
+        belief_matrix[np.ix_(indices_M, indices_M)] = h_MM * degree[0, indices_M] * bias_M
+        belief_matrix[np.ix_(indices_m, indices_M)] = (1 - h_mm) * degree[0, indices_M] * bias_M
+        belief_matrix[np.ix_(indices_M, indices_m)] = (1 - h_MM) * degree[0, indices_m] * bias_m
 
         # setting diagonal to 0
         belief_matrix.setdiag(np.zeros(belief_matrix.shape[0]))

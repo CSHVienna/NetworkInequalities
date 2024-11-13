@@ -17,14 +17,14 @@ from ...utils.constants import CLASS_ATTRIBUTE
 class TestPATCHModel:
     @staticmethod
     def create_model(
-            N=5, f_m=.3, m=2,
+            n=5, f_m=.3, m=2,
             p_tc=.8,
             lfm_local=CompoundLFM.PAH,
             lfm_global=CompoundLFM.PAH,
-            lfm_params={"h_m": .8, "h_M": .8},
+            lfm_params={"h_mm": .8, "h_MM": .8},
             seed=123) -> PATCHModel:
         model = PATCHModel(
-            N=N, f_m=f_m, m=m, p_tc=p_tc,
+            n=n, f_m=f_m, m=m, p_tc=p_tc,
             lfm_local=lfm_local, lfm_global=lfm_global,
             lfm_params=lfm_params,
             seed=seed)
@@ -41,7 +41,7 @@ class TestPATCHModel:
         return counter
 
     def test_lfm_assignments(self):
-        h_params = dict(h_m = .8, h_M = .8)
+        h_params = dict(h_mm = .8, h_MM = .8)
         for lfm_l, lfm_g in product((CompoundLFM.UNIFORM, CompoundLFM.HOMOPHILY, CompoundLFM.PAH), repeat=2):
             model = TestPATCHModel.create_model(
                 lfm_local=lfm_l, lfm_global=lfm_g,
@@ -71,7 +71,7 @@ class TestPATCHModel:
                 lfm_global="test")
 
     def test_event_handling(self):
-        model = TestPATCHModel.create_model(N=100)
+        model = TestPATCHModel.create_model(n=100)
         counter = Counter()
 
         def _inc_counter(lfm: str):
@@ -88,18 +88,18 @@ class TestPATCHModel:
 
         assert counter["local"] > 0
         assert counter["global"] > 0
-        assert counter["local"] + counter["global"] == (model.N - model.m) * model.m
+        assert counter["local"] + counter["global"] == (model.n - model.m) * model.m
 
     def test_simulation(self):
-        model = TestPATCHModel.create_model(N=750)
+        model = TestPATCHModel.create_model(n=750)
         model.simulate()
 
         assert model.graph is not None
         assert not model.graph.is_directed()
-        assert len(model.graph) == model.N
+        assert len(model.graph) == model.n
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes())
-        assert (_sum_links // 2) == ((model.N - model.m) * model.m)\
+        assert (_sum_links // 2) == ((model.n - model.m) * model.m)\
             + ((model.m * (model.m - 1)) // 2)
 
         degrees = sorted(
@@ -112,7 +112,7 @@ class TestPATCHModel:
                 for node in model.graph.nodes()\
                     if model.graph.get_node_class("minority")[node])
         assert np.isclose(
-            len(nodes_min), model.f_m * model.N, rtol=0.05)
+            len(nodes_min), model.f_m * model.n, rtol=0.05)
         n_in_group, n_out_group = 0, 0
         for source, target in model.graph.edges():
             if model.graph.get_node_class("minority")[source]\
@@ -124,40 +124,40 @@ class TestPATCHModel:
         assert n_in_group > n_out_group
 
     def test_preload_graph(self):
-        N = 100
-        N_g = 50
-        model = TestPATCHModel.create_model(N=N)
+        n = 100
+        n_g = 50
+        model = TestPATCHModel.create_model(n=n)
 
         with pytest.raises(AssertionError):
             model.preload_graph(DiGraph())
 
         g_pre = Graph()
-        for i in range(N_g):
+        for i in range(n_g):
             g_pre.add_node(i)
         g_pre.add_edge(0, 1)
 
         model.preload_graph(graph=g_pre)
         model.simulate()
 
-        assert len(model.graph) == (N + N_g)
+        assert len(model.graph) == (n + n_g)
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes()) // 2
-        assert _sum_links == (1 + (N * model.m))
+        assert _sum_links == (1 + (n * model.m))
 
     def test_pah_reduction(self):
-        N = 500
-        N_iter = 100
+        n = 500
+        n_iter = 100
         ratios_total = defaultdict(list)
-        for seed in range(N_iter):
+        for seed in range(n_iter):
             g_patch = TestPATCHModel.create_model(
-                N=N,
+                n=n,
                 p_tc=0.0,
                 lfm_local=CompoundLFM.PAH, lfm_global=CompoundLFM.PAH,
                 seed=seed)
             g_pah = PAHModel(
-                N=g_patch.N, m=g_patch.m, f_m=g_patch.f_m,
-                h_m=g_patch.lfm_params["h_m"],
-                h_M=g_patch.lfm_params["h_M"],
+                n=g_patch.n, m=g_patch.m, f_m=g_patch.f_m,
+                h_mm=g_patch.lfm_params["h_mm"],
+                h_MM=g_patch.lfm_params["h_MM"],
                 seed=seed
             )
 

@@ -9,7 +9,7 @@ class InDegreePreferentialAttachment(PreferentialAttachment):
     ----------
     graph : DiGraph
         The graph which is used to update the in-degrees.
-    N : int
+    n : int
         Number of nodes.
     init_degrees : bool, optional
         Whether to initialize the in-degrees from the provided ``graph``, by default True
@@ -18,13 +18,13 @@ class InDegreePreferentialAttachment(PreferentialAttachment):
 
     def __init__(self,
                  graph: DiGraph,
-                 N: int,
+                 n: int,
                  init_degrees: bool = True) -> None:
         assert graph.is_directed(), "The graph must be directed."
-        super().__init__(N=N, graph=graph)
+        super().__init__(n=n, graph=graph)
 
         self._a_degree = NodeVector(
-            N, dtype=int, name="in_degrees")
+            n, dtype=int, name="in_degrees")
         if init_degrees:
             self.initialize_degree_array()
 

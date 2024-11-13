@@ -10,66 +10,66 @@ import numpy as np
 class TestHomophilyModel:
     @staticmethod
     def _create_model(
-        N=1000, m=2, f_m=0.1, h_m=0.5, h_M=0.5, seed=1234
+        n=1000, m=2, f_m=0.1, h_mm=0.5, h_MM=0.5, seed=1234
     ):
         return HomophilyModel(
-            N=N, m=m, f_m=f_m, h_m=h_m, h_M=h_M, seed=seed
+            n=n, m=m, f_m=f_m, h_mm=h_mm, h_MM=h_MM, seed=seed
         )
 
     def test_simulation(self):
-        N = 1000
+        n = 1000
         m = 2
         f_m = .3
 
-        model = TestHomophilyModel._create_model(N=N, m=m, f_m=f_m)
+        model = TestHomophilyModel._create_model(n=n, m=m, f_m=f_m)
         model.simulate()
 
         assert model.graph is not None
         assert not model.graph.is_directed()
-        assert len(model.graph) == N
+        assert len(model.graph) == n
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes())
-        assert (_sum_links // 2) == (((N - m) * m) + (m * (m - 1)) // 2)
+        assert (_sum_links // 2) == (((n - m) * m) + (m * (m - 1)) // 2)
 
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
         assert node_classes is not None
-        assert len(node_classes) == N
+        assert len(node_classes) == n
         assert np.isclose(np.mean(node_classes), f_m, atol=0.05)
 
         assert isinstance(node_classes, BinaryClassNodeVector)
         assert np.isclose(
             node_classes.get_n_minority(),
-            f_m * N, rtol=0.05)
+            f_m * n, rtol=0.05)
 
     def test_preload_graph(self):
-        N = 1000
-        N_pre = 10
+        n = 1000
+        n_pre = 10
         m = 2
         f_m = .3
         f_m_pre = .1
 
-        model = TestHomophilyModel._create_model(N=N, f_m=f_m)
+        model = TestHomophilyModel._create_model(n=n, f_m=f_m)
         with pytest.raises(AssertionError):
             model.preload_graph(DiGraph())
 
         g_pre = Graph()
-        for i in range(N_pre):
+        for i in range(n_pre):
             g_pre.add_node(i)
         g_pre.add_edge(0, 1)
         g_pre.set_node_class(
             CLASS_ATTRIBUTE,
-            BinaryClassNodeVector.from_fraction(N=N_pre, f_m=f_m_pre))
+            BinaryClassNodeVector.from_fraction(n=n_pre, f_m=f_m_pre))
         model.preload_graph(g_pre)
         model.initialize_simulation()
-        assert len(g_pre.get_node_class(CLASS_ATTRIBUTE)) == (N_pre + N),\
+        assert len(g_pre.get_node_class(CLASS_ATTRIBUTE)) == (n_pre + n),\
             "Node class not set correctly."
         model.simulate()
 
-        assert len(model.graph) == (N + N_pre)
+        assert len(model.graph) == (n + n_pre)
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes()) // 2
-        assert _sum_links == (1 + (N * m))
-        for u in range(N_pre):
+        assert _sum_links == (1 + (n * m))
+        for u in range(n_pre):
             for v in range(u):
                 if u == v:
                     assert not model.graph.has_edge(u, v)
@@ -79,46 +79,46 @@ class TestHomophilyModel:
                     assert not model.graph.has_edge(u, v)
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
         assert node_classes is not None
-        assert len(node_classes) == (N + N_pre)
+        assert len(node_classes) == (n + n_pre)
         assert np.isclose(np.mean(node_classes), f_m, atol=0.05)
 
-        model = TestHomophilyModel._create_model(N=N, f_m=f_m)
+        model = TestHomophilyModel._create_model(n=n, f_m=f_m)
         g_pre = Graph()
-        for i in range(N_pre):
+        for i in range(n_pre):
             g_pre.add_node(i)
         g_pre.set_node_class(
             CLASS_ATTRIBUTE,
-            BinaryClassNodeVector.from_fraction(N=N_pre, f_m=f_m_pre))
+            BinaryClassNodeVector.from_fraction(n=n_pre, f_m=f_m_pre))
         model.simulate()
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
         assert node_classes is not None
-        assert len(node_classes) == N
+        assert len(node_classes) == n
         assert np.isclose(
             np.sum(node_classes),
-            (N_pre * f_m_pre) + (N * f_m),
+            (n_pre * f_m_pre) + (n * f_m),
             rtol=0.05)
 
     def test_no_invalid_links(self):
-        N = 1000
+        n = 1000
         m = 2
-        model = TestHomophilyModel._create_model(N=N, m=m)
+        model = TestHomophilyModel._create_model(n=n, m=m)
         model.simulate()
         graph = model.graph
 
         # The graph class cannot store double links
         # Hence, if there are no self-links, the number of links
-        # must be `(N-m) * m` because each but the first `m` nodes
+        # must be `(n-m) * m` because each but the first `m` nodes
         # create `m` links.
         for u in graph.nodes():
             assert not graph.has_edge(u, u)
         n_links = graph.number_of_edges()
-        assert n_links == ((N - m) * m) + ((m * (m - 1)) // 2)
+        assert n_links == ((n - m) * m) + ((m * (m - 1)) // 2)
 
     def test_heterophily_min_advantage(self):
         h = 0.1
 
         model = TestHomophilyModel._create_model(
-            h_m=h, h_M=h)
+            h_mm=h, h_MM=h)
         model.simulate()
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
 
@@ -135,7 +135,7 @@ class TestHomophilyModel:
         h = .9
 
         model = TestHomophilyModel._create_model(
-            h_m=h, h_M=h)
+            h_mm=h, h_MM=h)
         model.simulate()
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
 

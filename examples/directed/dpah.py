@@ -3,7 +3,7 @@ from netin.utils import SimulationTimer
 
 
 def run():
-    N = 1000
+    n = 1000
     d = 0.005
     f_m = 0.1
     plo_M = 2.0
@@ -12,9 +12,9 @@ def run():
     h_mm = 0.9
     seed = 1234
 
-    model = DPAHModel(N=N, d=d, f_m=f_m,
+    model = DPAHModel(n=n, d=d, f_m=f_m,
                       plo_M=plo_M, plo_m=plo_m,
-                      h_m=h_mm, h_M=h_MM,
+                      h_mm=h_mm, h_MM=h_MM,
                       seed=seed)
 
     timer = SimulationTimer(model)

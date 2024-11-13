@@ -39,7 +39,7 @@ class BinaryClassModel(Model):
             "The node class values must be binary"
             if len(node_class_values_pre) < self._n_nodes_total:
                 ncv_post = BinaryClassNodeVector.from_fraction(
-                    N=self._n_nodes_total,
+                    n=self._n_nodes_total,
                     f_m=self.f_m,
                     class_labels=[MAJORITY_LABEL, MINORITY_LABEL],
                     rng=self._rng)
@@ -50,7 +50,7 @@ class BinaryClassModel(Model):
             self.graph.set_node_class(
                 CLASS_ATTRIBUTE,
                 BinaryClassNodeVector.from_fraction(
-                    N=self._n_nodes_total,
+                    n=self._n_nodes_total,
                     f_m=self.f_m,
                     class_labels=[MAJORITY_LABEL, MINORITY_LABEL],
                     rng=self._rng))

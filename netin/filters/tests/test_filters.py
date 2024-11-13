@@ -9,7 +9,7 @@ from ...graphs.graph import Graph
 from ...graphs.directed import DiGraph
 
 class TestFilters(object):
-    N = 1000
+    n = 1000
 
     @staticmethod
     def assert_one_zero_xor(mask: np.ndarray):
@@ -21,11 +21,11 @@ class TestFilters(object):
     def test_active_nodes(self):
         ug = Graph()
         with pytest.raises(AssertionError):
-            _ = ActiveNodes(N=self.N, graph=ug)
+            _ = ActiveNodes(n=self.n, graph=ug)
 
         dg = DiGraph()
 
-        an = ActiveNodes(N=self.N, graph=dg)
+        an = ActiveNodes(n=self.n, graph=dg)
         m0 = an.get_target_mask(-1)
         TestFilters.assert_one_zero_xor(m0)
         assert isinstance(m0, NodeVector), "Active nodes mask is not an instance of `NodeVector`."
@@ -44,17 +44,17 @@ class TestFilters(object):
              f"Node `1` is not zero but `{m1[1]}`.")
 
     def test_no_self_links(self):
-        nsl = NoSelfLinks(N=self.N)
+        nsl = NoSelfLinks(n=self.n)
 
-        for i in range(self.N):
+        for i in range(self.n):
             msk = nsl.get_target_mask(i)
             TestFilters.assert_one_zero_xor(msk)
             assert msk[i] == 0., "Self link detected as valid."
-            assert int(np.sum(msk)) == self.N - 1, f"Incorrect number of active nodes (sum={np.sum(msk)})."
+            assert int(np.sum(msk)) == self.n - 1, f"Incorrect number of active nodes (sum={np.sum(msk)})."
 
     def test_no_double_links(self):
         ug = Graph()
-        ndl = NoDoubleLinks(N=self.N, graph=ug)
+        ndl = NoDoubleLinks(n=self.n, graph=ug)
 
         with pytest.raises(KeyError):
             _ = ndl.get_target_mask(0)
@@ -69,10 +69,10 @@ class TestFilters(object):
         m2 = ndl.get_target_mask(0)
         TestFilters.assert_one_zero_xor(m2)
         assert m2[1] == 0., "Double link detected as valid."
-        assert np.sum(m2) == self.N - 1, f"Incorrect number of double links (sum={np.sum(m2)})."
+        assert np.sum(m2) == self.n - 1, f"Incorrect number of double links (sum={np.sum(m2)})."
 
         dg = DiGraph()
-        ndl = NoDoubleLinks(N=self.N, graph=dg)
+        ndl = NoDoubleLinks(n=self.n, graph=dg)
         dg.add_node(0)
         dg.add_node(1)
         dg.add_edge(0, 1)

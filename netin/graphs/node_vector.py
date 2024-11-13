@@ -13,7 +13,7 @@ class NodeVector(BaseClass):
 
     Parameters
     ----------
-    N : int
+    n : int
         The number of nodes. Does not necessarily correspond to the number of nodes in the graph.
     dtype : Type
         The data type of the values, must be a valid numpy data type.
@@ -25,14 +25,14 @@ class NodeVector(BaseClass):
     _values: np.ndarray
     name: str
 
-    def __init__(self, N: int, dtype: Type,
+    def __init__(self, n: int, dtype: Type,
                  fill_value: Optional[Number] = None,
                  name: Optional[str] = None) -> None:
-        validate_int(N, minimum=1)
+        validate_int(n, minimum=1)
         self.set_values(np.zeros(
-            N,
+            n,
             dtype=dtype) if fill_value is None else\
-                np.full(N, fill_value, dtype=dtype))
+                np.full(n, fill_value, dtype=dtype))
         self.name = name
         super().__init__()
 
@@ -54,7 +54,7 @@ class NodeVector(BaseClass):
         assert isinstance(values, np.ndarray),\
             f"values must be of type np.ndarray, but is {type(values)}"
         node_values = cls(
-            N=len(values), dtype=values.dtype, name=name, **kwargs)
+            n=len(values), dtype=values.dtype, name=name, **kwargs)
         node_values.set_values(values)
         return node_values
 

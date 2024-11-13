@@ -9,7 +9,7 @@ class PreferentialAttachment(LinkFormationMechanism):
 
     Parameters
     ----------
-    N : int
+    n : int
         The total number of nodes.
     graph : Graph
         The graph object used to update the internal degree state.
@@ -19,14 +19,14 @@ class PreferentialAttachment(LinkFormationMechanism):
     _a_degree: NodeVector
 
     def __init__(
-            self, N: int, graph: Graph,
+            self, n: int, graph: Graph,
             init_degrees: bool = True) -> None:
-        assert N >= len(graph),\
+        assert n >= len(graph),\
             "The number of nodes must be greater or equals to the number of nodes in the graph"
-        super().__init__(N=N)
+        super().__init__(n=n)
         self.graph = graph
         self._a_degree = NodeVector(
-            N, dtype=int, name="degrees")
+            n, dtype=int, name="degrees")
 
         if init_degrees:
             self.initialize_degree_array()

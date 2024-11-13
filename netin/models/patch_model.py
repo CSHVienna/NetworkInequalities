@@ -48,7 +48,7 @@ class PATCHModel(
 
     Parameters
     ----------
-    N : int
+    n : int
         The number of nodes to be added.
     f_m : float
         The fraction of the minority group.
@@ -63,15 +63,18 @@ class PATCHModel(
         targets are chosen from either set.
     lfm_local : CompoundLFM
         Defines how local targets are chosen.
-        Both :attr:`lfm_local` and :attr:`lfm_global` can be set to any value defined in :class:`.CompoundLFM`:
+        Both :attr:`lfm_local` and :attr:`lfm_global` can be set to any value
+        defined in :class:`.CompoundLFM`:
 
         1. :attr:`.CompoundLFM.UNIFORM`: the target nodes are chosen randomly
         2. :attr:`.CompoundLFM.HOMOPHILY`: the target nodes are chosen based on homophily
-        3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on preferential attachment and homophily (choose ``h_m = h_M = 0.5`` to neutralize the effect of homophily; see :class:`.PAHModel` for details).
+        3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on
+        preferential attachment and homophily (choose ``h_mm = h_MM = 0.5``
+        to neutralize the effect of homophily; see :class:`.PAHModel` for details).
 
         For options 2. and 3. the ``lfm_params`` dictionary has
         to contain the homophily values of the minority and
-        majority group (for instance by setting ``lfm_params={"h_m": 0.2, "h_M": 0.8}``).
+        majority group (for instance by setting ``lfm_params={"h_mm": 0.2, "h_MM": 0.8}``).
     lfm_global : CompoundLFM
         Defines how global targets are chosen.
         See :attr:`lfm_local` for details.
@@ -80,7 +83,7 @@ class PATCHModel(
         formation mechanisms, by default None.
         If either local or global link formation mechanisms contains
         homophily (:attr:`.CompoundLFM.Homophily` or :attr:'.CompoundLFM.PAH`), the
-        dictionary should contain the keys :attr:`h_m` and :attr:`h_M`, containing
+        dictionary should contain the keys :attr:`h_mm` and :attr:`h_MM`, containing
         the desired homophily parameters.
         See :class:`.HomophilyModel` for details on the homophily parameters.
     seed : Union[int, np.random.Generator], optional
@@ -105,7 +108,7 @@ class PATCHModel(
 
     def __init__(
             self, *args,
-            N: int, f_m: float, m:int,
+            n: int, f_m: float, m:int,
             p_tc: float,
             lfm_local: CompoundLFM,
             lfm_global: CompoundLFM,
@@ -114,7 +117,7 @@ class PATCHModel(
             **kwargs):
         validate_float(p_tc, 0, 1)
         super().__init__(
-            *args, N=N, m=m, f_m=f_m,
+            *args, n=n, m=m, f_m=f_m,
             seed=seed, **kwargs)
         self.p_tc = p_tc
 
@@ -132,23 +135,23 @@ class PATCHModel(
         The parameters are given by ``lfm_params``.
         """
         self.tc = TriadicClosure(
-            N=self._n_nodes_total,
+            n=self._n_nodes_total,
             graph=self.graph)
-        self.uniform = Uniform(N=self._n_nodes_total)
+        self.uniform = Uniform(n=self._n_nodes_total)
 
         if (self.lfm_local in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH))\
             or (self.lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)):
             assert (self.lfm_params is not None)\
-                and ("h_m" in self.lfm_params)\
-                and ("h_M" in self.lfm_params),\
+                and ("h_mm" in self.lfm_params)\
+                and ("h_MM" in self.lfm_params),\
                     "Homophily parameters must be provided"
             self.h = TwoClassHomophily.from_two_class_homophily(
-                homophily=(self.lfm_params["h_M"], self.lfm_params["h_m"]),
+                homophily=(self.lfm_params["h_MM"], self.lfm_params["h_mm"]),
                 node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE)
             )
         if CompoundLFM.PAH in (self.lfm_local, self.lfm_global):
             self.pa = PreferentialAttachment(
-                N=self._n_nodes_total,
+                n=self._n_nodes_total,
                 graph=self.graph)
 
     def _get_compound_target_probabilities(self, lfm: CompoundLFM, source: int)\

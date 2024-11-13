@@ -15,7 +15,7 @@ class DPAHModel(DPAModel):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes.
     f_m : float
         Fraction of minority nodes.
@@ -25,45 +25,46 @@ class DPAHModel(DPAModel):
         The power law exponent of the majority activity.
     plo_m : float
         The power law exponent of the minority activity.
-    h_m : float
+    h_mm : float
         The homophily of the minority nodes.
-    h_M : float
+    h_MM : float
         The homophily of the majority nodes.
     seed : Union[int, np.random.Generator], optional
         Randomization seed or generator, by default 1
     """
     SHORT = "DPAH"
-    h_m: float
-    h_M: float
+    h_mm: float
+    h_MM: float
 
     h: TwoClassHomophily
     pa: InDegreePreferentialAttachment
 
     def __init__(
             self, *args,
-            N: int, f_m: float, d: float,
+            n: int, f_m: float, d: float,
             plo_M: float, plo_m: float,
-            h_m: float, h_M: float,
+            h_mm: float, h_MM: float,
             seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         super().__init__(
-            *args, N=N, f_m=f_m, d=d,
+            *args, n=n, f_m=f_m, d=d,
             plo_M=plo_M, plo_m=plo_m,
             seed=seed,
             **kwargs)
-        self.h_m = h_m
-        self.h_M = h_M
+        self.h_mm = h_mm
+        self.h_MM = h_MM
 
     def _initialize_lfms(self):
         super()._initialize_lfms()
         self.h = TwoClassHomophily.from_two_class_homophily(
             node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE),
-            homophily=(self.h_M, self.h_m))
+            homophily=(self.h_MM, self.h_mm))
         self.pa = InDegreePreferentialAttachment(
-            graph=self.graph, N=self._n_nodes_total)
+            graph=self.graph, n=self._n_nodes_total)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
-        """Compute the target probabilities as the homophily probabilities  times preferential attachment.
+        """Compute the target probabilities as the homophily probabilities
+        times preferential attachment.
 
         Parameters
         ----------

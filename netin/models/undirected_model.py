@@ -9,7 +9,7 @@ from .model import Model
 class UndirectedModel(Model):
     """The base class for all undirected models.
     Based on [BarabasiAlbert1999]_,
-    this model grows a network by adding a total of :attr:`N` nodes to the network.
+    this model grows a network by adding a total of :attr:`n` nodes to the network.
     Each node that is added connects to the previously added nodes with :attr:`m` links.
     How the target nodes are chosen depends on link formation mechanisms.
     The implementation of these mechanisms is handled
@@ -17,7 +17,7 @@ class UndirectedModel(Model):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes to be added.
     m : int
         Number of links for each new node.
@@ -31,16 +31,16 @@ class UndirectedModel(Model):
 
     def __init__(
             self, *args,
-            N: int,
+            n: int,
             m:int,
             seed: Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
-        validate_int(N, minimum=1)
+        validate_int(n, minimum=1)
         validate_int(m, minimum=1)
         self.m = m
         super().__init__(
             *args,
-            N=N,
+            n=n,
             seed=seed,
             **kwargs)
 
@@ -56,7 +56,7 @@ class UndirectedModel(Model):
 
     def _simulate(self) -> Graph:
         """Simulates the undirected model.
-        After adding :attr:`m` initial nodes, ``N-m`` nodes are added one after the other.
+        After adding :attr:`m` initial nodes, ``n-m`` nodes are added one after the other.
         Each new node connects to previously added nodes with :attr:`m` links.
         The choice of target nodes depends on the implementation of
         :class:`.LinkFormationMechanism` and :class:`.Filter`.

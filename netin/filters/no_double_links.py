@@ -9,17 +9,17 @@ class NoDoubleLinks(Filter):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes.
     graph : Graph
         The graph used to update node activity.
     """
-    N: int
+    n: int
     graph: Graph
 
-    def __init__(self, N: int, graph: Graph) -> None:
+    def __init__(self, n: int, graph: Graph) -> None:
         super().__init__()
-        self.N = N
+        self.n = n
         self.graph = graph
 
     def get_target_mask(self, source: int) -> NodeVector:
@@ -35,6 +35,6 @@ class NoDoubleLinks(Filter):
         NodeVector
             The filter mask for the target nodes.
         """
-        target_mask = np.ones(self.N)
+        target_mask = np.ones(self.n)
         target_mask[list(self.graph[source])] = 0.
         return NodeVector.from_ndarray(target_mask)
