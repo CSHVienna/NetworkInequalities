@@ -19,7 +19,7 @@ class Model(ABC, HasEvents, BaseClass):
     SHORT = "MODEL"
     """A shorthand for the model name"""
 
-    N: int
+    n: int
     graph: Graph
     seed: int
 
@@ -37,21 +37,21 @@ class Model(ABC, HasEvents, BaseClass):
 
     def __init__(
             self, *args,
-            N: int,
+            n: int,
             seed: Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         """Creates a new instance of the Model class.
 
         Parameters
         ----------
-        N : int
+        n : int
             Number of nodes to be added to the network.
         seed : int, optional
             A random seed for reproducibility, by default 1
         """
         super().__init__(*args, **kwargs)
 
-        self.N = N
+        self.n = n
         self.graph = None
 
         self._set_seed(seed)
@@ -149,16 +149,16 @@ class Model(ABC, HasEvents, BaseClass):
         """
         self.graph = self._initialize_empty_graph()
         self._populate_initial_graph()
-        self._n_nodes_total = self.N
+        self._n_nodes_total = self.n
 
     def _initialize_filters(self):
         """Initializes the filters.
         Default filters are no self loops and no double links.
         """
         self._f_no_self_links = NoSelfLinks(
-            N=self._n_nodes_total)
+            n=self._n_nodes_total)
         self._f_no_double_links = NoDoubleLinks(
-            N=self._n_nodes_total,
+            n=self._n_nodes_total,
             graph=self.graph)
 
     def simulate(self) -> Graph:
@@ -195,10 +195,10 @@ class Model(ABC, HasEvents, BaseClass):
         graph : Graph
             Graph to preload.
         """
-        assert len(graph) <= self.N,\
+        assert len(graph) <= self.n,\
             "The graph has more nodes than the final number of nodes."
         self.graph = graph
-        self._n_nodes_total = self.N + len(graph)
+        self._n_nodes_total = self.n + len(graph)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         """Computes the target probabilities.
@@ -234,7 +234,7 @@ class Model(ABC, HasEvents, BaseClass):
         """
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
-            "N": self.N,
+            "n": self.n,
             "seed": self.seed
         }
         self.graph.get_metadata(
@@ -257,4 +257,4 @@ class Model(ABC, HasEvents, BaseClass):
             p=target_probabilities)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(N={self.N})"
+        return f"{self.__class__.__name__}(n={self.n})"

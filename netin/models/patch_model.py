@@ -48,7 +48,7 @@ class PATCHModel(
 
     Parameters
     ----------
-    N : int
+    n : int
         The number of nodes to be added.
     f_m : float
         The fraction of the minority group.
@@ -108,7 +108,7 @@ class PATCHModel(
 
     def __init__(
             self, *args,
-            N: int, f_m: float, m:int,
+            n: int, f_m: float, m:int,
             p_tc: float,
             lfm_local: CompoundLFM,
             lfm_global: CompoundLFM,
@@ -117,7 +117,7 @@ class PATCHModel(
             **kwargs):
         validate_float(p_tc, 0, 1)
         super().__init__(
-            *args, N=N, m=m, f_m=f_m,
+            *args, n=n, m=m, f_m=f_m,
             seed=seed, **kwargs)
         self.p_tc = p_tc
 
@@ -135,9 +135,9 @@ class PATCHModel(
         The parameters are given by ``lfm_params``.
         """
         self.tc = TriadicClosure(
-            N=self._n_nodes_total,
+            n=self._n_nodes_total,
             graph=self.graph)
-        self.uniform = Uniform(N=self._n_nodes_total)
+        self.uniform = Uniform(n=self._n_nodes_total)
 
         if (self.lfm_local in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH))\
             or (self.lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)):
@@ -151,7 +151,7 @@ class PATCHModel(
             )
         if CompoundLFM.PAH in (self.lfm_local, self.lfm_global):
             self.pa = PreferentialAttachment(
-                N=self._n_nodes_total,
+                n=self._n_nodes_total,
                 graph=self.graph)
 
     def _get_compound_target_probabilities(self, lfm: CompoundLFM, source: int)\

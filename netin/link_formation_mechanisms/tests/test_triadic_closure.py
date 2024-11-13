@@ -6,12 +6,12 @@ from ..triadic_closure import TriadicClosure
 
 class TestTriadicClosure:
     def test_triadic_closure(self):
-        N = 3
+        n = 3
         g = Graph()
 
-        tc = TriadicClosure(N=N, graph=g)
+        tc = TriadicClosure(n=n, graph=g)
 
-        for n in range(N):
+        for n in range(n):
             g.add_node(n)
 
         g.add_edge(0, 1)
@@ -31,38 +31,38 @@ class TestTriadicClosure:
              f"(false targets: {np.where(m2 != 0.)}).")
 
     def test_varying_n(self):
-        N = 5
+        n = 5
         g = Graph()
-        tc = TriadicClosure(N=N, graph=g)
+        tc = TriadicClosure(n=n, graph=g)
 
-        for node in range(N - 2):
+        for node in range(n - 2):
             g.add_node(node)
         g.add_edge(0, 1)
 
         m = tc.get_target_probabilities(0)
-        assert len(m) == N, "Incorrect number of targets."
+        assert len(m) == n, "Incorrect number of targets."
 
     def test_initialization(self):
-        N = 5
+        n = 5
         g = Graph()
 
-        for node in range(N):
+        for node in range(n):
             g.add_node(node)
         g.add_edge(0, 1)
         g.add_edge(1, 2)
 
-        tc = TriadicClosure(N=N, graph=g)
+        tc = TriadicClosure(n=n, graph=g)
 
         m = tc.get_target_probabilities(0)
         assert m[2] >= 0., "Triadic closure not detected for link `0-2`."
         assert m[0] >= 0., "Triadic closure not detected for link `0-2`."
 
     def test_repeated_source(self):
-        N = 5
+        n = 5
         g = Graph()
-        tc = TriadicClosure(N=N, graph=g)
+        tc = TriadicClosure(n=n, graph=g)
 
-        for node in range(N):
+        for node in range(n):
             g.add_node(node)
 
         g.add_edge(1, 2)
@@ -83,12 +83,12 @@ class TestTriadicClosure:
         pass
 
     def test_invalid_g(self):
-        N = 5
-        N_g = 10
+        n = 5
+        n_g = 10
 
         g = Graph()
-        for node in range(N_g):
+        for node in range(n_g):
             g.add_node(node)
 
         with pytest.raises(AssertionError):
-            _ = TriadicClosure(N=N, graph=g)
+            _ = TriadicClosure(n=n, graph=g)

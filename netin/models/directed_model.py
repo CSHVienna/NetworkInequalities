@@ -25,7 +25,7 @@ class DirectedModel(BinaryClassModel):
 
     Parameters
     ----------
-    N : int
+    n : int
         The number of nodes to be added.
     f_m : float
         The fraction of minority nodes.
@@ -51,7 +51,7 @@ class DirectedModel(BinaryClassModel):
 
     def __init__(
             self, *args,
-            N: int, f_m: float,
+            n: int, f_m: float,
             d: float, plo_M: float, plo_m: float,
             seed: Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
@@ -59,10 +59,10 @@ class DirectedModel(BinaryClassModel):
         validate_float(plo_M, minimum=0.)
         validate_float(plo_m, minimum=0.)
         validate_float(f_m, minimum=0., maximum=1.)
-        validate_int(N, minimum=1)
+        validate_int(n, minimum=1)
 
         super().__init__(
-            *args, N=N, seed=seed, f_m=f_m,
+            *args, n=n, seed=seed, f_m=f_m,
             **kwargs)
 
         self.d = d
@@ -71,7 +71,7 @@ class DirectedModel(BinaryClassModel):
 
     def _populate_initial_graph(self):
         # Add nodes without links
-        for i in range(self.N):
+        for i in range(self.n):
             self.graph.add_node(i)
         return self.graph
 
@@ -93,7 +93,7 @@ class DirectedModel(BinaryClassModel):
         super()._initialize_filters()
         # Add filter for active nodes
         self._f_active_nodes = ActiveNodes(
-            N=self._n_nodes_total,
+            n=self._n_nodes_total,
             graph=self.graph)
 
     def _initialize_node_activity(self):

@@ -11,7 +11,7 @@ class BinaryClassNodeVector(CategoricalNodeVector):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes.
     class_labels : Optional[List[str]], optional
         The class labels for the values, must be of size two, by default CLASS_LABELS
@@ -19,11 +19,11 @@ class BinaryClassNodeVector(CategoricalNodeVector):
         Name for the NodeVector, by default CLASS_ATTRIBUTE
     """
     def __init__(
-        self, N: int,
+        self, n: int,
         class_labels: Optional[List[str]] = CLASS_LABELS,
         name: Optional[str] = CLASS_ATTRIBUTE) -> None:
         super().__init__(
-            N=N, n_values=2,
+            n=n, n_values=2,
             class_labels=class_labels,
             name=name)
 
@@ -48,7 +48,7 @@ class BinaryClassNodeVector(CategoricalNodeVector):
         assert np.all((values == MINORITY_VALUE) | (values == MAJORITY_VALUE)),\
             "values must be binary"
         bmnv = BinaryClassNodeVector(
-            N=len(values),
+            n=len(values),
             name=name,
             class_labels=class_labels, **kwargs)
         bmnv._values = values
@@ -57,7 +57,7 @@ class BinaryClassNodeVector(CategoricalNodeVector):
     @classmethod
     def from_fraction(
             cls,
-            N: int,
+            n: int,
             f_m: float,
             class_labels: Optional[List[str]] = None,
             rng: Optional[np.random.Generator] = None,
@@ -68,7 +68,7 @@ class BinaryClassNodeVector(CategoricalNodeVector):
 
         Parameters
         ----------
-        N : int
+        n : int
             Number of nodes.
         f_m : float
             Fraction of minority nodes.
@@ -80,10 +80,10 @@ class BinaryClassNodeVector(CategoricalNodeVector):
             Name for the NodeVector, by default CLASS_ATTRIBUTE
         """
         validate_float(f_m, minimum=0., maximum=0.5)
-        validate_int(N, minimum=1)
+        validate_int(n, minimum=1)
         rng = np.random.default_rng() if rng is None else rng
         return cls.from_ndarray(
-            values=np.where(rng.random(N) < f_m, MINORITY_VALUE, MAJORITY_VALUE),
+            values=np.where(rng.random(n) < f_m, MINORITY_VALUE, MAJORITY_VALUE),
             class_labels=class_labels,
             name=name)
 

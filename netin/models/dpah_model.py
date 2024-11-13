@@ -15,7 +15,7 @@ class DPAHModel(DPAModel):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes.
     f_m : float
         Fraction of minority nodes.
@@ -41,13 +41,13 @@ class DPAHModel(DPAModel):
 
     def __init__(
             self, *args,
-            N: int, f_m: float, d: float,
+            n: int, f_m: float, d: float,
             plo_M: float, plo_m: float,
             h_mm: float, h_MM: float,
             seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         super().__init__(
-            *args, N=N, f_m=f_m, d=d,
+            *args, n=n, f_m=f_m, d=d,
             plo_M=plo_M, plo_m=plo_m,
             seed=seed,
             **kwargs)
@@ -60,7 +60,7 @@ class DPAHModel(DPAModel):
             node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE),
             homophily=(self.h_MM, self.h_mm))
         self.pa = InDegreePreferentialAttachment(
-            graph=self.graph, N=self._n_nodes_total)
+            graph=self.graph, n=self._n_nodes_total)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
         """Compute the target probabilities as the homophily probabilities

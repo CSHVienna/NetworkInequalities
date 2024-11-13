@@ -11,19 +11,19 @@ class ActiveNodes(Filter):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes.
     graph : DiGraph
         The graph used to update node activity.
     """
     _nodes_active: NodeVector
 
-    def __init__(self, N: int, graph: DiGraph) -> None:
+    def __init__(self, n: int, graph: DiGraph) -> None:
         assert isinstance(graph, DiGraph),\
             f"`graph` should be directe but is of type `{type(graph)}`"
         super().__init__()
         self._nodes_active = NodeVector.from_ndarray(
-            np.zeros(N, dtype=bool))
+            np.zeros(n, dtype=bool))
         graph.register_event_handler(
             event=Event.LINK_ADD_AFTER,
             function=self._update_out_degrees

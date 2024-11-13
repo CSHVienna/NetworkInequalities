@@ -11,15 +11,15 @@ class LinkFormationMechanism(BaseClass):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes.
     """
-    N: int
+    n: int
 
-    def __init__(self, N: int) -> None:
+    def __init__(self, n: int) -> None:
         super().__init__()
-        validate_int(N, minimum=1)
-        self.N = N
+        validate_int(n, minimum=1)
+        self.n = n
 
     def get_target_probabilities(self, source: int) -> NodeVector:
         """Returns the probabilities to connect to target nodes.
@@ -62,5 +62,5 @@ class LinkFormationMechanism(BaseClass):
 
     def _get_uniform_target_probabilities(self, _: int) -> NodeVector:
         return NodeVector.from_ndarray(
-            np.full(self.N, 1 / self.N)
+            np.full(self.n, 1 / self.n)
         )

@@ -12,7 +12,7 @@ class CategoricalNodeVector(NodeVector):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes.
     n_values : int
         Number of possible values.
@@ -28,7 +28,7 @@ class CategoricalNodeVector(NodeVector):
     class_labels: np.ndarray
 
     def __init__(
-            self, N: int,
+            self, n: int,
             n_values: int,
             class_labels: Optional[List[str]] = None,
             fill_value: Optional[Number] = None,
@@ -42,7 +42,7 @@ class CategoricalNodeVector(NodeVector):
             if class_labels is not None else np.arange(n_values)
 
         super().__init__(
-            N=N, dtype=int,
+            n=n, dtype=int,
             fill_value=fill_value, name=name)
 
     @classmethod
@@ -62,7 +62,7 @@ class CategoricalNodeVector(NodeVector):
             "n_values must be greater or equal to the maximum value in values"
 
         ncv = CategoricalNodeVector(
-            N=len(values),
+            n=len(values),
             n_values=n_values\
                 if n_values is not None else np.max(values) + 1,
             name=name,

@@ -33,4 +33,4 @@ class DPAModel(DirectedModel):
     def _initialize_lfms(self):
         super()._initialize_lfms()
         self.pa = InDegreePreferentialAttachment(
-            graph=self.graph, N=self._n_nodes_total)
+            graph=self.graph, n=self._n_nodes_total)

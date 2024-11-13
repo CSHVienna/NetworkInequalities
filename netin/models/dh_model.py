@@ -13,7 +13,7 @@ class DHModel(DirectedModel):
 
     Parameters
     ----------
-    N : int
+    n : int
         Number of nodes to add.
     f_m : float
         The minority group fraction.
@@ -40,11 +40,11 @@ class DHModel(DirectedModel):
 
     def __init__(
             self, *args,
-            N: int, f_m: float, d: float,
+            n: int, f_m: float, d: float,
             plo_M: float, plo_m: float,
             h_mm: float, h_MM: float,
             seed: Union[int, np.random.Generator, None] = None, **kwargs):
-        super().__init__(*args, N=N, f_m=f_m, d=d, plo_M=plo_M, plo_m=plo_m, seed=seed, **kwargs)
+        super().__init__(*args, n=n, f_m=f_m, d=d, plo_M=plo_M, plo_m=plo_m, seed=seed, **kwargs)
         self.h_mm = h_mm
         self.h_MM = h_MM
 
