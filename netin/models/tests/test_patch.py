@@ -21,7 +21,7 @@ class TestPATCHModel:
             p_tc=.8,
             lfm_local=CompoundLFM.PAH,
             lfm_global=CompoundLFM.PAH,
-            lfm_params={"h_m": .8, "h_M": .8},
+            lfm_params={"h_mm": .8, "h_M": .8},
             seed=123) -> PATCHModel:
         model = PATCHModel(
             N=N, f_m=f_m, m=m, p_tc=p_tc,
@@ -41,7 +41,7 @@ class TestPATCHModel:
         return counter
 
     def test_lfm_assignments(self):
-        h_params = dict(h_m = .8, h_M = .8)
+        h_params = dict(h_mm = .8, h_M = .8)
         for lfm_l, lfm_g in product((CompoundLFM.UNIFORM, CompoundLFM.HOMOPHILY, CompoundLFM.PAH), repeat=2):
             model = TestPATCHModel.create_model(
                 lfm_local=lfm_l, lfm_global=lfm_g,
@@ -156,7 +156,7 @@ class TestPATCHModel:
                 seed=seed)
             g_pah = PAHModel(
                 N=g_patch.N, m=g_patch.m, f_m=g_patch.f_m,
-                h_m=g_patch.lfm_params["h_m"],
+                h_mm=g_patch.lfm_params["h_mm"],
                 h_M=g_patch.lfm_params["h_M"],
                 seed=seed
             )

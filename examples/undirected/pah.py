@@ -10,7 +10,7 @@ def run():
     seed = 1234
 
     model = PAHModel(N=N, m=m, f_m=f_m,
-                     h_m=h_mm, h_M=h_MM,
+                     h_mm=h_mm, h_M=h_MM,
                      seed=seed)
     timer = SimulationTimer(model)
     model.simulate()

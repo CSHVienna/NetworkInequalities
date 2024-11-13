@@ -15,7 +15,7 @@ def run():
     model = PATCHModel(N=n, m=k, f_m=f_m,
                        p_tc=p_tc,
                        lfm_local=lfm_l, lfm_global=lfm_g,
-                       lfm_params={'h_m': h_mm, 'h_M': h_MM},
+                       lfm_params={'h_mm': h_mm, 'h_M': h_MM},
                        seed=seed)
 
     timer = SimulationTimer(model)

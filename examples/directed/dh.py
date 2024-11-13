@@ -14,7 +14,7 @@ def run():
 
     model = DHModel(N=N, d=d, f_m=f_m,
                       plo_M=plo_M, plo_m=plo_m,
-                      h_m=h_mm, h_M=h_MM,
+                      h_mm=h_mm, h_M=h_MM,
                       seed=seed)
 
     timer = SimulationTimer(model)

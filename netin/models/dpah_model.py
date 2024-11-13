@@ -25,7 +25,7 @@ class DPAHModel(DPAModel):
         The power law exponent of the majority activity.
     plo_m : float
         The power law exponent of the minority activity.
-    h_m : float
+    h_mm : float
         The homophily of the minority nodes.
     h_M : float
         The homophily of the majority nodes.
@@ -33,7 +33,7 @@ class DPAHModel(DPAModel):
         Randomization seed or generator, by default 1
     """
     SHORT = "DPAH"
-    h_m: float
+    h_mm: float
     h_M: float
 
     h: TwoClassHomophily
@@ -43,7 +43,7 @@ class DPAHModel(DPAModel):
             self, *args,
             N: int, f_m: float, d: float,
             plo_M: float, plo_m: float,
-            h_m: float, h_M: float,
+            h_mm: float, h_M: float,
             seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         super().__init__(
@@ -51,19 +51,20 @@ class DPAHModel(DPAModel):
             plo_M=plo_M, plo_m=plo_m,
             seed=seed,
             **kwargs)
-        self.h_m = h_m
+        self.h_mm = h_mm
         self.h_M = h_M
 
     def _initialize_lfms(self):
         super()._initialize_lfms()
         self.h = TwoClassHomophily.from_two_class_homophily(
             node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE),
-            homophily=(self.h_M, self.h_m))
+            homophily=(self.h_M, self.h_mm))
         self.pa = InDegreePreferentialAttachment(
             graph=self.graph, N=self._n_nodes_total)
 
     def compute_target_probabilities(self, source: int) -> np.ndarray:
-        """Compute the target probabilities as the homophily probabilities  times preferential attachment.
+        """Compute the target probabilities as the homophily probabilities
+        times preferential attachment.
 
         Parameters
         ----------

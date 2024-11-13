@@ -10,10 +10,10 @@ import numpy as np
 class TestPAHModel:
     @staticmethod
     def _create_model(
-        N=1000, m=2, f_m=0.1, h_m=0.5, h_M=0.5, seed=1234
+        N=1000, m=2, f_m=0.1, h_mm=0.5, h_M=0.5, seed=1234
     ):
         return PAHModel(
-            N=N, m=m, f_m=f_m, h_m=h_m, h_M=h_M, seed=seed
+            N=N, m=m, f_m=f_m, h_mm=h_mm, h_M=h_M, seed=seed
         )
 
     def test_simulation(self):
@@ -118,7 +118,7 @@ class TestPAHModel:
         h = 0.1
 
         model = TestPAHModel._create_model(
-            h_m=h, h_M=h)
+            h_mm=h, h_M=h)
         model.simulate()
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
 
@@ -135,7 +135,7 @@ class TestPAHModel:
         h = .9
 
         model = TestPAHModel._create_model(
-            h_m=h, h_M=h)
+            h_mm=h, h_M=h)
         model.simulate()
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
 
