@@ -1,0 +1,1116 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Graphs" href="../graphs.html" /><link rel="prev" title="Directed Graph Models" href="directed.html" />
+
+    <link rel="shortcut icon" href="../_static/netin-logo.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2024.08.06 -->
+        <title>Undirected Graph Models - NetIn 2.0.0a1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=04c057b233f3c8d71940eee6080f658a04e2027d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=cf727022eb7470bc603c08d2e55c3247faec75c9" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">NetIn 2.0.0a1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/netin-logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">NetIn 2.0.0a1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Models</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="directed.html">Directed Graph Models</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Undirected Graph Models</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../graphs.html">Graphs</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../node_vectors/index.html">Node vectors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../statistics.html">Statistics</a></li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../extensions/index.html">Extending NetIn</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Extending NetIn</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../extensions/events.html">Event Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extensions/filters.html">Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extensions/mechanisms.html">Link Formation Mechanisms (LFM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extensions/models.html">Model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualizations.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utility Functions</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/models/undirected.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="undirected-graph-models">
+<h1>Undirected Graph Models<a class="headerlink" href="#undirected-graph-models" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.models.</span></span><span class="sig-name descname"><span class="pre">BarabasiAlbertModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Generator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.BarabasiAlbertModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>The BarabasiAlbertModel join new nodes to the existing nodes with a
+probability proportional to the degree of the existing nodes (see <a class="reference internal" href="../references.html#barabasialbert1999" id="id1"><span>[BarabasiAlbert1999]</span></a>).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.EVENTS">
+<span class="sig-name descname"><span class="pre">EVENTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.Event"><span class="pre">Event</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#netin.models.BarabasiAlbertModel.EVENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evokes <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a> and <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a>.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.SHORT">
+<span class="sig-name descname"><span class="pre">SHORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BA'</span></em><a class="headerlink" href="#netin.models.BarabasiAlbertModel.SHORT" title="Permalink to this definition">¶</a></dt>
+<dd><p>A shorthand for the model name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.compute_target_probabilities">
+<span class="sig-name descname"><span class="pre">compute_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#netin.models.BarabasiAlbertModel.compute_target_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the target probabilities for the BarabasiAlbertModel.
+Connection probability is proportional to the degree of the existing nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source</strong><span class="classifier">int</span></dt><dd><p>The source node.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>The target probabilities.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_meta_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.models.BarabasiAlbertModel.get_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the number of links per new node <code class="xref py py-attr docutils literal notranslate"><span class="pre">m</span></code> to the metadata dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Dict[str, Any]</dt><dd><p>The (updated or created) metadata dictionary.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.initialize_simulation">
+<span class="sig-name descname"><span class="pre">initialize_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.BarabasiAlbertModel.initialize_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the simulation of the model.
+The order of initialization is</p>
+<ol class="arabic simple" start="0">
+<li><p>(Optional) Graph initialization if not preloaded.</p></li>
+<li><p>Node classes initialization.</p></li>
+<li><p>Filters initialization.</p></li>
+<li><p>Link formation mechanisms initialization.</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.preload_graph">
+<span class="sig-name descname"><span class="pre">preload_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.BarabasiAlbertModel.preload_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preloads a graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>graph</strong><span class="classifier">Graph</span></dt><dd><p>Graph to be preloaded.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.register_event_handler">
+<span class="sig-name descname"><span class="pre">register_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.BarabasiAlbertModel.register_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a new callback function for a given event.
+This can be used to inject code which will be executed when the respective event is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to register the callback for.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Callable[[Any], None]</span></dt><dd><p>The function to be called when the event is triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.remove_event_handler">
+<span class="sig-name descname"><span class="pre">remove_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.BarabasiAlbertModel.remove_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>De-registers an event handler.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">function</span></code> is provided, only the specific function is removed.
+Otherwise, all functions are deleted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The <a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a> to remove the handling function from.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Optional[Callable[[Any], None]], optional</span></dt><dd><p>The function to be removed, by default <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all functions are removed.
+Otherwise, only the specified ones will be deleted.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.simulate">
+<span class="sig-name descname"><span class="pre">simulate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></span><a class="headerlink" href="#netin.models.BarabasiAlbertModel.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the simulation.
+This calls <a class="reference internal" href="../extensions/models.html#netin.models.Model.initialize_simulation" title="netin.models.Model.initialize_simulation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Model.initialize_simulation()</span></code></a> and <a class="reference internal" href="../extensions/models.html#netin.models.Model._simulate" title="netin.models.Model._simulate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Model._simulate()</span></code></a>.
+Check these functions in case you want to extend <a class="reference internal" href="../extensions/models.html#netin.models.Model" title="netin.models.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>.
+Triggers the <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a> and <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a> events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a></dt><dd><p>The simulated graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Triggers the following events.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a>: When the simulation starts.</p></li>
+<li><p><a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a>: When the simulation ends.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.BarabasiAlbertModel.trigger_event">
+<span class="sig-name descname"><span class="pre">trigger_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.BarabasiAlbertModel.trigger_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triggers an event and calls all registered callback functions.
+This function should be called by the class implementing classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to be triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.models.</span></span><span class="sig-name descname"><span class="pre">HomophilyModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_mm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_MM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Generator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.HomophilyModel" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.EVENTS">
+<span class="sig-name descname"><span class="pre">EVENTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.Event"><span class="pre">Event</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#netin.models.HomophilyModel.EVENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evokes <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a> and <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a>.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.SHORT">
+<span class="sig-name descname"><span class="pre">SHORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'HOMOPHILY'</span></em><a class="headerlink" href="#netin.models.HomophilyModel.SHORT" title="Permalink to this definition">¶</a></dt>
+<dd><p>A shorthand for the model name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.compute_target_probabilities">
+<span class="sig-name descname"><span class="pre">compute_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#netin.models.HomophilyModel.compute_target_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the target probabilities for the HomophilyModel
+based on the Homophily link formation mechanism.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_meta_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.models.HomophilyModel.get_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the number of links per new node <code class="xref py py-attr docutils literal notranslate"><span class="pre">m</span></code> to the metadata dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Dict[str, Any]</dt><dd><p>The (updated or created) metadata dictionary.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.initialize_simulation">
+<span class="sig-name descname"><span class="pre">initialize_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.HomophilyModel.initialize_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the simulation of the model.
+The order of initialization is</p>
+<ol class="arabic simple" start="0">
+<li><p>(Optional) Graph initialization if not preloaded.</p></li>
+<li><p>Node classes initialization.</p></li>
+<li><p>Filters initialization.</p></li>
+<li><p>Link formation mechanisms initialization.</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.preload_graph">
+<span class="sig-name descname"><span class="pre">preload_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.HomophilyModel.preload_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preloads a graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>graph</strong><span class="classifier">Graph</span></dt><dd><p>Graph to be preloaded.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.register_event_handler">
+<span class="sig-name descname"><span class="pre">register_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.HomophilyModel.register_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a new callback function for a given event.
+This can be used to inject code which will be executed when the respective event is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to register the callback for.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Callable[[Any], None]</span></dt><dd><p>The function to be called when the event is triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.remove_event_handler">
+<span class="sig-name descname"><span class="pre">remove_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.HomophilyModel.remove_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>De-registers an event handler.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">function</span></code> is provided, only the specific function is removed.
+Otherwise, all functions are deleted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The <a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a> to remove the handling function from.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Optional[Callable[[Any], None]], optional</span></dt><dd><p>The function to be removed, by default <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all functions are removed.
+Otherwise, only the specified ones will be deleted.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.simulate">
+<span class="sig-name descname"><span class="pre">simulate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></span><a class="headerlink" href="#netin.models.HomophilyModel.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the simulation.
+This calls <a class="reference internal" href="../extensions/models.html#netin.models.Model.initialize_simulation" title="netin.models.Model.initialize_simulation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Model.initialize_simulation()</span></code></a> and <a class="reference internal" href="../extensions/models.html#netin.models.Model._simulate" title="netin.models.Model._simulate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Model._simulate()</span></code></a>.
+Check these functions in case you want to extend <a class="reference internal" href="../extensions/models.html#netin.models.Model" title="netin.models.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>.
+Triggers the <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a> and <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a> events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a></dt><dd><p>The simulated graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Triggers the following events.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a>: When the simulation starts.</p></li>
+<li><p><a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a>: When the simulation ends.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.HomophilyModel.trigger_event">
+<span class="sig-name descname"><span class="pre">trigger_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.HomophilyModel.trigger_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triggers an event and calls all registered callback functions.
+This function should be called by the class implementing classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to be triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="netin.models.PAHModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.models.</span></span><span class="sig-name descname"><span class="pre">PAHModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_mm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_MM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Generator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PAHModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>The PAHModel implements the [P]referential [A]ttachment and [H]omophily model.</p>
+<p>Nodes join the network by connecting to existing
+nodes proportional to their degree and group assignment.
+See <a class="reference internal" href="#netin.models.HomophilyModel" title="netin.models.HomophilyModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomophilyModel</span></code></a> for how to parameterize the homophily values.</p>
+<p>This model is based on <a class="reference internal" href="../references.html#karimi2018" id="id2"><span>[Karimi2018]</span></a>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.PAHModel.EVENTS">
+<span class="sig-name descname"><span class="pre">EVENTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.Event"><span class="pre">Event</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#netin.models.PAHModel.EVENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evokes <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a> and <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a>.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.PAHModel.SHORT">
+<span class="sig-name descname"><span class="pre">SHORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PAH'</span></em><a class="headerlink" href="#netin.models.PAHModel.SHORT" title="Permalink to this definition">¶</a></dt>
+<dd><p>A shorthand for the model name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PAHModel.compute_target_probabilities">
+<span class="sig-name descname"><span class="pre">compute_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#netin.models.PAHModel.compute_target_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the target probabilities for the source node.
+The probability to connect to a target node is computed as the
+product of the probabilities of the preferential attachment
+and homophily mechanisms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source</strong><span class="classifier">int</span></dt><dd><p>Source node.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>Target probabilities.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PAHModel.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_meta_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.models.PAHModel.get_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the number of links per new node <code class="xref py py-attr docutils literal notranslate"><span class="pre">m</span></code> to the metadata dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Dict[str, Any]</dt><dd><p>The (updated or created) metadata dictionary.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PAHModel.initialize_simulation">
+<span class="sig-name descname"><span class="pre">initialize_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PAHModel.initialize_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the simulation of the model.
+The order of initialization is</p>
+<ol class="arabic simple" start="0">
+<li><p>(Optional) Graph initialization if not preloaded.</p></li>
+<li><p>Node classes initialization.</p></li>
+<li><p>Filters initialization.</p></li>
+<li><p>Link formation mechanisms initialization.</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PAHModel.preload_graph">
+<span class="sig-name descname"><span class="pre">preload_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PAHModel.preload_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preloads a graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>graph</strong><span class="classifier">Graph</span></dt><dd><p>Graph to be preloaded.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PAHModel.register_event_handler">
+<span class="sig-name descname"><span class="pre">register_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PAHModel.register_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a new callback function for a given event.
+This can be used to inject code which will be executed when the respective event is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to register the callback for.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Callable[[Any], None]</span></dt><dd><p>The function to be called when the event is triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PAHModel.remove_event_handler">
+<span class="sig-name descname"><span class="pre">remove_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PAHModel.remove_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>De-registers an event handler.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">function</span></code> is provided, only the specific function is removed.
+Otherwise, all functions are deleted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The <a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a> to remove the handling function from.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Optional[Callable[[Any], None]], optional</span></dt><dd><p>The function to be removed, by default <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all functions are removed.
+Otherwise, only the specified ones will be deleted.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PAHModel.simulate">
+<span class="sig-name descname"><span class="pre">simulate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></span><a class="headerlink" href="#netin.models.PAHModel.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the simulation.
+This calls <a class="reference internal" href="../extensions/models.html#netin.models.Model.initialize_simulation" title="netin.models.Model.initialize_simulation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Model.initialize_simulation()</span></code></a> and <a class="reference internal" href="../extensions/models.html#netin.models.Model._simulate" title="netin.models.Model._simulate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Model._simulate()</span></code></a>.
+Check these functions in case you want to extend <a class="reference internal" href="../extensions/models.html#netin.models.Model" title="netin.models.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>.
+Triggers the <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a> and <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a> events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a></dt><dd><p>The simulated graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Triggers the following events.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a>: When the simulation starts.</p></li>
+<li><p><a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a>: When the simulation ends.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PAHModel.trigger_event">
+<span class="sig-name descname"><span class="pre">trigger_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PAHModel.trigger_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triggers an event and calls all registered callback functions.
+This function should be called by the class implementing classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to be triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="netin.models.PATCHModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.models.</span></span><span class="sig-name descname"><span class="pre">PATCHModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lfm_local</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#netin.models.CompoundLFM" title="netin.models.patch_model.CompoundLFM"><span class="pre">CompoundLFM</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">lfm_global</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#netin.models.CompoundLFM" title="netin.models.patch_model.CompoundLFM"><span class="pre">CompoundLFM</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">lfm_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Generator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PATCHModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>The PATCHModel joins nodes to the network based on a combination of
+[P]referential [A]ttachment, [T]riadic [C]losure and [H]omophily.
+Based on the triadic closure probability <code class="xref py py-attr docutils literal notranslate"><span class="pre">p_tc</span></code>, links are formed either locally or globally.
+For local links, nodes can connect only to neighbors of existing neighbors.
+Globally, nodes can connect to any other node in the network.</p>
+<p>How a target node is selected from the set of available nodes then
+depends on the other link formation mechanisms of preferential attachment and/or homophily.
+See <code class="xref py py-attr docutils literal notranslate"><span class="pre">lfm_local</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">lfm_global</span></code> for details.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>n</strong><span class="classifier">int</span></dt><dd><p>The number of nodes to be added.</p>
+</dd>
+<dt><strong>f_m</strong><span class="classifier">float</span></dt><dd><p>The fraction of the minority group.</p>
+</dd>
+<dt><strong>m</strong><span class="classifier">int</span></dt><dd><p>The number of new edges per node.</p>
+</dd>
+<dt><strong>p_tc</strong><span class="classifier">float</span></dt><dd><p>The probability for triadic closure, meaning that an edge will
+be formed locally among the neighbors of existing neighbors.
+With the complementary probability (<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">p_tc</span></code>), all existing
+nodes are available for connection.
+See <code class="xref py py-attr docutils literal notranslate"><span class="pre">lfm_local</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">lfm_global</span></code> for a specification of how
+targets are chosen from either set.</p>
+</dd>
+<dt><strong>lfm_local</strong><span class="classifier">CompoundLFM</span></dt><dd><p>Defines how local targets are chosen.
+Both <code class="xref py py-attr docutils literal notranslate"><span class="pre">lfm_local</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">lfm_global</span></code> can be set to any value
+defined in <a class="reference internal" href="#netin.models.CompoundLFM" title="netin.models.CompoundLFM"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLFM</span></code></a>:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#netin.models.CompoundLFM.UNIFORM" title="netin.models.CompoundLFM.UNIFORM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">CompoundLFM.UNIFORM</span></code></a>: the target nodes are chosen randomly</p></li>
+<li><p><a class="reference internal" href="#netin.models.CompoundLFM.HOMOPHILY" title="netin.models.CompoundLFM.HOMOPHILY"><code class="xref py py-attr docutils literal notranslate"><span class="pre">CompoundLFM.HOMOPHILY</span></code></a>: the target nodes are chosen based on homophily</p></li>
+</ol>
+<p>3. <a class="reference internal" href="#netin.models.CompoundLFM.PAH" title="netin.models.CompoundLFM.PAH"><code class="xref py py-attr docutils literal notranslate"><span class="pre">CompoundLFM.PAH</span></code></a>: the target nodes are chosen based on
+preferential attachment and homophily (choose <code class="docutils literal notranslate"><span class="pre">h_mm</span> <span class="pre">=</span> <span class="pre">h_MM</span> <span class="pre">=</span> <span class="pre">0.5</span></code>
+to neutralize the effect of homophily; see <a class="reference internal" href="#netin.models.PAHModel" title="netin.models.PAHModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PAHModel</span></code></a> for details).</p>
+<p>For options 2. and 3. the <code class="docutils literal notranslate"><span class="pre">lfm_params</span></code> dictionary has
+to contain the homophily values of the minority and
+majority group (for instance by setting <code class="docutils literal notranslate"><span class="pre">lfm_params={&quot;h_mm&quot;:</span> <span class="pre">0.2,</span> <span class="pre">&quot;h_MM&quot;:</span> <span class="pre">0.8}</span></code>).</p>
+</dd>
+<dt><strong>lfm_global</strong><span class="classifier">CompoundLFM</span></dt><dd><p>Defines how global targets are chosen.
+See <code class="xref py py-attr docutils literal notranslate"><span class="pre">lfm_local</span></code> for details.</p>
+</dd>
+<dt><strong>lfm_params</strong><span class="classifier">Optional[Dict[str, float]], optional</span></dt><dd><p>Dictionary containing additional parameterization of link
+formation mechanisms, by default None.
+If either local or global link formation mechanisms contains
+homophily (<code class="xref py py-attr docutils literal notranslate"><span class="pre">CompoundLFM.Homophily</span></code> or :attr:’.CompoundLFM.PAH`), the
+dictionary should contain the keys <code class="xref py py-attr docutils literal notranslate"><span class="pre">h_mm</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">h_MM</span></code>, containing
+the desired homophily parameters.
+See <a class="reference internal" href="#netin.models.HomophilyModel" title="netin.models.HomophilyModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomophilyModel</span></code></a> for details on the homophily parameters.</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">Union[int, np.random.Generator], optional</span></dt><dd><p>_description_, by default 1</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.EVENTS">
+<span class="sig-name descname"><span class="pre">EVENTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.Event"><span class="pre">Event</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#netin.models.PATCHModel.EVENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evokes <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a> and <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a>.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.SHORT">
+<span class="sig-name descname"><span class="pre">SHORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PATCH'</span></em><a class="headerlink" href="#netin.models.PATCHModel.SHORT" title="Permalink to this definition">¶</a></dt>
+<dd><p>A shorthand for the model name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.compute_target_probabilities">
+<span class="sig-name descname"><span class="pre">compute_target_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#netin.models.PATCHModel.compute_target_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the target probabilities based on triadic closure and
+the specified compound link formation mechanisms for global and
+local links.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source</strong><span class="classifier">int</span></dt><dd><p>The source node.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>Target probabilities for all nodes in the network.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_meta_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#netin.models.PATCHModel.get_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the number of links per new node <code class="xref py py-attr docutils literal notranslate"><span class="pre">m</span></code> to the metadata dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Dict[str, Any]</dt><dd><p>The (updated or created) metadata dictionary.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.initialize_simulation">
+<span class="sig-name descname"><span class="pre">initialize_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PATCHModel.initialize_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the simulation of the model.
+The order of initialization is</p>
+<ol class="arabic simple" start="0">
+<li><p>(Optional) Graph initialization if not preloaded.</p></li>
+<li><p>Node classes initialization.</p></li>
+<li><p>Filters initialization.</p></li>
+<li><p>Link formation mechanisms initialization.</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.preload_graph">
+<span class="sig-name descname"><span class="pre">preload_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PATCHModel.preload_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preloads a graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>graph</strong><span class="classifier">Graph</span></dt><dd><p>Graph to be preloaded.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.register_event_handler">
+<span class="sig-name descname"><span class="pre">register_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PATCHModel.register_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a new callback function for a given event.
+This can be used to inject code which will be executed when the respective event is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to register the callback for.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Callable[[Any], None]</span></dt><dd><p>The function to be called when the event is triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.remove_event_handler">
+<span class="sig-name descname"><span class="pre">remove_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PATCHModel.remove_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>De-registers an event handler.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">function</span></code> is provided, only the specific function is removed.
+Otherwise, all functions are deleted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The <a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a> to remove the handling function from.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">Optional[Callable[[Any], None]], optional</span></dt><dd><p>The function to be removed, by default <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all functions are removed.
+Otherwise, only the specified ones will be deleted.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.simulate">
+<span class="sig-name descname"><span class="pre">simulate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.graph.Graph"><span class="pre">Graph</span></a></span></span><a class="headerlink" href="#netin.models.PATCHModel.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the simulation.
+This calls <a class="reference internal" href="../extensions/models.html#netin.models.Model.initialize_simulation" title="netin.models.Model.initialize_simulation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Model.initialize_simulation()</span></code></a> and <a class="reference internal" href="../extensions/models.html#netin.models.Model._simulate" title="netin.models.Model._simulate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Model._simulate()</span></code></a>.
+Check these functions in case you want to extend <a class="reference internal" href="../extensions/models.html#netin.models.Model" title="netin.models.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>.
+Triggers the <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a> and <a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a> events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="../graphs.html#netin.graphs.Graph" title="netin.graphs.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a></dt><dd><p>The simulated graph.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Triggers the following events.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_START" title="netin.utils.Event.SIMULATION_START"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_START</span></code></a>: When the simulation starts.</p></li>
+<li><p><a class="reference internal" href="../extensions/events.html#netin.utils.Event.SIMULATION_END" title="netin.utils.Event.SIMULATION_END"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Event.SIMULATION_END</span></code></a>: When the simulation ends.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="netin.models.PATCHModel.trigger_event">
+<span class="sig-name descname"><span class="pre">trigger_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../extensions/events.html#netin.utils.Event" title="netin.utils.event_handling.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.PATCHModel.trigger_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triggers an event and calls all registered callback functions.
+This function should be called by the class implementing classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>event</strong><span class="classifier">Event</span></dt><dd><p>The event to be triggered.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="netin.models.CompoundLFM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">netin.models.</span></span><span class="sig-name descname"><span class="pre">CompoundLFM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#netin.models.CompoundLFM" title="Permalink to this definition">¶</a></dt>
+<dd><p>A combination of link formation mechanism.
+This class is used to define how local or global links should be formed in the <a class="reference internal" href="#netin.models.PATCHModel" title="netin.models.PATCHModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PATCHModel</span></code></a>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.CompoundLFM.HOMOPHILY">
+<span class="sig-name descname"><span class="pre">HOMOPHILY</span></span><a class="headerlink" href="#netin.models.CompoundLFM.HOMOPHILY" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Targets are chosen based on homophily (see <a class="reference internal" href="../extensions/mechanisms.html#netin.link_formation_mechanisms.Homophily" title="netin.link_formation_mechanisms.Homophily"><code class="xref py py-class docutils literal notranslate"><span class="pre">Homophily</span></code></a></dt><dd><p>and <a class="reference internal" href="#netin.models.HomophilyModel" title="netin.models.HomophilyModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomophilyModel</span></code></a> for details).</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.CompoundLFM.PAH">
+<span class="sig-name descname"><span class="pre">PAH</span></span><a class="headerlink" href="#netin.models.CompoundLFM.PAH" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Targets are chosen based on homophily and preferential attachment</dt><dd><p>(see <a class="reference internal" href="#netin.models.PAHModel" title="netin.models.PAHModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PAHModel</span></code></a> for details).</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="netin.models.CompoundLFM.UNIFORM">
+<span class="sig-name descname"><span class="pre">UNIFORM</span></span><a class="headerlink" href="#netin.models.CompoundLFM.UNIFORM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Targets are chosen uniformly at random.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../graphs.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Graphs</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="directed.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Directed Graph Models</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Fariba Karimi, Lisette Espin-Noboa, Jan Bachmann
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Undirected Graph Models</a><ul>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel</span></code></a><ul>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.EVENTS"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.EVENTS</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.SHORT"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.SHORT</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.compute_target_probabilities"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.compute_target_probabilities()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.get_metadata"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.get_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.initialize_simulation"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.initialize_simulation()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.preload_graph"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.preload_graph()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.register_event_handler"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.register_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.remove_event_handler"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.remove_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.simulate"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.simulate()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.BarabasiAlbertModel.trigger_event"><code class="docutils literal notranslate"><span class="pre">BarabasiAlbertModel.trigger_event()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel"><code class="docutils literal notranslate"><span class="pre">HomophilyModel</span></code></a><ul>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.EVENTS"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.EVENTS</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.SHORT"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.SHORT</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.compute_target_probabilities"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.compute_target_probabilities()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.get_metadata"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.get_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.initialize_simulation"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.initialize_simulation()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.preload_graph"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.preload_graph()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.register_event_handler"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.register_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.remove_event_handler"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.remove_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.simulate"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.simulate()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.HomophilyModel.trigger_event"><code class="docutils literal notranslate"><span class="pre">HomophilyModel.trigger_event()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#netin.models.PAHModel"><code class="docutils literal notranslate"><span class="pre">PAHModel</span></code></a><ul>
+<li><a class="reference internal" href="#netin.models.PAHModel.EVENTS"><code class="docutils literal notranslate"><span class="pre">PAHModel.EVENTS</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PAHModel.SHORT"><code class="docutils literal notranslate"><span class="pre">PAHModel.SHORT</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PAHModel.compute_target_probabilities"><code class="docutils literal notranslate"><span class="pre">PAHModel.compute_target_probabilities()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PAHModel.get_metadata"><code class="docutils literal notranslate"><span class="pre">PAHModel.get_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PAHModel.initialize_simulation"><code class="docutils literal notranslate"><span class="pre">PAHModel.initialize_simulation()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PAHModel.preload_graph"><code class="docutils literal notranslate"><span class="pre">PAHModel.preload_graph()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PAHModel.register_event_handler"><code class="docutils literal notranslate"><span class="pre">PAHModel.register_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PAHModel.remove_event_handler"><code class="docutils literal notranslate"><span class="pre">PAHModel.remove_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PAHModel.simulate"><code class="docutils literal notranslate"><span class="pre">PAHModel.simulate()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PAHModel.trigger_event"><code class="docutils literal notranslate"><span class="pre">PAHModel.trigger_event()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#netin.models.PATCHModel"><code class="docutils literal notranslate"><span class="pre">PATCHModel</span></code></a><ul>
+<li><a class="reference internal" href="#netin.models.PATCHModel.EVENTS"><code class="docutils literal notranslate"><span class="pre">PATCHModel.EVENTS</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PATCHModel.SHORT"><code class="docutils literal notranslate"><span class="pre">PATCHModel.SHORT</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PATCHModel.compute_target_probabilities"><code class="docutils literal notranslate"><span class="pre">PATCHModel.compute_target_probabilities()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PATCHModel.get_metadata"><code class="docutils literal notranslate"><span class="pre">PATCHModel.get_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PATCHModel.initialize_simulation"><code class="docutils literal notranslate"><span class="pre">PATCHModel.initialize_simulation()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PATCHModel.preload_graph"><code class="docutils literal notranslate"><span class="pre">PATCHModel.preload_graph()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PATCHModel.register_event_handler"><code class="docutils literal notranslate"><span class="pre">PATCHModel.register_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PATCHModel.remove_event_handler"><code class="docutils literal notranslate"><span class="pre">PATCHModel.remove_event_handler()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PATCHModel.simulate"><code class="docutils literal notranslate"><span class="pre">PATCHModel.simulate()</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.PATCHModel.trigger_event"><code class="docutils literal notranslate"><span class="pre">PATCHModel.trigger_event()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#netin.models.CompoundLFM"><code class="docutils literal notranslate"><span class="pre">CompoundLFM</span></code></a><ul>
+<li><a class="reference internal" href="#netin.models.CompoundLFM.HOMOPHILY"><code class="docutils literal notranslate"><span class="pre">CompoundLFM.HOMOPHILY</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.CompoundLFM.PAH"><code class="docutils literal notranslate"><span class="pre">CompoundLFM.PAH</span></code></a></li>
+<li><a class="reference internal" href="#netin.models.CompoundLFM.UNIFORM"><code class="docutils literal notranslate"><span class="pre">CompoundLFM.UNIFORM</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    </body>
+</html>
