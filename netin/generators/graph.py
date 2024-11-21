@@ -73,7 +73,6 @@ class Graph(nx.Graph):
         self.node_class_values = None  # dictionary of node class values
         self.gen_start_time = None  # start time of the generation
         self.gen_duration = None  # duration of the generation
-
     ############################################################
     # Init
     ############################################################
@@ -921,6 +920,35 @@ class Graph(nx.Graph):
         g.n_M = self.n_M
         return g
 
+    def homophily_inference(self) -> float:
+        """
+        Calculates the inferred homophily based on https://arxiv.org/abs/2401.13642
+
+        ##Experimental: For now only undirected and canonical
+
+        Returns
+        -------
+        h_infer: float
+            Inferred homophily
+        Raises
+        ------
+        NotImplementedError
+            If the graph is directed
+        """
+        e = self.calculate_edge_type_counts()
+
+        if self.is_directed():
+            raise NotImplementedError("This function only supports undirected graphs")
+
+        else:
+            e_rs = e['mM'] + e['Mm']
+            e_rr = 2 * e['MM']
+            e_ss = 2 * e['mm']
+            alpha = e_rs / np.sqrt(e_rr * e_ss)
+
+            h_infer = 1 / (1 + alpha)
+
+        return h_infer
 
 ######################################################################################################################
 # Static functions
