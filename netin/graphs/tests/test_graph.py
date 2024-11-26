@@ -141,7 +141,7 @@ class TestGraph(object):
                 nx_g.add_edge(i, j)
         nx.set_node_attributes(nx_g, {i: i%2 for i in range(n)}, "minority")
 
-        node_ids, g = Graph.from_nxgraph(nx_g)
+        node_ids, g = Graph.from_nxgraph(nx_g, node_attributes_names=["minority"])
         assert len(g) == n, "Incorrect number of nodes."
         assert len(node_ids) == n, "Incorrect number of nodes in mapping."
         assert np.all(node_ids == np.arange(n)), "Incorrect node mapping."
