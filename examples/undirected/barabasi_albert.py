@@ -3,11 +3,11 @@ from netin.utils import SimulationTimer
 
 def run():
     n = 200
-    m = 2
+    k = 2
     seed = 1234
 
     model = BarabasiAlbertModel(n=n,
-                                m=m,
+                                k=k,
                                 seed=seed)
     timer = SimulationTimer(model)
     model.simulate()

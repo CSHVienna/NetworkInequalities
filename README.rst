@@ -39,7 +39,7 @@ Create an undirected network with preferential attachment and homophily.
 .. code:: pycon
 
     >>> from netin.models import PAHModel
-    >>> m = PAHModel(n=200, m=2, f_m=0.2, h_MM=0.1, h_mm=0.9, seed=42)
+    >>> m = PAHModel(n=200, k=2, f_m=0.2, h_MM=0.1, h_mm=0.9, seed=42)
     >>> m.simulate()
 
 

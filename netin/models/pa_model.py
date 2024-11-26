@@ -14,10 +14,10 @@ class PAModel(BarabasiAlbertModel, BinaryClassModel):
 
     def __init__(
             self, *args,
-            n: int, f_m: float, m: int,
+            n: int, f_m: float, k: int,
             seed: Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
-        super(BarabasiAlbertModel, self).__init__(*args, n=n, m=m, f_m=f_m, seed=seed, **kwargs)
+        super(BarabasiAlbertModel, self).__init__(*args, n=n, k=k, f_m=f_m, seed=seed, **kwargs)
 
     def _initialize_node_classes(self):
         BinaryClassModel._initialize_node_classes(self)

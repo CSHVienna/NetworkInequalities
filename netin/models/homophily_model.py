@@ -16,7 +16,7 @@ class HomophilyModel(UndirectedModel, BinaryClassModel):
 
     def __init__(
             self, *args,
-            n: int, f_m: float, m:int,
+            n: int, f_m: float, k:int,
             h_mm: float, h_MM: float,
             seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
@@ -28,7 +28,7 @@ class HomophilyModel(UndirectedModel, BinaryClassModel):
             Number of nodes.
         f_m : float
             Fraction of minority nodes.
-        m : int
+        k : int
             Number of edges to attach from a new node to existing nodes.
         h_mm : float
             Homophily of the minority nodes.
@@ -44,7 +44,7 @@ class HomophilyModel(UndirectedModel, BinaryClassModel):
             Randomization seed or random number generator, by default 1
         """
         super().__init__(
-            *args, n=n, m=m, f_m=f_m,
+            *args, n=n, k=k, f_m=f_m,
             seed=seed, **kwargs)
         self.h_mm = h_mm
         self.h_MM = h_MM

@@ -10,7 +10,7 @@ class UndirectedModel(Model):
     """The base class for all undirected models.
     Based on [BarabasiAlbert1999]_,
     this model grows a network by adding a total of :attr:`n` nodes to the network.
-    Each node that is added connects to the previously added nodes with :attr:`m` links.
+    Each node that is added connects to the previously added nodes with :attr:`k` links.
     How the target nodes are chosen depends on link formation mechanisms.
     The implementation of these mechanisms is handled
     by subclasses (see for instance, :class:`.PAHModel`).
@@ -19,7 +19,7 @@ class UndirectedModel(Model):
     ----------
     n : int
         Number of nodes to be added.
-    m : int
+    k : int
         Number of links for each new node.
     seed : Union[int, np.random.Generator], optional
         The randomization seed or random number generator, by default 1
@@ -27,17 +27,17 @@ class UndirectedModel(Model):
 
     SHORT = "UNDIRECTED"
 
-    m: int
+    k: int
 
     def __init__(
             self, *args,
             n: int,
-            m:int,
+            k:int,
             seed: Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         validate_int(n, minimum=1)
-        validate_int(m, minimum=1)
-        self.m = m
+        validate_int(k, minimum=1)
+        self.k = k
         super().__init__(
             *args,
             n=n,
@@ -48,7 +48,7 @@ class UndirectedModel(Model):
         return Graph()
 
     def _populate_initial_graph(self) -> Graph:
-        for i in range(self.m):
+        for i in range(self.k):
             self.graph.add_node(i)
             for j in range(i):
                 self.graph.add_edge(i, j)
@@ -56,8 +56,8 @@ class UndirectedModel(Model):
 
     def _simulate(self) -> Graph:
         """Simulates the undirected model.
-        After adding :attr:`m` initial nodes, ``n-m`` nodes are added one after the other.
-        Each new node connects to previously added nodes with :attr:`m` links.
+        After adding :attr:`k` initial nodes, ``n-k`` nodes are added one after the other.
+        Each new node connects to previously added nodes with :attr:`k` links.
         The choice of target nodes depends on the implementation of
         :class:`.LinkFormationMechanism` and :class:`.Filter`.
         This should be implemented in respective subclasses.
@@ -71,7 +71,7 @@ class UndirectedModel(Model):
         for source in range(
                 n_nodes, self._n_nodes_total):
             self.graph.add_node(source)
-            for _ in range(self.m):
+            for _ in range(self.k):
                 target_probabilities = self.compute_target_probabilities(source)[:source]
                 target_probabilities /= target_probabilities.sum()
                 target = self._sample_target_node(target_probabilities)
@@ -82,7 +82,7 @@ class UndirectedModel(Model):
             self,
             d_meta_data: Optional[Dict[str, Any]] = None)\
                 -> Dict[str, Any]:
-        """Adds the number of links per new node :attr:`m` to the metadata dictionary.
+        """Adds the number of links per new node :attr:`k` to the metadata dictionary.
 
         Returns
         -------
@@ -91,7 +91,7 @@ class UndirectedModel(Model):
         """
         d = super().get_metadata(d_meta_data)
         d[self.__class__.__name__] = {
-            "m": self.m,
+            "k": self.k,
         }
         return d
 
