@@ -1,5 +1,8 @@
 from typing import Dict
 
+import networkx as nx
+import numpy as np
+
 from ..graph import Graph
 from ..directed import DiGraph
 from ...utils.event_handling import Event
@@ -110,3 +113,65 @@ class TestGraph(object):
         assert number_of_edges == degree_sum, "Incorrect number of edges."
         assert degree_sum == edges_theory, "Incorrect number of edges."
         assert edges_theory == edges_iterator, "Incorrect number of edges."
+
+    def test_to_nx_conversion(self):
+        g = Graph()
+        n = 10
+        for i in range(n):
+            g.add_node(i)
+            for j in range(i):
+                g.add_edge(i, j)
+        g.set_node_class("minority", {i: i%2 for i in range(n)})
+
+        nx_g = g.to_nxgraph()
+        assert isinstance(nx_g, nx.Graph), "Conversion to NetworkX graph failed."
+        assert len(nx_g) == n, "Incorrect number of nodes."
+        assert nx_g.number_of_edges() == n*(n-1)//2, "Incorrect number of edges."
+        for i in range(n):
+            assert nx_g.nodes[i]["minority"] == i%2, "Incorrect node class."
+            for j in range(i):
+                assert nx_g.has_edge(i, j), "Incorrect edge."
+
+    def test_from_nx_conversion(self):
+        nx_g = nx.Graph()
+        n = 10
+        for i in range(n):
+            nx_g.add_node(i)
+            for j in range(i):
+                nx_g.add_edge(i, j)
+        nx.set_node_attributes(nx_g, {i: i%2 for i in range(n)}, "minority")
+
+        node_ids, g = Graph.from_nxgraph(nx_g, node_attributes_names=["minority"])
+        assert len(g) == n, "Incorrect number of nodes."
+        assert len(node_ids) == n, "Incorrect number of nodes in mapping."
+        assert np.all(node_ids == np.arange(n)), "Incorrect node mapping."
+        assert g.number_of_edges() == n*(n-1)//2, "Incorrect number of edges."
+        for i in range(n):
+            assert g.get_node_class("minority")[i] == i%2, "Incorrect node class."
+            for j in range(i):
+                assert g.has_edge(i, j), "Incorrect edge."
+
+    def test_from_nx_conv_custom_labels(self):
+        nodes = np.asarray(["a", "b", "c", "d", "e"][::-1])
+        edges = [("a", "b"), ("b", "c"), ("c", "d"), ("d", "e")]
+
+        nx_g = nx.Graph()
+        for node in nodes:
+            nx_g.add_node(node)
+        for edge in edges:
+            nx_g.add_edge(*edge)
+        nx.set_node_attributes(nx_g, {node: int(node in ("d", "e")) for node in nodes}, "minority")
+
+        node_ids, g = Graph.from_nxgraph(
+            nx_g, sort_node_labels=False, node_attributes_names=["minority"])
+        assert np.all(nodes == node_ids), "Incorrect node mapping."
+        minority = g.get_node_class("minority")
+        for i, min_i in enumerate(minority):
+            assert min_i == (node_ids[i] in ("d", "e")), "Incorrect node class."
+
+        node_ids_sort, g_sort = Graph.from_nxgraph(
+            nx_g, sort_node_labels=True, node_attributes_names=["minority"])
+        assert np.all(nodes[::-1] == node_ids_sort), "Incorrect node mapping."
+        minority_sort = g_sort.get_node_class("minority")
+        for i, min_i in enumerate(minority_sort):
+            assert min_i == (node_ids_sort[i] in ("d", "e")), "Incorrect node class."
