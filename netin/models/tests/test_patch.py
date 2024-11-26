@@ -17,14 +17,14 @@ from ...utils.constants import CLASS_ATTRIBUTE
 class TestPATCHModel:
     @staticmethod
     def create_model(
-            n=5, f_m=.3, m=2,
+            n=5, f_m=.3, k=2,
             p_tc=.8,
             lfm_local=CompoundLFM.PAH,
             lfm_global=CompoundLFM.PAH,
             lfm_params={"h_mm": .8, "h_MM": .8},
             seed=123) -> PATCHModel:
         model = PATCHModel(
-            n=n, f_m=f_m, m=m, p_tc=p_tc,
+            n=n, f_m=f_m, k=k, p_tc=p_tc,
             lfm_local=lfm_local, lfm_global=lfm_global,
             lfm_params=lfm_params,
             seed=seed)
@@ -88,7 +88,7 @@ class TestPATCHModel:
 
         assert counter["local"] > 0
         assert counter["global"] > 0
-        assert counter["local"] + counter["global"] == (model.n - model.m) * model.m
+        assert counter["local"] + counter["global"] == (model.n - model.k) * model.k
 
     def test_simulation(self):
         model = TestPATCHModel.create_model(n=750)
@@ -99,13 +99,13 @@ class TestPATCHModel:
         assert len(model.graph) == model.n
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes())
-        assert (_sum_links // 2) == ((model.n - model.m) * model.m)\
-            + ((model.m * (model.m - 1)) // 2)
+        assert (_sum_links // 2) == ((model.n - model.k) * model.k)\
+            + ((model.k * (model.k - 1)) // 2)
 
         degrees = sorted(
             [model.graph.degree(v) for v in model.graph.nodes()])
-        assert degrees[0] == model.m
-        assert degrees[-1] >= 3 * model.m
+        assert degrees[0] == model.k
+        assert degrees[-1] >= 3 * model.k
 
         nodes_min = set(
             node\
@@ -142,7 +142,7 @@ class TestPATCHModel:
         assert len(model.graph) == (n + n_g)
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes()) // 2
-        assert _sum_links == (1 + (n * model.m))
+        assert _sum_links == (1 + (n * model.k))
 
     def test_pah_reduction(self):
         n = 500
@@ -155,7 +155,7 @@ class TestPATCHModel:
                 lfm_local=CompoundLFM.PAH, lfm_global=CompoundLFM.PAH,
                 seed=seed)
             g_pah = PAHModel(
-                n=g_patch.n, m=g_patch.m, f_m=g_patch.f_m,
+                n=g_patch.n, k=g_patch.k, f_m=g_patch.f_m,
                 h_mm=g_patch.lfm_params["h_mm"],
                 h_MM=g_patch.lfm_params["h_MM"],
                 seed=seed

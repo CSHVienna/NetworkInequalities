@@ -52,7 +52,7 @@ class PATCHModel(
         The number of nodes to be added.
     f_m : float
         The fraction of the minority group.
-    m : int
+    k : int
         The number of new edges per node.
     p_tc : float
         The probability for triadic closure, meaning that an edge will
@@ -108,7 +108,7 @@ class PATCHModel(
 
     def __init__(
             self, *args,
-            n: int, f_m: float, m:int,
+            n: int, f_m: float, k:int,
             p_tc: float,
             lfm_local: CompoundLFM,
             lfm_global: CompoundLFM,
@@ -117,7 +117,7 @@ class PATCHModel(
             **kwargs):
         validate_float(p_tc, 0, 1)
         super().__init__(
-            *args, n=n, m=m, f_m=f_m,
+            *args, n=n, k=k, f_m=f_m,
             seed=seed, **kwargs)
         self.p_tc = p_tc
 
