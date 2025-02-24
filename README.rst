@@ -96,7 +96,7 @@ If you use any implementation from this repository, please cite both the reposit
 
 .. code-block:: bibtex
 
-   @misc{pynetin,
+   @software{pynetin,
      author = {{CSH Algorithmic Fairness and Network Inequality Group}},
      title = {{NetworkInequalities}},
      year = {2023},
@@ -142,6 +142,17 @@ DPAH, DPA, DH models
       publisher={Nature Publishing Group UK London}
   }
 
+PATCH model
+^^^^^^^^^^^
+
+.. code-block:: bibtex
+
+    @unpublished{bachmann2025patch,
+      author    = {Bachmann, Jan and Esp{\'i}n-Noboa, Lisette and Cinardi, Nicola and Martin-Gutierrez, Samuel and Karimi, Fariba},
+      title     = {PATCH: Network Inequality through Preferential Attachment, Triadic Closure and Homophily},
+      year      = {2025},
+      note      = {Work in progress},
+    }
 
 Thank you for citing our work! 🚀
 
