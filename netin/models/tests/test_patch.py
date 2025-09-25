@@ -21,12 +21,12 @@ class TestPATCHModel:
             tau=.8,
             lfm_tc=CompoundLFM.PAH,
             lfm_global=CompoundLFM.PAH,
-            h_m=.8, h_M=.8,
+            h_mm=.8, h_MM=.8,
             seed=123) -> PATCHModel:
         model = PATCHModel(
             n=n, f_m=f_m, m=m, tau=tau,
             lfm_tc=lfm_tc, lfm_global=lfm_global,
-            h_m=h_m, h_M=h_M,
+            h_mm=h_mm, h_MM=h_MM,
             seed=seed)
         return model
 
@@ -44,7 +44,7 @@ class TestPATCHModel:
         for lfm_l, lfm_g in product((CompoundLFM.UNIFORM, CompoundLFM.HOMOPHILY, CompoundLFM.PAH), repeat=2):
             model = TestPATCHModel.create_model(
                 lfm_tc=lfm_l, lfm_global=lfm_g,
-                h_m=.8, h_M=.8)
+                h_mm=.8, h_MM=.8)
             assert model.lfm_tc == lfm_l
             assert model.lfm_global == lfm_g
 
@@ -56,7 +56,7 @@ class TestPATCHModel:
                     m_fail = TestPATCHModel.create_model(
                         lfm_tc=lfm_l,
                         lfm_global=lfm_g,
-                        lfm_params=None)
+                        h_mm=None, h_MM=.8)
                     m_fail.simulate()
             if CompoundLFM.PAH in (lfm_l, lfm_g):
                 assert model.pa is not None
@@ -78,16 +78,16 @@ class TestPATCHModel:
 
         model.register_event_handler(
             event=Event.TARGET_SELECTION_LOCAL,
-            function=lambda: _inc_counter("tc"))
+            function=lambda **kwargs: _inc_counter("tc"))
         model.register_event_handler(
             event=Event.TARGET_SELECTION_GLOBAL,
-            function=lambda: _inc_counter("global"))
+            function=lambda **kwargs: _inc_counter("global"))
 
         model.simulate()
 
         assert counter["tc"] > 0
         assert counter["global"] > 0
-        assert counter["tc"] + counter["global"] == (model.N - model.m) * model.m
+        assert counter["tc"] + counter["global"] == (model.n - model.m) * model.m
 
     def test_simulation(self):
         model = TestPATCHModel.create_model(n=750)
@@ -155,8 +155,8 @@ class TestPATCHModel:
                 seed=seed)
             g_pah = PAHModel(
                 n=g_patch.n, m=g_patch.m, f_m=g_patch.f_m,
-                h_mm=g_patch.lfm_params["h_mm"],
-                h_MM=g_patch.lfm_params["h_MM"],
+                h_mm=g_patch.h_mm,
+                h_MM=g_patch.h_MM,
                 seed=seed
             )
 
