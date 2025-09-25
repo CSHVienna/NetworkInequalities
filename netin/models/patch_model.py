@@ -15,22 +15,26 @@ from ..link_formation_mechanisms.uniform import Uniform
 
 class CompoundLFM(enum.Enum):
     """A combination of link formation mechanism.
+
     This class is used to define how triadic closure or global links
     should be formed in the :class:`.PATCHModel`.
+
+    :meta hide-value:
+
+    Attributes
+    ----------
+    UNIFORM : str
+        Targets are chosen uniformly at random.
+    HOMOPHILY : str
+        Targets are chosen based on homophily (see :class:`.Homophily`
+        and :class:`.HomophilyModel` for details).
+    PAH : str
+        Targets are chosen based on homophily and preferential attachment
+        (see :class:`.PAHModel` for details).
     """
 
-    """Targets are chosen uniformly at random.
-    :meta hide-value:"""
     UNIFORM="UNIFORM"
-
-    """Targets are chosen based on homophily (see :class:`.Homophily`
-       and :class:`.HomophilyModel` for details).
-    :meta hide-value:"""
     HOMOPHILY="HOMOPHILY"
-
-    """Targets are chosen based on homophily and preferential attachment
-       (see :class:`.PAHModel` for details).
-    :meta hide-value:"""
     PAH="PAH"
 
 class PATCHModel(
@@ -68,8 +72,8 @@ class PATCHModel(
         1. :attr:`.CompoundLFM.UNIFORM`: the target nodes are chosen randomly
         2. :attr:`.CompoundLFM.HOMOPHILY`: the target nodes are chosen based on homophily
         3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on preferential attachment
-        and homophily (choose ``h_mm = h_MM = 0.5`` to neutralize the effect of homophily;
-        see :class:`.PAHModel` for details).
+            and homophily (choose ``h_mm = h_MM = 0.5`` to neutralize the effect of homophily;
+            see :class:`.PAHModel` for details).
 
         For options 2. and 3. the ``h_mm`` and ``h_MM`` parameters must be provided
         to specify the homophily values of the minority and
