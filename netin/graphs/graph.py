@@ -59,10 +59,12 @@ class Graph(HasEvents, BaseClass):
         """
         g = Graph()
         nx_node_labels = sorted(list(graph.nodes)) if sort_node_labels else list(graph.nodes)
-        for node in nx_node_labels:
-            g.add_node(node)
+        map_nx_netin = {}
+        for node_netin, node_nx in enumerate(nx_node_labels):
+            g.add_node(node_netin)
+            map_nx_netin[node_nx] = node_netin
         for source, targets in graph.edges:
-            g.add_edge(source, targets)
+            g.add_edge(map_nx_netin[source], map_nx_netin[targets])
         if node_attributes_names is not None:
             for name in node_attributes_names:
                 nx_node_attr = nx.get_node_attributes(graph, name)
