@@ -2,7 +2,7 @@ from netin.models import PATCHModel, CompoundLFM
 from netin.utils import SimulationTimer
 
 def run():
-    n = 100
+    n = 4000
     k = 2
     f_m = 0.1
     h_M = 0.9
