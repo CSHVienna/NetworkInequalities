@@ -1,13 +1,11 @@
-# This worklow will create a release when a tag is pushed
+# This workflow will create a release when a tag is pushed
 
 name: Create release
 
 on:
   push:
     tags:
-      - "netin-*.*"
-    branches:
-      - ["main", "alpha"]
+      - "netin-*.*.*"
 
 jobs:
   release:
@@ -18,21 +16,26 @@ jobs:
         uses: actions/checkout@v5
 
       # Split version from version string
-      # `netin-x.y` returns `x.y`
+      # `netin-x.y.z` returns `x.y.z`
       - id: get-version
         run: |
-          version=$(echo ${{github.ref_name}} | cut -d- -f2)
-          echo "::set-output name=version::$version"
+          version=${GITHUB_REF_NAME#netin-}
+          echo "version=$version" >> $GITHUB_OUTPUT
+          # Check if version contains 'a' followed by digits at the end
+          if echo "$version" | grep -q 'a[0-9]\+$'; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
       - run: echo "Extracted version ${{steps.get-version.outputs.version}}"
 
       # Create a GitHub release draft
       - name: Release
-        if: github.ref != 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           draft: true
           name: NetIn - ${{ steps.get-version.outputs.version }}
-          prerelease: ${{ github.ref == 'refs/heads/alpha' }}
+          prerelease: ${{ steps.get-version.outputs.is_prerelease == 'true' }}
           generate_release_notes: true
-          make_latest: ${{ github.ref == 'refs/heads/main' }}
+          make_latest: ${{ steps.get-version.outputs.is_prerelease == 'false' }}
