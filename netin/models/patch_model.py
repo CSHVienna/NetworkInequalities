@@ -18,22 +18,20 @@ class CompoundLFM(enum.Enum):
     This class is used to define how triadic closure or global links
     should be formed in the :class:`.PATCHModel`.
     """
-    UNIFORM="UNIFORM"
+
     """Targets are chosen uniformly at random.
-
     :meta hide-value:"""
+    UNIFORM="UNIFORM"
 
-    HOMOPHILY="HOMOPHILY"
     """Targets are chosen based on homophily (see :class:`.Homophily`
        and :class:`.HomophilyModel` for details).
-
     :meta hide-value:"""
+    HOMOPHILY="HOMOPHILY"
 
-    PAH="PAH"
     """Targets are chosen based on homophily and preferential attachment
        (see :class:`.PAHModel` for details).
-
     :meta hide-value:"""
+    PAH="PAH"
 
 class PATCHModel(
     UndirectedModel, BinaryClassModel):
