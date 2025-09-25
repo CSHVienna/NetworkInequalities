@@ -1,0 +1,38 @@
+# This worklow will create a release when a tag is pushed
+
+name: Create release
+
+on:
+  push:
+    tags:
+      - "netin-*.*"
+    branches:
+      - ["main", "alpha"]
+
+jobs:
+  release:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v5
+
+      # Split version from version string
+      # `netin-x.y` returns `x.y`
+      - id: get-version
+        run: |
+          version=$(echo ${{github.ref_name}} | cut -d- -f2)
+          echo "::set-output name=version::$version"
+
+      - run: echo "Extracted version ${{steps.get-version.outputs.version}}"
+
+      # Create a GitHub release draft
+      - name: Release
+        if: github.ref != 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: NetIn - ${{ steps.get-version.outputs.version }}
+          prerelease: ${{ github.ref == 'refs/heads/alpha' }}
+          generate_release_notes: true
+          make_latest: ${{ github.ref == 'refs/heads/main' }}
