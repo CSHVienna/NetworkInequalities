@@ -5,9 +5,7 @@ name: Create release
 on:
   push:
     tags:
-      - "netin-*.*"
-    branches:
-      - ["main", "alpha"]
+      - "netin-*.*.*"
 
 jobs:
   release:
