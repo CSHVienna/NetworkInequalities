@@ -61,7 +61,7 @@ Install the latest version of NetIn::
 
 Install from source::
 
-        $ git clone
+        $ git clone https://github.com/CSHVienna/NetworkInequalities
         $ cd NetworkInequalities
         $ pip install -e .
 
@@ -84,7 +84,79 @@ Released under Creative Commons by-nc-sa 4.0 (see `LICENSE`)::
    Lisette Espin-Noboa <espin@csh.ac.at>
    Jan Bachmann <bachmann@csh.ac.at>
 
+How to cite
+-----------
+
+If you use any implementation from this repository, please cite both the repository and the corresponding paper as follows:
+
+1. Citing the GitHub repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bibtex
+
+   @software{pynetin,
+     author = {{CSH Algorithmic Fairness and Network Inequality Group}},
+     title = {{NetworkInequalities}},
+     year = {2023},
+     publisher = {GitHub},
+     journal = {GitHub repository},
+     howpublished = {\url{https://github.com/CSHVienna/NetworkInequalities}}
+   }
+
+
+2. Citing the models from the original papers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PAH model
+^^^^^^^^^
+
+.. code-block:: bibtex
+
+  @article{karimi2018homophily,
+      title={Homophily influences ranking of minorities in social networks},
+      author={Karimi, Fariba and G{\'e}nois, Mathieu and Wagner, Claudia and Singer, Philipp and Strohmaier, Markus},
+      journal={Scientific reports},
+      volume={8},
+      number={1},
+      pages={11077},
+      year={2018},
+      publisher={Nature Publishing Group UK London}
+  }
+
+
+DPAH, DPA, DH models
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bibtex
+
+  @article{espin2022inequality,
+      title={Inequality and inequity in network-based ranking and recommendation algorithms},
+      author={Esp{\'\i}n-Noboa, Lisette and Wagner, Claudia and Strohmaier, Markus and Karimi, Fariba},
+      journal={Scientific reports},
+      volume={12},
+      number={1},
+      pages={2012},
+      year={2022},
+      publisher={Nature Publishing Group UK London}
+  }
+
+PATCH model
+^^^^^^^^^^^
+
+.. code-block:: bibtex
+
+    @unpublished{bachmann2025patch,
+      author    = {Bachmann, Jan and Esp{\'i}n-Noboa, Lisette and Cinardi, Nicola and Martin-Gutierrez, Samuel and Karimi, Fariba},
+      title     = {PATCH: Network Inequality through Preferential Attachment, Triadic Closure and Homophily},
+      year      = {2025},
+      note      = {Work in progress},
+    }
+
+Thank you for citing our work! 🚀
+
+
+
 Note on multidimensional interactions
--------------------------------------
-Provisionally, the code to simulate and analyze networks with multidimensional interactions is hosted in the [repository](https://github.com/CSHVienna/multidimensional_social_interactions_paper) associated with the [paper](https://arxiv.org/abs/2406.17043).
+----------------------------------------------------
+Provisionally, the code to simulate and analyze networks with multidimensional interactions is hosted in the `repository <https://github.com/CSHVienna/multidimensional_social_interactions_paper>`_ associated with the `paper <https://arxiv.org/abs/2406.17043>`_ [Martin-Gutierrez et al. 2024].
 

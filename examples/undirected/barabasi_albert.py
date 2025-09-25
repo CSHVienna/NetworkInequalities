@@ -2,7 +2,7 @@ from netin.models import BarabasiAlbertModel
 from netin.utils import SimulationTimer
 
 def run():
-    n = 200
+    n = 4000
     k = 2
     seed = 1234
 
