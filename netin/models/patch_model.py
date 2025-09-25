@@ -111,7 +111,7 @@ class PATCHModel(
 
     def __init__(
             self, *args,
-            N: int, f_m: float, m:int,
+            n: int, f_m: float, m:int,
             tau: float,
             lfm_tc: CompoundLFM,
             lfm_global: CompoundLFM,
