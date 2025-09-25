@@ -30,6 +30,6 @@ jobs:
         with:
           draft: true
           name: NetIn - ${{ steps.get-version.outputs.version }}
-          prerelease: ${{ github.ref == 'refs/heads/alpha' }}
+          prerelease: ${{ contains(steps.get-version.outputs.version, 'a') }}
           generate_release_notes: true
-          make_latest: ${{ github.ref == 'refs/heads/main' }}
+          make_latest: ${{ !contains(steps.get-version.outputs.version, 'a') }}
