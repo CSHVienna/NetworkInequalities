@@ -70,25 +70,29 @@ class PATCHModel(
         1. :attr:`.CompoundLFM.UNIFORM`: the target nodes are chosen randomly
         2. :attr:`.CompoundLFM.HOMOPHILY`: the target nodes are chosen based on homophily
         3. :attr:`.CompoundLFM.PAH`: the target nodes are chosen based on preferential attachment
-        and homophily (choose ``h_m = h_M = 0.5`` to neutralize the effect of homophily;
+        and homophily (choose ``h_mm = h_MM = 0.5`` to neutralize the effect of homophily;
         see :class:`.PAHModel` for details).
 
-        For options 2. and 3. the ``lfm_params`` dictionary has
-        to contain the homophily values of the minority and
-        majority group (for instance by setting ``lfm_params={"h_mm": 0.2, "h_MM": 0.8}``).
+        For options 2. and 3. the ``h_mm`` and ``h_MM`` parameters must be provided
+        to specify the homophily values of the minority and
+        majority groups respectively.
     lfm_global : CompoundLFM
         Defines how global targets are chosen.
         See :attr:`lfm_tc` for details.
-    lfm_params : Optional[Dict[str, float]], optional
-        Dictionary containing additional parameterization of link
-        formation mechanisms, by default None.
+    h_mm : Optional[float], optional
+        Homophily parameter for minority nodes, by default None.
         If either triadic closure or global link formation mechanisms contains
-        homophily (:attr:`.CompoundLFM.Homophily` or :attr:'.CompoundLFM.PAH`), the
-        dictionary should contain the keys :attr:`h_mm` and :attr:`h_MM`, containing
-        the desired homophily parameters.
+        homophily (:attr:`.CompoundLFM.HOMOPHILY` or :attr:`.CompoundLFM.PAH`),
+        this parameter must be provided.
+        See :class:`.HomophilyModel` for details on the homophily parameters.
+    h_MM : Optional[float], optional
+        Homophily parameter for majority nodes, by default None.
+        If either triadic closure or global link formation mechanisms contains
+        homophily (:attr:`.CompoundLFM.HOMOPHILY` or :attr:`.CompoundLFM.PAH`),
+        this parameter must be provided.
         See :class:`.HomophilyModel` for details on the homophily parameters.
     seed : Union[int, np.random.Generator], optional
-        _description_, by default 1
+        Random seed or random number generator, by default None
     """
 
     EVENTS = [
@@ -99,8 +103,8 @@ class PATCHModel(
     lfm_global: CompoundLFM
 
     tau: float
-    h_M: float
-    h_m: float
+    h_MM: Optional[float]
+    h_mm: Optional[float]
 
     uniform: Uniform
     tc: TriadicClosure
@@ -115,8 +119,8 @@ class PATCHModel(
             tau: float,
             lfm_tc: CompoundLFM,
             lfm_global: CompoundLFM,
-            h_M: Optional[float] = None,
-            h_m: Optional[float] = None,
+            h_MM: Optional[float] = None,
+            h_mm: Optional[float] = None,
             seed:  Optional[Union[int, np.random.Generator]] = None,
             **kwargs):
         validate_float(tau, 0, 1)
@@ -135,9 +139,9 @@ class PATCHModel(
 
         if lfm_tc in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)\
             or lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH):
-            assert None not in (h_M, h_m), "Homophily parameters must be provided"
-            self.h_m = h_m
-            self.h_M = h_M
+            assert None not in (h_MM, h_mm), "Homophily parameters must be provided"
+            self.h_mm = h_mm
+            self.h_MM = h_MM
 
     def _initialize_lfms(self):
         """Initializes and configures the link formation mechanisms.
@@ -152,8 +156,10 @@ class PATCHModel(
         if (self.lfm_tc in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH))\
             or (self.lfm_global in (CompoundLFM.HOMOPHILY, CompoundLFM.PAH)):
 
+            assert self.h_MM is not None and self.h_mm is not None, \
+                "Homophily parameters must be provided when using homophily-based LFMs"
             self.h = TwoClassHomophily.from_two_class_homophily(
-                homophily=(self.h_M, self.h_m),
+                homophily=(self.h_MM, self.h_mm),
                 node_class_values=self.graph.get_node_class(CLASS_ATTRIBUTE)
             )
         if CompoundLFM.PAH in (self.lfm_tc, self.lfm_global):
@@ -171,11 +177,14 @@ class PATCHModel(
             The target probabilities depending on the chosen :class:`.CompoundLFM`.
         """
         if lfm == CompoundLFM.HOMOPHILY:
-            return self.h.get_target_probabilities(source)
+            assert self.h is not None, "Homophily LFM not initialized"
+            return np.array(self.h.get_target_probabilities(source))
         if lfm == CompoundLFM.PAH:
-            return self.pa.get_target_probabilities(source)\
-                * self.h.get_target_probabilities(source)
-        return self.uniform.get_target_probabilities(source)
+            assert self.pa is not None, "Preferential Attachment LFM not initialized"
+            assert self.h is not None, "Homophily LFM not initialized"
+            return np.array(self.pa.get_target_probabilities(source))\
+                * np.array(self.h.get_target_probabilities(source))
+        return np.array(self.uniform.get_target_probabilities(source))
 
     def _get_tc_target_probabilities(self, source: int) -> np.ndarray:
         self.trigger_event(event=Event.TARGET_SELECTION_LOCAL, source=source)

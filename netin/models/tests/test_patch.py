@@ -17,16 +17,16 @@ from ...utils.constants import CLASS_ATTRIBUTE
 class TestPATCHModel:
     @staticmethod
     def create_model(
-            N=5, f_m=.3, m=2,
+            n=5, f_m=.3, m=2,
             tau=.8,
             lfm_tc=CompoundLFM.PAH,
             lfm_global=CompoundLFM.PAH,
-            lfm_params={"h_mm": .8, "h_MM": .8},
+            h_m=.8, h_M=.8,
             seed=123) -> PATCHModel:
         model = PATCHModel(
-            N=N, f_m=f_m, m=m, tau=tau,
+            n=n, f_m=f_m, m=m, tau=tau,
             lfm_tc=lfm_tc, lfm_global=lfm_global,
-            lfm_params=lfm_params,
+            h_m=h_m, h_M=h_M,
             seed=seed)
         return model
 
@@ -41,11 +41,10 @@ class TestPATCHModel:
         return counter
 
     def test_lfm_assignments(self):
-        h_params = dict(h_mm = .8, h_MM = .8)
         for lfm_l, lfm_g in product((CompoundLFM.UNIFORM, CompoundLFM.HOMOPHILY, CompoundLFM.PAH), repeat=2):
             model = TestPATCHModel.create_model(
                 lfm_tc=lfm_l, lfm_global=lfm_g,
-            lfm_params=h_params)
+                h_m=.8, h_M=.8)
             assert model.lfm_tc == lfm_l
             assert model.lfm_global == lfm_g
 
@@ -150,7 +149,7 @@ class TestPATCHModel:
         ratios_total = defaultdict(list)
         for seed in range(n_iter):
             g_patch = TestPATCHModel.create_model(
-                N=N,
+                n=n,
                 tau=0.0,
                 lfm_tc=CompoundLFM.PAH, lfm_global=CompoundLFM.PAH,
                 seed=seed)
