@@ -1,4 +1,4 @@
-# This worklow will create a release when a tag is pushed
+# This workflow will create a release when a tag is pushed
 
 name: Create release
 
