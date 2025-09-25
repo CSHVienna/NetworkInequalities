@@ -16,10 +16,10 @@ jobs:
         uses: actions/checkout@v5
 
       # Split version from version string
-      # `netin-x.y` returns `x.y`
+      # `netin-x.y.z` returns `x.y.z`
       - id: get-version
         run: |
-          version=$(echo ${{github.ref_name}} | cut -d- -f2)
+          version=${GITHUB_REF_NAME#netin-}
           echo "version=$version" >> $GITHUB_OUTPUT
           # Check if version contains 'a' followed by digits at the end
           if echo "$version" | grep -q 'a[0-9]\+$'; then
