@@ -219,7 +219,7 @@ class DirectedModel(BinaryClassModel):
                 if target is None:
                     continue
 
-                self.graph.add_edge(source, target)
+                self._add_edge_to_graph(source, target)
 
                 if self.graph.number_of_edges() >= self._get_expected_number_of_edges():
                     break

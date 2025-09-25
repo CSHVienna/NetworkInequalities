@@ -14,16 +14,16 @@ from ...utils import io
 
 class Janus(BaseClass):
     """
-    
+
     [Espin-Noboa2017]_
-    
+
     """
 
     def __init__(self, graph: Graph, is_global: bool = True, k_max: int = 10, k_log_scale: bool = True, **attr):
         BaseClass.__init__(self, **attr)
         self.graph: JanusGraph = JanusGraph(graph, **attr)  # graph (from class Graph)
         self.graph.init_data(is_global)
-        self.is_global = is_global  # kind of testing: global or local
+        self.is_global = is_global  # kind of testing: global or triadic closure
         self.k_max = k_max  # maximun value of weighting factor
         self.k_log_scale = k_log_scale  # whether the weighting factors should be log scale or not
         self.weighting_factors: np.ndarray = None
@@ -159,7 +159,7 @@ class Janus(BaseClass):
 
         if output_dir is not None:
             io.validate_dir(output_dir)
-            plt.savefig(io.path_join(output_dir, f"evidences_{'global' if self.is_global else 'local'}.pdf"),
+            plt.savefig(io.path_join(output_dir, f"evidences_{'global' if self.is_global else 'tc'}.pdf"),
                         bbox_extra_artists=(legend,),
                         bbox_inches='tight',
                         dpi=kwargs.get('dpi', 1200))

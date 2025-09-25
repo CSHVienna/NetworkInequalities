@@ -17,15 +17,15 @@ from ...utils.constants import CLASS_ATTRIBUTE
 class TestPATCHModel:
     @staticmethod
     def create_model(
-            n=5, f_m=.3, m=2,
-            p_tc=.8,
-            lfm_local=CompoundLFM.PAH,
+            N=5, f_m=.3, m=2,
+            tau=.8,
+            lfm_tc=CompoundLFM.PAH,
             lfm_global=CompoundLFM.PAH,
             lfm_params={"h_mm": .8, "h_MM": .8},
             seed=123) -> PATCHModel:
         model = PATCHModel(
-            n=n, f_m=f_m, m=m, p_tc=p_tc,
-            lfm_local=lfm_local, lfm_global=lfm_global,
+            N=N, f_m=f_m, m=m, tau=tau,
+            lfm_tc=lfm_tc, lfm_global=lfm_global,
             lfm_params=lfm_params,
             seed=seed)
         return model
@@ -44,9 +44,9 @@ class TestPATCHModel:
         h_params = dict(h_mm = .8, h_MM = .8)
         for lfm_l, lfm_g in product((CompoundLFM.UNIFORM, CompoundLFM.HOMOPHILY, CompoundLFM.PAH), repeat=2):
             model = TestPATCHModel.create_model(
-                lfm_local=lfm_l, lfm_global=lfm_g,
+                lfm_tc=lfm_l, lfm_global=lfm_g,
             lfm_params=h_params)
-            assert model.lfm_local == lfm_l
+            assert model.lfm_tc == lfm_l
             assert model.lfm_global == lfm_g
 
             model.simulate()
@@ -55,7 +55,7 @@ class TestPATCHModel:
                 assert model.h is not None
                 with pytest.raises(AssertionError):
                     m_fail = TestPATCHModel.create_model(
-                        lfm_local=lfm_l,
+                        lfm_tc=lfm_l,
                         lfm_global=lfm_g,
                         lfm_params=None)
                     m_fail.simulate()
@@ -65,7 +65,7 @@ class TestPATCHModel:
 
         with pytest.raises(AssertionError):
             _ = TestPATCHModel.create_model(
-                lfm_local="test")
+                lfm_tc="test")
         with pytest.raises(AssertionError):
             _ = TestPATCHModel.create_model(
                 lfm_global="test")
@@ -79,16 +79,16 @@ class TestPATCHModel:
 
         model.register_event_handler(
             event=Event.TARGET_SELECTION_LOCAL,
-            function=lambda: _inc_counter("local"))
+            function=lambda: _inc_counter("tc"))
         model.register_event_handler(
             event=Event.TARGET_SELECTION_GLOBAL,
             function=lambda: _inc_counter("global"))
 
         model.simulate()
 
-        assert counter["local"] > 0
+        assert counter["tc"] > 0
         assert counter["global"] > 0
-        assert counter["local"] + counter["global"] == (model.n - model.m) * model.m
+        assert counter["tc"] + counter["global"] == (model.N - model.m) * model.m
 
     def test_simulation(self):
         model = TestPATCHModel.create_model(n=750)
@@ -150,9 +150,9 @@ class TestPATCHModel:
         ratios_total = defaultdict(list)
         for seed in range(n_iter):
             g_patch = TestPATCHModel.create_model(
-                n=n,
-                p_tc=0.0,
-                lfm_local=CompoundLFM.PAH, lfm_global=CompoundLFM.PAH,
+                N=N,
+                tau=0.0,
+                lfm_tc=CompoundLFM.PAH, lfm_global=CompoundLFM.PAH,
                 seed=seed)
             g_pah = PAHModel(
                 n=g_patch.n, m=g_patch.m, f_m=g_patch.f_m,
