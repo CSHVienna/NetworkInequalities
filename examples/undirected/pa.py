@@ -4,12 +4,12 @@ from netin.utils import SimulationTimer
 
 def run():
     n = 4000
-    m = 2
+    k = 2
     f_m = 0.1
     seed = 1234
 
     model = PAModel(n=n,
-                    m=m,
+                    k=k,
                     f_m=f_m,
                     seed=seed)
     timer = SimulationTimer(model)

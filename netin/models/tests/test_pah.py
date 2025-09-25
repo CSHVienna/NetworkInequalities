@@ -10,18 +10,18 @@ import numpy as np
 class TestPAHModel:
     @staticmethod
     def _create_model(
-        n=1000, m=2, f_m=0.1, h_mm=0.5, h_MM=0.5, seed=1234
+        n=1000, k=2, f_m=0.1, h_mm=0.5, h_MM=0.5, seed=1234
     ):
         return PAHModel(
-            n=n, m=m, f_m=f_m, h_mm=h_mm, h_MM=h_MM, seed=seed
+            n=n, k=k, f_m=f_m, h_mm=h_mm, h_MM=h_MM, seed=seed
         )
 
     def test_simulation(self):
         n = 1000
-        m = 2
+        k = 2
         f_m = .3
 
-        model = TestPAHModel._create_model(n=n, m=m, f_m=f_m)
+        model = TestPAHModel._create_model(n=n, k=k, f_m=f_m)
         model.simulate()
 
         assert model.graph is not None
@@ -29,7 +29,7 @@ class TestPAHModel:
         assert len(model.graph) == n
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes())
-        assert (_sum_links // 2) == (((n - m) * m) + (m * (m - 1)) // 2)
+        assert (_sum_links // 2) == (((n - k) * k) + (k * (k - 1)) // 2)
 
         node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
         assert node_classes is not None
@@ -44,7 +44,7 @@ class TestPAHModel:
     def test_preload_graph(self):
         n = 1000
         n_pre = 10
-        m = 2
+        k = 2
         f_m = .3
         f_m_pre = .1
 
@@ -68,7 +68,7 @@ class TestPAHModel:
         assert len(model.graph) == (n + n_pre)
         _sum_links = sum(model.graph.degree(v)\
                          for v in model.graph.nodes()) // 2
-        assert _sum_links == (1 + (n * m))
+        assert _sum_links == (1 + (n * k))
         for u in range(n_pre):
             for v in range(u):
                 if u == v:
@@ -100,19 +100,19 @@ class TestPAHModel:
 
     def test_no_invalid_links(self):
         n = 1000
-        m = 2
-        model = TestPAHModel._create_model(n=n, m=m)
+        k = 2
+        model = TestPAHModel._create_model(n=n, k=k)
         model.simulate()
         graph = model.graph
 
         # The graph class cannot store double links
         # Hence, if there are no self-links, the number of links
-        # must be `(n-m) * m` because each but the first `m` nodes
-        # create `m` links.
+        # must be `(n-k) * k` because each but the first `k` nodes
+        # create `k` links.
         for u in graph.nodes():
             assert not graph.has_edge(u, u)
         n_links = graph.number_of_edges()
-        assert n_links == ((n - m) * m) + ((m * (m - 1)) // 2)
+        assert n_links == ((n - k) * k) + ((k * (k - 1)) // 2)
 
     def test_heterophily_min_advantage(self):
         h = 0.1
