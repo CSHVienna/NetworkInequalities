@@ -5,17 +5,16 @@ def run():
     n = 100
     k = 2
     f_m = 0.1
-    h_MM = 0.9
-    h_mm = 0.9
+    h_M = 0.9
+    h_m = 0.9
     tau = 0.8
     lfm_l = CompoundLFM.PAH
     lfm_g = CompoundLFM.PAH
     seed = 1234
-
-    model = PATCHModel(N=n, m=k, f_m=f_m,
+    model = PATCHModel(n=n, m=k, f_m=f_m,
                        tau=tau,
                        lfm_tc=lfm_l, lfm_global=lfm_g,
-                       lfm_params={'h_m': h_mm, 'h_M': h_MM},
+                       h_m=h_m, h_M=h_M,
                        seed=seed)
 
     timer = SimulationTimer(model)
