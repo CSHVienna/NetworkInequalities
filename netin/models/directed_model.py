@@ -44,6 +44,13 @@ class DirectedModel(BinaryClassModel):
     plo_M: float
     plo_m: float
 
+    EVENTS = [
+        Event.SIMULATION_START, Event.SIMULATION_END,
+        Event.LINK_ADD_AFTER, Event.LINK_ADD_BEFORE]
+    """Evokes :attr:`.Event.SIMULATION_START`, :attr:`.Event.SIMULATION_END`,
+    :attr:`.Event.LINK_ADD_AFTER` and :attr:`.Event.LINK_ADD_BEFORE`.
+    """
+
     _node_activity: NodeVector
     _f_active_nodes: ActiveNodes
     _lfm_uniform: Uniform
@@ -219,7 +226,7 @@ class DirectedModel(BinaryClassModel):
                 if target is None:
                     continue
 
-                self.graph.add_edge(source, target)
+                self._add_edge_to_graph(source, target)
 
                 if self.graph.number_of_edges() >= self._get_expected_number_of_edges():
                     break

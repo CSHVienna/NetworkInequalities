@@ -242,6 +242,21 @@ class Model(ABC, HasEvents, BaseClass):
 
         return d
 
+    def _add_edge_to_graph(self, source: int, target: int):
+        """Adds an edge to the graph.
+        This triggers the :attr:`.Event.LINK_ADD_BEFORE` and :attr:`.Event.LINK_ADD_AFTER` events.
+
+        Parameters
+        ----------
+        source : int
+            Source node.
+        target : int
+            Target node.
+        """
+        self.trigger_event(event=Event.LINK_ADD_BEFORE, source=source, target=target)
+        self.graph.add_edge(source, target)
+        self.trigger_event(event=Event.LINK_ADD_AFTER, source=source, target=target)
+
     def _sample_target_node(
             self, target_probabilities: np.ndarray)\
                 -> int:
