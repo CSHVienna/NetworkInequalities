@@ -21,6 +21,12 @@ jobs:
         run: |
           version=$(echo ${{github.ref_name}} | cut -d- -f2)
           echo "version=$version" >> $GITHUB_OUTPUT
+          # Check if version contains 'a' followed by digits at the end
+          if echo "$version" | grep -q 'a[0-9]\+$'; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
       - run: echo "Extracted version ${{steps.get-version.outputs.version}}"
 
@@ -30,6 +36,6 @@ jobs:
         with:
           draft: true
           name: NetIn - ${{ steps.get-version.outputs.version }}
-          prerelease: ${{ contains(steps.get-version.outputs.version, 'a') }}
+          prerelease: ${{ steps.get-version.outputs.is_prerelease == 'true' }}
           generate_release_notes: true
-          make_latest: ${{ !contains(steps.get-version.outputs.version, 'a') }}
+          make_latest: ${{ steps.get-version.outputs.is_prerelease == 'false' }}
