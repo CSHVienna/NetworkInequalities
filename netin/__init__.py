@@ -4,7 +4,7 @@ It provides models to simulate social networks and functions
 to study inequalities (e.g., in ranking, inference) in them.
 """
 
-__version__ = '2.0.0a1'
+__version__ = '2.0.0a2'
 
 from netin import utils
 from netin.utils import *
