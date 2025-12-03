@@ -1,0 +1,69 @@
+# build-system
+[build-system]
+requires = [
+    "setuptools>=61",
+    "setuptools-scm[toml]>=6.2",
+]
+build-backend = "setuptools.build_meta"
+
+# Project
+[project]
+name = "probinet"
+description = "Python package for probabilistic network analysis."
+version = "1.0.1"
+requires-python = ">=3.9,<3.14"
+readme = "README.md"
+
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Typing :: Typed",
+    "Topic :: Software Development",
+    "Topic :: Scientific/Engineering",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+]
+dependencies = [
+    "networkx~=3.1",
+    "numpy~=1.24.2",
+    "setuptools~=67.6.1",
+    "matplotlib~=3.7.1",
+    "powerlaw~=1.5",
+    "pandas~=2.0.0",
+    "seaborn~=0.12.2",
+    "spqdm~=0.2.0",
+    "joblib~=1.2.0",
+    "scikit-learn~=1.2.2",
+    "pytest~=7.2.2",
+    "sympy~=1.11.1"
+]
+
+[project.optional-dependencies]
+docs = [
+    "setuptools~=67.6.1",
+    "sphinx~=6.1.3",
+    "sphinx-autobuild~=2021.3.14",
+    "numpydoc~=1.8.0",
+    "furo~=2024.8.6"
+]
+
+#[tool.tox]
+#legacy_tox_ini = """
+#[tox]
+#envlist = py310, py311, py312, py313
+#[testenv]
+#description =
+    #run unit tests
+#extras =
+    #dev
+#commands =
+    #python -m unittest
+
