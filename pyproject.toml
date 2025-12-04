@@ -35,7 +35,6 @@ dependencies = [
     "networkx~=3.1",
     "numpy~=1.24.2",
     "setuptools~=67.6.1",
-    "pytest>=7.2.2",
     "matplotlib~=3.7.1",
     "powerlaw~=1.5",
     "pandas~=2.0.0",
@@ -47,6 +46,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+
+test = [
+    "pytest>=7.2.2"
+]
+
 docs = [
     "setuptools~=67.6.1",
     "sphinx~=6.1.3",
