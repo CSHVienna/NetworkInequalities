@@ -8,11 +8,11 @@ build-backend = "setuptools.build_meta"
 
 # Project
 [project]
-name = "probinet"
+name = "netin"
 description = "Python package for probabilistic network analysis."
 version = "1.0.1"
 requires-python = ">=3.9,<3.14"
-readme = "README.md"
+readme = "README.rst"
 
 classifiers = [
     "Programming Language :: Python",
@@ -38,17 +38,18 @@ dependencies = [
     "matplotlib~=3.7.1",
     "powerlaw~=1.5",
     "pandas~=2.0.0",
-    "seaborn~=0.12.2",
-    "spqdm~=0.2.0",
+    "pqdm~=0.2.0",
     "joblib~=1.2.0",
     "scikit-learn~=1.2.2",
     "sympy~=1.11.1"
 ]
 
+
 [project.optional-dependencies]
 
 test = [
-    "pytest>=7.2.2"
+    "pytest>=7.2.2",
+    "setuptools~=67.6.1"
 ]
 
 docs = [
