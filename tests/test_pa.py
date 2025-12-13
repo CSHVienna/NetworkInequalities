@@ -51,4 +51,4 @@ m_patch.simulate()
 # Plots
 viz.reset_style()
 viz.set_paper_style()
-print("Simulation completed successfully")
+
