@@ -23,11 +23,13 @@ m_pa.simulate()
 m_h = HomophilyModel(
     n=n, k=k, f_m=f_m, h_mm=h_mm, h_MM=h_MM, seed=seed
 )
+m_h.simulate()
 
 # PAH: Preferential attachment and homophily
 m_pah = PAHModel(
     n=n, k=k, f_m=f_m, h_mm=h_mm, h_MM=h_MM, seed=seed
 )
+m_pah.simulate()
 
 # PATCH: Preferential attachment, homophily, and triadic closure
 lfm_l = CompoundLFM.PAH
@@ -52,3 +54,4 @@ m_patch.simulate()
 viz.reset_style()
 viz.set_paper_style()
 
+print("All simulations completed")
