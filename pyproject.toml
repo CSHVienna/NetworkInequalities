@@ -1,0 +1,113 @@
+# build-system
+[build-system]
+requires = [
+    "setuptools>=61",
+    "setuptools-scm[toml]>=6.2",
+]
+build-backend = "setuptools.build_meta"
+
+# Project
+[project]
+
+name = "netin"
+description = "Python package to study inequalities in social networks"
+version = "1.0.1"
+requires-python = ">=3.9,<3.14"
+readme = "README.rst"
+
+authors = {
+    "Karimi": ("Fariba Karimi", "karimi@csh.ac.at"),
+    "Espín-Noboa": ("Lisette Espín-Noboa", "espin@csh.ac.at"),
+    "Bachmann": ("Jan Bachmann", "bachmann@csh.ac.at"),
+}
+
+maintainer = "NetIn Developers"
+maintainer_email = "netin-dev@googlegroups.com"
+url = "https://github.com/CSHVienna/NetworkInequalities"
+platforms = ["Linux", "Mac OSX", "Windows", "Unix"]
+
+keywords = [
+    "Networks",
+    "Inequalities",
+    "Social Networks",
+    "Ranking",
+    "Inference"
+    "Graph Theory",
+    "Mathematics",
+    "network",
+    "undirected",
+    "discrete mathematics",
+    "math",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Typing :: Typed",
+]
+dependencies = [
+    "networkx~=3.1",
+    "numpy~=1.24.2",
+    "setuptools~=67.6.1",
+    "matplotlib~=3.7.1",
+    "powerlaw~=1.5",
+    "pandas~=2.0.0",
+    "seaborn~=0.12.2",
+    "pqdm~=0.2.0",
+    "joblib~=1.2.0",
+    "scikit-learn~=1.2.2",
+    "sympy~=1.11.1"
+]
+
+packages = [
+    "netin",
+    "netin.models",
+    "netin.graphs",
+    "netin.algorithms.janus",
+    "netin.filters",
+    "netin.link_formation_mechanisms",
+    "netin.utils",
+    "netin.stats",
+    "netin.viz",
+]
+
+
+[project.optional-dependencies]
+
+test = [
+    "pytest>=7.2.2",
+    "setuptools~=67.6.1"
+]
+
+docs = [
+    "setuptools~=67.6.1",
+    "sphinx~=6.1.3",
+    "sphinx-autobuild~=2021.3.14",
+    "numpydoc~=1.8.0",
+    "furo~=2024.8.6"
+]
+
+#[tool.tox]
+#legacy_tox_ini = """
+#[tox]
+#envlist = py310, py311, py312, py313
+#[testenv]
+#description =
+    #run unit tests
+#extras =
+    #dev
+#commands =
+    #python -m unittest
+
