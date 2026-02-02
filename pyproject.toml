@@ -15,23 +15,24 @@ version = "1.0.1"
 requires-python = ">=3.9,<3.14"
 readme = "README.rst"
 
-authors = {
-    "Karimi": ("Fariba Karimi", "karimi@csh.ac.at"),
-    "Espín-Noboa": ("Lisette Espín-Noboa", "espin@csh.ac.at"),
-    "Bachmann": ("Jan Bachmann", "bachmann@csh.ac.at"),
-}
+authors = [
+    { name = "Fariba Karimi", email = "karimi@csh.ac.at" },
+    { name = "Lisette Espín-Noboa", email = "espin@csh.ac.at" },
+    { name = "Jan Bachmann", email = "bachmann@csh.ac.at" },
+]
 
-maintainer = "NetIn Developers"
-maintainer_email = "netin-dev@googlegroups.com"
-url = "https://github.com/CSHVienna/NetworkInequalities"
-platforms = ["Linux", "Mac OSX", "Windows", "Unix"]
+maintainers = [
+    { name = "NetIn Developers", email = "netin-dev@googlegroups.com" },
+]
+
+urls = { Homepage = "https://github.com/CSHVienna/NetworkInequalities" }
 
 keywords = [
     "Networks",
     "Inequalities",
     "Social Networks",
     "Ranking",
-    "Inference"
+    "Inference",
     "Graph Theory",
     "Mathematics",
     "network",
@@ -71,19 +72,6 @@ dependencies = [
     "sympy~=1.11.1"
 ]
 
-packages = [
-    "netin",
-    "netin.models",
-    "netin.graphs",
-    "netin.algorithms.janus",
-    "netin.filters",
-    "netin.link_formation_mechanisms",
-    "netin.utils",
-    "netin.stats",
-    "netin.viz",
-]
-
-
 [project.optional-dependencies]
 
 test = [
@@ -98,6 +86,14 @@ docs = [
     "numpydoc~=1.8.0",
     "furo~=2024.8.6"
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["netin*"]
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
 
 #[tool.tox]
 #legacy_tox_ini = """
