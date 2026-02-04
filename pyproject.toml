@@ -95,6 +95,9 @@ include = ["netin*"]
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
 #[tool.tox]
 #legacy_tox_ini = """
 #[tox]
