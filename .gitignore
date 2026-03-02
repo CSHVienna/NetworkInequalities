@@ -31,4 +31,4 @@ netin.egg-info
 
 #JSON files
 
-examples/notebooks/inference_results/evidences.json
+E:/repository/NetworkInequalities/examples/notebooks/inference_results/*evidences.json

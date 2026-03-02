@@ -60,7 +60,7 @@ classifiers = [
 ]
 dependencies = [
     "networkx~=3.1",
-    "numpy~=1.24.2",
+    "numpy",
     "setuptools~=67.6.1",
     "matplotlib~=3.7.1",
     "powerlaw~=1.5",
@@ -101,5 +101,5 @@ testpaths = ["tests"]
 
 [tool.tox]
 requires = ["tox>=4"]
-env_list = ["py39", "py310", "py311"]
+env_list = ["py39", "py310", "py311", "py312"]
 #https://tox.wiki/en/latest/user_guide.html#basic-example followed this linkS
