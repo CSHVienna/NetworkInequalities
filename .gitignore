@@ -31,6 +31,8 @@ netin.egg-info
 
 #JSON files
 
+examples/notebooks/inference_results/evidences.json
+
 "uniform": {
         "0.0": -1436303.7447986528,
         "1.0": -1641186.9081861537,
