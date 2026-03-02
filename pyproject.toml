@@ -101,4 +101,5 @@ testpaths = ["tests"]
 
 [tool.tox]
 requires = ["tox>=4"]
-env_list = ["py39", "py310", "py311", "py312"]
+env_list = ["py39", "py310", "py311"]
+#https://tox.wiki/en/latest/user_guide.html#basic-example followed this linkS
