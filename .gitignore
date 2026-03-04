@@ -1,5 +1,4 @@
 
-
 # ignore log files and databases
 *.log
 *.sql
@@ -19,6 +18,9 @@ tmp
 _tmp
 deleteme*
 
+# ignore tox files
+.tox
+
 # internal
 reports
 pre_submit.sh
@@ -30,5 +32,4 @@ netin.egg-info
 .venv*
 
 #JSON files
-
-E:/repository/NetworkInequalities/examples/notebooks/inference_results/*evidences.json
+examples/notebooks/inference_results/*.json
