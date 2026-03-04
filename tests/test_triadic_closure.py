@@ -1,8 +1,8 @@
 import pytest
 import numpy as np
 
-from ...graphs.graph import Graph
-from ..triadic_closure import TriadicClosure
+from netin.graphs.graph import Graph
+from netin.link_formation_mechanisms.triadic_closure import TriadicClosure
 
 class TestTriadicClosure:
     def test_triadic_closure(self):

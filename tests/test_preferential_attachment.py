@@ -1,8 +1,8 @@
 import pytest
 
-from ..preferential_attachment import PreferentialAttachment
-from ...graphs.graph import Graph
-from ...graphs.directed import DiGraph
+from netin.link_formation_mechanisms.preferential_attachment import PreferentialAttachment
+from netin.graphs.graph import Graph
+from netin.graphs.directed import DiGraph
 
 class TestPreferentialAttachment:
     @staticmethod

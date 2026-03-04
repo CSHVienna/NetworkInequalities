@@ -6,10 +6,10 @@ import numpy as np
 import networkx as nx
 from scipy.sparse import csr_matrix
 
-from .node_vector import NodeVector
-from .categorical_node_vector import CategoricalNodeVector
-from ..utils.event_handling import HasEvents, Event
-from ..base_class import BaseClass
+from netin.graphs.node_vector import NodeVector
+from netin.graphs.categorical_node_vector import CategoricalNodeVector
+from netin.utils.event_handling import HasEvents, Event
+from netin.base_class import BaseClass
 
 class Graph(HasEvents, BaseClass):
     """A Graph representation that allows simple manipulation.
