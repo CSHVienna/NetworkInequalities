@@ -64,7 +64,7 @@ dependencies = [
     "setuptools~=67.6.1",
     "matplotlib~=3.7.1",
     "powerlaw~=1.5",
-    "pandas~=2.0.0",
+    "pandas",
     "seaborn~=0.12.2",
     "pqdm~=0.2.0",
     "joblib~=1.2.0",
