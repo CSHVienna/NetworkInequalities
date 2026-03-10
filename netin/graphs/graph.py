@@ -6,8 +6,8 @@ import numpy as np
 import networkx as nx
 from scipy.sparse import csr_matrix
 
-from netin.graphs.node_vector import NodeVector
-from netin.graphs.categorical_node_vector import CategoricalNodeVector
+from ..graphs.node_vector import NodeVector
+from ..graphs.categorical_node_vector import CategoricalNodeVector
 from netin.utils.event_handling import HasEvents, Event
 from netin.base_class import BaseClass
 

@@ -3,8 +3,8 @@ from numbers import Number
 
 import numpy as np
 
-from netin.base_class import BaseClass
-from netin.utils.validator import validate_int
+from ..base_class import BaseClass
+from ..utils.validator import validate_int
 
 class NodeVector(BaseClass):
     """Wrapper for numpy arrays that represents node values.
