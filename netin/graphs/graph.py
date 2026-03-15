@@ -8,8 +8,8 @@ from scipy.sparse import csr_matrix
 
 from ..graphs.node_vector import NodeVector
 from ..graphs.categorical_node_vector import CategoricalNodeVector
-from netin.utils.event_handling import HasEvents, Event
-from netin.base_class import BaseClass
+from ..utils.event_handling import HasEvents, Event
+from ..base_class import BaseClass
 
 class Graph(HasEvents, BaseClass):
     """A Graph representation that allows simple manipulation.
