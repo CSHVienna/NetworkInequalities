@@ -78,6 +78,7 @@ dependencies = [
 test = [
     "pytest>=7.2.2",
     "setuptools~=67.6.1"
+    "nbmake"
 ]
 
 docs = [
@@ -97,7 +98,12 @@ version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = [
+    "tests",
+    "examples/notebooks"
+]
+
+addopts = "--nbmake"
 
 [tool.tox]
 requires = ["tox>=4"]
