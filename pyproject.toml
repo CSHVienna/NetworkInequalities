@@ -15,23 +15,24 @@ version = "1.0.1"
 requires-python = ">=3.9,<3.14"
 readme = "README.rst"
 
-authors = {
-    "Karimi": ("Fariba Karimi", "karimi@csh.ac.at"),
-    "Espín-Noboa": ("Lisette Espín-Noboa", "espin@csh.ac.at"),
-    "Bachmann": ("Jan Bachmann", "bachmann@csh.ac.at"),
-}
+authors = [
+    { name = "Fariba Karimi", email = "karimi@csh.ac.at" },
+    { name = "Lisette Espín-Noboa", email = "espin@csh.ac.at" },
+    { name = "Jan Bachmann", email = "bachmann@csh.ac.at" },
+]
 
-maintainer = "NetIn Developers"
-maintainer_email = "netin-dev@googlegroups.com"
-url = "https://github.com/CSHVienna/NetworkInequalities"
-platforms = ["Linux", "Mac OSX", "Windows", "Unix"]
+maintainers = [
+    { name = "NetIn Developers", email = "netin-dev@googlegroups.com" },
+]
+
+urls = { Homepage = "https://github.com/CSHVienna/NetworkInequalities" }
 
 keywords = [
     "Networks",
     "Inequalities",
     "Social Networks",
     "Ranking",
-    "Inference"
+    "Inference",
     "Graph Theory",
     "Mathematics",
     "network",
@@ -59,30 +60,18 @@ classifiers = [
 ]
 dependencies = [
     "networkx~=3.1",
-    "numpy~=1.24.2",
+    "numpy",
     "setuptools~=67.6.1",
     "matplotlib~=3.7.1",
     "powerlaw~=1.5",
-    "pandas~=2.0.0",
+    "pandas",
     "seaborn~=0.12.2",
     "pqdm~=0.2.0",
     "joblib~=1.2.0",
     "scikit-learn~=1.2.2",
-    "sympy~=1.11.1"
+    "sympy~=1.11.1",
+    "tox~=4.11.4"
 ]
-
-packages = [
-    "netin",
-    "netin.models",
-    "netin.graphs",
-    "netin.algorithms.janus",
-    "netin.filters",
-    "netin.link_formation_mechanisms",
-    "netin.utils",
-    "netin.stats",
-    "netin.viz",
-]
-
 
 [project.optional-dependencies]
 
@@ -99,15 +88,18 @@ docs = [
     "furo~=2024.8.6"
 ]
 
-#[tool.tox]
-#legacy_tox_ini = """
-#[tox]
-#envlist = py310, py311, py312, py313
-#[testenv]
-#description =
-    #run unit tests
-#extras =
-    #dev
-#commands =
-    #python -m unittest
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["netin*"]
 
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.tox]
+requires = ["tox>=4"]
+env_list = ["py39", "py310", "py311", "py312"]
+#https://tox.wiki/en/latest/user_guide.html#basic-example followed this linkS

@@ -1,19 +1,19 @@
 import pytest
 
-from netin.models import PAModel
+from netin.models import HomophilyModel
 from netin.utils.constants import CLASS_ATTRIBUTE
 from netin.graphs.binary_class_node_vector import BinaryClassNodeVector
 from netin.graphs import Graph, DiGraph
 
 import numpy as np
 
-class TestPAModel:
+class TestHomophilyModel:
     @staticmethod
     def _create_model(
-        n=1000, k=2, f_m=0.1, seed=1234
+        n=1000, k=2, f_m=0.1, h_mm=0.5, h_MM=0.5, seed=1234
     ):
-        return PAModel(
-            n=n, k=k, f_m=f_m, seed=seed
+        return HomophilyModel(
+            n=n, k=k, f_m=f_m, h_mm=h_mm, h_MM=h_MM, seed=seed
         )
 
     def test_simulation(self):
@@ -21,7 +21,7 @@ class TestPAModel:
         k = 2
         f_m = .3
 
-        model = TestPAModel._create_model(n=n, k=k, f_m=f_m)
+        model = TestHomophilyModel._create_model(n=n, k=k, f_m=f_m)
         model.simulate()
 
         assert model.graph is not None
@@ -48,7 +48,7 @@ class TestPAModel:
         f_m = .3
         f_m_pre = .1
 
-        model = TestPAModel._create_model(n=n, f_m=f_m)
+        model = TestHomophilyModel._create_model(n=n, f_m=f_m)
         with pytest.raises(AssertionError):
             model.preload_graph(DiGraph())
 
@@ -82,7 +82,7 @@ class TestPAModel:
         assert len(node_classes) == (n + n_pre)
         assert np.isclose(np.mean(node_classes), f_m, atol=0.05)
 
-        model = TestPAModel._create_model(n=n, f_m=f_m)
+        model = TestHomophilyModel._create_model(n=n, f_m=f_m)
         g_pre = Graph()
         for i in range(n_pre):
             g_pre.add_node(i)
@@ -101,7 +101,7 @@ class TestPAModel:
     def test_no_invalid_links(self):
         n = 1000
         k = 2
-        model = TestPAModel._create_model(n=n, k=k)
+        model = TestHomophilyModel._create_model(n=n, k=k)
         model.simulate()
         graph = model.graph
 
@@ -114,18 +114,52 @@ class TestPAModel:
         n_links = graph.number_of_edges()
         assert n_links == ((n - k) * k) + ((k * (k - 1)) // 2)
 
+    def test_heterophily_min_advantage(self):
+        h = 0.1
+
+        model = TestHomophilyModel._create_model(
+            h_mm=h, h_MM=h)
+        model.simulate()
+        node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
+
+        minority_mask = node_classes.get_minority_mask()
+        majority_mask = node_classes.get_majority_mask()
+
+        degrees = model.graph.degrees()
+        degrees_min = degrees[minority_mask]
+        degrees_maj = degrees[majority_mask]
+
+        assert np.mean(degrees_min) > np.mean(degrees_maj)
+
+    def test_homophily_maj_advantage(self):
+        h = .9
+
+        model = TestHomophilyModel._create_model(
+            h_mm=h, h_MM=h)
+        model.simulate()
+        node_classes = model.graph.get_node_class(CLASS_ATTRIBUTE)
+
+        minority_mask = node_classes.get_minority_mask()
+        majority_mask = node_classes.get_majority_mask()
+
+        degrees = model.graph.degrees()
+        degrees_min = degrees[minority_mask]
+        degrees_maj = degrees[majority_mask]
+
+        assert np.mean(degrees_min) < np.mean(degrees_maj)
+
     def test_seeding(self):
-        model1 = TestPAModel._create_model(seed=1234)
+        model1 = TestHomophilyModel._create_model(seed=1234)
         model1.simulate()
         graph1 = model1.graph
         nc1 = graph1.get_node_class(CLASS_ATTRIBUTE)
 
-        model2 = TestPAModel._create_model(seed=1234)
+        model2 = TestHomophilyModel._create_model(seed=1234)
         model2.simulate()
         graph2 = model2.graph
         nc2 = graph2.get_node_class(CLASS_ATTRIBUTE)
 
-        model3 = TestPAModel._create_model(seed=999)
+        model3 = TestHomophilyModel._create_model(seed=999)
         model3.simulate()
         graph3 = model3.graph
         nc3 = graph3.get_node_class(CLASS_ATTRIBUTE)

@@ -3,9 +3,9 @@ from typing import Dict
 import networkx as nx
 import numpy as np
 
-from ..graph import Graph
-from ..directed import DiGraph
-from ...utils.event_handling import Event
+from netin.graphs.graph import Graph
+from netin.graphs.directed import DiGraph
+from netin.utils.event_handling import Event
 
 class TestGraph(object):
     @staticmethod

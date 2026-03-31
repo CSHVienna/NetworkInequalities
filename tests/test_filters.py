@@ -1,12 +1,12 @@
 import numpy as np
 import pytest
 
-from ..active_nodes import ActiveNodes
-from ..no_double_links import NoDoubleLinks
-from ..no_self_links import NoSelfLinks
-from ...graphs.node_vector import NodeVector
-from ...graphs.graph import Graph
-from ...graphs.directed import DiGraph
+from netin.filters.active_nodes import ActiveNodes
+from netin.filters.no_double_links import NoDoubleLinks
+from netin.filters.no_self_links import NoSelfLinks
+from netin.graphs.node_vector import NodeVector
+from netin.graphs.graph import Graph
+from netin.graphs.directed import DiGraph
 
 class TestFilters(object):
     n = 1000

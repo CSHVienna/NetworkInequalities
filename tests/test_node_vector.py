@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from ..node_vector import NodeVector
+from netin.graphs.node_vector import NodeVector
 
 class TestNodeVector:
     def test_np_functions(self):

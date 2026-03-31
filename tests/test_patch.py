@@ -7,12 +7,12 @@ import scipy as sc
 from collections import Counter
 from itertools import product
 
-from ..patch_model import PATCHModel, CompoundLFM
-from ..pah_model import PAHModel
-from ...graphs.graph import Graph
-from ...graphs.directed import DiGraph
-from ...utils.event_handling import Event
-from ...utils.constants import CLASS_ATTRIBUTE
+from netin.models.patch_model import PATCHModel, CompoundLFM
+from netin.models.pah_model import PAHModel
+from netin.graphs.graph import Graph
+from netin.graphs.directed import DiGraph
+from netin.utils.event_handling import Event
+from netin.utils.constants import CLASS_ATTRIBUTE
 
 class TestPATCHModel:
     @staticmethod
