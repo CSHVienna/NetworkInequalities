@@ -30,6 +30,7 @@ build
 dist
 netin.egg-info
 .venv*
+venv
 
 #JSON files
 examples/notebooks/inference_results/*.json
