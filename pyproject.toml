@@ -108,4 +108,8 @@ addopts = "--nbmake"
 [tool.tox]
 requires = ["tox>=4"]
 env_list = ["py39", "py310", "py311", "py312"]
-#https://tox.wiki/en/latest/user_guide.html#basic-example followed this linkS
+
+[testenv]
+extras = ["test"]
+set_env = { MPLBACKEND = "Agg" }
+commands = [["pytest"]]
