@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && git show {} -- netin/graphs/graph.py')",
+      "Bash(grep -r 'is_multigraph' /Users/diego/Repositories/NetworkInequalities/netin/ venv/lib/python*/site-packages/networkx/drawing/)"
+    ]
+  }
+}
