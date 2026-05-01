@@ -32,5 +32,6 @@ netin.egg-info
 .venv*
 venv
 
-#JSON files
+# notebook outputs
 examples/notebooks/inference_results/*.json
+examples/notebooks/inference_results/*.pdf

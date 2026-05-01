@@ -1,10 +1,9 @@
 name: Documentation
 on:
   push:
-    branches:
-      - main
-      - alpha
-
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch: # For run from Github Actions
 
 permissions:
@@ -26,13 +25,10 @@ jobs:
           # install pip=>20.1 to use "pip cache dir"
           python3 -m pip install --upgrade pip
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements/docs.txt
 
       - name: Install netin
         run: |
-          pip install ./
+          pip install -e ".[docs]"
 
       - name: Build documentation
         run: |
@@ -46,12 +42,3 @@ jobs:
           publish_dir: ./docs/build/html
           publish_branch: documentation
           destination_dir: /  # Root folder for stable version
-
-      - name: Deploy alpha documentation
-        if: github.ref == 'refs/heads/alpha'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/build/html
-          publish_branch: documentation
-          destination_dir: alpha  # Deploy to 'alpha/' subfolder
