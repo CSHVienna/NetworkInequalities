@@ -35,3 +35,6 @@ venv
 # notebook outputs
 examples/notebooks/inference_results/*.json
 examples/notebooks/inference_results/*.pdf
+
+# local Claude Code settings
+.claude/settings.local.json
