@@ -6,8 +6,8 @@ import numpy as np
 import networkx as nx
 from scipy.sparse import csr_matrix
 
-from ..graphs.node_vector import NodeVector
-from ..graphs.categorical_node_vector import CategoricalNodeVector
+from .node_vector import NodeVector
+from .categorical_node_vector import CategoricalNodeVector
 from ..utils.event_handling import HasEvents, Event
 from ..base_class import BaseClass
 
