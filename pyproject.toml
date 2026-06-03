@@ -19,7 +19,7 @@ authors = [
     { name = "Fariba Karimi", email = "karimi@csh.ac.at" },
     { name = "Lisette Espín-Noboa", email = "espin@csh.ac.at" },
     { name = "Jan Bachmann", email = "bachmann@csh.ac.at" },
-    { name = "Diego Baptista Thuerkauf", email = "diego.baptistatheuerkauf@tugraz.at" },
+    { name = "Diego Baptista Theuerkauf", email = "diego.baptistatheuerkauf@tugraz.at" },
     { name = "Farzana Akter", email = "farzana.tugraz@gmail.com" },
 ]
 
@@ -50,7 +50,7 @@ classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Information Analysis",
