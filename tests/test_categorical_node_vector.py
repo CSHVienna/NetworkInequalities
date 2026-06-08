@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from ..categorical_node_vector import CategoricalNodeVector
+from netin.graphs.categorical_node_vector import CategoricalNodeVector
 
 class TestCategoricalNodeVector:
     def test_init(self):

@@ -1,18 +1,18 @@
 import numpy as np
 
-from netin.models import DPAHModel
+from netin.models import DPAModel
 
-class TestDPAHModel(object):
+class TestDPAModel(object):
     @staticmethod
     def _create_model(
         n=1000, d=0.005, f_m=0.1,
         plo_M=2.0, plo_m=2.0,
-        h_MM=0.2, h_mm=0.9, seed=1234) -> DPAHModel:
-        return DPAHModel(
-            n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, h_MM=h_MM, h_mm=h_mm, seed=seed)
+        seed=1234) -> DPAModel:
+        return DPAModel(
+            n=n, d=d, f_m=f_m, plo_M=plo_M, plo_m=plo_m, seed=seed)
 
     def test_simulation(self):
-        model = TestDPAHModel._create_model()
+        model = TestDPAModel._create_model()
         model.simulate()
         graph = model.graph
 
@@ -28,7 +28,7 @@ class TestDPAHModel(object):
         pass
 
     def test_no_invalid_links(self):
-        model = TestDPAHModel._create_model()
+        model = TestDPAModel._create_model()
         model.simulate()
         graph = model.graph
         for node in graph.nodes():

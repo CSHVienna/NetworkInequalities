@@ -3,9 +3,9 @@ from typing import List, Optional
 import pytest
 import numpy as np
 
-from ..homophily import Homophily
-from ..two_class_homophily import TwoClassHomophily
-from ...graphs.categorical_node_vector import CategoricalNodeVector
+from netin.link_formation_mechanisms.homophily import Homophily
+from netin.link_formation_mechanisms.two_class_homophily import TwoClassHomophily
+from netin.graphs.categorical_node_vector import CategoricalNodeVector
 
 class TestHomophily:
     @staticmethod

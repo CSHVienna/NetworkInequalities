@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from ..binary_class_node_vector import BinaryClassNodeVector
+from netin.graphs.binary_class_node_vector import BinaryClassNodeVector
 
 class TestBinaryClassNodeVector:
     def test_init(self):

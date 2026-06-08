@@ -1,8 +1,8 @@
 import pytest
 
-from ..indegree_preferential_attachment import InDegreePreferentialAttachment
-from ...graphs.directed import DiGraph
-from ...graphs.graph import Graph
+from netin.link_formation_mechanisms.indegree_preferential_attachment import InDegreePreferentialAttachment
+from netin.graphs.directed import DiGraph
+from netin.graphs.graph import Graph
 
 class TestPreferentialAttachment:
     @staticmethod

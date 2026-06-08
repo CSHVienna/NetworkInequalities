@@ -1,5 +1,4 @@
 
-
 # ignore log files and databases
 *.log
 *.sql
@@ -19,6 +18,9 @@ tmp
 _tmp
 deleteme*
 
+# ignore tox files
+.tox
+
 # internal
 reports
 pre_submit.sh
@@ -27,3 +29,12 @@ pre_submit.sh
 build
 dist
 netin.egg-info
+.venv*
+venv
+
+# notebook outputs
+examples/notebooks/inference_results/*.json
+examples/notebooks/inference_results/*.pdf
+
+# local Claude Code settings
+.claude/settings.local.json

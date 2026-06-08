@@ -1,0 +1,117 @@
+# build-system
+[build-system]
+requires = [
+    "setuptools>=61",
+    "setuptools-scm[toml]>=6.2",
+]
+build-backend = "setuptools.build_meta"
+
+# Project
+[project]
+
+name = "netin"
+description = "Python package to study inequalities in social networks"
+version = "1.0.1"
+requires-python = ">=3.9,<3.14"
+readme = "README.rst"
+
+authors = [
+    { name = "Fariba Karimi", email = "karimi@csh.ac.at" },
+    { name = "Lisette Espín-Noboa", email = "espin@csh.ac.at" },
+    { name = "Jan Bachmann", email = "bachmann@csh.ac.at" },
+    { name = "Diego Baptista Theuerkauf", email = "diego.baptistatheuerkauf@tugraz.at" },
+    { name = "Farzana Akter", email = "farzana.tugraz@gmail.com" },
+]
+
+maintainers = [
+    { name = "NetIn Developers", email = "netin-dev@googlegroups.com" },
+]
+
+urls = { Homepage = "https://github.com/CSHVienna/NetworkInequalities" }
+
+keywords = [
+    "Networks",
+    "Inequalities",
+    "Social Networks",
+    "Ranking",
+    "Inference",
+    "Graph Theory",
+    "Mathematics",
+    "network",
+    "undirected",
+    "discrete mathematics",
+    "math",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Typing :: Typed",
+]
+dependencies = [
+    "networkx~=3.1",
+    "numpy",
+    "setuptools~=67.6.1",
+    "matplotlib~=3.7.1",
+    "powerlaw~=1.5",
+    "pandas",
+    "seaborn~=0.12.2",
+    "pqdm~=0.2.0",
+    "joblib~=1.2.0",
+    "scikit-learn~=1.2.2",
+    "sympy~=1.11.1",
+    "tox~=4.11.4"
+]
+
+[project.optional-dependencies]
+
+test = [
+    "pytest>=7.2.2",
+    "setuptools~=67.6.1",
+    "nbmake"
+]
+
+docs = [
+    "setuptools~=67.6.1",
+    "sphinx",
+    "sphinx-autobuild",
+    "numpydoc",
+    "furo"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["netin*"]
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+    "examples/notebooks"
+]
+
+addopts = "--nbmake"
+
+[tool.tox]
+requires = ["tox>=4"]
+env_list = ["py39", "py310", "py311", "py312"]
+
+[testenv]
+extras = ["test"]
+set_env = { MPLBACKEND = "Agg" }
+commands = [["pytest"]]

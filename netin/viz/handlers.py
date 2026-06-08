@@ -350,7 +350,7 @@ def plot_graph(
                     min_val=const.MINORITY_VALUE))\
                         for s, t in edges])
             nx.draw_networkx_edges(
-                g, pos, ax=ax,
+                nx_graph, pos, ax=ax,
                 edgelist=edges,
                 edge_color=edge_colors,
                 width=edge_width,
